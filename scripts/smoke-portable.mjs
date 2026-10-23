@@ -7,6 +7,7 @@ import { setTimeout as pause } from "node:timers/promises";
 
 assert.equal(process.platform, "win32", "Run the EXE smoke check on Windows.");
 const { version } = JSON.parse(await readFile("package.json", "utf8"));
+const service = JSON.parse(await readFile("service.json", "utf8"));
 const profile = await mkdtemp(join(tmpdir(), "svoi-exe-smoke-"));
 const child = spawn(resolve(`dist/Svoi-${version}.exe`), [
   `--user-data-dir=${profile}`,
@@ -26,12 +27,15 @@ try {
     try {
       const port = (await readFile(join(profile, "DevToolsActivePort"), "utf8")).split("\n")[0];
       const targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
-      target = targets.find((item) => item.type === "page" && item.url.includes("connect.html"));
+      target = targets.find((item) => item.type === "page" && (
+        item.url.includes("connect.html") ||
+        (service.origin && item.url.startsWith(service.origin + "/"))
+      ));
       if (target) break;
     } catch {}
     await pause(300);
   }
-  assert.ok(target, "The single EXE must open the connection window.");
+  assert.ok(target, "The single EXE must open an application window.");
   socket = new WebSocket(target.webSocketDebuggerUrl);
   await new Promise((resolve, reject) => {
     socket.addEventListener("open", resolve, { once: true });
@@ -58,23 +62,25 @@ try {
   while (Date.now() < deadline) {
     view = await evaluate(`(async () => ({
       title: document.title,
+      origin: location.origin,
       heading: document.querySelector('#statusTitle')?.textContent,
       retryEnabled: document.querySelector('#retryButton')?.disabled === false,
       addressFields: document.querySelectorAll('input, textarea').length,
       node: typeof require,
-      status: await window.svoi.status()
+      status: window.svoi ? await window.svoi.status() : null
     }))()`);
-    if (view.retryEnabled) break;
+    if (view.retryEnabled || (service.origin && view.origin === service.origin)) break;
     await pause(300);
   }
   assert.match(view.title, /Свои/);
-  assert.equal(view.addressFields, 0, "The launcher must not ask for a server address.");
   assert.equal(view.node, "undefined", "The window must not expose Node.js.");
-  assert.equal(view.retryEnabled, true, "Automatic discovery must finish.");
-  const service = JSON.parse(await readFile("service.json", "utf8"));
   if (service.origin === null) {
+    assert.equal(view.addressFields, 0, "The launcher must not ask for a server address.");
+    assert.equal(view.retryEnabled, true, "Automatic discovery must finish.");
     assert.equal(view.status.phase, "not_deployed", "The preview must explain that hosting is pending.");
     assert.match(view.heading, /ещё не запущен/);
+  } else {
+    assert.equal(view.origin, service.origin, "The online client must connect to the configured service.");
   }
   console.log("PASS: the single portable EXE opens on Windows, discovers its service, and has no address field.");
 } finally {

@@ -15,7 +15,7 @@ concurrency:
 jobs:
   release:
     runs-on: windows-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       WRANGLER_SEND_METRICS: "false"
     steps:
@@ -34,8 +34,10 @@ jobs:
         run: npm test
       - name: Validate the Cloudflare Worker bundle
         run: npm run cloud:build
-      - name: Build the Windows client
-        run: npm run desktop:build:win
+      - name: Build the single portable Windows executable
+        run: npm run desktop:build:exe
+      - name: Launch and check the portable executable on Windows
+        run: npm run desktop:smoke:win
       - name: Package source and verify archives
         shell: pwsh
         run: |
@@ -57,6 +59,7 @@ jobs:
         with:
           name: Svoi-Windows-and-source
           path: |
+            dist/*.exe
             dist/*.zip
             dist/*.sha256
           if-no-files-found: error
@@ -67,12 +70,35 @@ jobs:
           $config = Get-Content service.json -Raw | ConvertFrom-Json
           if (-not $config.origin) {
             'ready=false' | Out-File -FilePath $env:GITHUB_OUTPUT -Append
-            Write-Output 'Build verified. Public release is waiting for deployment of the shared online service.'
+            Write-Output 'Build verified. The EXE preview will explain that hosting is pending; the online release is waiting for deployment.'
             exit 0
           }
           node scripts/connect-service.mjs $config.origin
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           'ready=true' | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+      - name: Publish the executable preview while hosting is pending
+        if: steps.service.outputs.ready == 'false'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_COMMIT: ${{ github.sha }}
+        run: |
+          $short = ($env:RELEASE_COMMIT).Substring(0, 8)
+          $tag = "svoi-v${env:SVOI_VERSION}-preview-$short"
+          gh release view $tag --json tagName *> $null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Output "Preview $tag already exists; its files are preserved."
+            exit 0
+          }
+          gh release create $tag `
+            "dist/Svoi-${env:SVOI_VERSION}.exe" `
+            "dist/Svoi-${env:SVOI_VERSION}.exe.sha256" `
+            dist/Svoi-source.zip dist/Svoi-source.zip.sha256 `
+            --target $env:RELEASE_COMMIT --prerelease --latest=false `
+            --title "Свои $env:SVOI_VERSION — EXE, онлайн-сервис ещё не подключён" `
+            --notes-file PREVIEW-NOTES.md
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Publish the verified online client
         if: steps.service.outputs.ready == 'true'
         shell: pwsh
@@ -88,6 +114,8 @@ jobs:
             exit 0
           }
           gh release create $tag `
+            "dist/Svoi-${env:SVOI_VERSION}.exe" `
+            "dist/Svoi-${env:SVOI_VERSION}.exe.sha256" `
             "dist/Svoi-${env:SVOI_VERSION}-win32-x64.zip" `
             "dist/Svoi-${env:SVOI_VERSION}-win32-x64.zip.sha256" `
             dist/Svoi-source.zip dist/Svoi-source.zip.sha256 `

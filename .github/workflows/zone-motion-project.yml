@@ -1,0 +1,51 @@
+name: Package the Zone Motion Windows source project
+
+on:
+  push:
+    branches: [zone-motion-pc]
+    paths:
+      - "zone-motion-pc/**"
+      - ".github/workflows/zone-motion-project.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: zone-motion-project
+  cancel-in-progress: false
+
+jobs:
+  project:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify the validated source snapshot and package the Unity project
+        run: python3 zone-motion-pc/tools/package_project.py --output dist
+      - name: Keep the verified source archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZoneMotion-PC-source-project
+          path: |
+            dist/ZoneMotion-PC-project.zip
+            dist/ZoneMotion-PC-project.zip.sha256
+          if-no-files-found: error
+      - name: Publish the explicitly labeled source project preview
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_COMMIT: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_tag="zone-motion-project-${RELEASE_COMMIT:0:8}"
+          if gh release view "$release_tag" --json tagName >/dev/null 2>&1; then
+            printf 'Release already exists; its assets are preserved.\n'
+            exit 0
+          fi
+          gh release create "$release_tag" \
+            dist/ZoneMotion-PC-project.zip dist/ZoneMotion-PC-project.zip.sha256 \
+            --target "$RELEASE_COMMIT" --prerelease --latest=false \
+            --title 'Zone Motion — Unity-проект для Windows (без готового EXE)' \
+            --notes-file zone-motion-pc/PROJECT-NOTES.md

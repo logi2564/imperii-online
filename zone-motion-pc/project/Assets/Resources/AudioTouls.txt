@@ -1,0 +1,4 @@
+<Information>
+  <Mute>False</Mute>
+  <Volume>0.8</Volume>
+</Information>

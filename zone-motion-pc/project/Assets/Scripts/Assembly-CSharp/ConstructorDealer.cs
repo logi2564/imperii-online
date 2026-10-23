@@ -1,0 +1,404 @@
+using System;
+using UnityEngine;
+
+[Serializable]
+public class ConstructorDealer
+{
+	private string _nameDealer;
+
+	private string _nameGroup;
+
+	private string _descriptionGroup;
+
+	public AAAAAAAAAAAAAAAAAAk[,] _product = new AAAAAAAAAAAAAAAAAAk[10, 25]
+	{
+		{
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi()
+		},
+		{
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi()
+		},
+		{
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi()
+		},
+		{
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi()
+		},
+		{
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi()
+		},
+		{
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi()
+		},
+		{
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi()
+		},
+		{
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi()
+		},
+		{
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi()
+		},
+		{
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi(),
+			new AAAAAAAAAAAAAAAAAAbi()
+		}
+	};
+
+	private Texture2D _iconGroup;
+
+	private Texture2D _imageChar;
+
+	private string _textChar;
+
+	private int _enemy0;
+
+	private int _enemy1;
+
+	public string NameGroup
+	{
+		get
+		{
+			return _nameGroup;
+		}
+		set
+		{
+			_nameGroup = value;
+		}
+	}
+
+	public string DescriptionGroup
+	{
+		get
+		{
+			return _descriptionGroup;
+		}
+		set
+		{
+			_descriptionGroup = value;
+		}
+	}
+
+	public int Enemy0
+	{
+		get
+		{
+			return _enemy0;
+		}
+		set
+		{
+			_enemy0 = value;
+		}
+	}
+
+	public int Enemy1
+	{
+		get
+		{
+			return _enemy1;
+		}
+		set
+		{
+			_enemy1 = value;
+		}
+	}
+
+	public string TextChar
+	{
+		get
+		{
+			return _textChar;
+		}
+		set
+		{
+			_textChar = value;
+		}
+	}
+
+	public Texture2D IconGroup
+	{
+		get
+		{
+			return _iconGroup;
+		}
+		set
+		{
+			_iconGroup = value;
+		}
+	}
+
+	public Texture2D ImageChar
+	{
+		get
+		{
+			return _imageChar;
+		}
+		set
+		{
+			_imageChar = value;
+		}
+	}
+
+	public string NameDealer
+	{
+		get
+		{
+			return _nameDealer;
+		}
+		set
+		{
+			_nameDealer = value;
+		}
+	}
+
+	public AAAAAAAAAAAAAAAAAAk[,] Product
+	{
+		get
+		{
+			return _product;
+		}
+		set
+		{
+			_product = value;
+		}
+	}
+}

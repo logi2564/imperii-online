@@ -1,0 +1,10 @@
+ZoneMotion-*.apk
+recovered/
+inspection/
+dist/
+*.log
+project/Library/
+project/Temp/
+project/Obj/
+project/Logs/
+project/UserSettings/

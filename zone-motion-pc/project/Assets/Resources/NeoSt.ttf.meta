@@ -1,0 +1,26 @@
+fileFormatVersion: 2
+guid: 9b182bbb6a0c7924a99cf307b16f2f60
+timeCreated: 1792762163
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  name:
+  externalObjects: {}
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Graffiti1CTT
+  fontNames:
+  - Graffiti1CTT
+  - NeoSt
+  fallbackFontReferences: []
+  customCharacters:
+  fontRenderingMode: 0
+  output:
+    hasEmptyFontData: 0
+  ascentCalculationMode: 1
+  userData:
+  assetBundleName:
+  assetBundleVariant:

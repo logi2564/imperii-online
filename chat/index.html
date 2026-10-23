@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#191a20" />
+    <title>Свои — место для вашей компании</title>
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script defer src="/app.js"></script>
+  </head>
+  <body>
+    <div id="loading" class="loading">
+      <img src="/icon.svg" alt="" width="56" height="56" /><span
+        >Собираем своих…</span
+      >
+    </div>
+    <div id="shell" class="shell" hidden>
+      <nav class="rail" aria-label="Пространства">
+        <button
+          class="brand rail-button"
+          id="homeButton"
+          title="Свои · главный канал"
+        >
+          <img src="/icon.svg" alt="Свои" width="44" height="44" />
+        </button>
+        <div class="rail-divider"></div>
+        <button
+          class="space-icon active"
+          id="spaceButton"
+          title="Ваше пространство"
+        >
+          <span id="spaceInitials">СЛ</span><span class="rail-dot"></span>
+        </button>
+        <button
+          class="rail-button rail-add"
+          id="railInvite"
+          title="Пригласить друзей"
+          aria-label="Пригласить друзей"
+          data-icon="userPlus"
+        ></button>
+        <div class="rail-spacer"></div>
+        <button
+          class="rail-button rail-help"
+          id="helpButton"
+          title="Как всё устроено"
+          aria-label="Помощь"
+          data-icon="help"
+        ></button
+        ><span class="rail-version">1.0</span>
+      </nav>
+      <aside class="sidebar" id="sidebar">
+        <button class="space-header" id="spaceMenu">
+          <span class="space-name" id="spaceName">Свои люди</span
+          ><span data-icon="chevronDown"></span>
+        </button>
+        <div class="sidebar-scroll">
+          <div class="space-banner">
+            <span class="banner-orbit orbit-one"></span
+            ><span class="banner-orbit orbit-two"></span
+            ><span class="banner-spark">✧</span
+            ><span class="banner-tag">ВАША МАЛЕНЬКАЯ ВСЕЛЕННАЯ</span
+            ><strong>Хорошо, когда<br />все свои.</strong
+            ><span class="banner-star">✦</span>
+          </div>
+          <button id="inviteButton" class="invite-button">
+            <span data-icon="userPlus"></span>Позвать друзей<span
+              class="tiny-arrow"
+              >↗</span
+            >
+          </button>
+          <div class="channel-group-title">
+            <span>ТЕКСТОВЫЕ КАНАЛЫ</span
+            ><button
+              class="icon-button add-channel"
+              data-kind="text"
+              aria-label="Создать текстовый канал"
+              title="Создать канал"
+              data-icon="plus"
+            ></button>
+          </div>
+          <div id="textChannels" class="channel-list"></div>
+          <div class="channel-group-title voice-heading">
+            <span>ГОЛОСОВЫЕ КАНАЛЫ</span
+            ><button
+              class="icon-button add-channel"
+              data-kind="voice"
+              aria-label="Создать голосовой канал"
+              title="Создать канал"
+              data-icon="plus"
+            ></button>
+          </div>
+          <div id="voiceChannels" class="channel-list"></div>
+          <div class="sidebar-note">
+            <span class="small-online-dot"></span
+            ><span>Место, куда хочется вернуться</span>
+          </div>
+        </div>
+        <div id="voiceStatus" class="voice-status" hidden>
+          <div>
+            <strong
+              ><span class="small-online-dot"></span
+              ><span id="voiceStatusLabel">На связи</span></strong
+            ><small id="voiceChannelLabel"></small>
+          </div>
+          <button
+            id="leaveVoice"
+            class="icon-button danger-hover"
+            title="Отключиться"
+            aria-label="Отключиться от голоса"
+            data-icon="phoneOff"
+          ></button>
+        </div>
+        <div class="user-panel">
+          <button id="profileButton" class="profile-button" title="Ваш профиль">
+            <span class="avatar" id="myAvatar"></span
+            ><span class="profile-copy"
+              ><strong id="myName"></strong
+              ><small id="myStatus">В сети</small></span
+            ></button
+          ><button
+            id="muteButton"
+            class="icon-button"
+            title="Выключить микрофон"
+            aria-label="Выключить микрофон"
+            data-icon="mic"
+          ></button
+          ><button
+            id="deafenButton"
+            class="icon-button"
+            title="Выключить звук"
+            aria-label="Выключить звук"
+            data-icon="headphones"
+          ></button>
+        </div>
+      </aside>
+      <main class="main">
+        <header class="chat-header">
+          <button
+            id="mobileMenu"
+            class="icon-button mobile-only"
+            aria-label="Показать каналы"
+            data-icon="menu"
+          ></button
+          ><span id="headerIcon" class="header-hash" data-icon="hash"></span>
+          <h1 id="channelName">общий</h1>
+          <span class="header-separator"></span
+          ><span id="channelTopic" class="channel-topic"></span>
+          <div class="header-actions">
+            <span class="connection-badge" id="connectionBadge"
+              ><i></i><span>На связи</span></span
+            ><button
+              id="searchButton"
+              class="icon-button"
+              title="Поиск в канале"
+              aria-label="Поиск в канале"
+              data-icon="search"
+            ></button
+            ><button
+              id="membersButton"
+              class="icon-button selected"
+              title="Участники"
+              aria-label="Показать участников"
+              aria-pressed="true"
+              data-icon="users"
+            ></button>
+          </div>
+        </header>
+        <div id="reconnectBanner" class="reconnect-banner" hidden>
+          Связь потеряна. Подключаемся снова…
+        </div>
+        <div id="searchBar" class="search-bar" hidden>
+          <span data-icon="search"></span
+          ><input
+            id="searchInput"
+            placeholder="Найти в загруженных сообщениях…"
+            aria-label="Поиск сообщений"
+          /><span id="searchCount"></span
+          ><button
+            id="closeSearch"
+            class="icon-button"
+            aria-label="Закрыть поиск"
+            data-icon="x"
+          ></button>
+        </div>
+        <section id="textView" class="text-view">
+          <div
+            id="messageScroll"
+            class="message-scroll"
+            role="log"
+            aria-label="Сообщения канала"
+          >
+            <div class="channel-welcome" id="channelWelcome">
+              <div class="welcome-eyebrow">
+                <span></span> ВАШЕ МЕСТО НА СВЯЗИ
+              </div>
+              <div class="welcome-symbol" data-icon="hash"></div>
+              <h2>Здесь начинается <span id="welcomeChannel">#общий</span></h2>
+              <p id="welcomeTopic">
+                Место, где все свои. Заходи, рассказывай, оставайся.
+              </p>
+              <div class="welcome-actions">
+                <button id="welcomeInvite">
+                  <span data-icon="userPlus"></span>Пригласить друзей</button
+                ><span
+                  >Хорошие разговоры начинаются с «привет»
+                  <span class="wave">✌️</span></span
+                >
+              </div>
+            </div>
+            <button class="load-more" id="loadMore" hidden>
+              Загрузить предыдущие сообщения
+            </button>
+            <div id="messages"></div>
+            <div id="noResults" class="no-results" hidden>
+              Ничего не нашли. Попробуй другое слово.
+            </div>
+          </div>
+          <button id="newMessages" class="new-messages" hidden>
+            Новые сообщения ↓
+          </button>
+          <div class="composer-area">
+            <div id="replyHint" class="reply-hint" hidden></div>
+            <form id="messageForm" class="composer">
+              <button
+                id="emojiButton"
+                class="composer-emoji"
+                type="button"
+                aria-label="Добавить эмодзи"
+                title="Эмодзи"
+                data-icon="smile"
+              ></button
+              ><textarea
+                id="messageInput"
+                placeholder="Написать в #общий"
+                rows="1"
+                maxlength="2000"
+                aria-label="Сообщение"
+              ></textarea
+              ><span id="charCount" class="char-count" hidden></span
+              ><button
+                class="send-button"
+                id="sendButton"
+                aria-label="Отправить сообщение"
+                title="Отправить · Enter"
+                data-icon="send"
+                disabled
+              ></button>
+            </form>
+            <div class="composer-footer">
+              <span id="typingIndicator"></span
+              ><span class="enter-hint"
+                ><kbd>Enter</kbd> отправить <span>·</span>
+                <kbd>Shift + Enter</kbd> новая строка</span
+              >
+            </div>
+          </div>
+        </section>
+        <section id="voiceView" class="voice-view" hidden>
+          <div class="voice-room-eyebrow">
+            <span class="small-online-dot"></span>ГОЛОСОВОЙ КАНАЛ
+          </div>
+          <h2 id="voiceRoomName">Гостиная</h2>
+          <p>Иногда лучше просто услышать друг друга.</p>
+          <div id="voiceGrid" class="voice-grid"></div>
+          <div id="voiceEmpty" class="voice-empty">
+            <div class="voice-empty-icon" data-icon="headphones"></div>
+            <strong>Пока тихо. Начнём разговор?</strong
+            ><span>Подключись и позови своих.</span>
+          </div>
+          <div id="voiceState" class="voice-state" aria-live="polite"></div>
+          <button id="joinVoiceButton" class="primary-button">
+            <span data-icon="mic"></span>Присоединиться к разговору</button
+          ><button id="roomLeaveButton" class="secondary-button" hidden>
+            <span data-icon="phoneOff"></span>Выйти из разговора
+          </button>
+          <p class="voice-footnote">
+            Нужен доступ к микрофону. Для звонков через интернет — HTTPS.
+          </p>
+        </section>
+      </main>
+      <aside class="members" id="members">
+        <div class="members-heading">
+          НАША КОМПАНИЯ <span id="memberTotal">0</span>
+        </div>
+        <div id="memberList"></div>
+        <div class="members-bottom">
+          <span class="members-bottom-mark">✧</span
+          ><strong>Не просто сервер.<br />Своя компания.</strong
+          ><small>Чат, игры и разговоры до ночи.</small>
+        </div>
+      </aside>
+    </div>
+    <div id="authScreen" class="auth-screen" hidden>
+      <div class="auth-art">
+        <a class="auth-brand" href="/"
+          ><img src="/icon.svg" alt="" width="40" height="40" />свои<span
+            >место для вашей компании</span
+          ></a
+        >
+        <div class="auth-art-copy">
+          <span class="eyebrow">БЛИЖЕ, ДАЖЕ КОГДА ДАЛЕКО</span>
+          <h1>У каждого чата<br />есть <em>свои.</em></h1>
+          <p>
+            Для разговоров ни о чём. Для ещё одной катки.<br />Для людей, с
+            которыми хорошо.
+          </p>
+          <div class="auth-bubbles">
+            <span>на связи? <i>21:08</i></span
+            ><span>для своих — всегда <b>✌️</b></span>
+          </div>
+        </div>
+        <div class="auth-footer">
+          Текст. Голос. Ваша компания.<span>✦</span>
+        </div>
+      </div>
+      <div class="auth-form-wrap">
+        <form id="authForm" class="auth-form">
+          <div class="auth-form-badge" data-icon="sparkles"></div>
+          <h2 id="authTitle">Тебя уже ждут</h2>
+          <p id="authDescription">Заходи в пространство своих.</p>
+          <label id="communityLabel" hidden
+            >Название вашей компании<input
+              id="communityInput"
+              maxlength="40"
+              value="Свои люди"
+              autocomplete="organization" /></label
+          ><label
+            >Как тебя зовут?<input
+              id="nameInput"
+              maxlength="24"
+              minlength="2"
+              placeholder="Твой никнейм"
+              autocomplete="nickname"
+              required /></label
+          ><label id="inviteLabel" hidden
+            >Ссылка или код приглашения<input
+              id="inviteInput"
+              placeholder="Вставь приглашение от друга"
+              autocomplete="off"
+          /></label>
+          <p id="authError" class="form-error" role="alert"></p>
+          <button id="authSubmit" class="primary-button" type="submit">
+            Зайти к своим<span data-icon="arrowRight"></span>
+          </button>
+          <p class="auth-fine-print" id="authFinePrint">
+            Вход по приглашению. Без почты и лишних форм.<br />Твой профиль
+            сохранится в этом браузере или клиенте.
+          </p>
+        </form>
+      </div>
+    </div>
+    <dialog id="inviteDialog">
+      <form method="dialog">
+        <button
+          class="dialog-close icon-button"
+          aria-label="Закрыть"
+          data-icon="x"
+        ></button>
+      </form>
+      <div class="dialog-icon" data-icon="userPlus"></div>
+      <h2>Собирай своих</h2>
+      <p>
+        Отправь ссылку друзьям. Они выберут имя<br />и сразу окажутся в вашей
+        компании.
+      </p>
+      <label class="field-label" for="inviteLink"
+        >ВАША ССЫЛКА-ПРИГЛАШЕНИЕ</label
+      >
+      <div class="copy-field">
+        <input
+          id="inviteLink"
+          readonly
+          aria-label="Ссылка-приглашение"
+        /><button id="copyInvite" class="primary-button">Копировать</button>
+      </div>
+      <div class="dialog-note">
+        <span data-icon="lock"></span>По ссылке можно войти и читать все каналы.
+        Отправляй её своим.
+      </div>
+      <button id="rotateInvite" class="text-button">
+        Создать новую ссылку
+      </button>
+    </dialog>
+    <dialog id="channelDialog">
+      <form id="channelForm">
+        <button
+          class="dialog-close icon-button"
+          type="button"
+          aria-label="Закрыть"
+          data-close="channelDialog"
+          data-icon="x"
+        ></button>
+        <div class="dialog-icon" data-icon="hash"></div>
+        <h2>Ещё одно место для общения</h2>
+        <p>Отдельный канал для отдельного настроения.</p>
+        <label
+          >Тип канала<select id="channelKind">
+            <option value="text"># Текстовый — сообщения и эмодзи</option>
+            <option value="voice">♪ Голосовой — разговоры вживую</option>
+          </select></label
+        ><label
+          >Название<input
+            id="newChannelName"
+            placeholder="например, вечерние-планы"
+            maxlength="32"
+            required /></label
+        ><label
+          >Описание <span class="optional">необязательно</span
+          ><input
+            id="newChannelTopic"
+            placeholder="О чём здесь разговариваем?"
+            maxlength="140"
+        /></label>
+        <p id="channelError" class="form-error" role="alert"></p>
+        <button class="primary-button" type="submit">Создать канал</button>
+      </form>
+    </dialog>
+    <dialog id="profileDialog">
+      <form method="dialog">
+        <button
+          class="dialog-close icon-button"
+          aria-label="Закрыть"
+          data-icon="x"
+        ></button>
+      </form>
+      <div id="profileAvatar" class="avatar large-avatar"></div>
+      <h2 id="profileName"></h2>
+      <p id="profileRole"></p>
+      <div class="profile-notice">
+        Профиль привязан к этому устройству. После выхода для возвращения
+        понадобится новое приглашение и другое имя. Владелец может восстановить
+        доступ по приватной ссылке настройки.
+      </div>
+      <button id="logoutButton" class="secondary-button danger-text">
+        Выйти из аккаунта
+      </button>
+    </dialog>
+    <dialog id="helpDialog">
+      <form method="dialog">
+        <button
+          class="dialog-close icon-button"
+          aria-label="Закрыть"
+          data-icon="x"
+        ></button>
+      </form>
+      <img src="/icon.svg" width="52" height="52" alt="" />
+      <h2>Свои. Всегда на связи.</h2>
+      <p>Ваше небольшое пространство для общения.</p>
+      <div class="help-item">
+        <span data-icon="hash"></span>
+        <div>
+          <strong>Переписка остаётся с вами</strong>
+          <p>
+            Общие каналы, история и реакции. Enter отправляет сообщение, Shift +
+            Enter переносит строку.
+          </p>
+        </div>
+      </div>
+      <div class="help-item">
+        <span data-icon="mic"></span>
+        <div>
+          <strong>Разговоры вживую</strong>
+          <p>
+            Выбери голосовой канал и разреши микрофон. Для связи через интернет
+            нужны HTTPS и доступный WebRTC; некоторые сети требуют TURN-сервер.
+          </p>
+        </div>
+      </div>
+      <div class="help-item">
+        <span data-icon="userPlus"></span>
+        <div>
+          <strong>Только ваша компания</strong>
+          <p>
+            Владелец приглашает по ссылке. Ссылка даёт доступ ко всем каналам;
+            её можно заменить в любой момент.
+          </p>
+        </div>
+      </div>
+      <div class="help-version">СВОИ · ВЕРСИЯ 1.0</div>
+    </dialog>
+    <div id="emojiPicker" class="emoji-picker" hidden></div>
+    <div id="toastArea" class="toast-area" aria-live="polite"></div>
+    <div id="audioContainer"></div>
+  </body>
+</html>

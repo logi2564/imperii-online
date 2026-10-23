@@ -1,0 +1,80 @@
+name: Build and publish Svoi for Windows
+
+on:
+  push:
+    branches: [svoi-release]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: svoi-windows-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out the application
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install the locked dependencies
+        run: npm ci --no-fund
+
+      - name: Ensure the verified Electron runtime is installed
+        run: node node_modules/electron/install.js
+
+      - name: Run the integration tests
+        run: npm test
+
+      - name: Build the Windows client
+        run: npm run desktop:build:win
+
+      - name: Package source code and verify the archives
+        shell: pwsh
+        run: |
+          git archive --format=zip --output=dist/Svoi-source.zip HEAD
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $sourceHash = (Get-FileHash dist/Svoi-source.zip -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$sourceHash  Svoi-source.zip" | Set-Content dist/Svoi-source.zip.sha256 -Encoding ascii
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          foreach ($file in @('dist/Svoi-1.0.0-win32-x64.zip', 'dist/Svoi-source.zip')) {
+            $archive = [System.IO.Compression.ZipFile]::OpenRead((Resolve-Path $file))
+            if ($archive.Entries.Count -eq 0) { throw "Empty archive: $file" }
+            $archive.Dispose()
+          }
+          if (-not (Test-Path dist/Svoi-win32-x64/Svoi.exe)) { throw 'The Windows executable is missing.' }
+
+      - name: Keep the built files as workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Svoi-Windows-and-source
+          path: |
+            dist/*.zip
+            dist/*.sha256
+          if-no-files-found: error
+
+      - name: Publish the downloadable release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_COMMIT: ${{ github.sha }}
+        run: |
+          gh release create svoi-v1.0.0 `
+            dist/Svoi-1.0.0-win32-x64.zip `
+            dist/Svoi-1.0.0-win32-x64.zip.sha256 `
+            dist/Svoi-source.zip `
+            dist/Svoi-source.zip.sha256 `
+            --target $env:RELEASE_COMMIT `
+            --title 'Свои 1.0.0 — клиент для Windows' `
+            --notes-file RELEASE-NOTES.md
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

@@ -1,0 +1,9 @@
+{
+  "name": "svoi",
+  "productName": "Свои",
+  "version": "1.0.0",
+  "description": "Место для вашей компании: текст и голос",
+  "author": "Svoi",
+  "main": "main.cjs",
+  "private": true
+}

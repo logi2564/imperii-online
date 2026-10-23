@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <title>Свои · подключение</title>
+    <link rel="stylesheet" href="connect.css" />
+    <script defer src="connect.js"></script>
+  </head>
+  <body>
+    <main>
+      <div class="logo">свои<span>✦</span></div>
+      <span class="eyebrow">БЛИЖЕ, ДАЖЕ КОГДА ДАЛЕКО</span>
+      <h1>Ваша компания.<br />В одном окне.</h1>
+      <p>
+        Вставь приглашение от друга или адрес<br />вашего сервера, чтобы зайти к
+        своим.
+      </p>
+      <form id="connectForm">
+        <label for="server">АДРЕС СЕРВЕРА ИЛИ ПРИГЛАШЕНИЕ</label
+        ><input
+          id="server"
+          type="url"
+          placeholder="https://chat.example.com/?invite=…"
+          required
+          autofocus
+          spellcheck="false"
+        />
+        <p id="error" role="alert"></p>
+        <button id="submit" type="submit">Подключиться <span>→</span></button>
+      </form>
+      <footer>
+        Первый запуск? Владелец запускает сервер командой
+        <code>npm start</code>.<br />Сменить сервер: <kbd>Ctrl + Shift + S</kbd>
+      </footer>
+    </main>
+    <div class="decoration">✧</div>
+  </body>
+</html>

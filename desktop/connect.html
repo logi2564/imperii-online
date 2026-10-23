@@ -15,27 +15,15 @@
     <main>
       <div class="logo">свои<span>✦</span></div>
       <span class="eyebrow">БЛИЖЕ, ДАЖЕ КОГДА ДАЛЕКО</span>
-      <h1>Ваша компания.<br />В одном окне.</h1>
-      <p>
-        Вставь приглашение от друга или адрес<br />вашего сервера, чтобы зайти к
-        своим.
+      <h1>Ваша компания.<br />Всегда рядом.</h1>
+      <div id="connectionMark" class="connection-mark connecting">✦</div>
+      <h2 id="statusTitle">Заходим к своим</h2>
+      <p id="statusDescription" role="status" aria-live="polite">
+        Ещё мгновение — и вы снова вместе.
       </p>
-      <form id="connectForm">
-        <label for="server">АДРЕС СЕРВЕРА ИЛИ ПРИГЛАШЕНИЕ</label
-        ><input
-          id="server"
-          type="url"
-          placeholder="https://chat.example.com/?invite=…"
-          required
-          autofocus
-          spellcheck="false"
-        />
-        <p id="error" role="alert"></p>
-        <button id="submit" type="submit">Подключиться <span>→</span></button>
-      </form>
+      <button id="retryButton" type="button" disabled>Подключаемся…</button>
       <footer>
-        Первый запуск? Владелец запускает сервер командой
-        <code>npm start</code>.<br />Сменить сервер: <kbd>Ctrl + Shift + S</kbd>
+        Свои подключаются автоматически.<br />Текст. Голос. Ваша компания.
       </footer>
     </main>
     <div class="decoration">✧</div>

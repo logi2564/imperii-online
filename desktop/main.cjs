@@ -5,84 +5,33 @@ const {
   Menu,
   session,
   shell,
+  net,
 } = require("electron");
 const fs = require("node:fs");
 const path = require("node:path");
+const { pathToFileURL } = require("node:url");
+const { discover } = require("./service.cjs");
 let window,
-  allowedOrigin = null;
-const settingsPath = () => path.join(app.getPath("userData"), "server.json");
-function readServer() {
+  allowedOrigin = null,
+  connecting = false;
+let status = { phase: "connecting" };
+const launcherUrl = pathToFileURL(path.join(__dirname, "connect.html")).href;
+const cachePath = () =>
+  path.join(app.getPath("userData"), "service-cache.json");
+function cachedService() {
   try {
-    return JSON.parse(fs.readFileSync(settingsPath(), "utf8")).url || "";
+    return JSON.parse(fs.readFileSync(cachePath(), "utf8")).origin;
   } catch {
-    return "";
+    return null;
   }
 }
-function validate(value) {
-  if (typeof value !== "string" || value.length > 2048)
-    throw Error("Укажи адрес сервера.");
-  let url;
-  try {
-    url = new URL(value.trim());
-  } catch {
-    throw Error("Введи полный адрес, например https://chat.example.com");
-  }
-  const local = ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);
-  if (url.protocol !== "https:" && !(url.protocol === "http:" && local))
-    throw Error(
-      "Для сервера в интернете нужен адрес https://. HTTP разрешён только для localhost.",
-    );
-  if (url.username || url.password || url.port === "0")
-    throw Error("Этот адрес не подходит.");
-  if (url.pathname !== "/" && url.pathname !== "")
-    throw Error(
-      "Нужен адрес корня сервера, без пути. Например https://chat.example.com",
-    );
-  for (const key of url.searchParams.keys())
-    if (!["invite", "setup"].includes(key)) url.searchParams.delete(key);
-  url.hash = "";
-  return url;
+function isLauncher(contents) {
+  return contents === window?.webContents && contents.getURL() === launcherUrl;
 }
-function menu() {
-  Menu.setApplicationMenu(
-    Menu.buildFromTemplate([
-      {
-        label: "Свои",
-        submenu: [
-          {
-            label: "Сменить сервер…",
-            accelerator: "CmdOrCtrl+Shift+S",
-            click: () => showConnect(),
-          },
-          { type: "separator" },
-          { label: "Выйти", role: "quit" },
-        ],
-      },
-      {
-        label: "Правка",
-        submenu: [
-          { role: "undo" },
-          { role: "redo" },
-          { type: "separator" },
-          { role: "cut" },
-          { role: "copy" },
-          { role: "paste" },
-          { role: "selectAll" },
-        ],
-      },
-      {
-        label: "Вид",
-        submenu: [
-          { role: "reload" },
-          { role: "togglefullscreen" },
-          { type: "separator" },
-          { role: "resetZoom" },
-          { role: "zoomIn" },
-          { role: "zoomOut" },
-        ],
-      },
-    ]),
-  );
+function updateStatus(next) {
+  status = next;
+  if (window && !window.isDestroyed() && isLauncher(window.webContents))
+    window.webContents.send("app:status", status);
 }
 function makeWindow(preload) {
   const old = window;
@@ -112,75 +61,63 @@ function makeWindow(preload) {
   window.webContents.setWindowOpenHandler(({ url }) => {
     try {
       const link = new URL(url);
-      if (link.protocol === "https:" || link.protocol === "http:")
+      if (["https:", "http:"].includes(link.protocol))
         shell.openExternal(link.href);
     } catch {}
     return { action: "deny" };
   });
-  window.webContents.on("will-navigate", (event, url) => {
-    try {
-      if (!allowedOrigin || new URL(url).origin !== allowedOrigin)
+  for (const eventName of ["will-navigate", "will-redirect"])
+    window.webContents.on(eventName, (event, url) => {
+      try {
+        if (!allowedOrigin || new URL(url).origin !== allowedOrigin)
+          event.preventDefault();
+      } catch {
         event.preventDefault();
-    } catch {
-      event.preventDefault();
-    }
-  });
-  window.webContents.on("will-redirect", (event, url) => {
-    try {
-      if (allowedOrigin && new URL(url).origin !== allowedOrigin)
-        event.preventDefault();
-    } catch {
-      event.preventDefault();
-    }
-  });
+      }
+    });
   return window;
 }
-function showConnect(error = "") {
+async function showLauncher() {
   allowedOrigin = null;
   const win = makeWindow(true);
-  win.loadFile(path.join(__dirname, "connect.html"), {
-    query: error ? { error } : {},
-  });
+  await win.loadFile(path.join(__dirname, "connect.html"));
 }
-async function openServer(value) {
-  const url = validate(value);
-  allowedOrigin = url.origin;
-  const win = makeWindow(false);
-  const stored = url.origin + "/";
-  fs.mkdirSync(app.getPath("userData"), { recursive: true });
-  fs.writeFileSync(settingsPath(), JSON.stringify({ url: stored }));
+async function connect() {
+  if (connecting) return;
+  connecting = true;
+  updateStatus({ phase: "connecting" });
   try {
-    await win.loadURL(url.href);
+    const result = await discover({
+      fetcher: (url, options) => net.fetch(url, options),
+      cached: cachedService(),
+      developmentUrl: !app.isPackaged ? process.env.SVOI_DEV_URL : undefined,
+    });
+    if (result.phase !== "ready") {
+      updateStatus(result);
+      return;
+    }
+    fs.mkdirSync(app.getPath("userData"), { recursive: true });
+    fs.writeFileSync(cachePath(), JSON.stringify({ origin: result.origin }));
+    allowedOrigin = result.origin;
+    const win = makeWindow(false);
+    await win.loadURL(result.origin + "/");
+    status = { phase: "ready" };
   } catch {
-    if (!win.isDestroyed())
-      showConnect(
-        "Не удалось открыть сервер. Проверь адрес и подключение к интернету.",
-      );
+    status = { phase: "offline" };
+    if (!window || window.isDestroyed() || !isLauncher(window.webContents))
+      await showLauncher();
+    updateStatus(status);
+  } finally {
+    connecting = false;
   }
 }
-ipcMain.handle("server:current", (event) => {
-  if (
-    event.sender !== window?.webContents ||
-    !event.sender.getURL().startsWith("file://")
-  )
-    return "";
-  return readServer();
-});
-ipcMain.handle("server:connect", async (event, value) => {
-  if (
-    event.sender !== window?.webContents ||
-    !event.sender.getURL().startsWith("file://")
-  )
-    return { error: "Запрос не разрешён." };
-  try {
-    validate(value);
-    setImmediate(() =>
-      openServer(value).catch((error) => showConnect(error.message)),
-    );
-    return { ok: true };
-  } catch (error) {
-    return { error: error.message };
-  }
+ipcMain.handle("app:status", (event) =>
+  isLauncher(event.sender) ? status : null,
+);
+ipcMain.handle("app:retry", (event) => {
+  if (!isLauncher(event.sender)) return false;
+  setImmediate(connect);
+  return true;
 });
 if (!app.requestSingleInstanceLock()) app.quit();
 else {
@@ -191,18 +128,60 @@ else {
       window.focus();
     }
   });
-  app.whenReady().then(() => {
-    menu();
-    const allowed = (webContents, details) => {
+  app.whenReady().then(async () => {
+    Menu.setApplicationMenu(
+      Menu.buildFromTemplate([
+        {
+          label: "Свои",
+          submenu: [
+            {
+              label: "Повторить подключение",
+              accelerator: "CmdOrCtrl+Shift+R",
+              click: async () => {
+                if (connecting) return;
+                await showLauncher();
+                connect();
+              },
+            },
+            { type: "separator" },
+            { label: "Выйти", role: "quit" },
+          ],
+        },
+        {
+          label: "Правка",
+          submenu: [
+            { role: "undo" },
+            { role: "redo" },
+            { type: "separator" },
+            { role: "cut" },
+            { role: "copy" },
+            { role: "paste" },
+            { role: "selectAll" },
+          ],
+        },
+        {
+          label: "Вид",
+          submenu: [
+            { role: "reload" },
+            { role: "togglefullscreen" },
+            { type: "separator" },
+            { role: "resetZoom" },
+            { role: "zoomIn" },
+            { role: "zoomOut" },
+          ],
+        },
+      ]),
+    );
+    const allowed = (contents, details) => {
       try {
         return (
           !!allowedOrigin &&
-          webContents === window?.webContents &&
-          new URL(webContents.getURL()).origin === allowedOrigin &&
+          contents === window?.webContents &&
+          new URL(contents.getURL()).origin === allowedOrigin &&
           new URL(
             details.requestingUrl ||
               details.securityOrigin ||
-              webContents.getURL(),
+              contents.getURL(),
           ).origin === allowedOrigin
         );
       } catch {
@@ -210,24 +189,26 @@ else {
       }
     };
     session.defaultSession.setPermissionRequestHandler(
-      (webContents, permission, callback, details) =>
+      (contents, permission, callback, details) =>
         callback(
           permission === "media" &&
             !details.mediaTypes?.includes("video") &&
-            allowed(webContents, details),
+            allowed(contents, details),
         ),
     );
     session.defaultSession.setPermissionCheckHandler(
-      (webContents, permission, origin, details) =>
+      (contents, permission, origin, details) =>
         permission === "media" &&
         details.mediaType !== "video" &&
-        allowed(webContents, { ...details, securityOrigin: origin }),
+        allowed(contents, { ...details, securityOrigin: origin }),
     );
-    const saved = readServer();
-    if (saved) openServer(saved).catch(() => showConnect());
-    else showConnect();
-    app.on("activate", () => {
-      if (BrowserWindow.getAllWindows().length === 0) showConnect();
+    await showLauncher();
+    connect();
+    app.on("activate", async () => {
+      if (!BrowserWindow.getAllWindows().length) {
+        await showLauncher();
+        connect();
+      }
     });
   });
   app.on("window-all-closed", () => {

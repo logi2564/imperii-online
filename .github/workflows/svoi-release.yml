@@ -16,44 +16,43 @@ jobs:
   release:
     runs-on: windows-latest
     timeout-minutes: 20
+    env:
+      WRANGLER_SEND_METRICS: "false"
     steps:
       - name: Check out the application
         uses: actions/checkout@v4
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: npm
-
       - name: Install the locked dependencies
         run: npm ci --no-fund
-
       - name: Ensure the verified Electron runtime is installed
         run: node node_modules/electron/install.js
-
-      - name: Run the integration tests
+      - name: Run integration and automatic connection tests
         run: npm test
-
+      - name: Validate the Cloudflare Worker bundle
+        run: npm run cloud:build
       - name: Build the Windows client
         run: npm run desktop:build:win
-
-      - name: Package source code and verify the archives
+      - name: Package source and verify archives
         shell: pwsh
         run: |
+          $version = node -p "require('./package.json').version"
+          "SVOI_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           git archive --format=zip --output=dist/Svoi-source.zip HEAD
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $sourceHash = (Get-FileHash dist/Svoi-source.zip -Algorithm SHA256).Hash.ToLowerInvariant()
           "$sourceHash  Svoi-source.zip" | Set-Content dist/Svoi-source.zip.sha256 -Encoding ascii
           Add-Type -AssemblyName System.IO.Compression.FileSystem
-          foreach ($file in @('dist/Svoi-1.0.0-win32-x64.zip', 'dist/Svoi-source.zip')) {
+          foreach ($file in @("dist/Svoi-$version-win32-x64.zip", 'dist/Svoi-source.zip')) {
             $archive = [System.IO.Compression.ZipFile]::OpenRead((Resolve-Path $file))
             if ($archive.Entries.Count -eq 0) { throw "Empty archive: $file" }
             $archive.Dispose()
           }
           if (-not (Test-Path dist/Svoi-win32-x64/Svoi.exe)) { throw 'The Windows executable is missing.' }
-
-      - name: Keep the built files as workflow artifacts
+      - name: Keep built files for review
         uses: actions/upload-artifact@v4
         with:
           name: Svoi-Windows-and-source
@@ -61,20 +60,38 @@ jobs:
             dist/*.zip
             dist/*.sha256
           if-no-files-found: error
-
-      - name: Publish the downloadable release
+      - name: Check that the shared online service is running
+        id: service
+        shell: pwsh
+        run: |
+          $config = Get-Content service.json -Raw | ConvertFrom-Json
+          if (-not $config.origin) {
+            'ready=false' | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+            Write-Output 'Build verified. Public release is waiting for deployment of the shared online service.'
+            exit 0
+          }
+          node scripts/connect-service.mjs $config.origin
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          'ready=true' | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+      - name: Publish the verified online client
+        if: steps.service.outputs.ready == 'true'
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           RELEASE_COMMIT: ${{ github.sha }}
         run: |
-          gh release create svoi-v1.0.0 `
-            dist/Svoi-1.0.0-win32-x64.zip `
-            dist/Svoi-1.0.0-win32-x64.zip.sha256 `
-            dist/Svoi-source.zip `
-            dist/Svoi-source.zip.sha256 `
+          $tag = "svoi-v$env:SVOI_VERSION"
+          gh release view $tag --json tagName *> $null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Output "Release $tag already exists; its files are preserved."
+            exit 0
+          }
+          gh release create $tag `
+            "dist/Svoi-${env:SVOI_VERSION}-win32-x64.zip" `
+            "dist/Svoi-${env:SVOI_VERSION}-win32-x64.zip.sha256" `
+            dist/Svoi-source.zip dist/Svoi-source.zip.sha256 `
             --target $env:RELEASE_COMMIT `
-            --title 'Свои 1.0.0 — клиент для Windows' `
+            --title "Свои $env:SVOI_VERSION — автоматическое подключение" `
             --notes-file RELEASE-NOTES.md
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

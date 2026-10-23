@@ -121,3 +121,37 @@ code {
   line-height: 1;
   pointer-events: none;
 }
+.connection-mark {
+  font-size: 38px;
+  color: #bca1f0;
+  margin: 24px 0 12px;
+  width: 48px;
+  text-align: center;
+}
+.connection-mark.connecting {
+  animation: breathe 1.6s ease-in-out infinite;
+}
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  margin: 12px 0;
+}
+#statusDescription {
+  min-height: 52px;
+}
+#retryButton {
+  margin-top: 25px;
+  justify-content: center;
+}
+@keyframes breathe {
+  50% {
+    opacity: 0.4;
+    transform: scale(0.88);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .connecting {
+    animation: none !important;
+  }
+}

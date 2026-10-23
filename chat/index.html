@@ -339,6 +339,17 @@
               placeholder="Вставь приглашение от друга"
               autocomplete="off"
           /></label>
+          <label id="ownerKeyLabel" hidden
+            >Код создателя
+            <input
+              id="ownerKeyInput"
+              type="password"
+              minlength="32"
+              maxlength="256"
+              autocomplete="off"
+              placeholder="Только для первого создания компании"
+            />
+          </label>
           <p id="authError" class="form-error" role="alert"></p>
           <button id="authSubmit" class="primary-button" type="submit">
             Зайти к своим<span data-icon="arrowRight"></span>

@@ -1,5 +1,10 @@
 const { contextBridge, ipcRenderer } = require("electron");
 contextBridge.exposeInMainWorld("svoi", {
-  current: () => ipcRenderer.invoke("server:current"),
-  connect: (url) => ipcRenderer.invoke("server:connect", url),
+  status: () => ipcRenderer.invoke("app:status"),
+  retry: () => ipcRenderer.invoke("app:retry"),
+  onStatus: (callback) => {
+    const handler = (_event, status) => callback(status);
+    ipcRenderer.on("app:status", handler);
+    return () => ipcRenderer.removeListener("app:status", handler);
+  },
 });

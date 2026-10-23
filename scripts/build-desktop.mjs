@@ -14,7 +14,7 @@ mkdirSync(out, { recursive: true });
 const results = await packager({
   dir: resolve("desktop"),
   name: "Svoi",
-  appVersion: "1.0.0",
+  appVersion: pkg.version,
   platform,
   arch: "x64",
   out,
@@ -29,9 +29,9 @@ const results = await packager({
 for (const folder of results) {
   writeFileSync(
     resolve(folder, "START-HERE.txt"),
-    "СВОИ — клиент для Windows\r\n\r\n1. Распакуйте всю папку из архива.\r\n2. Запустите Svoi.exe.\r\n3. Вставьте HTTPS-ссылку приглашения от владельца сервера.\r\n4. Выберите никнейм. Для разговора разрешите доступ к микрофону.\r\n\r\nСменить сервер: Ctrl + Shift + S.\r\nПрограмма не включает общий сервер: его запускает владелец компании.\r\nДля локальной проверки можно подключиться к http://localhost:3000 после запуска сервера.\r\n",
+    "СВОИ — клиент для Windows\r\n\r\n1. Распакуйте всю папку из архива.\r\n2. Запустите Svoi.exe. Приложение подключается автоматически.\r\n3. Выберите никнейм и войдите по приглашению от друга.\r\n4. Для разговора разрешите доступ к микрофону.\r\n\r\nВводить адрес сервера не нужно.\r\nПри потере связи нажмите «Попробовать снова».\r\nЕсли приложение сообщает, что онлайн-сервис не запущен, администратору нужно завершить его размещение.\r\n",
   );
-  const archive = resolve(out, `Svoi-1.0.0-${platform}-x64.zip`);
+  const archive = resolve(out, `Svoi-${pkg.version}-${platform}-x64.zip`);
   rmSync(archive, { force: true });
   execFileSync(
     process.platform === "win32" ? "tar.exe" : "zip",

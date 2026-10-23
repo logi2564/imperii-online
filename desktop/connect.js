@@ -1,21 +1,28 @@
 "use strict";
-const input = document.getElementById("server"),
-  error = document.getElementById("error"),
-  submit = document.getElementById("submit");
-error.textContent = new URLSearchParams(location.search).get("error") || "";
-window.svoi.current().then((url) => {
-  input.value = url || "http://localhost:3000";
-});
-document.getElementById("connectForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  submit.disabled = true;
-  error.textContent = "";
-  try {
-    const result = await window.svoi.connect(input.value);
-    if (result.error) error.textContent = result.error;
-  } catch {
-    error.textContent = "Не удалось подключиться. Попробуй ещё раз.";
-  } finally {
-    submit.disabled = false;
+const title = document.getElementById("statusTitle");
+const description = document.getElementById("statusDescription");
+const retry = document.getElementById("retryButton");
+function render(status) {
+  if (!status) return;
+  const connecting = status.phase === "connecting";
+  document
+    .getElementById("connectionMark")
+    .classList.toggle("connecting", connecting);
+  retry.disabled = connecting;
+  retry.textContent = connecting ? "Подключаемся…" : "Попробовать снова";
+  if (connecting) {
+    title.textContent = "Заходим к своим";
+    description.textContent = "Ещё мгновение — и вы снова вместе.";
+  } else if (status.phase === "not_deployed") {
+    title.textContent = "Онлайн-сервис ещё не запущен";
+    description.textContent =
+      "Общее пространство ещё готовится. Когда сервис будет подключён, приложение откроет его автоматически.";
+  } else {
+    title.textContent = "Не удалось подключиться";
+    description.textContent =
+      "Проверь интернет и попробуй снова. Если связь не вернулась, сервис может быть временно недоступен.";
   }
-});
+}
+window.svoi.onStatus(render);
+window.svoi.status().then(render);
+retry.addEventListener("click", () => window.svoi.retry());

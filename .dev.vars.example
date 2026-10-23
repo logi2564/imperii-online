@@ -1,0 +1,3 @@
+# Secret for creating or recovering the owner. Enter at least 32 random characters.
+# Set this in Cloudflare settings or the Deploy to Cloudflare form, not in Git.
+SVOI_SETUP_KEY=

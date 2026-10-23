@@ -194,7 +194,7 @@ const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, "http://localhost");
     if (req.method === "GET" && url.pathname === "/health")
-      return json(res, 200, { ok: true });
+      return json(res, 200, { ok: true, app: "svoi", protocol: 1 });
     if (url.pathname.startsWith("/api/")) {
       const user = authenticate(req);
       if (req.method !== "GET") {

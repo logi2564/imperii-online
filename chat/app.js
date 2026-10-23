@@ -168,9 +168,16 @@ function showAuth(data) {
     $("communityLabel").hidden = false;
     $("authSubmit").firstChild.textContent = "Создать пространство";
     if (!data.canSetup && !setupKey) {
-      $("authError").textContent =
-        "Открой приватную ссылку настройки. Её можно получить на сервере: npm run setup-link.";
-      $("authSubmit").disabled = true;
+      if (data.setupMethod === "key") {
+        $("ownerKeyLabel").hidden = false;
+        $("ownerKeyInput").required = true;
+        $("authFinePrint").textContent =
+          "Код создателя нужен один раз для настройки компании. Друзья войдут по обычному приглашению.";
+      } else {
+        $("authError").textContent =
+          "Онлайн-сервис ещё настраивается владельцем.";
+        $("authSubmit").disabled = true;
+      }
     }
   } else {
     $("authDescription").textContent = "Тебя ждут в «" + data.name + "».";
@@ -200,9 +207,10 @@ $("authForm").addEventListener("submit", async (e) => {
       name: $("nameInput").value,
       community: $("communityInput").value,
       invite,
-      setup: setupKey,
+      setup: setupKey || $("ownerKeyInput").value,
     });
     localStorage.setItem("svoi-name", $("nameInput").value);
+    $("ownerKeyInput").value = "";
     await bootstrap();
   } catch (err) {
     $("authError").textContent = err.message;

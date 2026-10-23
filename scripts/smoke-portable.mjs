@@ -5,6 +5,12 @@ import { tmpdir } from "node:os";
 import { resolve, join } from "node:path";
 import { setTimeout as pause } from "node:timers/promises";
 
+process.on("uncaughtException", (error) => {
+  const message = error.message.replaceAll("%", "%25").replaceAll("\r", "%0D").replaceAll("\n", "%0A");
+  console.error(`::error title=Portable EXE launch check::${message}`);
+  console.error(error);
+  process.exitCode = 1;
+});
 assert.equal(process.platform, "win32", "Run the EXE smoke check on Windows.");
 const { version } = JSON.parse(await readFile("package.json", "utf8"));
 const service = JSON.parse(await readFile("service.json", "utf8"));
@@ -17,6 +23,7 @@ const child = spawn(resolve(`dist/Svoi-${version}.exe`), [
 let launchError;
 child.on("error", (error) => { launchError = error; });
 let socket;
+let view;
 try {
   const deadline = Date.now() + 90_000;
   let target;
@@ -58,7 +65,6 @@ try {
       socket.send(JSON.stringify({ id, method: "Runtime.evaluate", params: { expression, returnByValue: true, awaitPromise: true } }));
     });
   }
-  let view;
   while (Date.now() < deadline) {
     view = await evaluate(`(async () => ({
       title: document.title,
@@ -83,6 +89,8 @@ try {
     assert.equal(view.origin, service.origin, "The online client must connect to the configured service.");
   }
   console.log("PASS: the single portable EXE opens on Windows, discovers its service, and has no address field.");
+} catch (error) {
+  throw new Error(`${error.message}; window=${JSON.stringify(view)}; processExit=${child.exitCode}`, { cause: error });
 } finally {
   socket?.close();
   if (child.pid && child.exitCode === null)

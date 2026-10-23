@@ -68,6 +68,7 @@ try {
   while (Date.now() < deadline) {
     view = await evaluate(`(async () => ({
       title: document.title,
+      url: location.href,
       origin: location.origin,
       heading: document.querySelector('#statusTitle')?.textContent,
       retryEnabled: document.querySelector('#retryButton')?.disabled === false,

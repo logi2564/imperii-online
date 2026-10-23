@@ -9,13 +9,12 @@ const {
 } = require("electron");
 const fs = require("node:fs");
 const path = require("node:path");
-const { pathToFileURL } = require("node:url");
 const { discover } = require("./service.cjs");
 let window,
+  launcherContents = null,
   allowedOrigin = null,
   connecting = false;
 let status = { phase: "connecting" };
-const launcherUrl = pathToFileURL(path.join(__dirname, "connect.html")).href;
 const cachePath = () =>
   path.join(app.getPath("userData"), "service-cache.json");
 function cachedService() {
@@ -26,7 +25,13 @@ function cachedService() {
   }
 }
 function isLauncher(contents) {
-  return contents === window?.webContents && contents.getURL() === launcherUrl;
+  // Track the window we created: Chromium normalizes Windows file URLs
+  // differently from Node's pathToFileURL, including drive-letter casing.
+  return (
+    contents === launcherContents &&
+    contents === window?.webContents &&
+    contents.getURL().startsWith("file:")
+  );
 }
 function updateStatus(next) {
   status = next;
@@ -54,6 +59,7 @@ function makeWindow(preload) {
       spellcheck: true,
     },
   });
+  launcherContents = preload ? window.webContents : null;
   window.once("ready-to-show", () => {
     window.show();
     if (old && !old.isDestroyed()) old.destroy();

@@ -1,0 +1,24 @@
+name: Prepare and review original media for the friends SIGame pack
+on:
+  push:
+    branches: [sigame-friends-pack]
+    paths: ['sigame-packs/tools/prepare_media.py', '.github/workflows/sigame-media.yml']
+permissions:
+  contents: write
+jobs:
+  media:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install the media converter
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Extract short audio excerpts and review frames
+        run: python -u sigame-packs/tools/prepare_media.py
+      - name: Publish only short review excerpts and frames
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release create "sigame-media-${GITHUB_SHA::8}" dist/SIGame-media-review.zip --target "$GITHUB_SHA" --prerelease --latest=false --title 'SIGame media review' --notes 'Short source excerpts and frame candidates for the requested quiz. Original full videos and tracks are not included. This is not the quiz pack.'

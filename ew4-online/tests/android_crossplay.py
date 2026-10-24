@@ -45,11 +45,9 @@ def run(a):
                 return found.stdout.strip() if found.returncode==0 else None
             pid=wait_for(android_pid)
             stage='android_debugger';cdp=free_port();adb('forward',f'tcp:{cdp}',f'localabstract:webview_devtools_remote_{pid}')
-            targets=wait_for(lambda:json.load(urllib.request.urlopen(f'http://127.0.0.1:{cdp}/json',timeout=3)),60)
-            # WebView exposes a page debugger socket rather than a desktop browser socket.
-            from urllib.parse import urlsplit
-            debugger=urlsplit(targets[0]['webSocketDebuggerUrl'])
-            phone=pw.chromium.connect_over_cdp(f'ws://127.0.0.1:{cdp}'+debugger.path)
+            wait_for(lambda:json.load(urllib.request.urlopen(f'http://127.0.0.1:{cdp}/json',timeout=3)),60)
+            # Match Playwright's Android transport: WebView's browser socket is fixed.
+            phone=pw.chromium.connect_over_cdp(f'ws://127.0.0.1:{cdp}/devtools/browser')
             guest=phone.contexts[0].pages[0]
             stage='android_choose_country'
             guest.locator('#faction option[value="'+guest_seat+'"]').wait_for(state='attached',timeout=90000)

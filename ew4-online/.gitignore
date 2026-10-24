@@ -2,3 +2,6 @@ Launcher/bin/
 Launcher/obj/
 __pycache__/
 tests/__pycache__/
+desktop/node_modules/
+android/__pycache__/
+desktop/__pycache__/

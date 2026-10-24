@@ -74,7 +74,7 @@ public sealed class OnlineRoom
     {
         authenticated = true, role, started = state != null, scenario = config.Scenario, country = config.Country,
         hostFaction = config.HostFaction, guestFaction = config.GuestFaction, seat = Seat(role), canAct = CanAct(role),
-        choices, sequence, revision = state?["revision"], round = state?["round"],
+        choices, sequence, revision = state?["revision"], round = state?["round"], solo = state != null && state["localMultiplayer"] == null,
         activeFaction = state?["activeFaction"], playerFaction = state?["playerFaction"],
         phase = state?["phase"], outcome = state?["outcome"], problem,
         hostOnline = seen.GetValueOrDefault("host") > DateTimeOffset.UtcNow.AddSeconds(-20),
@@ -93,7 +93,20 @@ public sealed class OnlineRoom
     public async Task Handle(HttpContext context, RequestDelegate next)
     {
         string path = context.Request.Path.Value ?? "/";
-        if (path == "/health") { await context.Response.WriteAsJsonAsync(new { ok = true, version = "0.1.0" }); return; }
+        if (path == "/health") { await context.Response.WriteAsJsonAsync(new { ok = true, version = "0.2.0" }); return; }
+        if (path == "/native")
+        {
+            context.Response.ContentType = "text/html; charset=utf-8";
+            context.Response.Headers.CacheControl = "no-store";
+            context.Response.Headers["Referrer-Policy"] = "no-referrer";
+            context.Response.Headers.ContentSecurityPolicy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-src 'self'; frame-ancestors 'self'";
+            await context.Response.Body.WriteAsync(store.Frontend(File.ReadAllBytes(Path.Combine(frontend, "native.html")), ".html")); return;
+        }
+        if (path is "/native-ru.json" or "/native-font.ttf")
+        {
+            context.Response.ContentType = path.EndsWith(".json") ? "application/json; charset=utf-8" : "font/ttf";
+            await context.Response.SendFileAsync(Path.Combine(frontend, path[1..])); return;
+        }
         if (path is "/" or "/room.js" or "/room.css")
         {
             context.Response.ContentType = path == "/" ? "text/html; charset=utf-8" : path.EndsWith(".js") ? "text/javascript; charset=utf-8" : "text/css; charset=utf-8";
@@ -171,6 +184,10 @@ public sealed class OnlineRoom
                             state = Engine("start", new { scenario = config.Scenario, country = config.Country,
                                 localPlayers = new[] { config.HostFaction, config.GuestFaction } }).AsObject();
                             config = config with { Started = true }; Saved(); Persist(); sequence++; response = Status(role); break;
+                        case "/online/start-solo":
+                            if (role != "host" || state != null || config.HostFaction == null) throw new InvalidOperationException("Выбери карту и страну");
+                            state = Engine("start", new { scenario = config.Scenario, country = config.Country }).AsObject();
+                            config = config with { Started = true, GuestFaction = null }; Saved(); Persist(); sequence++; response = Status(role); break;
                         case "/online/reset":
                             if (role != "host" || args["confirm"]?.GetValue<bool>() != true) throw new InvalidOperationException("Новая партия требует подтверждения создателя");
                             if (state != null) { Saved(); Engine("leave", new { revision = state["revision"] }); }

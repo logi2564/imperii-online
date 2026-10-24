@@ -1,0 +1,16 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>European War 4 — Napoleon</title><link rel="stylesheet" href="native.css"></head><body>
+<main id="main">
+ <div class="title"><small>EUROPEAN WAR 4</small><h1>NAPOLEON</h1></div>
+ <nav><button id="continue-game" hidden>Продолжить игру</button><button id="solo" disabled>Одиночная игра</button><button id="multiplayer" disabled>Мультиплеер</button><button id="join-menu">Присоединиться</button><button id="fullscreen">Полный экран</button><button id="exit">Выход</button></nav>
+ <span class="edition">Неофициальная сетевая версия · 0.2.0</span>
+</main>
+<section id="battle" hidden><iframe id="game" title="European War 4: поле боя" allow="fullscreen; autoplay"></iframe><div id="status-bar"><button id="network-menu">Меню</button><span id="turn"></span><button id="end">Завершить ход</button></div></section>
+<section id="dialog" hidden aria-modal="true" role="dialog"><div class="panel"><button id="close" class="close" aria-label="Закрыть">×</button><h2 id="dialog-title">Сетевая игра</h2>
+ <div id="setup" hidden><label>Карта<select id="map"></select></label><label>Твоя страна<select id="country"></select></label><button id="create">Создать партию</button></div>
+ <div id="waiting" hidden><p id="players"></p><div id="host-invite" hidden><label>Код для друга<textarea id="code" readonly rows="3"></textarea></label><button id="copy">Копировать код</button><p class="hint">Друг вставляет код в Android-приложении European War 4 Online.</p></div><div id="guest-country" hidden><label>Выбери страну<select id="faction"></select></label><button id="choose">Выбрать</button></div><button id="start" hidden>Начать игру</button></div>
+ <div id="join" hidden><label>Код приглашения<textarea id="join-code" rows="4" placeholder="EW4-…" spellcheck="false"></textarea></label><button id="connect">Подключиться</button></div>
+ <div id="active" hidden><p id="active-info"></p><button id="return">Вернуться в игру</button><button id="new-game">Новая партия</button><div id="active-invite" hidden><label>Код для друга<textarea id="active-code" rows="3" readonly></textarea></label><button id="active-copy">Копировать код</button></div></div>
+ <p id="message" role="status"></p>
+</div></section>
+<div id="error" hidden role="alert"></div>
+<script src="native.js" defer></script></body></html>

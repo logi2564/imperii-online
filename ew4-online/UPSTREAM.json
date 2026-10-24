@@ -4,5 +4,6 @@
   "release": "v0.2.19-20261024",
   "sdk": "10.0.100",
   "cloudflared_version": "2026.10.3",
-  "cloudflared_windows_sha256": "76b2805253d0d6ffacb092a7acfbee99e7af6917835c0c5410e23f3ef5052da2"
+  "cloudflared_windows_sha256": "76b2805253d0d6ffacb092a7acfbee99e7af6917835c0c5410e23f3ef5052da2",
+  "cloudflared_linux_sha256": "053b80b0a23031a038fdbf3c073f59f82b8f1f152aa67971d7383ffafc0dbab0"
 }

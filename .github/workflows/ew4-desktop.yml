@@ -1,0 +1,129 @@
+name: EW4 game window and Android in-app crossplay
+on:
+  push:
+    branches: [ew4-desktop]
+    paths: ['ew4-online/**', '.github/workflows/ew4-desktop.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  android-crossplay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.100'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Build both Android clients and the actual game engine
+        run: |
+          sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+          python ew4-online/android/build.py --output build/android
+          python ew4-online/android/build.py --output build/android --debug
+          git clone --depth 1 --branch v0.2.19-20261024 https://github.com/aztksilence111/ew4-rewrite.git .work/engine
+          python ew4-online/apply_overlay.py .work/engine
+          npm --prefix .work/engine/tools/frontend ci --no-audit --no-fund
+          dotnet publish .work/engine/rewrite/Ew4.Web -c Release -r linux-x64 --self-contained true -o build/game/server -p:DebugType=None -p:DebugSymbols=false
+          npm --prefix ew4-online/desktop ci --no-audit --no-fund
+          node ew4-online/desktop/node_modules/electron/install.js
+          curl --fail --location https://github.com/cloudflare/cloudflared/releases/download/2026.10.3/cloudflared-linux-amd64 -o build/game/cloudflared
+          python -c "import hashlib,json; from pathlib import Path; assert hashlib.sha256(Path('build/game/cloudflared').read_bytes()).hexdigest()==json.loads(Path('ew4-online/UPSTREAM.json').read_text())['cloudflared_linux_sha256']"
+          chmod +x build/game/cloudflared
+          python -m pip install playwright==1.62.0
+          python -m playwright install --with-deps chromium
+      - name: Verify authentication, turns, synchronization and persistence
+        run: python ew4-online/tests/integration.py --upstream .work/engine --output build/core-checks
+      - name: Enable hardware acceleration for the Android test device
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Run the real desktop window and Android game application together
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          target: google_apis
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
+          script: xvfb-run -a python ew4-online/tests/android_crossplay.py --electron ew4-online/desktop/node_modules/electron/dist/electron --app ew4-online/desktop --root build/game --apk build/android/EuropeanWar4-Online-Android-test.apk --output build/app-checks
+      - name: Publish controlled failure status
+        if: failure()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          mkdir -p build/app-checks
+          if [ ! -f build/app-checks/android-crossplay.json ]; then echo '{"result":"FAIL","stage":"build_or_emulator"}' > build/app-checks/android-crossplay.json; fi
+          gh release create "ew4-app-diagnostics-${GITHUB_SHA::8}" build/app-checks/android-crossplay.json --target "$GITHUB_SHA" --prerelease --latest=false --title 'EW4 app verification status' --notes 'Controlled stage/type/booleans only; no logs, profiles, saves or invitations.'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ew4-native-android-and-checks
+          path: |
+            build/android/EuropeanWar4-Online-Android.apk
+            build/android/EuropeanWar4-Online-Android.apk.sha256
+            build/android/android-build-info.json
+            build/app-checks/android-crossplay.json
+            build/app-checks/android-battle.png
+            build/app-checks/desktop-multiplayer.png
+            build/core-checks/integration.json
+          if-no-files-found: error
+  windows:
+    needs: android-crossplay
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.100'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build the Windows game with its own window
+        run: |
+          git clone --depth 1 --branch v0.2.19-20261024 https://github.com/aztksilence111/ew4-rewrite.git .work/engine
+          python ew4-online/apply_overlay.py .work/engine
+          npm --prefix .work/engine/tools/frontend ci --no-audit --no-fund
+          dotnet publish .work/engine/rewrite/Ew4.Web -c Release -r win-x64 --self-contained true -o build/EuropeanWar4-Napoleon/server -p:DebugType=None -p:DebugSymbols=false
+          npm --prefix ew4-online/desktop ci --no-audit --no-fund
+          node ew4-online/desktop/node_modules/electron/install.js
+          $pin = Get-Content ew4-online/UPSTREAM.json | ConvertFrom-Json
+          Invoke-WebRequest "https://github.com/cloudflare/cloudflared/releases/download/$($pin.cloudflared_version)/cloudflared-windows-amd64.exe" -OutFile build/EuropeanWar4-Napoleon/cloudflared.exe
+          if ((Get-FileHash build/EuropeanWar4-Napoleon/cloudflared.exe -Algorithm SHA256).Hash.ToLowerInvariant() -ne $pin.cloudflared_windows_sha256) { throw 'Tunnel checksum mismatch' }
+          Invoke-WebRequest "https://raw.githubusercontent.com/cloudflare/cloudflared/$($pin.cloudflared_version)/LICENSE" -OutFile build/EuropeanWar4-Napoleon/Cloudflared-LICENSE.txt
+          python ew4-online/desktop/package_game.py --electron ew4-online/desktop/node_modules/electron/dist --root build/EuropeanWar4-Napoleon --output build/EuropeanWar4-Napoleon-Windows.zip
+          python -m pip install playwright==1.62.0
+      - name: Launch the packaged Windows EXE and play a real map in its window
+        run: python ew4-online/tests/native_window.py --electron build/EuropeanWar4-Napoleon/EuropeanWar4-Napoleon.exe --app build/EuropeanWar4-Napoleon/resources/app --root build/EuropeanWar4-Napoleon --output build/window-checks
+      - uses: actions/download-artifact@v4
+        with:
+          name: ew4-native-android-and-checks
+          path: build/verified
+      - name: Publish the verified Windows game and Android application
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "ew4-desktop-v0.2.0-${GITHUB_SHA::8}" build/EuropeanWar4-Napoleon-Windows.zip build/EuropeanWar4-Napoleon-Windows.zip.sha256 build/native-build-info.json build/verified/android/EuropeanWar4-Online-Android.apk build/verified/android/EuropeanWar4-Online-Android.apk.sha256 build/verified/android/android-build-info.json build/verified/app-checks/android-crossplay.json build/verified/app-checks/android-battle.png build/verified/app-checks/desktop-multiplayer.png build/verified/core-checks/integration.json build/window-checks/native-window.json build/window-checks/native-main.png build/window-checks/native-battle.png build/EuropeanWar4-Napoleon/READ-ME.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'European War 4 Napoleon - Windows game and Android in-app multiplayer' --notes-file ew4-online/NATIVE-READ-ME.txt

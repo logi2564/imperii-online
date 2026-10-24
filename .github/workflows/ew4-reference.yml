@@ -1,0 +1,27 @@
+name: Inspect original EW4 1.4.50 language resources
+on:
+  push:
+    branches: [ew4-desktop]
+    paths: ['ew4-online/reference/prepare_reference.py', '.github/workflows/ew4-reference.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Read only the publicly downloadable original version's language files
+        run: python ew4-online/reference/prepare_reference.py
+      - name: Publish static reference tables and fixed-schema inspection metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "ew4-language-reference-${GITHUB_SHA::8}" build/ew4-reference/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'EW4 language reference - not a playable game' --notes 'Static language files and package hashes from the public original 1.4.50 package. APK contents are never executed. Contains no user files, accounts or runtime logs.'

@@ -88,6 +88,21 @@ jobs:
         run: |
           & ./build/EuropeanWar4-Online/EuropeanWar4-Online.exe --smoke-test | Tee-Object build/windows-smoke.txt
           if ($LASTEXITCODE -ne 0) { throw 'The packaged Windows startup or internet invitation failed' }
+      - name: Collect the fixed-schema startup status if Windows verification fails
+        if: failure()
+        run: |
+          New-Item -ItemType Directory -Force build/diagnostics | Out-Null
+          if (Test-Path build/EuropeanWar4-Online/startup-status.json) {
+            Copy-Item build/EuropeanWar4-Online/startup-status.json build/diagnostics/startup-status.json
+          } else { '{"result":"process_failed_before_status_report"}' | Set-Content build/diagnostics/startup-status.json }
+      - name: Publish only the controlled non-sensitive startup status
+        if: failure()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "ew4-online-diagnostics-${GITHUB_SHA::8}" build/diagnostics/startup-status.json --target "$GITHUB_SHA" --prerelease --latest=false --title 'EW4 Windows startup status - not a playable release' --notes 'Fixed-schema startup stage, exception type, numeric error codes and booleans. Contains no log text, paths, saves or invitation credentials.'
       - name: Package the verified portable game with file hashes
         shell: python
         run: |

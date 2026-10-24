@@ -19,9 +19,38 @@ catch (IOException) { Console.WriteLine("Игра уже запущена. Ве�
 using var ownedLock = hostLock;
 File.Delete(publicFile);
 Process? server = null, tunnel = null;
+string stage = "files";
+var errorFlags = new HashSet<string>();
 object logGate = new();
 using var log = new StreamWriter(Path.Combine(folder, "last-launch.log"), false, Encoding.UTF8) { AutoFlush = true };
-void Log(string? text) { if (text != null) lock (logGate) log.WriteLine(DateTimeOffset.Now.ToString("O") + " " + text); }
+void Log(string? text)
+{
+    if (text == null) return;
+    lock (logGate)
+    {
+        log.WriteLine(DateTimeOffset.Now.ToString("O") + " " + text);
+        foreach (string kind in new[] { "FileNotFoundException", "DirectoryNotFoundException", "InvalidDataException", "InvalidOperationException", "JsonException", "UnauthorizedAccessException", "ArgumentException", "DllNotFoundException" })
+            if (text.Contains(kind, StringComparison.Ordinal)) errorFlags.Add(kind);
+    }
+}
+void SafeStatus(Exception? error)
+{
+    if (!smoke) return;
+    lock (logGate)
+    {
+        // Deliberately no exception message, stack, paths, URLs or log lines.
+        File.WriteAllText(Path.Combine(root, "startup-status.json"), JsonSerializer.Serialize(new {
+            result = error == null ? "PASS" : "FAIL", stage,
+            exceptionType = error?.GetType().Name, hresult = error?.HResult,
+            nativeError = error is System.ComponentModel.Win32Exception win ? (int?)win.NativeErrorCode : null,
+            serverExited = server?.HasExited, serverExitCode = server?.HasExited == true ? (int?)server.ExitCode : null,
+            logExceptionKinds = errorFlags.Order().ToArray(),
+            serverFile = File.Exists(Path.Combine(root, "server", "Ew4.Web.exe")),
+            dataManifest = File.Exists(Path.Combine(root, "server", "data", "runtime-content.json")),
+            webIndex = File.Exists(Path.Combine(root, "server", "wwwroot", "index.html"))
+        }, new JsonSerializerOptions { WriteIndented = true }));
+    }
+}
 try
 {
     string exe = Path.Combine(root, "server", "Ew4.Web.exe");
@@ -40,9 +69,10 @@ try
         process.Start(); process.BeginOutputReadLine(); process.BeginErrorReadLine(); return process;
     }
     Console.WriteLine("European War 4 — сетевая версия для друзей\n\nЗапускаем игру…");
+    stage = "server-start";
     server = Start(exe, ["--urls", local, "--contentRoot", Path.Combine(root, "server"), "--save-root", saves], Log);
     using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(2) };
-    bool ready = false;
+    bool ready = false; stage = "server-ready";
     for (int i = 0; i < 120; i++)
     {
         if (server.HasExited) throw new IOException("Игра закрылась при запуске. Подробности: " + Path.Combine(folder, "last-launch.log"));
@@ -51,12 +81,15 @@ try
         await Task.Delay(500);
     }
     if (!ready) throw new IOException("Не удалось дождаться запуска игрового сервера.");
+    stage = "room-config";
     using var config = JsonDocument.Parse(File.ReadAllText(Path.Combine(saves, "online-room.json")));
     string token = config.RootElement.GetProperty("hostToken").GetString()!;
     string hostUrl = local + "/#host=" + token;
     File.WriteAllText(Path.Combine(folder, "Открыть игру.url"), "[InternetShortcut]\r\nURL=" + hostUrl + "\r\n");
+    stage = "browser";
     if (!smoke) Process.Start(new ProcessStartInfo(hostUrl) { UseShellExecute = true });
     var linkReady = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+    stage = "tunnel-start";
     tunnel = Start(cloudflared, ["tunnel", "--no-autoupdate", "--protocol", "http2", "--url", local], line =>
     {
         Log(line);
@@ -68,6 +101,7 @@ try
         }
     });
     Console.WriteLine("Игра открыта в браузере. Выбери карту и страну.\nГотовим приглашение через интернет…");
+    stage = "tunnel-connect";
     bool publicReady = await Task.WhenAny(linkReady.Task, Task.Delay(45000)) == linkReady.Task;
     if (publicReady)
         Console.WriteLine("Приглашение готово: скопируй его на странице игры и отправь другу.\nДруг открывает ссылку в Chrome на Android.\n");
@@ -75,6 +109,7 @@ try
     if (smoke)
     {
         if (!publicReady) throw new IOException("Не получена публичная ссылка Cloudflare");
+        stage = "internet-auth";
         using var publicClient = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
         bool verified = false;
         for (int i = 0; i < 20 && !verified; i++)
@@ -95,7 +130,9 @@ try
             if (!verified) await Task.Delay(2000);
         }
         if (!verified) throw new IOException("Публичная ссылка не прошла проверку входа с сохранением сессии");
+        stage = "internet-game";
         await SmokeTest.Game(local, await linkReady.Task, config.RootElement);
+        stage = "complete"; SafeStatus(null);
         Console.WriteLine("PASS: packaged Windows EXE started its server; public HTTPS invitation and guest session verified.");
     }
     else
@@ -108,7 +145,7 @@ try
 }
 catch (Exception e)
 {
-    Environment.ExitCode = 1;
+    Environment.ExitCode = 1; SafeStatus(e);
     Log(e.ToString()); Console.WriteLine("\nНе удалось запустить игру: " + e.Message + "\n\nЖурнал: " + Path.Combine(folder, "last-launch.log")); if (!smoke) Console.ReadLine();
 }
 finally

@@ -95,7 +95,6 @@ jobs:
             build/core-checks/integration.json
           if-no-files-found: error
   windows:
-    needs: android-crossplay
     runs-on: windows-latest
     timeout-minutes: 20
     steps:
@@ -127,6 +126,29 @@ jobs:
           python -m pip install playwright==1.62.0
       - name: Launch the packaged Windows EXE and play a real map in its window
         run: python ew4-online/tests/native_window.py --electron build/EuropeanWar4-Napoleon/EuropeanWar4-Napoleon.exe --app build/EuropeanWar4-Napoleon/resources/app --root build/EuropeanWar4-Napoleon --output build/window-checks
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ew4-native-windows-and-checks
+          path: |
+            build/EuropeanWar4-Napoleon-Windows.zip
+            build/EuropeanWar4-Napoleon-Windows.zip.sha256
+            build/native-build-info.json
+            build/window-checks/native-window.json
+            build/window-checks/native-main.png
+            build/window-checks/native-battle.png
+            build/EuropeanWar4-Napoleon/READ-ME.txt
+          if-no-files-found: error
+  release:
+    needs: [android-crossplay, windows]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: ew4-native-windows-and-checks
+          path: build/windows
       - uses: actions/download-artifact@v4
         with:
           name: ew4-native-android-and-checks
@@ -137,4 +159,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          gh release create "ew4-desktop-v0.2.0-${GITHUB_SHA::8}" build/EuropeanWar4-Napoleon-Windows.zip build/EuropeanWar4-Napoleon-Windows.zip.sha256 build/native-build-info.json build/verified/android/EuropeanWar4-Online-Android.apk build/verified/android/EuropeanWar4-Online-Android.apk.sha256 build/verified/android/android-build-info.json build/verified/app-checks/android-crossplay.json build/verified/app-checks/android-battle.png build/verified/app-checks/desktop-multiplayer.png build/verified/core-checks/integration.json build/window-checks/native-window.json build/window-checks/native-main.png build/window-checks/native-battle.png build/EuropeanWar4-Napoleon/READ-ME.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'European War 4 Napoleon - Windows game and Android in-app multiplayer' --notes-file ew4-online/NATIVE-READ-ME.txt
+          gh release create "ew4-desktop-v0.2.0-${GITHUB_SHA::8}" build/windows/EuropeanWar4-Napoleon-Windows.zip build/windows/EuropeanWar4-Napoleon-Windows.zip.sha256 build/windows/native-build-info.json build/verified/android/EuropeanWar4-Online-Android.apk build/verified/android/EuropeanWar4-Online-Android.apk.sha256 build/verified/android/android-build-info.json build/verified/app-checks/android-crossplay.json build/verified/app-checks/android-battle.png build/verified/app-checks/desktop-multiplayer.png build/verified/core-checks/integration.json build/windows/window-checks/native-window.json build/windows/window-checks/native-main.png build/windows/window-checks/native-battle.png build/windows/EuropeanWar4-Napoleon/READ-ME.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'European War 4 Napoleon - Windows game and Android in-app multiplayer' --notes-file ew4-online/NATIVE-READ-ME.txt

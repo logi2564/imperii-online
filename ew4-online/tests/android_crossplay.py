@@ -47,7 +47,7 @@ def run(a):
             stage='android_debugger';cdp=free_port();adb('forward',f'tcp:{cdp}',f'localabstract:webview_devtools_remote_{pid}')
             wait_for(lambda:json.load(urllib.request.urlopen(f'http://127.0.0.1:{cdp}/json',timeout=3)),60)
             # Match Playwright's Android transport: WebView's browser socket is fixed.
-            phone=pw.chromium.connect_over_cdp(f'ws://127.0.0.1:{cdp}/devtools/browser')
+            phone=pw.chromium.connect_over_cdp(f'ws://127.0.0.1:{cdp}/devtools/browser',no_defaults=True)
             guest=phone.contexts[0].pages[0]
             stage='android_choose_country'
             guest.locator('#faction option[value="'+guest_seat+'"]').wait_for(state='attached',timeout=90000)
@@ -90,6 +90,8 @@ def run(a):
             stage='PASS';report.update(result='PASS',real_electron_host=True,installed_android_activity=True,android_emulator=True,external_browser=False,public_https=True,two_independent_countries=True,host_move_synced=True,android_controller_move_synced=True,android_end_turn=True,server_ai_round_two=True,visible_chinese_labels=labels)
     except Exception as error:
         report.update(stage=stage,exception_type=type(error).__name__)
+        for command in ['Browser.setDownloadBehavior','Browser.getVersion','Target.setAutoAttach','Target.getTargetInfo','Page.enable','Page.getFrameTree','Page.addScriptToEvaluateOnNewDocument','Emulation.setFocusEmulationEnabled']:
+            if command in str(error):report['debugger_command']=command
         if isinstance(error,subprocess.CalledProcessError):
             match=re.search(r'\bINSTALL_[A-Z_]+\b',str(error.output))
             if match:report['android_install_error']=match[0]

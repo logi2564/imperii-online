@@ -34,7 +34,11 @@ if not "%ZONEMOTION_BUILD_RESULT%"=="0" (
   echo Build failed. See build-windows.log.
   exit /b %ZONEMOTION_BUILD_RESULT%
 )
-findstr /L /C:"WINDOWS_BUILD_COMPLETE:" "%~dp0build-windows.log" >nul 2>nul
+if not exist "%~dp0build-windows.log" (
+  echo Unity did not create build-windows.log.
+  exit /b 1
+)
+findstr /L /C:"WINDOWS_BUILD_COMPLETE:" < "%~dp0build-windows.log" >nul 2>nul
 if errorlevel 1 (
   echo Unity did not confirm a completed build. See build-windows.log.
   exit /b 1

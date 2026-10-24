@@ -157,6 +157,9 @@ public static class LauncherFixtureEditor {
     foreach ($log in @(Get-ChildItem -LiteralPath $tempRoot -Filter 'launcher-output.txt' -Recurse)) {
         $diagnosis += "`n" + $log.Directory.Name + ': ' + (Get-Content -LiteralPath $log.FullName -Raw)
     }
+    foreach ($log in @(Get-ChildItem -LiteralPath $tempRoot -Filter 'build-windows.log' -Recurse)) {
+        $diagnosis += "`nBuild log: " + (Get-Content -LiteralPath $log.FullName -Raw)
+    }
     $escaped = $diagnosis.Replace('%', '%25').Replace("`r", '%0D').Replace("`n", '%0A')
     Write-Host "::error title=Windows launcher check::$escaped"
     throw

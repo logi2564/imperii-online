@@ -12,6 +12,8 @@ async function onlinePoll(){
   const r=await fetch('/api/action',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({op:'state'}),cache:'no-store'}),j=await r.json();
   if(!r.ok||!j.ok)throw Error(j.message||j.error||'Не удалось получить карту');
   if(window.Ew4OnlineGame.busy())return;
+  // A slow poll must not overwrite a more recent completed local command.
+  if(j.data.revision<(window.Ew4OnlineGame.revision()??-1))return;
   window.Ew4OnlineCanAct=!!j.data.online.canAct;
   if(await window.Ew4OnlineGame.enter(j.data))onlineSequence=j.data.online.sequence;
  }catch(error){parent.postMessage({type:'ew4-error',message:error.message},location.origin);}

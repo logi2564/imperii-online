@@ -150,6 +150,17 @@ def main(args):
             assert phone.locator('#bar').evaluate('(e)=>e.scrollWidth<=innerWidth')
             phone.screenshot(path=str(out/'android-portrait.png'))
             passed('Reconnection preserves the guest seat and the portrait phone layout fits the screen')
+            host.call('/online/reset',{'confirm':True})
+            phone.locator('#lobby').wait_for(state='visible',timeout=15000)
+            host.call('/online/prepare',{'scenario':'conquest1','country':countries[0]['id']})
+            guest.call('/online/choose',{'faction':gf})
+            host.call('/online/start',{})
+            phone.frame_locator('#game').locator('#play').wait_for(state='visible',timeout=60000)
+            phone.wait_for_timeout(1200)
+            frame=next(f for f in phone.frames if f.url.endswith('/game'))
+            assert frame.evaluate('Ew4OnlineGame.revision()')==0
+            assert guest.state()['playerFaction']==gf
+            passed('A room reset sends both clients into a fresh rematch without retaining the previous world')
             reconnect.close();contexts[0].close();browser.close()
         report={'result':'PASS','upstream_commit':'3abe88c062b170837c4b290b674b0415bcb6dca8','checks':checks,'physical_android_device_tested':False,'full_match_played':False}
         (out/'integration.json').write_text(json.dumps(report,indent=2)+'\n')

@@ -33,6 +33,7 @@ function draw(){
   if(!entered){entered=true;openGame();}
   return;
  }
+ if(entered){back();$('game').removeAttribute('src');}
  entered=false;
  if(!status.scenario){
   if(host){$('host-setup').hidden=false;setup().catch(e=>message(e.message));message('Выбери карту и свою страну');}

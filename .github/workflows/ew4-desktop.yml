@@ -4,6 +4,9 @@ on:
     branches: [ew4-desktop]
     paths: ['ew4-online/**', '.github/workflows/ew4-desktop.yml']
   workflow_dispatch:
+concurrency:
+  group: ew4-app-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: write
 jobs:
@@ -27,15 +30,23 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - name: Build both Android clients and the actual game engine
+      - name: Prepare the preinstalled Android SDK
         run: |
-          sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+          echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-35' 'build-tools;35.0.0'
+      - name: Build and verify the signed Android clients
+        run: |
           python ew4-online/android/build.py --output build/android
           python ew4-online/android/build.py --output build/android --debug
+      - name: Build the pinned game engine
+        run: |
           git clone --depth 1 --branch v0.2.19-20261024 https://github.com/aztksilence111/ew4-rewrite.git .work/engine
           python ew4-online/apply_overlay.py .work/engine
           npm --prefix .work/engine/tools/frontend ci --no-audit --no-fund
           dotnet publish .work/engine/rewrite/Ew4.Web -c Release -r linux-x64 --self-contained true -o build/game/server -p:DebugType=None -p:DebugSymbols=false
+      - name: Install the desktop runtime and verification tools
+        run: |
           npm --prefix ew4-online/desktop ci --no-audit --no-fund
           node ew4-online/desktop/node_modules/electron/install.js
           curl --fail --location https://github.com/cloudflare/cloudflared/releases/download/2026.10.3/cloudflared-linux-amd64 -o build/game/cloudflared

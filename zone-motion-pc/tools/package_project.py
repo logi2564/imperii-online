@@ -30,7 +30,7 @@ with ZipFile(archive, "w", compression=ZIP_DEFLATED, compresslevel=9) as package
             assert not any(part in {"Library", "Temp", "Obj", "Logs", "UserSettings"}
                            for part in path.relative_to(root / "project").parts)
             package.write(path, "ZoneMotion-PC/" + path.relative_to(root).as_posix())
-    for name in ["README-PC.md", "BUILD-WINDOWS.cmd", "VALIDATION.json"]:
+    for name in ["README-PC.md", "BUILD-WINDOWS.cmd", "ИГРАТЬ.cmd", "VALIDATION.json"]:
         package.write(root / name, "ZoneMotion-PC/" + name)
 with ZipFile(archive) as package:
     assert package.testzip() is None

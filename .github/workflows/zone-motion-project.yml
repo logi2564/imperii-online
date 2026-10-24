@@ -16,7 +16,16 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  launcher:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Exercise the CMD launcher with isolated executable fixtures
+        shell: powershell
+        run: .\zone-motion-pc\tools\test_windows_launcher.ps1
   project:
+    needs: launcher
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

@@ -1,0 +1,24 @@
+name: Prepare new media for the 120-question SIGame pack
+on:
+  push:
+    branches: [sigame-friends-pack]
+    paths: ['sigame-packs/tools/prepare_expansion.py', '.github/workflows/sigame-expanded-media.yml']
+permissions:
+  contents: write
+jobs:
+  media:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install the media converter
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Extract distinct new opening excerpts and screenshots
+        run: python -u sigame-packs/tools/prepare_expansion.py
+      - name: Preserve short candidates for review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release create "sigame-120-media-${GITHUB_SHA::8}" dist/SIGame-120-media-review.zip --target "$GITHUB_SHA" --prerelease --latest=false --title 'SIGame 120 media preparation' --notes 'Short media candidates for the expanded friends quiz. This is not the playable pack. Full videos and soundtracks are not included.'

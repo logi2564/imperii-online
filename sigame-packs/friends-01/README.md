@@ -20,9 +20,9 @@
 Из корня репозитория:
 
 ```bash
-python sigame-packs/tools/build_pack.py
-python sigame-packs/tools/validate_pack.py dist/sigame-pack/Bro-Pack-01.siq
-dotnet run --project sigame-packs/tools/OfficialLoader --configuration Release -- dist/sigame-pack/Bro-Pack-01.siq
+python sigame-packs/tools/build_pack.py --pack sigame-packs/friends-01
+python sigame-packs/tools/validate_pack.py dist/sigame-pack/Bro-Pack-01.siq --pack sigame-packs/friends-01
+dotnet run --project sigame-packs/tools/OfficialLoader --configuration Release -- dist/sigame-pack/Bro-Pack-01.siq dist/sigame-pack/build-info.json
 ```
 
 Для проверки нужны Python 3.12, Pillow, lxml, FFmpeg и .NET SDK 8; игрокам эти инструменты не нужны. [GitHub Actions](../../.github/workflows/sigame-pack.yml) создаёт релиз после успешного импорта и проверки медиа. ZIP воспроизводим: порядок файлов и даты фиксированы, каждое медиа проверяется по SHA-256.

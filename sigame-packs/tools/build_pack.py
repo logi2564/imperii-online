@@ -7,6 +7,8 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 import zipfile
 
+from pack_model import expected_counts, filename_of, rounds_of
+
 NS = 'http://vladimirkhil.com/ygpackage3.0.xsd'
 TYPES_NS = 'http://schemas.openxmlformats.org/package/2006/content-types'
 
@@ -34,6 +36,8 @@ def xml_bytes(root):
 def build(pack_dir: Path, output_dir: Path):
     pack = json.loads((pack_dir / 'pack.json').read_text(encoding='utf-8'))
     media = json.loads((pack_dir / 'media-sources.json').read_text(encoding='utf-8'))
+    expected = expected_counts(pack)
+    round_specs = rounds_of(pack)
     by_id = {m['id']: m for m in media}
     if len(by_id) != len(media):
         raise ValueError('Duplicate media IDs')
@@ -48,46 +52,58 @@ def build(pack_dir: Path, output_dir: Path):
         element(tags, 'tag', tag)
     info(root, authors=pack['authors'], comments=pack['description'])
     rounds = element(root, 'rounds')
-    round_node = element(rounds, 'round', name=pack['round_name'], type='standart')
-    info(round_node)
-    themes = element(round_node, 'themes')
     used = set()
     question_count = 0
-    for theme in pack['themes']:
-        theme_node = element(themes, 'theme', name=theme['name'])
-        info(theme_node)
-        questions = element(theme_node, 'questions')
-        if [q['price'] for q in theme['questions']] != [100, 200, 300, 400, 500]:
-            raise ValueError('Every theme must have prices 100–500')
-        for question in theme['questions']:
-            question_count += 1
-            if not question['prompt'].strip() or not question['answers'] or any(not a.strip() for a in question['answers']):
-                raise ValueError('Question has an empty prompt or answer')
-            q = element(questions, 'question', price=question['price'])
-            m = by_id[question['media']] if question.get('media') else None
-            comments = [question.get('note', '')]
-            if m:
-                comments.append(m['credit'])
-            info(q, sources=[m['source']['url']] if m else [], comments='\n'.join(filter(None, comments)))
-            element(q, 'type', name='simple')
-            scenario = element(q, 'scenario')
-            if m:
-                # The host sees the instruction as a replica while the picture/audio
-                # remains the question on the game screen.
-                element(scenario, 'atom', question['prompt'], type='say')
-                media_type = 'image' if m['path'].startswith('Images/') else 'voice'
-                element(scenario, 'atom', '@' + Path(m['path']).name, type=media_type)
-                used.add(m['id'])
-            else:
-                element(scenario, 'atom', question['prompt'])
-            right = element(q, 'right')
-            for answer in question['answers']:
-                element(right, 'answer', answer)
-            element(q, 'wrong')
-    if len(pack['themes']) != 6 or question_count != 30 or len(used) != 25 or used != set(by_id):
-        raise ValueError('The pack must have 6 themes, 30 questions and 25 referenced media')
+    signatures = set()
+    if len(round_specs) != expected['rounds']:
+        raise ValueError('Wrong number of rounds')
+    for round_spec in round_specs:
+        round_node = element(rounds, 'round', name=round_spec['name'], type='standart')
+        info(round_node)
+        themes = element(round_node, 'themes')
+        price_step = round_spec.get('price_step', 100)
+        if len(round_spec['themes']) != expected['themes_per_round'] or not isinstance(price_step, int) or price_step < 1:
+            raise ValueError('Invalid round board')
+        for theme in round_spec['themes']:
+            theme_node = element(themes, 'theme', name=theme['name'])
+            info(theme_node)
+            questions = element(theme_node, 'questions')
+            if [q['price'] for q in theme['questions']] != [price_step * n for n in range(1, 6)]:
+                raise ValueError('Every theme must have five increasing prices')
+            for question in theme['questions']:
+                question_count += 1
+                if not question['prompt'].strip() or not question['answers'] or any(not a.strip() for a in question['answers']):
+                    raise ValueError('Question has an empty prompt or answer')
+                q = element(questions, 'question', price=question['price'])
+                m = by_id[question['media']] if question.get('media') else None
+                signature = ('media', m['sha256']) if m else ('text', question['prompt'].casefold().strip())
+                if signature in signatures:
+                    raise ValueError('Repeated question or repeated media')
+                signatures.add(signature)
+                comments = [question.get('note', '')]
+                if m:
+                    comments.append(m['credit'])
+                info(q, sources=[m['source']['url']] if m else [], comments='\n'.join(filter(None, comments)))
+                element(q, 'type', name='simple')
+                scenario = element(q, 'scenario')
+                if m:
+                    element(scenario, 'atom', question['prompt'], type='say')
+                    media_type = 'image' if m['path'].startswith('Images/') else 'voice'
+                    element(scenario, 'atom', '@' + Path(m['path']).name, type=media_type)
+                    used.add(m['id'])
+                else:
+                    element(scenario, 'atom', question['prompt'])
+                right = element(q, 'right')
+                for answer in question['answers']:
+                    element(right, 'answer', answer)
+                element(q, 'wrong')
+    image_count = sum(m['path'].startswith('Images/') for m in media)
+    audio_count = sum(m['path'].startswith('Audio/') for m in media)
+    if (question_count != expected['questions'] or used != set(by_id)
+            or image_count != expected['images'] or audio_count != expected['audio']):
+        raise ValueError('Question count or embedded media count does not match the pack specification')
     output_dir.mkdir(parents=True, exist_ok=True)
-    path = output_dir / 'Bro-Pack-01.siq'
+    path = output_dir / filename_of(pack)
     types = ET.Element('Types', xmlns=TYPES_NS)
     for extension, mime in [('xml', 'si/xml'), ('jpg', 'image/jpeg'), ('mp3', 'audio/mpeg')]:
         ET.SubElement(types, 'Default', Extension=extension, ContentType=mime)
@@ -113,7 +129,9 @@ def build(pack_dir: Path, output_dir: Path):
     (output_dir / (path.name + '.sha256')).write_text(checksum + '  ' + path.name + '\n', encoding='ascii')
     (output_dir / 'How-to-play.txt').write_text((pack_dir / 'HOW-TO-PLAY.txt').read_text(encoding='utf-8'), encoding='utf-8-sig')
     result = {'file': path.name, 'bytes': path.stat().st_size, 'sha256': checksum,
-              'rounds': 1, 'themes': 6, 'questions': question_count, 'images': 10, 'audio': 15,
+              'rounds': len(round_specs), 'themes': sum(len(r['themes']) for r in round_specs),
+              'themes_per_round': expected['themes_per_round'], 'questions': question_count,
+              'images': image_count, 'audio': audio_count,
               'format': 4, 'external_question_media': 0}
     (output_dir / 'build-info.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(result, ensure_ascii=False, indent=2))
@@ -121,7 +139,7 @@ def build(pack_dir: Path, output_dir: Path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--pack', type=Path, default=Path(__file__).resolve().parent.parent / 'friends-01')
+    parser.add_argument('--pack', type=Path, default=Path(__file__).resolve().parent.parent / 'friends-120')
     parser.add_argument('--output', type=Path, default=Path('dist/sigame-pack'))
     args = parser.parse_args()
     build(args.pack, args.output)

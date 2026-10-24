@@ -1,0 +1,1507 @@
+{
+  "date": "24.10.2026",
+  "language": "ru-RU",
+  "restriction": "16+",
+  "authors": [
+    "logi2564 — подбор тем; Codex — сборка пака"
+  ],
+  "name": "БРО-ПАК — 120 вопросов: Игры и аниме",
+  "id": "cf24490b-8654-5ca3-bf8c-f23249415dd9",
+  "difficulty": 5,
+  "filename": "Bro-Pack-120.siq",
+  "expectations": {
+    "rounds": 4,
+    "themes_per_round": 6,
+    "questions": 120,
+    "images": 40,
+    "audio": 60
+  },
+  "description": "Большой пак для друзей: 120 вопросов, 4 раунда по 30, шесть типов вопросов в каждом раунде. Скриншоты игр, игровые голоса и звуки, музыка игр и локаций, кадры аниме, опенинги и обычные вопросы. По 20 вопросов каждого типа. Все 40 изображений и 60 коротких аудиофрагментов встроены и различаются. Дополнительные вопросы посвящены Warcraft III, World of Warcraft и Terraria. Ответы короткие; сезоны аниме и названия песен не нужны. Цены по раундам: 100–500, 200–1000, 300–1500, 400–2000.",
+  "rounds": [
+    {
+      "name": "1-й раунд — Разогрев",
+      "price_step": 100,
+      "themes": [
+        {
+          "name": "Игры по скриншоту",
+          "questions": [
+            {
+              "price": 100,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Terraria",
+                "Террария",
+                "Террария 1.4"
+              ],
+              "media": "i01"
+            },
+            {
+              "price": 200,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Stardew Valley",
+                "Стардью Валли",
+                "Стардью Вэлли",
+                "Стардью"
+              ],
+              "media": "i02"
+            },
+            {
+              "price": 300,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "World of Warcraft",
+                "WoW",
+                "Вов",
+                "Вовка",
+                "Ворлд оф Варкрафт",
+                "Мир Варкрафта"
+              ],
+              "media": "i03"
+            },
+            {
+              "price": 400,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Portal 2",
+                "Портал 2",
+                "Портал два"
+              ],
+              "media": "i04"
+            },
+            {
+              "price": 500,
+              "prompt": "На скриншоте пользовательская карта. Назовите игру, в которой она запущена.",
+              "answers": [
+                "Warcraft III",
+                "Warcraft 3",
+                "Варкрафт 3",
+                "Варкрафт III",
+                "Варик 3",
+                "Варик"
+              ],
+              "media": "i05",
+              "note": "Это пользовательская карта Warcraft III; её собственное название угадывать не нужно."
+            }
+          ]
+        },
+        {
+          "name": "Игры на слух",
+          "questions": [
+            {
+              "price": 100,
+              "prompt": "Назовите игру по звуку.",
+              "answers": [
+                "Minecraft",
+                "Майнкрафт",
+                "Майн"
+              ],
+              "media": "a01",
+              "note": "Повышение уровня в Minecraft. Короткий звук повторён с паузами."
+            },
+            {
+              "price": 200,
+              "prompt": "Назовите игру по звуку.",
+              "answers": [
+                "Warcraft III",
+                "Warcraft 3",
+                "Варкрафт 3",
+                "Варкрафт III",
+                "Варик 3",
+                "Варик"
+              ],
+              "media": "a02",
+              "note": "Крестьянин из Warcraft III говорит Job’s done. Реплика повторена."
+            },
+            {
+              "price": 300,
+              "prompt": "Назовите игру по звуку.",
+              "answers": [
+                "Among Us",
+                "Амонг Ас",
+                "Амонгас",
+                "Амонг Ус"
+              ],
+              "media": "a03",
+              "note": "Сигнал экстренного собрания из Among Us; повторён."
+            },
+            {
+              "price": 400,
+              "prompt": "Назовите игру по звуку.",
+              "answers": [
+                "Terraria",
+                "Террария",
+                "Террария 1.4"
+              ],
+              "media": "a04",
+              "note": "Звук смерти игрока в Terraria; повторён с паузами."
+            },
+            {
+              "price": 500,
+              "prompt": "С какой игрой связана эта знаменитая запись игрока?",
+              "answers": [
+                "World of Warcraft",
+                "WoW",
+                "Вов",
+                "Вовка",
+                "Ворлд оф Варкрафт",
+                "Мир Варкрафта"
+              ],
+              "media": "a05",
+              "note": "Leeroy Jenkins из ролика о рейде World of Warcraft. Это запись голоса игрока, а не реплика персонажа игры."
+            }
+          ]
+        },
+        {
+          "name": "Игры по музыке",
+          "questions": [
+            {
+              "price": 100,
+              "prompt": "Назовите игру по музыке.",
+              "answers": [
+                "Terraria",
+                "Террария",
+                "Террария 1.4"
+              ],
+              "media": "a06",
+              "note": "Overworld Day — Scott Lloyd Shelly, Terraria."
+            },
+            {
+              "price": 200,
+              "prompt": "Назовите игру по музыке.",
+              "answers": [
+                "Minecraft",
+                "Майнкрафт",
+                "Майн"
+              ],
+              "media": "a07",
+              "note": "Sweden — C418, Minecraft."
+            },
+            {
+              "price": 300,
+              "prompt": "Назовите игру по музыке.",
+              "answers": [
+                "World of Warcraft",
+                "WoW",
+                "Вов",
+                "Вовка",
+                "Ворлд оф Варкрафт",
+                "Мир Варкрафта"
+              ],
+              "media": "a08",
+              "note": "Stormwind — World of Warcraft."
+            },
+            {
+              "price": 400,
+              "prompt": "Назовите игру по музыке.",
+              "answers": [
+                "Warcraft III",
+                "Warcraft 3",
+                "Варкрафт 3",
+                "Варкрафт III",
+                "Варик 3",
+                "Варик"
+              ],
+              "media": "a09",
+              "note": "Главное меню Warcraft III: Reign of Chaos."
+            },
+            {
+              "price": 500,
+              "prompt": "Назовите игру по музыке.",
+              "answers": [
+                "Among Us",
+                "Амонг Ас",
+                "Амонгас",
+                "Амонг Ус"
+              ],
+              "media": "a10",
+              "note": "Главная тема Among Us."
+            }
+          ]
+        },
+        {
+          "name": "Аниме по кадру",
+          "questions": [
+            {
+              "price": 100,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Наруто",
+                "Наруто: Ураганные хроники",
+                "Naruto",
+                "Naruto Shippuden",
+                "Naruto: Shippuuden"
+              ],
+              "media": "i06",
+              "note": "Кадр из третьего опенинга Naruto: Shippuuden, Blue Bird. Названия сериала Наруто достаточно."
+            },
+            {
+              "price": 200,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Ван-Пис",
+                "Ван Пис",
+                "Ванпис",
+                "One Piece"
+              ],
+              "media": "i07",
+              "note": "Кадр из первого опенинга One Piece, We Are!."
+            },
+            {
+              "price": 300,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Стальной алхимик: Братство",
+                "Стальной алхимик",
+                "Fullmetal Alchemist: Brotherhood",
+                "Fullmetal Alchemist",
+                "FMA"
+              ],
+              "media": "i08",
+              "note": "Кадр из первого опенинга Fullmetal Alchemist: Brotherhood, Again."
+            },
+            {
+              "price": 400,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Тетрадь смерти",
+                "Death Note"
+              ],
+              "media": "i09",
+              "note": "Кадр из первого опенинга Death Note, The WORLD."
+            },
+            {
+              "price": 500,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Евангелион",
+                "Neon Genesis Evangelion",
+                "Evangelion",
+                "Новый век Евангелион"
+              ],
+              "media": "i10",
+              "note": "Кадр из опенинга Neon Genesis Evangelion; Гэндо Икари."
+            }
+          ]
+        },
+        {
+          "name": "Аниме по опенингу",
+          "questions": [
+            {
+              "price": 100,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Наруто",
+                "Наруто: Ураганные хроники",
+                "Naruto",
+                "Naruto Shippuden",
+                "Naruto: Shippuuden"
+              ],
+              "media": "a11",
+              "note": "Blue Bird — Ikimono-gakari; Naruto: Shippuuden. Можно ответить просто Наруто."
+            },
+            {
+              "price": 200,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Токийский гуль",
+                "Tokyo Ghoul",
+                "Токио Гуль"
+              ],
+              "media": "a12",
+              "note": "Unravel — TK from Ling tosite sigure; Tokyo Ghoul."
+            },
+            {
+              "price": 300,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Атака титанов",
+                "Атака на титанов",
+                "Attack on Titan",
+                "Shingeki no Kyojin"
+              ],
+              "media": "a13",
+              "note": "Guren no Yumiya — Linked Horizon; Shingeki no Kyojin."
+            },
+            {
+              "price": 400,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Стальной алхимик: Братство",
+                "Стальной алхимик",
+                "Fullmetal Alchemist: Brotherhood",
+                "Fullmetal Alchemist",
+                "FMA"
+              ],
+              "media": "a14",
+              "note": "Again — YUI; Fullmetal Alchemist: Brotherhood."
+            },
+            {
+              "price": 500,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Паразит",
+                "Паразит: Учение о жизни",
+                "Parasyte",
+                "Parasyte: The Maxim",
+                "Kiseijuu"
+              ],
+              "media": "a15",
+              "note": "Let Me Hear — Fear, and Loathing in Las Vegas; Parasyte: The Maxim."
+            }
+          ]
+        },
+        {
+          "name": "Ответ в пару слов",
+          "questions": [
+            {
+              "price": 100,
+              "prompt": "В World of Warcraft две главные фракции — Альянс и…",
+              "answers": [
+                "Орда",
+                "Horde"
+              ]
+            },
+            {
+              "price": 200,
+              "prompt": "Как зовут принца Лордерона, который в Warcraft III взял Фростморн и стал рыцарем смерти?",
+              "answers": [
+                "Артас",
+                "Артас Менетил",
+                "Arthas",
+                "Arthas Menethil"
+              ]
+            },
+            {
+              "price": 300,
+              "prompt": "Как называется первый NPC-помощник в обычном новом мире Terraria? Он подсказывает, что можно скрафтить из предмета.",
+              "answers": [
+                "Гид",
+                "Guide"
+              ]
+            },
+            {
+              "price": 400,
+              "prompt": "Какого босса надо победить в обычном мире Terraria, чтобы в нём начался хардмод?",
+              "answers": [
+                "Стена плоти",
+                "Wall of Flesh",
+                "Стена"
+              ]
+            },
+            {
+              "price": 500,
+              "prompt": "В Warcraft III эти рабочие ночных эльфов собирают древесину, кружась вокруг деревьев. Как называется такой рабочий?",
+              "answers": [
+                "Светлячок",
+                "Светлячки",
+                "Висп",
+                "Виспы",
+                "Wisp"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2-й раунд — Свои среди своих",
+      "price_step": 200,
+      "themes": [
+        {
+          "name": "Игры: скриншоты",
+          "questions": [
+            {
+              "price": 200,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Counter-Strike 2",
+                "Counter-Strike",
+                "CS2",
+                "CS 2",
+                "КС 2",
+                "КС",
+                "Контр-Страйк"
+              ],
+              "media": "g06"
+            },
+            {
+              "price": 400,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Dota 2",
+                "Дота 2",
+                "Дота"
+              ],
+              "media": "g07"
+            },
+            {
+              "price": 600,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Left 4 Dead 2",
+                "L4D2",
+                "Лефт 4 Дед 2",
+                "Лефт фо Дед 2"
+              ],
+              "media": "g08"
+            },
+            {
+              "price": 800,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Half-Life 2",
+                "Халф-Лайф 2",
+                "Халф Лайф 2",
+                "HL2"
+              ],
+              "media": "g09"
+            },
+            {
+              "price": 1000,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "The Witcher 3",
+                "The Witcher 3: Wild Hunt",
+                "Ведьмак 3",
+                "Ведьмак 3: Дикая Охота"
+              ],
+              "media": "g10"
+            }
+          ]
+        },
+        {
+          "name": "Игры: голоса",
+          "questions": [
+            {
+              "price": 200,
+              "prompt": "Назовите игру или серию по звуку.",
+              "answers": [
+                "Portal",
+                "Portal 2",
+                "Портал",
+                "Портал 2"
+              ],
+              "media": "s06",
+              "note": "Реплика GLaDOS о картофелине из Portal 2. Засчитывается название серии Portal."
+            },
+            {
+              "price": 400,
+              "prompt": "Назовите игру или серию по звуку.",
+              "answers": [
+                "Counter-Strike",
+                "Контр-Страйк",
+                "КС",
+                "CS",
+                "Counter Strike",
+                "CS 1.6"
+              ],
+              "media": "s07",
+              "note": "Enemy spotted — классическая радиокоманда Counter-Strike; точная версия не нужна."
+            },
+            {
+              "price": 600,
+              "prompt": "Назовите игру или серию по звуку.",
+              "answers": [
+                "StarCraft",
+                "StarCraft 1",
+                "Старкрафт",
+                "Старкрафт 1"
+              ],
+              "media": "s08",
+              "note": "Battlecruiser operational — линейный крейсер терранов, StarCraft."
+            },
+            {
+              "price": 800,
+              "prompt": "Назовите игру или серию по звуку.",
+              "answers": [
+                "Red Alert 2",
+                "Command & Conquer: Red Alert 2",
+                "Ред Алерт 2",
+                "Ред Алерт",
+                "RA2"
+              ],
+              "media": "s09",
+              "note": "Kirov reporting — дирижабль Киров, Red Alert 2."
+            },
+            {
+              "price": 1000,
+              "prompt": "Назовите игру или серию по звуку.",
+              "answers": [
+                "Stronghold",
+                "Stronghold Crusader",
+                "Стронгхолд",
+                "Стронгхолд Крусейдер",
+                "Крестоносцы"
+              ],
+              "media": "s10",
+              "note": "Голос Волка из Stronghold / Stronghold Crusader. Засчитывается название серии."
+            }
+          ]
+        },
+        {
+          "name": "Музыка: столицы WoW",
+          "questions": [
+            {
+              "price": 200,
+              "prompt": "Назовите столицу WoW по её классической музыкальной теме.",
+              "answers": [
+                "Оргриммар",
+                "Orgrimmar"
+              ],
+              "media": "m06"
+            },
+            {
+              "price": 400,
+              "prompt": "Назовите столицу WoW по её классической музыкальной теме.",
+              "answers": [
+                "Стальгорн",
+                "Ironforge",
+                "Айронфордж"
+              ],
+              "media": "m07"
+            },
+            {
+              "price": 600,
+              "prompt": "Назовите столицу WoW по её классической музыкальной теме.",
+              "answers": [
+                "Дарнас",
+                "Дарнасс",
+                "Darnassus"
+              ],
+              "media": "m08"
+            },
+            {
+              "price": 800,
+              "prompt": "Назовите столицу WoW по её классической музыкальной теме.",
+              "answers": [
+                "Подгород",
+                "The Undercity",
+                "Undercity",
+                "Андерсити"
+              ],
+              "media": "m09"
+            },
+            {
+              "price": 1000,
+              "prompt": "Назовите столицу WoW по её классической музыкальной теме.",
+              "answers": [
+                "Громовой Утёс",
+                "Громовой Утес",
+                "Thunder Bluff",
+                "Тандер Блафф"
+              ],
+              "media": "m10"
+            }
+          ]
+        },
+        {
+          "name": "Аниме: кадры",
+          "questions": [
+            {
+              "price": 200,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Атака титанов",
+                "Атака на титанов",
+                "Attack on Titan",
+                "Shingeki no Kyojin"
+              ],
+              "media": "f06"
+            },
+            {
+              "price": 400,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Токийский гуль",
+                "Tokyo Ghoul",
+                "Токио Гуль"
+              ],
+              "media": "f07"
+            },
+            {
+              "price": 600,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Блич",
+                "Bleach"
+              ],
+              "media": "f08"
+            },
+            {
+              "price": 800,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Мастера меча онлайн",
+                "Sword Art Online",
+                "SAO",
+                "САО"
+              ],
+              "media": "f09"
+            },
+            {
+              "price": 1000,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Человек-бензопила",
+                "Человек бензопила",
+                "Chainsaw Man"
+              ],
+              "media": "f10"
+            }
+          ]
+        },
+        {
+          "name": "Аниме: опенинги",
+          "questions": [
+            {
+              "price": 200,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Ван-Пис",
+                "Ван Пис",
+                "Ванпис",
+                "One Piece"
+              ],
+              "media": "o06",
+              "note": "We Are! — Hiroshi Kitadani; One Piece."
+            },
+            {
+              "price": 400,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Тетрадь смерти",
+                "Death Note"
+              ],
+              "media": "o07",
+              "note": "The WORLD — Nightmare; Death Note."
+            },
+            {
+              "price": 600,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Евангелион",
+                "Neon Genesis Evangelion",
+                "Evangelion",
+                "Новый век Евангелион"
+              ],
+              "media": "o08",
+              "note": "A Cruel Angel’s Thesis — Yoko Takahashi; Neon Genesis Evangelion."
+            },
+            {
+              "price": 800,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Блич",
+                "Bleach"
+              ],
+              "media": "o09",
+              "note": "Asterisk — Orange Range; Bleach."
+            },
+            {
+              "price": 1000,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Мастера меча онлайн",
+                "Sword Art Online",
+                "SAO",
+                "САО"
+              ],
+              "media": "o10",
+              "note": "Crossing Field — LiSA; Sword Art Online."
+            }
+          ]
+        },
+        {
+          "name": "Ответ в пару слов",
+          "questions": [
+            {
+              "price": 200,
+              "prompt": "Как называется мир Warcraft, на котором расположены Калимдор и Восточные королевства?",
+              "answers": [
+                "Азерот",
+                "Azeroth"
+              ]
+            },
+            {
+              "price": 400,
+              "prompt": "Как зовут орка-шамана, который вывел свой народ из лагерей и основал новую Орду?",
+              "answers": [
+                "Тралл",
+                "Thrall",
+                "Го’эл",
+                "Гоэл",
+                "Гоэлл"
+              ]
+            },
+            {
+              "price": 600,
+              "prompt": "Как называется синий расходуемый кристалл Terraria, навсегда добавляющий 20 единиц максимальной маны?",
+              "answers": [
+                "Кристалл маны",
+                "Mana Crystal"
+              ]
+            },
+            {
+              "price": 800,
+              "prompt": "Какой ночной босс Terraria выглядит как огромный глаз и призывается Подозрительно выглядящим глазом?",
+              "answers": [
+                "Глаз Ктулху",
+                "Eye of Cthulhu"
+              ]
+            },
+            {
+              "price": 1000,
+              "prompt": "Как зовут охотника на демонов из Warcraft III, которого называют Предателем?",
+              "answers": [
+                "Иллидан",
+                "Иллидан Ярость Бури",
+                "Illidan",
+                "Illidan Stormrage"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3-й раунд — Голоса Азерота",
+      "price_step": 300,
+      "themes": [
+        {
+          "name": "Игры: скриншоты",
+          "questions": [
+            {
+              "price": 300,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Skyrim",
+                "The Elder Scrolls V: Skyrim",
+                "Скайрим",
+                "Скайрим Спешл Эдишн"
+              ],
+              "media": "g11"
+            },
+            {
+              "price": 600,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Elden Ring",
+                "Элден Ринг",
+                "Эльден Ринг"
+              ],
+              "media": "g12"
+            },
+            {
+              "price": 900,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Hollow Knight",
+                "Холлоу Найт",
+                "Холлоу Кнайт"
+              ],
+              "media": "g13"
+            },
+            {
+              "price": 1200,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Undertale",
+                "Андертейл",
+                "Андертейл 2015"
+              ],
+              "media": "g14"
+            },
+            {
+              "price": 1500,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Don’t Starve Together",
+                "Don't Starve Together",
+                "Донт Старв Тугезер",
+                "Донт Старв",
+                "Don’t Starve",
+                "Don't Starve"
+              ],
+              "media": "g15"
+            }
+          ]
+        },
+        {
+          "name": "Голоса Warcraft III",
+          "questions": [
+            {
+              "price": 300,
+              "prompt": "Какой рабочий юнит Warcraft III говорит эту реплику?",
+              "answers": [
+                "Батрак",
+                "Батрак орков",
+                "Peon",
+                "Пеон"
+              ],
+              "media": "s11"
+            },
+            {
+              "price": 600,
+              "prompt": "Какой рабочий юнит Warcraft III говорит эту реплику?",
+              "answers": [
+                "Крестьянин",
+                "Крестьянин людей",
+                "Peasant"
+              ],
+              "media": "s12"
+            },
+            {
+              "price": 900,
+              "prompt": "Какой рабочий юнит Warcraft III говорит эту реплику?",
+              "answers": [
+                "Послушник",
+                "Аколит",
+                "Acolyte"
+              ],
+              "media": "s13"
+            },
+            {
+              "price": 1200,
+              "prompt": "Назовите рабочего юнита Warcraft III по этому звуку.",
+              "answers": [
+                "Светлячок",
+                "Висп",
+                "Wisp"
+              ],
+              "media": "s14"
+            },
+            {
+              "price": 1500,
+              "prompt": "Какой именованный герой Warcraft III говорит эту реплику?",
+              "answers": [
+                "Артас",
+                "Артас Менетил",
+                "Arthas",
+                "Arthas Menethil"
+              ],
+              "media": "s15",
+              "note": "Frostmourne hungers — Артас, рыцарь смерти. Общего ответа Рыцарь смерти недостаточно."
+            }
+          ]
+        },
+        {
+          "name": "Музыка игр",
+          "questions": [
+            {
+              "price": 300,
+              "prompt": "Из какой части Warcraft эта музыка? Достаточно номера части.",
+              "answers": [
+                "Warcraft: Orcs & Humans",
+                "Warcraft 1",
+                "Warcraft I",
+                "Варкрафт 1",
+                "Варкрафт: Орки и люди",
+                "Орки и люди",
+                "Первая часть",
+                "Первая",
+                "1"
+              ],
+              "media": "m11",
+              "note": "Human 1 из Warcraft: Orcs & Humans. Допускается ответ Первая часть."
+            },
+            {
+              "price": 600,
+              "prompt": "Из какой части Warcraft эта музыка? Достаточно номера части.",
+              "answers": [
+                "Warcraft II",
+                "Warcraft 2",
+                "Warcraft II: Tides of Darkness",
+                "Варкрафт 2",
+                "Варик 2",
+                "Вторая часть",
+                "Вторая",
+                "2"
+              ],
+              "media": "m12",
+              "note": "Orc 1 из Warcraft II."
+            },
+            {
+              "price": 900,
+              "prompt": "Назовите игру по музыке.",
+              "answers": [
+                "Warcraft III",
+                "Warcraft 3",
+                "Варкрафт 3",
+                "Варкрафт III",
+                "Варик 3",
+                "Варик"
+              ],
+              "media": "m13",
+              "note": "Arcane Echoes — Warcraft III."
+            },
+            {
+              "price": 1200,
+              "prompt": "Какое время суток на поверхности Terraria обычно сопровождает эта тема?",
+              "answers": [
+                "Ночь",
+                "Ночью",
+                "Ночное время",
+                "Night"
+              ],
+              "media": "m14",
+              "note": "Overworld Night — Scott Lloyd Shelly."
+            },
+            {
+              "price": 1500,
+              "prompt": "Назовите игру по музыке.",
+              "answers": [
+                "Minecraft",
+                "Майнкрафт",
+                "Майн"
+              ],
+              "media": "m15",
+              "note": "Mice on Venus — C418; Minecraft."
+            }
+          ]
+        },
+        {
+          "name": "Аниме: кадры",
+          "questions": [
+            {
+              "price": 300,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Ванпанчмен",
+                "Ванпачмен",
+                "One Punch Man",
+                "One-Punch Man"
+              ],
+              "media": "f11"
+            },
+            {
+              "price": 600,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Магическая битва",
+                "Jujutsu Kaisen",
+                "Дзюдзюцу Кайсен"
+              ],
+              "media": "f12"
+            },
+            {
+              "price": 900,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Моб Психо 100",
+                "Mob Psycho 100",
+                "Моб Психо"
+              ],
+              "media": "f13"
+            },
+            {
+              "price": 1200,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Ковбой Бибоп",
+                "Cowboy Bebop",
+                "Ковбой Бебоп"
+              ],
+              "media": "f14"
+            },
+            {
+              "price": 1500,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Код Гиас",
+                "Code Geass",
+                "Код Гиасс"
+              ],
+              "media": "f15"
+            }
+          ]
+        },
+        {
+          "name": "Аниме: опенинги",
+          "questions": [
+            {
+              "price": 300,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Ковбой Бибоп",
+                "Cowboy Bebop",
+                "Ковбой Бебоп"
+              ],
+              "media": "o11",
+              "note": "Tank! — The Seatbelts / Yoko Kanno; Cowboy Bebop."
+            },
+            {
+              "price": 600,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Код Гиас",
+                "Code Geass",
+                "Код Гиасс"
+              ],
+              "media": "o12",
+              "note": "Colors — FLOW; Code Geass."
+            },
+            {
+              "price": 900,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Ванпанчмен",
+                "Ванпачмен",
+                "One Punch Man",
+                "One-Punch Man"
+              ],
+              "media": "o13",
+              "note": "The Hero!! — JAM Project; One Punch Man."
+            },
+            {
+              "price": 1200,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Магическая битва",
+                "Jujutsu Kaisen",
+                "Дзюдзюцу Кайсен"
+              ],
+              "media": "o14",
+              "note": "Kaikai Kitan — Eve; Jujutsu Kaisen."
+            },
+            {
+              "price": 1500,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Человек-бензопила",
+                "Человек бензопила",
+                "Chainsaw Man"
+              ],
+              "media": "o15",
+              "note": "Kick Back — Kenshi Yonezu; Chainsaw Man."
+            }
+          ]
+        },
+        {
+          "name": "Ответ в пару слов",
+          "questions": [
+            {
+              "price": 300,
+              "prompt": "Как называется столица людей Альянса в World of Warcraft?",
+              "answers": [
+                "Штормград",
+                "Stormwind",
+                "Стормвинд"
+              ]
+            },
+            {
+              "price": 600,
+              "prompt": "Как зовут принца эльфов крови из Warcraft III, носящего фамилию Солнечный Скиталец?",
+              "answers": [
+                "Кель’тас",
+                "Кельтас",
+                "Кель Тас",
+                "Кельтас Солнечный Скиталец",
+                "Kael’thas",
+                "Kaelthas",
+                "Kaelthas Sunstrider"
+              ]
+            },
+            {
+              "price": 900,
+              "prompt": "Как называется злой биом Terraria с фиолетовой травой, эбонитом и Пожирателями душ?",
+              "answers": [
+                "Порча",
+                "Искажение",
+                "Corruption"
+              ]
+            },
+            {
+              "price": 1200,
+              "prompt": "Какого босса Terraria пробуждает проклятие старика у входа в Данж ночью?",
+              "answers": [
+                "Скелетрон",
+                "Skeletron"
+              ]
+            },
+            {
+              "price": 1500,
+              "prompt": "Какой орк в Warcraft III наносит Маннороту последний удар, освобождая свой народ от кровавого проклятия?",
+              "answers": [
+                "Гром",
+                "Громмаш",
+                "Громмаш Адский Крик",
+                "Гром Хеллскрим",
+                "Гром Адский Крик",
+                "Grom",
+                "Grom Hellscream",
+                "Grommash Hellscream"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4-й раунд — Босс-файт",
+      "price_step": 400,
+      "themes": [
+        {
+          "name": "Игры: скриншоты",
+          "questions": [
+            {
+              "price": 400,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Factorio",
+                "Факторио"
+              ],
+              "media": "g16"
+            },
+            {
+              "price": 800,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Cuphead",
+                "Капхед",
+                "Капхэд"
+              ],
+              "media": "g17"
+            },
+            {
+              "price": 1200,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Celeste",
+                "Селеста",
+                "Селест"
+              ],
+              "media": "g18"
+            },
+            {
+              "price": 1600,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Dead Cells",
+                "Дед Селлс",
+                "Дэд Селлс"
+              ],
+              "media": "g19"
+            },
+            {
+              "price": 2000,
+              "prompt": "Назовите игру по скриншоту.",
+              "answers": [
+                "Hades",
+                "Аид",
+                "Хадес",
+                "Хейдес"
+              ],
+              "media": "g20"
+            }
+          ]
+        },
+        {
+          "name": "Эффекты и существа",
+          "questions": [
+            {
+              "price": 400,
+              "prompt": "В Terraria звенят именно эти предметы. Назовите их.",
+              "answers": [
+                "Монеты",
+                "Монета",
+                "Деньги",
+                "Coins"
+              ],
+              "media": "s16"
+            },
+            {
+              "price": 800,
+              "prompt": "Какое действие персонажа Terraria сопровождает этот звук?",
+              "answers": [
+                "Еда",
+                "Поедание еды",
+                "Приём пищи",
+                "Прием пищи",
+                "Есть",
+                "Кушать",
+                "Употребление еды"
+              ],
+              "media": "s17"
+            },
+            {
+              "price": 1200,
+              "prompt": "Какое перемещение персонажа Terraria сопровождает этот эффект? Название предмета не нужно.",
+              "answers": [
+                "Телепортация",
+                "Телепорт",
+                "Перемещение телепортом"
+              ],
+              "media": "s18"
+            },
+            {
+              "price": 1600,
+              "prompt": "Назовите игру или серию по звуку.",
+              "answers": [
+                "Dota 2",
+                "Дота 2",
+                "Дота"
+              ],
+              "media": "s19",
+              "note": "Axe is ready! — Axe, Dota 2."
+            },
+            {
+              "price": 2000,
+              "prompt": "Как называется это существо из мира Warcraft?",
+              "answers": [
+                "Мурлок",
+                "Murloc"
+              ],
+              "media": "s20"
+            }
+          ]
+        },
+        {
+          "name": "Музыка: места и события",
+          "questions": [
+            {
+              "price": 400,
+              "prompt": "Это Terraria. Где обычно звучит эта тема: на поверхности или под землёй?",
+              "answers": [
+                "Под землёй",
+                "Под землей",
+                "Подземный слой",
+                "Подземелья",
+                "Подземелье",
+                "Underground"
+              ],
+              "media": "m16",
+              "note": "Обычная тема Underground; ответ о подземном слое."
+            },
+            {
+              "price": 800,
+              "prompt": "Какое опасное ночное событие Terraria сопровождает эта тема на поверхности?",
+              "answers": [
+                "Кровавая луна",
+                "Blood Moon",
+                "Блад Мун"
+              ],
+              "media": "m17",
+              "note": "Eerie также играет у метеорита. Здесь спрашивается именно ночное событие — Кровавая луна."
+            },
+            {
+              "price": 1200,
+              "prompt": "Для какого экрана ранних версий Terraria предназначена эта классическая тема — до выбора мира?",
+              "answers": [
+                "Главное меню",
+                "Меню",
+                "Титульный экран",
+                "Title Screen"
+              ],
+              "media": "m18",
+              "note": "Title Screen — Scott Lloyd Shelly."
+            },
+            {
+              "price": 1600,
+              "prompt": "Назовите стартовый лес людей WoW по его классической музыкальной теме.",
+              "answers": [
+                "Элвиннский лес",
+                "Элвинский лес",
+                "Elwynn Forest",
+                "Элвинн"
+              ],
+              "media": "m19"
+            },
+            {
+              "price": 2000,
+              "prompt": "Назовите пустынную локацию Калимдора в WoW по этой музыкальной теме.",
+              "answers": [
+                "Танарис",
+                "Tanaris"
+              ],
+              "media": "m20"
+            }
+          ]
+        },
+        {
+          "name": "Аниме: кадры",
+          "questions": [
+            {
+              "price": 400,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Хвост Феи",
+                "Фейри Тейл",
+                "Fairy Tail"
+              ],
+              "media": "f16"
+            },
+            {
+              "price": 800,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Нет игры — нет жизни",
+                "Нет игры нет жизни",
+                "No Game No Life",
+                "NGNL"
+              ],
+              "media": "f17"
+            },
+            {
+              "price": 1200,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Охотник х Охотник",
+                "Охотник и охотник",
+                "Хантер х Хантер",
+                "Хантер",
+                "Hunter x Hunter",
+                "Hunter Hunter",
+                "HxH"
+              ],
+              "media": "f18"
+            },
+            {
+              "price": 1600,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Врата Штейна",
+                "Steins;Gate",
+                "Steins Gate",
+                "Штайнс Гейт"
+              ],
+              "media": "f19"
+            },
+            {
+              "price": 2000,
+              "prompt": "Назовите аниме по кадру.",
+              "answers": [
+                "Гуррен-Лаганн",
+                "Гуррен Лаганн",
+                "Tengen Toppa Gurren Lagann",
+                "Gurren Lagann"
+              ],
+              "media": "f20"
+            }
+          ]
+        },
+        {
+          "name": "Аниме: опенинги",
+          "questions": [
+            {
+              "price": 400,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Моб Психо 100",
+                "Mob Psycho 100",
+                "Моб Психо"
+              ],
+              "media": "o16",
+              "note": "99 — MOB CHOIR; Mob Psycho 100."
+            },
+            {
+              "price": 800,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Нет игры — нет жизни",
+                "Нет игры нет жизни",
+                "No Game No Life",
+                "NGNL"
+              ],
+              "media": "o17",
+              "note": "This Game — Konomi Suzuki; No Game No Life."
+            },
+            {
+              "price": 1200,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Врата Штейна",
+                "Steins;Gate",
+                "Steins Gate",
+                "Штайнс Гейт"
+              ],
+              "media": "o18",
+              "note": "Hacking to the Gate — Kanako Itou; Steins;Gate."
+            },
+            {
+              "price": 1600,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Охотник х Охотник",
+                "Охотник и охотник",
+                "Хантер х Хантер",
+                "Хантер",
+                "Hunter x Hunter",
+                "Hunter Hunter",
+                "HxH"
+              ],
+              "media": "o19",
+              "note": "Departure! — Masatoshi Ono; Hunter x Hunter (2011)."
+            },
+            {
+              "price": 2000,
+              "prompt": "Назовите аниме по опенингу. Сезон и название песни не нужны.",
+              "answers": [
+                "Гуррен-Лаганн",
+                "Гуррен Лаганн",
+                "Tengen Toppa Gurren Lagann",
+                "Gurren Lagann"
+              ],
+              "media": "o20",
+              "note": "Sorairo Days — Shoko Nakagawa; Tengen Toppa Gurren Lagann."
+            }
+          ]
+        },
+        {
+          "name": "Ответ в пару слов",
+          "questions": [
+            {
+              "price": 400,
+              "prompt": "Как зовут дракона, который стал главным противником дополнения World of Warcraft: Cataclysm?",
+              "answers": [
+                "Смертокрыл",
+                "Deathwing",
+                "Нелтарион",
+                "Neltharion"
+              ]
+            },
+            {
+              "price": 800,
+              "prompt": "Как зовут волшебницу из Warcraft III, дочь адмирала Дэлина Праудмура?",
+              "answers": [
+                "Джайна",
+                "Джайна Праудмур",
+                "Jaina",
+                "Jaina Proudmoore"
+              ]
+            },
+            {
+              "price": 1200,
+              "prompt": "Как называется финальный босс Terraria, появляющийся после уничтожения четырёх Небесных башен?",
+              "answers": [
+                "Лунный лорд",
+                "Moon Lord",
+                "Мунлорд"
+              ]
+            },
+            {
+              "price": 1600,
+              "prompt": "Как называется корона-предмет, которой в Terraria можно призвать Короля слизней?",
+              "answers": [
+                "Корона слизней",
+                "Slime Crown"
+              ]
+            },
+            {
+              "price": 2000,
+              "prompt": "Как зовут некроманта Warcraft III, которого Артас воскрешает в виде лича в Солнечном Колодце?",
+              "answers": [
+                "Кел’Тузад",
+                "Келтузад",
+                "Кел Тузад",
+                "Кел-Тузад",
+                "Kel’Thuzad",
+                "Kelthuzad"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

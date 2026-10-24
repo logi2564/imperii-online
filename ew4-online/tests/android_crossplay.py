@@ -5,13 +5,14 @@ from pathlib import Path
 import argparse,base64,json,os,socket,subprocess,time,urllib.request,sys,re
 from playwright.sync_api import sync_playwright
 from integration import Client,wait_for,move
+from webview_cdp import WebView
 
 def free_port():
     with socket.socket() as s:s.bind(('127.0.0.1',0));return s.getsockname()[1]
 def adb(*args):
     return subprocess.check_output(['adb',*map(str,args)],stderr=subprocess.STDOUT,text=True)
 def run(a):
-    out=a.output.resolve();out.mkdir(parents=True,exist_ok=True);stage='desktop_start';process=None;report={'result':'FAIL','physical_android_device_tested':False}
+    out=a.output.resolve();out.mkdir(parents=True,exist_ok=True);stage='desktop_start';process=None;phone=None;report={'result':'FAIL','physical_android_device_tested':False}
     log=(out/'private-electron.log').open('w')
     try:
         with sync_playwright() as pw:
@@ -45,31 +46,32 @@ def run(a):
                 return found.stdout.strip() if found.returncode==0 else None
             pid=wait_for(android_pid)
             stage='android_debugger';cdp=free_port();adb('forward',f'tcp:{cdp}',f'localabstract:webview_devtools_remote_{pid}')
-            wait_for(lambda:json.load(urllib.request.urlopen(f'http://127.0.0.1:{cdp}/json',timeout=3)),60)
-            # Match Playwright's Android transport: WebView's browser socket is fixed.
-            phone=pw.chromium.connect_over_cdp(f'ws://127.0.0.1:{cdp}/devtools/browser',no_defaults=True)
-            guest=phone.contexts[0].pages[0]
+            targets=wait_for(lambda:json.load(urllib.request.urlopen(f'http://127.0.0.1:{cdp}/json',timeout=3)),60)
+            from urllib.parse import urlsplit
+            debugger=urlsplit(targets[0]['webSocketDebuggerUrl'])
+            phone=WebView(f'ws://127.0.0.1:{cdp}'+debugger.path,log)
             stage='android_choose_country'
-            guest.locator('#faction option[value="'+guest_seat+'"]').wait_for(state='attached',timeout=90000)
-            guest.locator('#faction').select_option(guest_seat);guest.locator('#choose').click()
+            phone.wait('!!document.querySelector('+json.dumps('#faction option[value="'+guest_seat+'"]')+')')
+            phone.select('#faction',guest_seat);phone.click('#choose')
             host.wait_for_function("()=>!document.querySelector('#start').disabled",timeout=30000)
             host.locator('#start').click()
             stage='battlefields'
-            for page in [host,guest]:page.frame_locator('#game').locator('#play').wait_for(state='visible',timeout=90000)
-            hf=next(f for f in host.frames if '/game?' in f.url);gf=next(f for f in guest.frames if '/game?' in f.url)
+            host.frame_locator('#game').locator('#play').wait_for(state='visible',timeout=90000)
+            game="document.querySelector('#game').contentWindow"
+            phone.wait(game+".document.querySelector('#play')&&!"+game+".document.querySelector('#play').hidden")
             # API assertions inspect authoritative state; turn input comes from the in-app UI.
             guest_api=Client(invite['u'].rstrip('/'),cfg['guestToken'])
             state=api.state();hfaction=state['playerFaction'];gfaction=guest_api.state()['playerFaction']
             assert hfaction!=gfaction and state['online']['canAct'] and not guest_api.state()['online']['canAct']
             uid,target,moved=move(api)
-            wait_for(lambda:gf.evaluate('Ew4OnlineGame.revision()')>=moved['revision'])
+            wait_for(lambda:phone.evaluate(game+'.Ew4OnlineGame.revision()')>=moved['revision'])
             assert next(u['cell'] for u in guest_api.state()['units'] if u['id']==uid)==target
             stage='turn_to_android'
             host.locator('#end').click();wait_for(lambda:guest_api.call('/online/status')['canAct'],60)
-            guest.wait_for_function("()=>!document.querySelector('#end').disabled",timeout=60000)
+            phone.wait("!document.querySelector('#end').disabled",60)
             # Select/move use the same controller as actual map taps, not a separate test game.
-            guest.wait_for_timeout(1800)
-            gf.wait_for_function('()=>window.Ew4OnlineCanAct&&!Ew4OnlineGame.busy()',timeout=60000)
+            phone.wait(game+'.Ew4OnlineCanAct&&!'+game+'.Ew4OnlineGame.busy()',60)
+            stage='android_controller_move'
             state=guest_api.state();revision=state['revision']
             for unit in state['units']:
                 if unit['owner']!=gfaction or not unit['canMove']:continue
@@ -77,16 +79,18 @@ def run(a):
                 if selection['range']:
                     target2=selection['range'][0];uid2=unit['id'];break
             else:raise AssertionError('No guest move')
-            gf.evaluate('async cell=>{await selectCell(cell);}',unit['cell'])
-            gf.evaluate('async cell=>{await selectCell(cell);}',target2)
+            phone.evaluate(game+'.selectCell('+str(unit['cell'])+')')
+            phone.evaluate(game+'.selectCell('+str(target2)+')')
             wait_for(lambda:next(u['cell'] for u in api.state()['units'] if u['id']==uid2)==target2)
-            guest.locator('#end').click();wait_for(lambda:api.call('/online/status')['canAct'],180)
+            stage='android_end_turn'
+            phone.click('#end');wait_for(lambda:api.call('/online/status')['canAct'],180)
             assert api.state()['round']>=2
+            stage='foreground_activity'
             resumed=adb('shell','dumpsys','activity','activities');assert any(package+'/.GameActivity' in line and 'mResumedActivity' in line for line in resumed.splitlines())
-            guest.wait_for_timeout(1000)
-            labels=gf.evaluate("()=>Array.from(document.querySelectorAll('[aria-label],[title]')).filter(e=>e.getClientRects().length&&!e.closest('[hidden]')).map(e=>e.getAttribute('aria-label')||e.getAttribute('title')).filter(t=>/[\\u3400-\\u9fff]/.test(t))")
+            stage='translated_labels'
+            labels=phone.evaluate("Array.from("+game+".document.querySelectorAll('[aria-label],[title]')).filter(e=>e.getClientRects().length&&!e.closest('[hidden]')).map(e=>e.getAttribute('aria-label')||e.getAttribute('title')).filter(t=>/[\\u3400-\\u9fff]/.test(t))")
             assert not labels
-            host.screenshot(path=str(out/'desktop-multiplayer.png'));guest.screenshot(path=str(out/'android-battle.png'))
+            host.screenshot(path=str(out/'desktop-multiplayer.png'));phone.screenshot(out/'android-battle.png')
             stage='PASS';report.update(result='PASS',real_electron_host=True,installed_android_activity=True,android_emulator=True,external_browser=False,public_https=True,two_independent_countries=True,host_move_synced=True,android_controller_move_synced=True,android_end_turn=True,server_ai_round_two=True,visible_chinese_labels=labels)
     except Exception as error:
         report.update(stage=stage,exception_type=type(error).__name__)
@@ -102,6 +106,7 @@ def run(a):
         except Exception:pass
         print('Crossplay failed at',stage,type(error).__name__,flush=True)
     finally:
+        if phone:phone.close()
         if process:
             process.terminate()
             try:process.wait(15)

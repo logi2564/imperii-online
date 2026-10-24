@@ -5,7 +5,7 @@ from pathlib import Path
 import argparse,base64,json,os,socket,subprocess,time,urllib.request,sys,re
 from playwright.sync_api import sync_playwright
 from integration import Client,wait_for,move
-from webview_cdp import WebView
+from webview_cdp import WebView,ScriptError
 
 def free_port():
     with socket.socket() as s:s.bind(('127.0.0.1',0));return s.getsockname()[1]
@@ -73,6 +73,7 @@ def run(a):
             phone.wait(game+'.Ew4OnlineCanAct&&!'+game+'.Ew4OnlineGame.busy()',60)
             stage='android_controller_move'
             state=guest_api.state();revision=state['revision']
+            phone.wait(game+'.Ew4OnlineGame.revision()>='+str(revision)+'&&!'+game+'.Ew4OnlineGame.busy()',60)
             for unit in state['units']:
                 if unit['owner']!=gfaction or not unit['canMove']:continue
                 selection=guest_api.call('/api/action',{'op':'select','revision':revision,'cell':unit['cell']})['data']
@@ -94,6 +95,7 @@ def run(a):
             stage='PASS';report.update(result='PASS',real_electron_host=True,installed_android_activity=True,android_emulator=True,external_browser=False,public_https=True,two_independent_countries=True,host_move_synced=True,android_controller_move_synced=True,android_end_turn=True,server_ai_round_two=True,visible_chinese_labels=labels)
     except Exception as error:
         report.update(stage=stage,exception_type=type(error).__name__)
+        if isinstance(error,ScriptError):report.update(javascript_exception_class=error.kind,javascript_error_hint=error.hint)
         for command in ['Browser.setDownloadBehavior','Browser.getVersion','Target.setAutoAttach','Target.getTargetInfo','Page.enable','Page.getFrameTree','Page.addScriptToEvaluateOnNewDocument','Emulation.setFocusEmulationEnabled']:
             if command in str(error):report['debugger_command']=command
         if isinstance(error,subprocess.CalledProcessError):

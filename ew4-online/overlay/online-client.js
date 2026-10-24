@@ -6,9 +6,9 @@ async function onlinePoll(){
  onlineFetching=true;
  try{
   const response=await fetch('/online/status',{cache:'no-store'}),status=await response.json();
-  window.Ew4OnlineCanAct=!!status.canAct;
+  if(!status.canAct)window.Ew4OnlineCanAct=false;
   if(!status.started){onlineSequence=-1;return;}
-  if(status.sequence===onlineSequence&&window.Ew4OnlineGame.revision()===status.revision)return;
+  if(status.sequence===onlineSequence&&window.Ew4OnlineGame.revision()===status.revision){window.Ew4OnlineCanAct=!!status.canAct;return;}
   const r=await fetch('/api/action',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({op:'state'}),cache:'no-store'}),j=await r.json();
   if(!r.ok||!j.ok)throw Error(j.message||j.error||'Не удалось получить карту');
   if(window.Ew4OnlineGame.busy())return;

@@ -1,6 +1,14 @@
 """Drive the installed Android app's real WebView using page-level DevTools."""
 from pathlib import Path
 import base64,json,subprocess,time
+class ScriptError(RuntimeError):
+    def __init__(self,details):
+        error=details.get('exception',{});kind=error.get('className','Error')
+        self.kind=kind if kind in ['Error','TypeError','ReferenceError','SyntaxError','RangeError','EvalError','DOMException'] else 'Error'
+        description=error.get('description','');self.hint='unclassified'
+        for marker,hint in [('revision','stale_revision'),('状态已更新','stale_revision'),('обнов','stale_revision'),('selectCell is not a function','missing_controller'),('Сейчас ход другой','wrong_turn'),('Failed to fetch','network_error')]:
+            if marker in description:self.hint=hint
+        super().__init__('WebView script failed: '+self.kind)
 class WebView:
     def __init__(self,url,log):
         self.process=subprocess.Popen(['node',str(Path(__file__).with_suffix('.cjs')),url],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=log,text=True,bufsize=1)
@@ -13,7 +21,7 @@ class WebView:
         return result.get('result',{})
     def evaluate(self,expression):
         result=self.command('Runtime.evaluate',{'expression':expression,'awaitPromise':True,'returnByValue':True,'userGesture':True})
-        if 'exceptionDetails' in result:raise RuntimeError('WebView JavaScript evaluation failed')
+        if 'exceptionDetails' in result:raise ScriptError(result['exceptionDetails'])
         return result['result'].get('value')
     def wait(self,expression,seconds=90):
         until=time.monotonic()+seconds

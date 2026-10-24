@@ -26,6 +26,9 @@ jobs:
         run: |
           try {
             .\zone-motion-pc\tools\test_windows_launcher.ps1
+            # Expected failing fixture processes leave LASTEXITCODE nonzero.
+            # Assertions above determine the test result.
+            exit 0
           } catch {
             $message = ($_ | Out-String).Replace('%', '%25').Replace("`r", '%0D').Replace("`n", '%0A')
             Write-Host "::error title=Launcher verification::$message"

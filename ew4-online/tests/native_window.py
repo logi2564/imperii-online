@@ -40,6 +40,10 @@ def main(a):
             assert child.evaluate('document.fonts.check(\'24px "EW4 Russian"\')')
             untranslated=child.evaluate('''()=>Array.from(document.querySelectorAll('[aria-label],[title]')).filter(e=>e.getClientRects().length&&!e.closest('[hidden]')).map(e=>e.getAttribute('aria-label')||e.getAttribute('title')).filter(t=>/[\u3400-\u9fff]/.test(t))''')
             assert not untranslated,untranslated[:25]
+            unit=child.evaluate("async()=>{const j=await(await fetch('/api/action',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({op:'state'})})).json();return j.data.units.find(u=>u.owner===j.data.playerFaction);}")
+            child.evaluate('cell=>selectCell(cell)',unit['cell']);page.wait_for_timeout(500)
+            untranslated=child.evaluate('''()=>Array.from(document.querySelectorAll('[aria-label],[title]')).filter(e=>e.getClientRects().length&&!e.closest('[hidden]')).map(e=>e.getAttribute('aria-label')||e.getAttribute('title')).filter(t=>/[\u3400-\u9fff]/.test(t))''')
+            assert not untranslated,untranslated[:25]
             assert not errors,errors
             page.screenshot(path=str(out/'native-battle.png'))
             assert child.evaluate('Ew4OnlineGame.revision()')>=0

@@ -29,6 +29,7 @@ def run(a):
             code=host.locator('#code').input_value();invite=json.loads(base64.urlsafe_b64decode(code[4:]+'='*((-len(code[4:]))%4)))
             ready=json.loads((profile/'native-ready.json').read_text());cfg=json.loads((profile/'state/saves/online-room.json').read_text())
             api=Client(ready['origin'],cfg['hostToken'])
+            guest_seat=next(c['id'] for c in api.call('/online/status')['choices'] if c['country']=='gbr')
             wait_for(lambda:Client(invite['u'].rstrip('/')).call('/health')['ok'],90)
             stage='android_install'
             package='org.logi2564.ew4online';activity=package+'/.GameActivity'
@@ -42,8 +43,8 @@ def run(a):
             phone=pw.chromium.connect_over_cdp(f'ws://127.0.0.1:{cdp}'+debugger.path)
             guest=phone.contexts[0].pages[0]
             stage='android_choose_country'
-            guest.locator('#faction option[value="gbr"]').wait_for(state='attached',timeout=90000)
-            guest.locator('#faction').select_option('gbr');guest.locator('#choose').click()
+            guest.locator('#faction option[value="'+guest_seat+'"]').wait_for(state='attached',timeout=90000)
+            guest.locator('#faction').select_option(guest_seat);guest.locator('#choose').click()
             host.wait_for_function("()=>!document.querySelector('#start').disabled",timeout=30000)
             host.locator('#start').click()
             stage='battlefields'
@@ -61,6 +62,7 @@ def run(a):
             guest.wait_for_function("()=>!document.querySelector('#end').disabled",timeout=60000)
             # Select/move use the same controller as actual map taps, not a separate test game.
             guest.wait_for_timeout(1800)
+            gf.wait_for_function('()=>window.Ew4OnlineCanAct&&!Ew4OnlineGame.busy()',timeout=60000)
             state=guest_api.state();revision=state['revision']
             for unit in state['units']:
                 if unit['owner']!=gfaction or not unit['canMove']:continue

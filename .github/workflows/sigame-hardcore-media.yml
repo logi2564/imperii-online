@@ -1,0 +1,25 @@
+name: Prepare real sources for the ultra hard SIGame pack
+on:
+  push:
+    branches: [sigame-friends-pack]
+    paths: ['sigame-packs/tools/prepare_hardcore.py', '.github/workflows/sigame-hardcore-media.yml']
+permissions:
+  contents: write
+jobs:
+  media:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install audio and video reader
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Collect rare real gameplay and anime excerpts
+        run: python -u sigame-packs/tools/prepare_hardcore.py
+      - name: Preserve review candidates
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: gh release create "sigame-hardcore-media-${GITHUB_SHA::8}" dist/SIGame-hardcore-review.zip --target "$GITHUB_SHA" --prerelease --latest=false --title 'SIGame hardcore media review' --notes 'Actual game screenshots and short anime excerpts for review. This is not the finished quiz pack. Full videos and full tracks are not included.'

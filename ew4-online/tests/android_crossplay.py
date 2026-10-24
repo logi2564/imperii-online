@@ -35,8 +35,11 @@ def run(a):
             adb('install','-r',a.apk.resolve());adb('shell','am','start','-S','-n',activity,'--es','invite',code)
             pid=wait_for(lambda:adb('shell','pidof',package).strip())
             cdp=free_port();adb('forward',f'tcp:{cdp}',f'localabstract:webview_devtools_remote_{pid}')
-            wait_for(lambda:json.load(urllib.request.urlopen(f'http://127.0.0.1:{cdp}/json',timeout=3)),60)
-            phone=pw.chromium.connect_over_cdp(f'http://127.0.0.1:{cdp}')
+            targets=wait_for(lambda:json.load(urllib.request.urlopen(f'http://127.0.0.1:{cdp}/json',timeout=3)),60)
+            # WebView exposes a page debugger socket rather than a desktop browser socket.
+            from urllib.parse import urlsplit
+            debugger=urlsplit(targets[0]['webSocketDebuggerUrl'])
+            phone=pw.chromium.connect_over_cdp(f'ws://127.0.0.1:{cdp}'+debugger.path)
             guest=phone.contexts[0].pages[0]
             stage='android_choose_country'
             guest.locator('#faction option[value="gbr"]').wait_for(state='attached',timeout=90000)
@@ -70,7 +73,7 @@ def run(a):
             wait_for(lambda:next(u['cell'] for u in api.state()['units'] if u['id']==uid2)==target2)
             guest.locator('#end').click();wait_for(lambda:api.call('/online/status')['canAct'],180)
             assert api.state()['round']>=2
-            resumed=adb('shell','dumpsys','activity','activities');assert package+'/.GameActivity' in resumed
+            resumed=adb('shell','dumpsys','activity','activities');assert any(package+'/.GameActivity' in line and 'mResumedActivity' in line for line in resumed.splitlines())
             guest.wait_for_timeout(1000)
             labels=gf.evaluate("()=>Array.from(document.querySelectorAll('[aria-label],[title]')).filter(e=>e.getClientRects().length&&!e.closest('[hidden]')).map(e=>e.getAttribute('aria-label')||e.getAttribute('title')).filter(t=>/[\\u3400-\\u9fff]/.test(t))")
             assert not labels

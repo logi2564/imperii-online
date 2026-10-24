@@ -124,7 +124,7 @@ for obj in environment.objects:
         assert {key: value for key, value in obj.read_typetree().items()
                 if key not in platform_fields} == protected_build_settings
 
-for file in environment.files.values():
+for original_path, file in environment.files.items():
     if isinstance(file, UnityPy.files.SerializedFile) and file.target_platform == BuildTarget.Android:
         file.target_platform = BuildTarget.StandaloneWindows64
         # UnityPy keeps the serialized integer separately from the public enum.
@@ -135,8 +135,18 @@ for file in environment.files.values():
         check = UnityPy.load(saved)
         assert all(f.target_platform == BuildTarget.StandaloneWindows64 for f in check.files.values()
                    if isinstance(f, UnityPy.files.SerializedFile)), file.name
-        (data / file.name).write_bytes(saved)
+        # File.name is only the basename. Engine resources must stay under
+        # Resources/, otherwise the player keeps loading the untouched originals.
+        destination = Path(original_path).resolve()
+        assert data.resolve() in destination.parents, destination
+        destination.write_bytes(saved)
         counts['adapted_serialized_files'] += 1
+
+disk_check = UnityPy.load(*asset_paths)
+remaining_android = [path for path, file in disk_check.files.items()
+                     if isinstance(file, UnityPy.files.SerializedFile) and
+                     file.target_platform == BuildTarget.Android]
+assert not remaining_android, remaining_android
 
 # Route through an existing menu lifecycle method: built runtime-init metadata
 # predates the new desktop controls. Do not rely on adding only an attribute.

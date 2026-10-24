@@ -5,6 +5,7 @@ on:
     branches: [zone-motion-pc]
     paths:
       - "zone-motion-pc/**"
+      - "!zone-motion-pc/native/**"
       - ".github/workflows/zone-motion-project.yml"
   workflow_dispatch:
 

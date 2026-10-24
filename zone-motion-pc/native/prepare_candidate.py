@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import urllib.request
@@ -85,11 +86,34 @@ with zipfile.ZipFile(apk) as package:
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_bytes(package.read(name))
 
+# Android packages split large asset/resource files into numbered fragments.
+# Materialize contiguous native files once, then remove only these copied chunks.
+split_files = collections.defaultdict(dict)
+for path in data.rglob('*'):
+    if not path.is_file():
+        continue
+    match = re.fullmatch(r'(.+)\.split(\d+)', path.name)
+    if match:
+        split_files[path.with_name(match.group(1))][int(match.group(2))] = path
+for destination, chunks in split_files.items():
+    assert not destination.exists(), destination
+    assert sorted(chunks) == list(range(len(chunks))), destination
+    expected = hashlib.sha256()
+    with destination.open('wb') as merged:
+        for number in sorted(chunks):
+            content = chunks[number].read_bytes()
+            expected.update(content)
+            merged.write(content)
+    assert hashlib.sha256(destination.read_bytes()).digest() == expected.digest()
+    for chunk in chunks.values():
+        chunk.unlink()
+
 print('Adapting game assets', flush=True)
 asset_paths = [str(path) for path in data.rglob('*') if path.is_file() and
                not {'Managed', 'Mono', 'MonoBleedingEdge'}.intersection(path.relative_to(data).parts)]
 environment = UnityPy.load(*asset_paths)
 counts = collections.Counter()
+counts['merged_split_files'] = len(split_files)
 protected_build_settings = None
 for obj in environment.objects:
     if obj.assets_file.target_platform != BuildTarget.Android:

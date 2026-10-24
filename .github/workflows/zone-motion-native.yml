@@ -71,7 +71,7 @@ jobs:
         shell: powershell
         run: .\zone-motion-pc\native\test_candidate.ps1
       - name: Package the verified native game as one portable EXE
-        run: node zone-motion-pc/native/build_portable.mjs
+        run: python zone-motion-pc/native/run_checked.py node zone-motion-pc/native/build_portable.mjs
       - name: Run the exact portable EXE and test game state and saving again
         shell: powershell
         run: .\zone-motion-pc\native\test_candidate.ps1 -Portable

@@ -2,7 +2,7 @@
 Only controlled reports and battlefield screenshots are publishable; profiles/logs are private.
 """
 from pathlib import Path
-import argparse,base64,json,os,socket,subprocess,time,urllib.request,sys
+import argparse,base64,json,os,socket,subprocess,time,urllib.request,sys,re
 from playwright.sync_api import sync_playwright
 from integration import Client,wait_for,move
 
@@ -33,9 +33,12 @@ def run(a):
             wait_for(lambda:Client(invite['u'].rstrip('/')).call('/health')['ok'],90)
             stage='android_install'
             package='org.logi2564.ew4online';activity=package+'/.GameActivity'
-            adb('install','-r',a.apk.resolve());adb('shell','am','start','-S','-n',activity,'--es','invite',code)
+            adb('logcat','-c')
+            stage='android_install_apk';adb('install','-r',a.apk.resolve())
+            stage='android_start_activity';adb('shell','am','start','-S','-n',activity,'--es','invite',code)
+            stage='android_process'
             pid=wait_for(lambda:adb('shell','pidof',package).strip())
-            cdp=free_port();adb('forward',f'tcp:{cdp}',f'localabstract:webview_devtools_remote_{pid}')
+            stage='android_debugger';cdp=free_port();adb('forward',f'tcp:{cdp}',f'localabstract:webview_devtools_remote_{pid}')
             targets=wait_for(lambda:json.load(urllib.request.urlopen(f'http://127.0.0.1:{cdp}/json',timeout=3)),60)
             # WebView exposes a page debugger socket rather than a desktop browser socket.
             from urllib.parse import urlsplit
@@ -83,6 +86,14 @@ def run(a):
             stage='PASS';report.update(result='PASS',real_electron_host=True,installed_android_activity=True,android_emulator=True,external_browser=False,public_https=True,two_independent_countries=True,host_move_synced=True,android_controller_move_synced=True,android_end_turn=True,server_ai_round_two=True,visible_chinese_labels=labels)
     except Exception as error:
         report.update(stage=stage,exception_type=type(error).__name__)
+        if isinstance(error,subprocess.CalledProcessError):
+            match=re.search(r'\bINSTALL_[A-Z_]+\b',str(error.output))
+            if match:report['android_install_error']=match[0]
+        # Publish only exception CLASS names from the disposable test app's crash buffer.
+        try:
+            crash=adb('logcat','-d','-b','crash','-s','AndroidRuntime:E')
+            report['android_exception_classes']=sorted(set(re.findall(r'\b(?:java|android|org)\.[A-Za-z0-9_.$]+(?:Exception|Error)\b',crash)))[:12]
+        except Exception:pass
         print('Crossplay failed at',stage,type(error).__name__,flush=True)
     finally:
         if process:

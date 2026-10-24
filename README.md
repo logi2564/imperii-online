@@ -1,8 +1,10 @@
 # Zone Motion для Windows
 
-**[Скачать ZoneMotion-PC-Windows.exe](https://github.com/logi2564/imperii-online/releases/download/zone-motion-pc-v0.1-e022175d/ZoneMotion-PC-Windows.exe)** — один переносимый файл, около 40 МБ. Запустите его двойным щелчком. Unity Editor, Unity Hub, Codex и Android-эмулятор для игры не требуются.
+**[Скачать ZoneMotion-PC-Windows.exe](https://github.com/logi2564/imperii-online/releases/download/zone-motion-pc-v0.1.1-a78ae512/ZoneMotion-PC-Windows.exe)** — один переносимый файл, около 40 МБ. Запустите его двойным щелчком. Unity Editor, Unity Hub, Codex и Android-эмулятор для игры не требуются.
 
-Первая Windows-сборка Zone Motion 1.275, оригинальная игра — Sokol. Сам опубликованный EXE прошёл проверку на Windows: меню, новая игра на Кордоне, сохранение и повторная загрузка. Вся кампания ещё не пройдена. При отсутствии графического устройства Vulkan автоматически используется встроенный программный рендерер.
+Совместимая Windows-сборка 0.1.1 игры Zone Motion 1.275, оригинальная игра — Sokol. Сам опубликованный EXE прошёл проверку на Windows: настоящие клики мышью по меню, новая игра на Кордоне, сохранение и повторная загрузка. По умолчанию включён проверенный программный рендерер. Вся кампания ещё не пройдена; подтверждения запуска на конкретном ПК пользователя пока нет.
+
+Если процесс закрывается, журналы сохраняются в `%LOCALAPPDATA%\ZoneMotionPC`: `last-launch.txt` и `Player.log`.
 
 Ветка `zone-motion-pc` сохраняет восстановленный Unity-проект и инструменты подготовки нативной сборки. Подробности — [zone-motion-pc/README-PC.md](zone-motion-pc/README-PC.md). Сборка и проверка EXE выполняются в [.github/workflows/zone-motion-native.yml](.github/workflows/zone-motion-native.yml).
 

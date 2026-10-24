@@ -152,6 +152,14 @@ public static class LauncherFixtureEditor {
     }
     $report | ConvertTo-Json | Write-Output
     Assert ($passed -eq 6) 'Unexpected case count.'
+} catch {
+    $diagnosis = "Passed cases: $passed. " + $_.Exception.Message + " " + $_.ScriptStackTrace
+    foreach ($log in @(Get-ChildItem -LiteralPath $tempRoot -Filter 'launcher-output.txt' -Recurse)) {
+        $diagnosis += "`n" + $log.Directory.Name + ': ' + (Get-Content -LiteralPath $log.FullName -Raw)
+    }
+    $escaped = $diagnosis.Replace('%', '%25').Replace("`r", '%0D').Replace("`n", '%0A')
+    Write-Host "::error title=Windows launcher check::$escaped"
+    throw
 } finally {
     Remove-Item -LiteralPath $tempRoot -Recurse -Force
 }

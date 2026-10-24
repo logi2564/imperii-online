@@ -127,7 +127,7 @@ source_folder.mkdir(exist_ok=True)
 compiled_sources = []
 for source in sources:
     if source.name in {'Menu.cs', 'DesktopControls.cs'}:
-        text = source.read_text()
+        text = source.read_text(encoding='utf-8')
         if source.name == 'Menu.cs':
             marker = 'private void Start()\n\t{'
             assert text.count(marker) == 1
@@ -136,7 +136,7 @@ for source in sources:
             assert 'private static void Install()' in text
             text = text.replace('private static void Install()', 'public static void Install()')
         dest = source_folder / source.name
-        dest.write_text(text)
+        dest.write_text(text, encoding='utf-8')
         compiled_sources.append(dest)
     else:
         compiled_sources.append(source)
@@ -148,16 +148,16 @@ sdk = next(line for line in sdk_lines if line.startswith('8.0.426 '))
 sdk_base = Path(sdk[sdk.index('[') + 1:sdk.rindex(']')]) / '8.0.426'
 compiler = sdk_base / 'Roslyn/bincore/csc.dll'
 response = args.work / 'native-compile.rsp'
-options = ['/nologo', '/target:library', '/unsafe+', '/nostdlib+', '/langversion:6',
+options = ['/nologo', '/target:library', '/unsafe+', '/nostdlib+', '/langversion:6', '/codepage:65001',
            '/define:UNITY_STANDALONE;UNITY_STANDALONE_WIN;UNITY_2017_2;UNITY_2017_2_OR_NEWER',
            '/out:"' + str(managed / 'Assembly-CSharp.dll') + '"']
 options += ['/reference:"' + str(p) + '"' for p in references]
 options += ['"' + str(p) + '"' for p in compiled_sources]
-response.write_text('\n'.join(options))
+response.write_text('\n'.join(options), encoding='utf-8')
 subprocess.run([args.dotnet, str(compiler), '@' + str(response)], check=True)
-(data / 'app.info').write_text('Sokol\nZone Motion PC\n')
+(data / 'app.info').write_text('Sokol\nZone Motion PC\n', encoding='utf-8')
 report = {'method': 'native runtime compatibility candidate', 'asset_changes': dict(counts),
           'engine_version': '2017.2.0f3 (46dda1414e51)', 'engine_binaries_modified': False,
           'license_fields_modified': False, 'windows_gameplay_tested': False}
-(output / 'CANDIDATE.json').write_text(json.dumps(report, indent=2))
+(output / 'CANDIDATE.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
 print(json.dumps(report), flush=True)

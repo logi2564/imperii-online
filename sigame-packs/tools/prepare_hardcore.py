@@ -1,5 +1,6 @@
 """Collect actual rare game screenshots and anime sources for the hard edition."""
 import concurrent.futures, hashlib, json, re, subprocess, urllib.parse, urllib.request, zipfile
+import time
 from pathlib import Path
 ROOT=Path('dist/hardcore-review');CACHE=Path('dist/hardcore-cache');ROOT.mkdir(parents=True,exist_ok=True);CACHE.mkdir(parents=True,exist_ok=True)
 GAMES=['Arcanum','Sacrifice','Battle Realms','Kohan II','Perimeter','Ground Control','Zanzarah','Giants Citizen Kabuto','SpellForce Platinum','Dungeon Siege II','Warlords Battlecry III','Seven Kingdoms 2 HD','Celtic Kings','Rising Kingdoms','Evil Islands','Etherlords II','The I of the Dragon','War Wind','Demigod','Majesty Gold HD','Tzar The Burden of the Crown','Knights and Merchants','Majesty 2']
@@ -7,9 +8,9 @@ ANIME={
  'lain':['serial_experiments_lain'],'haibane':['haibane_renmei'],'texhnolyze':['texhnolyze'],'ergo':['ergo_proxy'],
  'wolfs-rain':['wolfs_rain'],'mushishi':['mushishi'],'katanagatari':['katanagatari'],'houseki':['houseki_no_kuni'],
  'baccano':['baccano'],'paranoia':['mousou_dairinin'],'mononoke':['mononoke'],'ping-pong':['ping_pong_the_animation'],
- 'dennou':['dennou_coil'],'kyousougiga':['kyousougiga_tv','kyousougiga'],'hyouge':['hyouge_mono'],'gankutsuou':['gankutsuou'],
+ 'dennou':['dennou_coil'],'kyousougiga':['kyousougiga_2013','kyousougiga_tv'],'hyouge':['hyouge_mono'],'gankutsuou':['gankutsuou'],
  'planetes':['planetes'],'kaiba':['kaiba'],'saraiya':['saraiya_goyou'],'bokurano':['bokurano'],
- 'moribito':['seirei_no_moribito'],'acca':['acca_13ku_kansatsu_ka'],'sayonara':['sayonara_zetsubou_sensei']}
+ 'moribito':['seirei_no_moribito'],'acca':['acca_13ku_kansatsuka'],'sayonara':['sayonara_zetsubou_sensei']}
 
 def get(url,limit=180_000_000):
  req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 (Quiz source research)'})
@@ -24,9 +25,13 @@ def ff(*args):subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y',*
 def game(entry):
  index,title=entry;key=f'game-{index:02d}';url='https://store.steampowered.com/api/storesearch/?'+urllib.parse.urlencode({'term':title,'l':'english','cc':'us'})
  try:
-  search=jget(url);items=search.get('items',[])
-  if not items:raise ValueError('no store results')
-  item=items[0];appid=str(item['id']);meta_url='https://store.steampowered.com/api/appdetails?appids='+appid;data=jget(meta_url)[appid]['data']
+  known={'Arcanum':'500810','Sacrifice':'38440','Demigod':'202710'}
+  if title in known:appid=known[title]
+  else:
+   search=jget(url);items=search.get('items',[])
+   if not items:raise ValueError('no store results')
+   item=items[0];appid=str(item['id'])
+  meta_url='https://store.steampowered.com/api/appdetails?appids='+appid;data=jget(meta_url)[appid]['data']
   shots=[]
   for i in [0,1,3]:
    if i>=len(data.get('screenshots',[])):continue
@@ -38,7 +43,7 @@ def game(entry):
 def anime(entry):
  key,slugs=entry;errors=[]
  for slug in slugs:
-  api='https://api.animethemes.moe/anime/'+slug+'?include=animethemes.animethemeentries.videos,animethemes.song.artists'
+  api='https://api.animethemes.moe/anime/'+slug+'?include=animethemes.animethemeentries.videos'
   try:
    data=jget(api);anime=data['anime'];themes=[t for t in anime.get('animethemes',[]) if t.get('slug','').startswith('OP1')]
    if not themes:raise ValueError('no OP1')
@@ -54,8 +59,27 @@ def anime(entry):
   except Exception as e:errors.append(str(e))
  return {'key':key,'ok':False,'errors':errors}
 
-with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:games=list(ex.map(game,enumerate(GAMES,1)))
-with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:animes=list(ex.map(anime,ANIME.items()))
+previous='https://github.com/logi2564/imperii-online/releases/download/sigame-hardcore-media-e5f10c11/SIGame-hardcore-review.zip'
+try:
+ previous_raw=get(previous,100_000_000);previous_file=CACHE/'previous.zip';previous_file.write_bytes(previous_raw)
+ with zipfile.ZipFile(previous_file) as archive:
+  for name in archive.namelist():
+   if Path(name).name!=name:raise ValueError('unsafe archive entry')
+  archive.extractall(ROOT)
+ prior=json.loads((ROOT/'sources.json').read_text());games=prior['games'];animes=prior['anime']
+except Exception:
+ games=[];animes=[]
+# Reject incorrect search matches; never use unrelated adult or similarly named games.
+for n in [1,2,19]:
+ for old in ROOT.glob(f'game-{n:02d}-*.jpg'):old.unlink()
+todo_games=[(i,t) for i,t in enumerate(GAMES,1) if i in [1,2,19] or not any(g.get('key')==f'game-{i:02d}' and g.get('ok') for g in games)]
+with concurrent.futures.ThreadPoolExecutor(max_workers=2) as ex:
+ replacements=list(ex.map(game,todo_games))
+for fresh in replacements:
+ games=[g for g in games if g.get('key')!=fresh['key']]+[fresh]
+todo_anime=[(key,slugs) for key,slugs in ANIME.items() if not any(a.get('key')==key and a.get('ok') for a in animes)]
+for entry in todo_anime:
+ fresh=anime(entry);animes=[a for a in animes if a.get('key')!=fresh['key']]+[fresh];time.sleep(2)
 (ROOT/'sources.json').write_text(json.dumps({'games':games,'anime':animes},ensure_ascii=False,indent=2),encoding='utf-8')
 with zipfile.ZipFile('dist/SIGame-hardcore-review.zip','w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
  for p in sorted(ROOT.iterdir()):z.write(p,p.name)

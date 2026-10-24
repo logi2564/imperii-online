@@ -22,4 +22,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         shell: bash
-        run: gh release create "sigame-hardcore-media-${GITHUB_SHA::8}" dist/SIGame-hardcore-review.zip --target "$GITHUB_SHA" --prerelease --latest=false --title 'SIGame hardcore media review' --notes 'Actual game screenshots and short anime excerpts for review. This is not the finished quiz pack. Full videos and full tracks are not included.'
+        run: |
+          gh release create "sigame-hardcore-media-${GITHUB_SHA::8}" dist/SIGame-hardcore-review.zip --target "$GITHUB_SHA" --prerelease --latest=false --title 'SIGame hardcore media review' --notes 'Reviewed real screenshots and short anime excerpts, with incorrect search matches removed. This is not the finished quiz pack.'
+          gh release upload sigame-hardcore-media-e5f10c11 dist/SIGame-hardcore-review.zip --clobber

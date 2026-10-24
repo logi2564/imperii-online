@@ -1,4 +1,4 @@
-name: Probe the actual Zone Motion native Windows player
+name: Build and test the native Zone Motion Windows executable
 
 on:
   push:
@@ -18,11 +18,17 @@ concurrency:
 jobs:
   native:
     runs-on: windows-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       PYTHONUTF8: '1'
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -31,6 +37,10 @@ jobs:
           dotnet-version: '8.0.426'
       - name: Install the same game-data parser used in the local preparation
         run: python -m pip install UnityPy==1.25.4
+      - name: Install the locked portable packaging tools
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+        run: npm ci --no-audit --no-fund
       - uses: actions/cache/restore@v4
         id: inputs
         with:
@@ -42,10 +52,13 @@ jobs:
       - name: Prepare the native player candidate from verified source files
         shell: powershell
         run: |
-          python zone-motion-pc/native/run_checked.py python -u zone-motion-pc/native/prepare_candidate.py --work "$env:RUNNER_TEMP\zone-native" --output "$env:GITHUB_WORKSPACE\dist\ZoneMotionPC"
+          python zone-motion-pc/native/run_checked.py python -u zone-motion-pc/native/prepare_candidate.py --work "$env:RUNNER_TEMP\zone-native" --output "$env:GITHUB_WORKSPACE\dist\ZoneMotionPC\Game"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          python zone-motion-pc/native/run_checked.py python -u zone-motion-pc/native/prepare_renderer.py "$env:GITHUB_WORKSPACE\dist\ZoneMotionPC" "$env:RUNNER_TEMP\zone-native"
+          python zone-motion-pc/native/run_checked.py python -u zone-motion-pc/native/prepare_renderer.py "$env:GITHUB_WORKSPACE\dist\ZoneMotionPC\Game" "$env:RUNNER_TEMP\zone-native"
           exit $LASTEXITCODE
+      - name: Compile the native game launcher with automatic graphics fallback
+        shell: powershell
+        run: .\zone-motion-pc\native\build_launcher.ps1
       - uses: actions/cache/save@v4
         if: always() && steps.inputs.outputs.cache-hit != 'true'
         with:
@@ -57,6 +70,21 @@ jobs:
       - name: Launch the actual Windows game and exercise menu and new game
         shell: powershell
         run: .\zone-motion-pc\native\test_candidate.ps1
+      - name: Package the verified native game as one portable EXE
+        run: node zone-motion-pc/native/build_portable.mjs
+      - name: Run the exact portable EXE and test game state and saving again
+        shell: powershell
+        run: .\zone-motion-pc\native\test_candidate.ps1 -Portable
+      - name: Publish only the portable EXE that passed actual game execution
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_COMMIT: ${{ github.sha }}
+        shell: powershell
+        run: |
+          $tag = 'zone-motion-pc-v0.1-' + $env:RELEASE_COMMIT.Substring(0, 8)
+          gh release create $tag dist/native-package/ZoneMotion-PC-Windows.exe dist/native-package/ZoneMotion-PC-Windows.exe.sha256 --target $env:RELEASE_COMMIT --prerelease --latest=false --title 'Zone Motion для Windows — EXE, первая сборка 0.1' --notes-file zone-motion-pc/native/README-WINDOWS.txt
+          exit $LASTEXITCODE
       - name: Preserve startup diagnostics for review
         if: always()
         env:

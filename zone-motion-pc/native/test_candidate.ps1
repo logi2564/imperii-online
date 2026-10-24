@@ -1,10 +1,18 @@
 # Run the actual native game, never an executable fixture.
+param([switch]$Portable)
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
-$game = Join-Path $env:GITHUB_WORKSPACE 'dist\ZoneMotionPC'
+$root = Join-Path $env:GITHUB_WORKSPACE 'dist\ZoneMotionPC'
+$game = Join-Path $root 'Game'
+$entry = Join-Path $root 'ZoneMotion.exe'
 $reports = Join-Path $env:GITHUB_WORKSPACE 'dist\native-validation'
+if ($Portable) {
+    $entry = Join-Path $env:GITHUB_WORKSPACE 'dist\native-package\ZoneMotion-PC-Windows.exe'
+    $reports = Join-Path $env:GITHUB_WORKSPACE 'dist\portable-validation'
+}
 New-Item -ItemType Directory -Path $reports -Force | Out-Null
-$env:VK_ICD_FILENAMES = Join-Path $game 'SoftwareRenderer\vk_swiftshader_icd.json'
+# Exercise the launcher's own device detection and software fallback.
+Remove-Item Env:VK_ICD_FILENAMES -ErrorAction SilentlyContinue
 $env:ZONEMOTION_SMOKE_OUTPUT = $reports
 $log = Join-Path $reports 'Player.log'
 $process = $null
@@ -68,7 +76,7 @@ function Collect-GameLogs {
     }
 }
 try {
-    $process = Start-Process -FilePath (Join-Path $game 'ZoneMotionPC.exe') -WorkingDirectory $game -PassThru `
+    $process = Start-Process -FilePath $entry -WorkingDirectory $root -PassThru `
         -ArgumentList @('-force-vulkan', '-screen-fullscreen', '0', '-screen-width', '1280',
             '-screen-height', '720', '--zone-motion-smoke', '-logFile', ('"' + $log + '"'))
     $deadline = [DateTime]::UtcNow.AddSeconds(120)

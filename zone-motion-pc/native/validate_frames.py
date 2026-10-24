@@ -6,7 +6,7 @@ import sys
 from PIL import Image
 
 root = Path(sys.argv[1])
-for stage, scene in [('menu', 'Menu'), ('new-game', 'Kordon')]:
+for stage, scene in [('menu', 'Menu'), ('new-game', 'Kordon'), ('reload', 'Kordon')]:
     report = json.loads((root / (stage + '.json')).read_text(encoding='utf-8-sig'))
     assert report['scene'] == scene, report
     assert report['frames'] > 2, report
@@ -26,4 +26,4 @@ for stage, scene in [('menu', 'Menu'), ('new-game', 'Kordon')]:
         assert magenta / len(pixels) < 0.01, (stage, 'unsupported magenta shaders')
     print(stage, 'scene:', report['scene'], 'renderer:', report['device'],
           'characters:', report['characters'], 'distinct colors:', len(colors))
-print('Actual native menu and new-game checks passed. Further gameplay checks remain.')
+print('Actual native menu, new-game and save/reload checks passed. Campaign checks remain.')

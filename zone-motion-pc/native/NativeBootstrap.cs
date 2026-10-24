@@ -25,6 +25,7 @@ namespace ZoneMotionPC
     {
         private readonly List<string> errors = new List<string>();
         private string folder;
+        private bool reloaded;
 
         [Serializable]
         public sealed class Report
@@ -69,8 +70,30 @@ namespace ZoneMotionPC
             Capture("new-game");
             bool valid = SceneManager.GetActiveScene().name == "Kordon" &&
                 Data.CharacterD != null && Data.CharacterD.Count > 0 && errors.Count == 0;
+            if (valid)
+            {
+                SaveLoad.AAAAAAAAAAAAAAAAAAde("PCSmoke", true);
+                string save = Path.Combine(Application.persistentDataPath, "CipherPCSmoke.json");
+                if (!File.Exists(save) || new FileInfo(save).Length < 100)
+                { FinishFailure("Saving did not produce game state"); yield break; }
+                SceneManager.sceneLoaded += SceneLoaded;
+                SaveLoad.AAAAAAAAAAAAAAAAcd("PCSmoke");
+                deadline = Time.realtimeSinceStartup + 60f;
+                while (!reloaded && Time.realtimeSinceStartup < deadline) yield return null;
+                SceneManager.sceneLoaded -= SceneLoaded;
+                yield return new WaitForSecondsRealtime(3f);
+                yield return new WaitForEndOfFrame();
+                Capture("reload");
+                valid = reloaded && SceneManager.GetActiveScene().name == "Kordon" &&
+                    Data.CharacterD != null && Data.CharacterD.Count > 0 && errors.Count == 0;
+            }
             File.WriteAllText(Path.Combine(folder, "result.txt"), valid ? "PASS" : "FAIL");
             Application.Quit();
+        }
+
+        private void SceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            reloaded = scene.name == "Kordon";
         }
 
         private void Capture(string stage)

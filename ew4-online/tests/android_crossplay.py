@@ -91,8 +91,13 @@ def run(a):
             stage='translated_labels'
             labels=phone.evaluate("Array.from("+game+".document.querySelectorAll('[aria-label],[title]')).filter(e=>e.getClientRects().length&&!e.closest('[hidden]')).map(e=>e.getAttribute('aria-label')||e.getAttribute('title')).filter(t=>/[\\u3400-\\u9fff]/.test(t))")
             assert not labels
-            host.screenshot(path=str(out/'desktop-multiplayer.png'));phone.screenshot(out/'android-battle.png')
-            stage='PASS';report.update(result='PASS',real_electron_host=True,installed_android_activity=True,android_emulator=True,external_browser=False,public_https=True,two_independent_countries=True,host_move_synced=True,android_controller_move_synced=True,android_end_turn=True,server_ai_round_two=True,visible_chinese_labels=labels)
+            report.update(real_electron_host=True,installed_android_activity=True,android_emulator=True,external_browser=False,public_https=True,two_independent_countries=True,host_move_synced=True,android_controller_move_synced=True,android_end_turn=True,server_ai_round_two=True,visible_chinese_labels=labels)
+            stage='capture_battle'
+            host.screenshot(path=str(out/'desktop-multiplayer.png'))
+            # The dedicated emulator has only this foreground full-screen game Activity.
+            # Android WebView does not implement desktop CDP Page.captureScreenshot.
+            (out/'android-battle.png').write_bytes(subprocess.check_output(['adb','exec-out','screencap','-p']))
+            stage='PASS';report['result']='PASS'
     except Exception as error:
         report.update(stage=stage,exception_type=type(error).__name__)
         if isinstance(error,ScriptError):report.update(javascript_exception_class=error.kind,javascript_error_hint=error.hint)

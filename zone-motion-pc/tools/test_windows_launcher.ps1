@@ -101,7 +101,8 @@ public static class LauncherFixtureEditor {
             [DateTime]::UtcNow -lt $deadline) { Start-Sleep -Milliseconds 100 }
         Assert (Test-Path -LiteralPath $env:ZONEMOTION_TEST_GAME_MARKER) 'Game process was not launched.'
         $expected = Join-Path $Folder 'dist\ZoneMotionPC'
-        Assert ((Get-Content -LiteralPath $env:ZONEMOTION_TEST_GAME_MARKER -Raw) -eq $expected) 'Wrong game working directory.'
+        $actual = [IO.File]::ReadAllText($env:ZONEMOTION_TEST_GAME_MARKER)
+        Assert ($actual -eq $expected) ("Wrong game working directory. Expected [$expected], actual [$actual].")
     }
 
     $folder = New-Fixture 'No Unity'
@@ -155,10 +156,10 @@ public static class LauncherFixtureEditor {
 } catch {
     $diagnosis = "Passed cases: $passed. " + $_.Exception.Message + " " + $_.ScriptStackTrace
     foreach ($log in @(Get-ChildItem -LiteralPath $tempRoot -Filter 'launcher-output.txt' -Recurse)) {
-        $diagnosis += "`n" + $log.Directory.Name + ': ' + (Get-Content -LiteralPath $log.FullName -Raw)
+        $diagnosis += "`n" + $log.Directory.Name + ': ' + [IO.File]::ReadAllText($log.FullName)
     }
     foreach ($log in @(Get-ChildItem -LiteralPath $tempRoot -Filter 'build-windows.log' -Recurse)) {
-        $diagnosis += "`nBuild log: " + (Get-Content -LiteralPath $log.FullName -Raw)
+        $diagnosis += "`nBuild log: " + [IO.File]::ReadAllText($log.FullName)
     }
     $escaped = $diagnosis.Replace('%', '%25').Replace("`r", '%0D').Replace("`n", '%0A')
     Write-Host "::error title=Windows launcher check::$escaped"

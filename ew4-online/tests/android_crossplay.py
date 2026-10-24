@@ -30,14 +30,20 @@ def run(a):
             ready=json.loads((profile/'native-ready.json').read_text());cfg=json.loads((profile/'state/saves/online-room.json').read_text())
             api=Client(ready['origin'],cfg['hostToken'])
             guest_seat=next(c['id'] for c in api.call('/online/status')['choices'] if c['country']=='gbr')
-            wait_for(lambda:Client(invite['u'].rstrip('/')).call('/health')['ok'],90)
+            def public_ready():
+                try:return json.load(urllib.request.urlopen(invite['u'].rstrip('/')+'/health',timeout=5))['ok']
+                except (OSError,ValueError):return False
+            wait_for(public_ready,90)
             stage='android_install'
             package='org.logi2564.ew4online';activity=package+'/.GameActivity'
             adb('logcat','-c')
             stage='android_install_apk';adb('install','-r',a.apk.resolve())
-            stage='android_start_activity';adb('shell','am','start','-S','-n',activity,'--es','invite',code)
+            stage='android_start_activity';adb('shell','am','start','-W','-S','-n',activity,'--es','invite',code)
             stage='android_process'
-            pid=wait_for(lambda:adb('shell','pidof',package).strip())
+            def android_pid():
+                found=subprocess.run(['adb','shell','pidof',package],capture_output=True,text=True)
+                return found.stdout.strip() if found.returncode==0 else None
+            pid=wait_for(android_pid)
             stage='android_debugger';cdp=free_port();adb('forward',f'tcp:{cdp}',f'localabstract:webview_devtools_remote_{pid}')
             targets=wait_for(lambda:json.load(urllib.request.urlopen(f'http://127.0.0.1:{cdp}/json',timeout=3)),60)
             # WebView exposes a page debugger socket rather than a desktop browser socket.

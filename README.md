@@ -1,6 +1,10 @@
-# Zone Motion — проект переноса на Windows
+# Zone Motion для Windows
 
-Ветка `zone-motion-pc` содержит восстановленный Unity-проект Zone Motion 1.275 с управлением для ПК. **Готовый EXE пока не собран**. Для сборки и запуска двойным щелчком добавлен `ИГРАТЬ.cmd`; сначала нужен установленный и активированный Unity 2017.2.0f3. Инструкция — [zone-motion-pc/README-PC.md](zone-motion-pc/README-PC.md). Меню и 13 локаций восстановлены, игровые скрипты прошли статическую компиляцию. Запуск и игровой процесс на Windows ещё нужно проверить.
+**[Скачать ZoneMotion-PC-Windows.exe](https://github.com/logi2564/imperii-online/releases/download/zone-motion-pc-v0.1-e022175d/ZoneMotion-PC-Windows.exe)** — один переносимый файл, около 40 МБ. Запустите его двойным щелчком. Unity Editor, Unity Hub, Codex и Android-эмулятор для игры не требуются.
+
+Первая Windows-сборка Zone Motion 1.275, оригинальная игра — Sokol. Сам опубликованный EXE прошёл проверку на Windows: меню, новая игра на Кордоне, сохранение и повторная загрузка. Вся кампания ещё не пройдена. При отсутствии графического устройства Vulkan автоматически используется встроенный программный рендерер.
+
+Ветка `zone-motion-pc` сохраняет восстановленный Unity-проект и инструменты подготовки нативной сборки. Подробности — [zone-motion-pc/README-PC.md](zone-motion-pc/README-PC.md). Сборка и проверка EXE выполняются в [.github/workflows/zone-motion-native.yml](.github/workflows/zone-motion-native.yml).
 
 ## Империи: Война за мир — альфа 0.2
 

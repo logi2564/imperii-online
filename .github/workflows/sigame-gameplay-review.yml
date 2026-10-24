@@ -1,0 +1,24 @@
+name: Choose gameplay frames without title cards
+on:
+  push:
+    branches: [sigame-friends-pack]
+    paths: ['sigame-packs/tools/prepare_gameplay_frames.py', '.github/workflows/sigame-gameplay-review.yml']
+permissions:
+  contents: write
+jobs:
+  media:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install the media converter
+        run: python -m pip install pillow==11.3.0
+      - name: Extract distinct new opening excerpts and screenshots
+        run: python -u sigame-packs/tools/prepare_gameplay_frames.py
+      - name: Preserve short candidates for review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release create "sigame-gameplay-${GITHUB_SHA::8}" dist/SIGame-gameplay-review.zip --target "$GITHUB_SHA" --prerelease --latest=false --title 'SIGame 120 media preparation' --notes 'Short media candidates for the expanded friends quiz. This is not the playable pack. Full videos and soundtracks are not included.'

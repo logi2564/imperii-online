@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>European War 4 · С друзьями</title><link rel="stylesheet" href="/room.css"></head>
+<body>
+<main id="lobby">
+ <span class="eyebrow">EUROPEAN WAR 4 · НЕОФИЦИАЛЬНАЯ СЕТЕВАЯ ВЕРСИЯ</span>
+ <h1>Одна карта.<br>Два полководца.</h1>
+ <p class="lead">Пошаговая партия между ПК и Android. У каждого своя страна, остальные страны ведёт компьютер.</p>
+ <p id="message" role="status">Подключаемся к комнате…</p>
+ <section id="locked" hidden><h2>Нужна ссылка-приглашение</h2><p>Открой полную ссылку от друга. Создатель запускает EuropeanWar4-Online.exe на своём ПК.</p></section>
+ <section id="host-setup" hidden>
+  <h2>Создать партию</h2>
+  <label>Карта<select id="scenario"></select></label><label>Твоя страна<select id="country"></select></label>
+  <button id="prepare">Создать комнату</button>
+ </section>
+ <section id="waiting" hidden>
+  <h2 id="waiting-title">Выбор страны</h2>
+  <p id="players"></p>
+  <div id="guest-choice" hidden><label>Твоя страна<select id="faction"></select></label><button id="choose">Выбрать страну</button></div>
+  <button id="start" hidden disabled>Начать партию</button>
+ </section>
+ <section id="resume" hidden><h2>Партия идёт</h2><p id="resume-info"></p><button id="open-game">Вернуться на карту</button><button id="reset" class="secondary" hidden>Новая партия</button></section>
+ <section id="invite-area" hidden><label>Отправь эту ссылку другу<input id="invite" readonly></label><button id="copy">Копировать приглашение</button><p id="tunnel-status" class="small"></p></section>
+ <details><summary>Как играть</summary><p>Создатель выбирает карту и страну, отправляет приглашение другу и ждёт выбора второй страны. Затем нажимает «Начать партию». Ходите по очереди: выберите свой отряд на карте, затем клетку для перемещения или вражеский отряд для атаки. Кнопка «Завершить ход» передаёт управление дальше.</p><p>Для игры друг против друга выбирайте страны противоборствующих коалиций; для совместной игры — союзные страны. Действуют дипломатия и условия победы выбранной карты. В завоевании итог считается для каждой страны отдельно.</p><p>На телефоне удобнее играть горизонтально. Карту можно двигать и масштабировать. Партия сохраняется после действий. При обрыве связи открой ту же ссылку снова. Во время игры ПК создателя и окно запуска должны оставаться включёнными.</p></details>
+ <footer>На основе EW4 Rewrite 0.2.19. Сетевая надстройка для друзей. Оригинальная версия EasyTech к этой комнате не подключается. Часть игрового интерфейса сохранена на языке исходной фанатской версии.</footer>
+</main>
+<section id="battle" hidden><header id="bar"><button id="back" class="secondary">Комната</button><span id="turn" role="status"></span><button id="end" disabled>Завершить ход</button></header><iframe id="game" title="Поле боя European War 4" allow="fullscreen; autoplay"></iframe><div id="connection" hidden role="alert">Связь прервалась. Переподключаемся…</div></section>
+<script src="/room.js" defer></script>
+</body></html>

@@ -1,0 +1,4 @@
+Launcher/bin/
+Launcher/obj/
+__pycache__/
+tests/__pycache__/

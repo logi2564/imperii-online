@@ -1,0 +1,114 @@
+name: Build and verify European War 4 online crossplay
+on:
+  push:
+    branches: [ew4-multiplayer]
+    paths: ['ew4-online/**', '.github/workflows/ew4-online.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  crossplay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.100'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch and patch the pinned game source
+        run: |
+          git clone --depth 1 --branch v0.2.19-20261024 https://github.com/aztksilence111/ew4-rewrite.git .work/engine
+          python ew4-online/apply_overlay.py .work/engine
+          npm --prefix .work/engine/tools/frontend ci --no-audit --no-fund
+      - name: Build the real game engine and network host
+        run: dotnet build .work/engine/rewrite/Ew4.Web --configuration Release
+      - name: Install browser verification tools
+        run: |
+          python -m pip install playwright==1.62.0
+          python -m playwright install --with-deps chromium
+      - name: Verify two players, ownership, movements, saves, mobile UI and server AI
+        run: python ew4-online/tests/integration.py --upstream .work/engine --output build/checks
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ew4-crossplay-checks
+          path: |
+            build/checks/integration.json
+            build/checks/host.png
+            build/checks/guest.png
+            build/checks/android-portrait.png
+          if-no-files-found: error
+  windows:
+    needs: crossplay
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.100'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch and patch the exact source validated for crossplay
+        run: |
+          git clone --depth 1 --branch v0.2.19-20261024 https://github.com/aztksilence111/ew4-rewrite.git .work/engine
+          python ew4-online/apply_overlay.py .work/engine
+          npm --prefix .work/engine/tools/frontend ci --no-audit --no-fund
+      - name: Build the self-contained Windows game and launcher
+        run: |
+          dotnet publish .work/engine/rewrite/Ew4.Web --configuration Release --runtime win-x64 --self-contained true --output build/EuropeanWar4-Online/server -p:DebugType=None -p:DebugSymbols=false
+          dotnet publish ew4-online/Launcher --configuration Release --runtime win-x64 --self-contained true --output build/EuropeanWar4-Online
+      - name: Include the pinned automatic internet tunnel and player instructions
+        run: |
+          $pin = Get-Content ew4-online/UPSTREAM.json | ConvertFrom-Json
+          Invoke-WebRequest "https://github.com/cloudflare/cloudflared/releases/download/$($pin.cloudflared_version)/cloudflared-windows-amd64.exe" -OutFile build/EuropeanWar4-Online/cloudflared.exe
+          if ((Get-FileHash build/EuropeanWar4-Online/cloudflared.exe -Algorithm SHA256).Hash.ToLowerInvariant() -ne $pin.cloudflared_windows_sha256) { throw 'Cloudflare executable checksum mismatch' }
+          Invoke-WebRequest "https://raw.githubusercontent.com/cloudflare/cloudflared/$($pin.cloudflared_version)/LICENSE" -OutFile build/EuropeanWar4-Online/Cloudflared-LICENSE.txt
+          Copy-Item ew4-online/HOW-TO-PLAY.txt build/EuropeanWar4-Online/READ-ME.txt
+          Copy-Item ew4-online/UPSTREAM.json build/EuropeanWar4-Online/UPSTREAM.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: ew4-crossplay-checks
+          path: build/checks
+      - name: Start the packaged EXE and verify actual public HTTPS crossplay
+        timeout-minutes: 7
+        run: |
+          & ./build/EuropeanWar4-Online/EuropeanWar4-Online.exe --smoke-test | Tee-Object build/windows-smoke.txt
+          if ($LASTEXITCODE -ne 0) { throw 'The packaged Windows startup or internet invitation failed' }
+      - name: Package the verified portable game with file hashes
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib, json, zipfile, os
+          base=Path('build/EuropeanWar4-Online')
+          files=sorted(p for p in base.rglob('*') if p.is_file())
+          (base/'SHA256SUMS.txt').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.relative_to(base).as_posix()+'\n' for p in files),encoding='utf-8')
+          archive=Path('build/EuropeanWar4-Online-Windows.zip')
+          with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
+              for p in sorted(base.rglob('*')):
+                  if p.is_file():z.write(p,p.relative_to(base.parent))
+          digest=hashlib.sha256(archive.read_bytes()).hexdigest()
+          Path(str(archive)+'.sha256').write_text(digest+'  '+archive.name+'\n')
+          report={'file':archive.name,'bytes':archive.stat().st_size,'sha256':digest,'commit':os.environ['GITHUB_SHA'],'upstream':'3abe88c062b170837c4b290b674b0415bcb6dca8','crossplay':'PASS','windows_startup_and_public_https':'PASS'}
+          Path('build/build-info.json').write_text(json.dumps(report,indent=2)+'\n')
+          print(json.dumps(report,indent=2))
+      - name: Publish the ready game and verification reports
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "ew4-online-v0.1.0-${GITHUB_SHA::8}" build/EuropeanWar4-Online-Windows.zip build/EuropeanWar4-Online-Windows.zip.sha256 build/build-info.json build/windows-smoke.txt build/checks/integration.json build/EuropeanWar4-Online/READ-ME.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'European War 4 - PC and Android online for two friends' --notes-file ew4-online/HOW-TO-PLAY.txt

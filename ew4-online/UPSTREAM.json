@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/aztksilence111/ew4-rewrite.git",
+  "commit": "3abe88c062b170837c4b290b674b0415bcb6dca8",
+  "release": "v0.2.19-20261024",
+  "sdk": "10.0.100",
+  "cloudflared_version": "2026.10.3",
+  "cloudflared_windows_sha256": "76b2805253d0d6ffacb092a7acfbee99e7af6917835c0c5410e23f3ef5052da2"
+}

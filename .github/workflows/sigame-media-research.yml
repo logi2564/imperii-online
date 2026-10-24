@@ -1,0 +1,26 @@
+name: Check public media sources for the friends SIGame pack
+on:
+  push:
+    branches: [sigame-friends-pack]
+    paths: ['sigame-packs/tools/research_media.py', '.github/workflows/sigame-media-research.yml']
+permissions:
+  contents: write
+jobs:
+  sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Read public game and anime source metadata
+        run: python sigame-packs/tools/research_media.py
+      - name: Publish the public source metadata for review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          cd dist/sigame-research
+          zip -q ../SIGame-source-metadata.zip *.json
+          cd ../..
+          gh release create "sigame-sources-${GITHUB_SHA::8}" dist/SIGame-source-metadata.zip --target "$GITHUB_SHA" --prerelease --latest=false --title 'SIGame public source research' --notes 'Public source metadata for the requested game and anime quiz. This asset is not the quiz pack.'

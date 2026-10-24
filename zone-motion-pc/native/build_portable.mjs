@@ -1,6 +1,6 @@
 import { build, Platform, Arch } from "electron-builder";
 import { createHash } from "node:crypto";
-import { readFileSync, writeFileSync, copyFileSync, renameSync } from "node:fs";
+import { readFileSync, writeFileSync, copyFileSync, renameSync, mkdirSync } from "node:fs";
 import { resolve, join, basename } from "node:path";
 
 if (process.platform !== "win32") throw Error("Build the native portable game on Windows.");
@@ -17,6 +17,8 @@ info.commit = process.env.GITHUB_SHA;
 writeFileSync(join(game, "CANDIDATE.json"), JSON.stringify(info, null, 2));
 renameSync(join(game, "CANDIDATE.json"), join(root, "BUILD-INFO.json"));
 copyFileSync("zone-motion-pc/native/README-WINDOWS.txt", join(root, "README.txt"));
+// The generic portable target expects its helper directory in a prepacked app.
+mkdirSync(join(root, "resources"), { recursive: true });
 
 // Only the generic NSIS portable packager is used. The prepackaged payload is
 // the native Unity game and Vulkan driver; no Electron application is included.

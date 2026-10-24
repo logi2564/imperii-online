@@ -44,6 +44,7 @@ jobs:
           git clone --depth 1 --branch v0.2.19-20261024 https://github.com/aztksilence111/ew4-rewrite.git .work/engine
           python ew4-online/apply_overlay.py .work/engine
           npm --prefix .work/engine/tools/frontend ci --no-audit --no-fund
+          dotnet build .work/engine/rewrite/Ew4.Web -c Release
           dotnet publish .work/engine/rewrite/Ew4.Web -c Release -r linux-x64 --self-contained true -o build/game/server -p:DebugType=None -p:DebugSymbols=false
       - name: Install the desktop runtime and verification tools
         run: |

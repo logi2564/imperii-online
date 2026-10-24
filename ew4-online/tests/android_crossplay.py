@@ -21,11 +21,11 @@ def run(a):
             wait_for(lambda:urllib.request.urlopen(f'http://127.0.0.1:{port}/json/version',timeout=2).status==200)
             desktop=pw.chromium.connect_over_cdp(f'http://127.0.0.1:{port}')
             context=desktop.contexts[0];host=context.pages[0] if context.pages else context.wait_for_event('page')
-            host.wait_for_function("!!document.querySelector('#multiplayer')&&!document.querySelector('#multiplayer').disabled",timeout=60000)
+            host.wait_for_function("()=>!!document.querySelector('#multiplayer')&&!document.querySelector('#multiplayer').disabled",timeout=60000)
             stage='create_room'
             host.locator('#multiplayer').click();host.locator('#country option[value="fra"]').wait_for(state='attached')
             host.locator('#country').select_option('fra');host.locator('#create').click()
-            host.wait_for_function("document.querySelector('#code').value.startsWith('EW4-')",timeout=90000)
+            host.wait_for_function("()=>document.querySelector('#code').value.startsWith('EW4-')",timeout=90000)
             code=host.locator('#code').input_value();invite=json.loads(base64.urlsafe_b64decode(code[4:]+'='*((-len(code[4:]))%4)))
             ready=json.loads((profile/'native-ready.json').read_text());cfg=json.loads((profile/'state/saves/online-room.json').read_text())
             api=Client(ready['origin'],cfg['hostToken'])
@@ -44,7 +44,7 @@ def run(a):
             stage='android_choose_country'
             guest.locator('#faction option[value="gbr"]').wait_for(state='attached',timeout=90000)
             guest.locator('#faction').select_option('gbr');guest.locator('#choose').click()
-            host.wait_for_function("!document.querySelector('#start').disabled",timeout=30000)
+            host.wait_for_function("()=>!document.querySelector('#start').disabled",timeout=30000)
             host.locator('#start').click()
             stage='battlefields'
             for page in [host,guest]:page.frame_locator('#game').locator('#play').wait_for(state='visible',timeout=90000)
@@ -58,7 +58,7 @@ def run(a):
             assert next(u['cell'] for u in guest_api.state()['units'] if u['id']==uid)==target
             stage='turn_to_android'
             host.locator('#end').click();wait_for(lambda:guest_api.call('/online/status')['canAct'],60)
-            guest.wait_for_function("!document.querySelector('#end').disabled",timeout=60000)
+            guest.wait_for_function("()=>!document.querySelector('#end').disabled",timeout=60000)
             # Select/move use the same controller as actual map taps, not a separate test game.
             guest.wait_for_timeout(1800)
             state=guest_api.state();revision=state['revision']

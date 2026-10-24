@@ -129,7 +129,8 @@ for file in environment.files.values():
         file.target_platform = BuildTarget.StandaloneWindows64
         # UnityPy keeps the serialized integer separately from the public enum.
         # Updating just target_platform leaves the saved header marked Android.
-        file._m_TargetPlatform = int(BuildTarget.StandaloneWindows64)
+        assert hasattr(file, '_m_target_platform')
+        file._m_target_platform = int(BuildTarget.StandaloneWindows64)
         saved = file.save()
         check = UnityPy.load(saved)
         assert all(f.target_platform == BuildTarget.StandaloneWindows64 for f in check.files.values()

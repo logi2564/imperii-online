@@ -7,7 +7,8 @@ using System.Text.RegularExpressions;
 
 Console.OutputEncoding = Encoding.UTF8;
 string root = AppContext.BaseDirectory;
-bool smoke = args.Contains("--smoke-test");
+bool localSmoke = args.Contains("--smoke-local");
+bool smoke = localSmoke || args.Contains("--smoke-test");
 string folder = smoke ? Path.Combine(Path.GetTempPath(), "BroEW4Smoke-" + Guid.NewGuid().ToString("N"))
     : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "BroEW4Online");
 Directory.CreateDirectory(folder);
@@ -70,7 +71,10 @@ try
     }
     Console.WriteLine("European War 4 — сетевая версия для друзей\n\nЗапускаем игру…");
     stage = "server-start";
-    server = Start(exe, ["--urls", local, "--contentRoot", Path.Combine(root, "server"), "--save-root", saves], Log);
+    // DOTNET_ROOT is also a host configuration key named "root". Always pass
+    // the packaged data folder explicitly instead of inheriting that setting.
+    server = Start(exe, ["--urls", local, "--contentRoot", Path.Combine(root, "server"),
+        "--data-root", Path.Combine(root, "server", "data"), "--save-root", saves], Log);
     using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(2) };
     bool ready = false; stage = "server-ready";
     for (int i = 0; i < 120; i++)
@@ -86,6 +90,11 @@ try
     string token = config.RootElement.GetProperty("hostToken").GetString()!;
     string hostUrl = local + "/#host=" + token;
     File.WriteAllText(Path.Combine(folder, "Открыть игру.url"), "[InternetShortcut]\r\nURL=" + hostUrl + "\r\n");
+    if (localSmoke)
+    {
+        await SmokeTest.Game(local, local, config.RootElement);
+        stage = "local-complete"; SafeStatus(null); return;
+    }
     stage = "browser";
     if (!smoke) Process.Start(new ProcessStartInfo(hostUrl) { UseShellExecute = true });
     var linkReady = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);

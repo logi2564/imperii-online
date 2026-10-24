@@ -29,6 +29,6 @@ public static class SmokeTest
         var state = (await Post(guest, "/api/action", new { op = "state" }))["data"]!;
         if (state["playerFaction"]!.GetValue<string>() != other || state["units"]!.AsArray().Count < 100)
             throw new IOException("Guest did not receive its own country on the real map");
-        Console.WriteLine("PASS: packaged Windows engine loaded European 1798; an authenticated guest received the live battlefield through public HTTPS.");
+        Console.WriteLine("PASS: packaged engine loaded European 1798; an authenticated guest received its own country and the live battlefield.");
     }
 }

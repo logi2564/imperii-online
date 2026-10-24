@@ -16,6 +16,9 @@ SOURCES = {
  'rusted-warfare': 'https://corrodinggames.com/rusted_warfare',
  'rusted-warfare-steam': 'https://store.steampowered.com/app/647960/Rusted_Warfare__RTS/',
  'mindustry': 'https://anuke.itch.io/mindustry',
+ 'siegeup-steam': 'https://store.steampowered.com/app/1621390/Siege_Up/',
+ 'siegeup-api': 'https://store.steampowered.com/api/appdetails?appids=1621390',
+ 'siegeup-steam-news': 'https://store.steampowered.com/news/app/1621390',
 }
 class Page(HTMLParser):
     def __init__(self):
@@ -37,6 +40,14 @@ def read(entry):
         request=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 (compatible; CrossplayResearch/1.0)'})
         with urllib.request.urlopen(request,timeout=40) as r:
             raw=r.read(3_000_000).decode('utf-8',errors='replace');resolved=r.url;status=r.status
+        if key=='siegeup-api':
+            document=json.loads(raw)
+            (out/'siegeup-appdetails.json').write_text(json.dumps(document,ensure_ascii=False,indent=2),encoding='utf-8')
+            for demo in document.get('1621390',{}).get('data',{}).get('demos',[]):
+                appid=str(demo['appid'])
+                with urllib.request.urlopen('https://store.steampowered.com/api/appdetails?appids='+appid,timeout=30) as response:
+                    demo_data=json.load(response)
+                (out/('siegeup-demo-'+appid+'.json')).write_text(json.dumps(demo_data,ensure_ascii=False,indent=2),encoding='utf-8')
         parser=Page();parser.feed(raw)
         result={'source_url':url,'resolved_url':resolved,'http_status':status,
                 'text':'\n'.join(parser.parts)[:65000],'links':list(dict.fromkeys(parser.links))[:180]}

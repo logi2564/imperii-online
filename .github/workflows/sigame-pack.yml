@@ -1,0 +1,46 @@
+name: Build and validate the friends SIGame pack
+on:
+  push:
+    branches: [sigame-friends-pack]
+    paths:
+      - 'sigame-packs/friends-01/**'
+      - 'sigame-packs/tools/build_pack.py'
+      - 'sigame-packs/tools/validate_pack.py'
+      - 'sigame-packs/tools/OfficialLoader/**'
+      - 'sigame-packs/tools/schema/**'
+      - '.github/workflows/sigame-pack.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.426'
+      - name: Install picture, XML and audio verification tools
+        run: |
+          python -m pip install pillow==11.3.0 lxml==6.0.2
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+      - name: Build the offline quiz from the reviewed media
+        run: python sigame-packs/tools/build_pack.py
+      - name: Validate the exact SIQ archive and decode all embedded media
+        run: python sigame-packs/tools/validate_pack.py dist/sigame-pack/Bro-Pack-01.siq
+      - name: Import the exact package with the official SIGame library
+        shell: bash
+        run: dotnet run --project sigame-packs/tools/OfficialLoader --configuration Release -- dist/sigame-pack/Bro-Pack-01.siq | tee dist/sigame-pack/official-import.txt
+      - name: Publish the validated playable quiz pack
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "sigame-bro-pack-v1-${GITHUB_SHA::8}" dist/sigame-pack/Bro-Pack-01.siq dist/sigame-pack/Bro-Pack-01.siq.sha256 dist/sigame-pack/How-to-play.txt dist/sigame-pack/validation.json dist/sigame-pack/official-import.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'BRO PACK 01 - Games and Anime for SIGame' --notes-file sigame-packs/friends-01/HOW-TO-PLAY.txt

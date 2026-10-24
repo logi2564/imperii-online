@@ -1,0 +1,473 @@
+[
+  {
+    "id": "i01",
+    "path": "Images/i01.jpg",
+    "bytes": 256418,
+    "sha256": "03fa56026174458bdbd966fa29400b061bc7072204738e587eedbfcd782173f4",
+    "credit": "Terraria — Re-Logic; скриншот со страницы игры в Steam",
+    "processing": {
+      "type": "image",
+      "frame_seconds": null,
+      "max_width": 1280
+    },
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/105600/ss_8c03886f214d2108cafca13845533eaa3d87d83f.1920x1080.jpg?t=1792530636",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=105600",
+      "name": "Terraria",
+      "source_sha256": "2d87f640da5802848f7b4d2fb6eafe5b8b40fbe165e26dcf38b4d70618e032cb"
+    }
+  },
+  {
+    "id": "i02",
+    "path": "Images/i02.jpg",
+    "bytes": 470376,
+    "sha256": "0ab784cd0e5947e1763e7a1ed94f7324fd94e279bc0b919bc9d6c7391a8e5bda",
+    "credit": "Stardew Valley — ConcernedApe; скриншот со страницы игры в Steam",
+    "processing": {
+      "type": "image",
+      "frame_seconds": null,
+      "max_width": 1280
+    },
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/413150/ss_b887651a93b0525739049eb4194f633de2df75be.1920x1080.jpg?t=1786554168",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=413150",
+      "name": "Stardew Valley",
+      "source_sha256": "4c4b746d325141a0612a040c4ab2cde1f5b76162a47465e72ca8bcb2b086a486"
+    }
+  },
+  {
+    "id": "i03",
+    "path": "Images/i03.jpg",
+    "bytes": 212177,
+    "sha256": "f7ee4098065b7e89c547b19d7283cbaa0de03a072f191f04d5696f814be190ea",
+    "credit": "World of Warcraft — Blizzard Entertainment; архив Daribon, подпись автора DEMSIX сохранена",
+    "processing": {
+      "type": "image",
+      "frame_seconds": null,
+      "max_width": 1280
+    },
+    "source": {
+      "repo": "Daribon/Vanilla-Screenshot-Archive",
+      "commit": "0f4d4aa15559aaf24a066e456a6fd8d457a28906",
+      "path": "Cities/Stormwind/001 - tJSrB.jpg",
+      "url": "https://raw.githubusercontent.com/Daribon/Vanilla-Screenshot-Archive/0f4d4aa15559aaf24a066e456a6fd8d457a28906/Cities/Stormwind/001%20-%20tJSrB.jpg",
+      "source_sha256": "c49e279e5e4ee542f6545af55abc5aea29e89dce3142bc280c4e4e62c9c78957"
+    }
+  },
+  {
+    "id": "i04",
+    "path": "Images/i04.jpg",
+    "bytes": 161381,
+    "sha256": "053eef7957e6c082599c05da2b5291e53117f15fbb8bc85dc0dc1aa15ec2fbb9",
+    "credit": "Portal 2 — Valve; скриншот со страницы игры в Steam",
+    "processing": {
+      "type": "image",
+      "frame_seconds": null,
+      "max_width": 1280
+    },
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/620/ss_f3f6787d74739d3b2ec8a484b5c994b3d31ef325.1920x1080.jpg?t=1790187113",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=620",
+      "name": "Portal 2",
+      "source_sha256": "a32f4e1ef80a67e5e3fc662331d6e12f47c493a5f565c50ec2c9fda89d1cdeca"
+    }
+  },
+  {
+    "id": "i05",
+    "path": "Images/i05.jpg",
+    "bytes": 140126,
+    "sha256": "2339522a25a7821cdf733db7cc8ccedb496a2276eeac3cad4d05c6c7b0d4409e",
+    "credit": "Warcraft III — Blizzard Entertainment; пользовательская карта, архив hunzsig-warcraft3",
+    "processing": {
+      "type": "image",
+      "frame_seconds": null,
+      "max_width": 1280
+    },
+    "source": {
+      "repo": "hunzsig-warcraft3/assets-models",
+      "commit": "6ee33a51ca7ec0d0e8775c14b2818976c9557be3",
+      "path": "_res/temp/WC3ScrnShot_042221_102742_01.jpg",
+      "url": "https://raw.githubusercontent.com/hunzsig-warcraft3/assets-models/6ee33a51ca7ec0d0e8775c14b2818976c9557be3/_res/temp/WC3ScrnShot_042221_102742_01.jpg",
+      "source_sha256": "0297d704c07c765877ca3af24f318715c49139ff25995e53630331c6df34bf39"
+    }
+  },
+  {
+    "id": "a01",
+    "path": "Audio/a01.mp3",
+    "bytes": 133268,
+    "sha256": "dec5c86959e1e0aa13c8028d00912181a616ca2618c8e5edc0fe170b6c35797b",
+    "credit": "Minecraft — Mojang; звук повышения уровня",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 0,
+      "duration_limit_seconds": 7,
+      "repeat": 3,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "medoomem/minecraft-assets-1.20.4",
+      "commit": "14534e563e276c999932f2a427194c1f65cbf273",
+      "path": "assets/minecraft/sounds/random/levelup.ogg",
+      "url": "https://raw.githubusercontent.com/medoomem/minecraft-assets-1.20.4/14534e563e276c999932f2a427194c1f65cbf273/assets/minecraft/sounds/random/levelup.ogg",
+      "source_sha256": "22cc3fe0419fd8d59b74c091cf11afcd0c60fa20a9186b7f997fc31d5c131cba"
+    }
+  },
+  {
+    "id": "a02",
+    "path": "Audio/a02.mp3",
+    "bytes": 100354,
+    "sha256": "4cd1db618c27bd43130c1e6905089438df414215337a95af056fee735c4af032",
+    "credit": "Warcraft III — Blizzard Entertainment; реплика крестьянина Job’s done",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 0,
+      "duration_limit_seconds": 8,
+      "repeat": 2,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "warmwind/warcraft3-claude-code-sound-hook",
+      "commit": "e2da155786e9f4c571bf2d02c4af79012452f7f6",
+      "path": "sounds/human/complete/jobs_done.mp3",
+      "url": "https://raw.githubusercontent.com/warmwind/warcraft3-claude-code-sound-hook/e2da155786e9f4c571bf2d02c4af79012452f7f6/sounds/human/complete/jobs_done.mp3",
+      "source_sha256": "1294b0cb5a6fe6119e9beb8dc68505e785cb60e42540b4c72f00ab3543e14fad"
+    }
+  },
+  {
+    "id": "a03",
+    "path": "Audio/a03.mp3",
+    "bytes": 103488,
+    "sha256": "b4aaa0432a07cf0d6ea4541aa166ac7822a744853da4f9523f6462652fb93404",
+    "credit": "Among Us — Innersloth; сигнал экстренного собрания",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 0,
+      "duration_limit_seconds": 6,
+      "repeat": 2,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "batuhankrbb/AmongUSSoundboard",
+      "commit": "62904261bf615258de24a8cff35b22707d6fa241",
+      "path": "AmongUSSoundboard/Resources/Sounds/Emergency-Meeting.mp3",
+      "url": "https://raw.githubusercontent.com/batuhankrbb/AmongUSSoundboard/62904261bf615258de24a8cff35b22707d6fa241/AmongUSSoundboard/Resources/Sounds/Emergency-Meeting.mp3",
+      "source_sha256": "366e57b549d154d7ed50868fee78abebb70372661f23cf663bb6585770c34cb7"
+    }
+  },
+  {
+    "id": "a04",
+    "path": "Audio/a04.mp3",
+    "bytes": 78933,
+    "sha256": "98543850d88e9d7f0decdfbec8b88ef33cb589587c9987467fd39c8773223a22",
+    "credit": "Terraria — Re-Logic; звук смерти игрока",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 0,
+      "duration_limit_seconds": 5,
+      "repeat": 3,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "BananaPix4613/terrarian-figura-sounds",
+      "commit": "2463cc6d6566713de7a7f5dcf9d90a81db83df35",
+      "path": "sounds/player/death/player_killed.ogg",
+      "url": "https://raw.githubusercontent.com/BananaPix4613/terrarian-figura-sounds/2463cc6d6566713de7a7f5dcf9d90a81db83df35/sounds/player/death/player_killed.ogg",
+      "source_sha256": "f2aa29834be1f61d26e7ec1da05e06c622193770e586b0979d78e219f94650e2"
+    }
+  },
+  {
+    "id": "a05",
+    "path": "Audio/a05.mp3",
+    "bytes": 99831,
+    "sha256": "95f9746f8b541f82e8644ce11412f1309bc1fb767aadbabbba411157af0b1dde",
+    "credit": "Запись игрока Leeroy Jenkins из World of Warcraft; не реплика NPC",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 0,
+      "duration_limit_seconds": 5,
+      "repeat": 1,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "omegabiscuit/WowSoundboard",
+      "commit": "3369952e0425d738910dcd3aa615e982af158bb9",
+      "path": "app/src/main/res/raw/leeroy.mp3",
+      "url": "https://raw.githubusercontent.com/omegabiscuit/WowSoundboard/3369952e0425d738910dcd3aa615e982af158bb9/app/src/main/res/raw/leeroy.mp3",
+      "source_sha256": "6347426bc0ec01db21bf8c1c3966ff81eab6eb4413e84b1f9197ee6f40eedfbf"
+    }
+  },
+  {
+    "id": "a06",
+    "path": "Audio/a06.mp3",
+    "bytes": 281121,
+    "sha256": "6fd5cdaa476cb61055f2928e6e1a5a66606029e5bd26a765baf80a2e16ef58e9",
+    "credit": "Terraria — Overworld Day; Scott Lloyd Shelly / Resonance Array / Re-Logic",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 4,
+      "duration_limit_seconds": 14,
+      "repeat": 1,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "Woobdachoom/Terraria-Soundtrack",
+      "commit": "8a4fd18f369072c1d07e5af4edb1a7bd4e473d1d",
+      "path": "Scott Lloyd Shelly - Terraria Soundtrack - 01 Overworld Day.mp3",
+      "url": "https://raw.githubusercontent.com/Woobdachoom/Terraria-Soundtrack/8a4fd18f369072c1d07e5af4edb1a7bd4e473d1d/Scott%20Lloyd%20Shelly%20-%20Terraria%20Soundtrack%20-%2001%20Overworld%20Day.mp3",
+      "source_sha256": "7c0fcb0c6a7542ababf3889f1747a673ee979af0ee68e0b75d8f838baab749d2"
+    }
+  },
+  {
+    "id": "a07",
+    "path": "Audio/a07.mp3",
+    "bytes": 281121,
+    "sha256": "ba5391ae1b90de2f02ad8065c7e4147e91022e76f6e5d2c4b84343517a679049",
+    "credit": "Minecraft — Sweden; C418 / Daniel Rosenfeld",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 16,
+      "duration_limit_seconds": 14,
+      "repeat": 1,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "medoomem/minecraft-assets-1.20.4",
+      "commit": "14534e563e276c999932f2a427194c1f65cbf273",
+      "path": "assets/minecraft/sounds/music/game/sweden.ogg",
+      "url": "https://raw.githubusercontent.com/medoomem/minecraft-assets-1.20.4/14534e563e276c999932f2a427194c1f65cbf273/assets/minecraft/sounds/music/game/sweden.ogg",
+      "source_sha256": "25984ac6655998148d10ab249ef2724f4cf1638aa67dbd0471fde0939d8db368"
+    }
+  },
+  {
+    "id": "a08",
+    "path": "Audio/a08.mp3",
+    "bytes": 281121,
+    "sha256": "22eb689d9e9507ebc738e584ecbd397b136f3dc26829ddc3b9660c846c7f8dbb",
+    "credit": "World of Warcraft — Stormwind; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 8,
+      "duration_limit_seconds": 14,
+      "repeat": 1,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "commit": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/08_Stormwind.ogg",
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/08_Stormwind.ogg",
+      "source_sha256": "899c73fdfa9b81fe8674203a4c36dcc94bbd75c88f0348c5552d9c2f92754540"
+    }
+  },
+  {
+    "id": "a09",
+    "path": "Audio/a09.mp3",
+    "bytes": 281121,
+    "sha256": "175d19461f52f0576e71ebc0f4c99596607382ecf982dec28ef0edecbad5bd86",
+    "credit": "Warcraft III: Reign of Chaos — Main Menu; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 12,
+      "duration_limit_seconds": 14,
+      "repeat": 1,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "commit": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/WC3_ROC_main_menu.ogg",
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/WC3_ROC_main_menu.ogg",
+      "source_sha256": "5d4c7e2bbc86ffc665471f8ff046704d8130861c3ae95bd2b5ebfbe66d784e18"
+    }
+  },
+  {
+    "id": "a10",
+    "path": "Audio/a10.mp3",
+    "bytes": 281121,
+    "sha256": "8964405f90c20d23c859b8c9c118c28a59b9aba789d8691169e9d6343a7084dd",
+    "credit": "Among Us — Main Theme; Innersloth / Marcus Bromander",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 12,
+      "duration_limit_seconds": 14,
+      "repeat": 1,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "batuhankrbb/AmongUSSoundboard",
+      "commit": "62904261bf615258de24a8cff35b22707d6fa241",
+      "path": "AmongUSSoundboard/Resources/Sounds/Main-Theme.mp3",
+      "url": "https://raw.githubusercontent.com/batuhankrbb/AmongUSSoundboard/62904261bf615258de24a8cff35b22707d6fa241/AmongUSSoundboard/Resources/Sounds/Main-Theme.mp3",
+      "source_sha256": "81e76c70fad13c1c26790032f1b4011eb0433e0033124a954c02515adaf91fe0"
+    }
+  },
+  {
+    "id": "i06",
+    "path": "Images/i06.jpg",
+    "bytes": 25990,
+    "sha256": "50e4e038408bb39534377bf7127115f5ef3912130d875135ecbba79156d64733",
+    "credit": "Naruto: Shippuuden, OP3 Blue Bird — Pierrot / TV Tokyo; кадр из опенинга",
+    "processing": {
+      "type": "image",
+      "frame_seconds": 42,
+      "max_width": 1280
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/NarutoShippuuden-OP3.webm",
+      "source_sha256": "69ab80977a261ba90701af3fa32ada041bf334bd48ef4c1ba0374192005acbf6"
+    }
+  },
+  {
+    "id": "i07",
+    "path": "Images/i07.jpg",
+    "bytes": 124979,
+    "sha256": "f2bddd9e7e9c1030f9973db851f4d698a0802ae509b9b658921764a8a7961ffd",
+    "credit": "One Piece, OP1 We Are! — Toei Animation; кадр из опенинга",
+    "processing": {
+      "type": "image",
+      "frame_seconds": 60,
+      "max_width": 1280
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/OnePiece-OP1.webm",
+      "source_sha256": "e31d56a47bdeb5e179f07fb0e429dc565bd53061b0def031efd774682b9e0f89"
+    }
+  },
+  {
+    "id": "i08",
+    "path": "Images/i08.jpg",
+    "bytes": 65535,
+    "sha256": "eea308ead28846d4b10312ad2584fba7e288ebdf06391a58152ba14ea3b81703",
+    "credit": "Fullmetal Alchemist: Brotherhood, OP1 Again — Bones; кадр из опенинга",
+    "processing": {
+      "type": "image",
+      "frame_seconds": 24,
+      "max_width": 1280
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/FullmetalAlchemistBrotherhood-OP1.webm",
+      "source_sha256": "03413e15ebf1b358e7dc6105a832a8b608c2afe943b2a2305f8e6457214646f6"
+    }
+  },
+  {
+    "id": "i09",
+    "path": "Images/i09.jpg",
+    "bytes": 57460,
+    "sha256": "fe35134b670ba9e258ac564fb3b6a2fde4d75c28c5fd3fc27a6b39a3ccfd8054",
+    "credit": "Death Note, OP1 The WORLD — Madhouse; кадр из опенинга",
+    "processing": {
+      "type": "image",
+      "frame_seconds": 42,
+      "max_width": 1280
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/DeathNote-OP1.webm",
+      "source_sha256": "10fa978397c56f4f7f91cce2a66a587fce84d3ffee4ed61d17661dd3d191b198"
+    }
+  },
+  {
+    "id": "i10",
+    "path": "Images/i10.jpg",
+    "bytes": 48664,
+    "sha256": "453cb0d23eb838754b0feee683ffa1f8d454909ddaa910dc32913fca19c94a69",
+    "credit": "Neon Genesis Evangelion, OP1 — Gainax / Tatsunoko; кадр из опенинга",
+    "processing": {
+      "type": "image",
+      "frame_seconds": 75,
+      "max_width": 1280
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/NeonGenesisEvangelion-OP1.webm",
+      "source_sha256": "c04e2442d69dbc53299f4e066aa03a2a64c68af1964bfa14aad54e1855177e44"
+    }
+  },
+  {
+    "id": "a11",
+    "path": "Audio/a11.mp3",
+    "bytes": 281122,
+    "sha256": "71858f1ec34cf4ec53241c32bca45f4666c22443b0089dd411b0af3fb59605e7",
+    "credit": "Naruto: Shippuuden — Blue Bird; Ikimono-gakari",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 30,
+      "duration_seconds": 14,
+      "level_lufs": -18
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/NarutoShippuuden-OP3.webm",
+      "source_sha256": "69ab80977a261ba90701af3fa32ada041bf334bd48ef4c1ba0374192005acbf6"
+    }
+  },
+  {
+    "id": "a12",
+    "path": "Audio/a12.mp3",
+    "bytes": 281122,
+    "sha256": "aee43969dd05afa7a8302d774b245cde0c4d33e550d26f262857f5d81c75dd3f",
+    "credit": "Tokyo Ghoul — Unravel; TK from Ling tosite sigure",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 30,
+      "duration_seconds": 14,
+      "level_lufs": -18
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/TokyoGhoul-OP1.webm",
+      "source_sha256": "365325741db827b818c4539358c3712257a01a0c19f870e09521ec5715bffc62"
+    }
+  },
+  {
+    "id": "a13",
+    "path": "Audio/a13.mp3",
+    "bytes": 281122,
+    "sha256": "4354c666d34dbac6bbd99d2cd0fe1dead6786d873527f89480f01621376045b8",
+    "credit": "Shingeki no Kyojin — Guren no Yumiya; Linked Horizon",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 30,
+      "duration_seconds": 14,
+      "level_lufs": -18
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/ShingekiNoKyojin-OP1.webm",
+      "source_sha256": "9f1f9e494822d74b55755721da98e3dc9aa1fbf7d07e12a3400cc6b43581dbab"
+    }
+  },
+  {
+    "id": "a14",
+    "path": "Audio/a14.mp3",
+    "bytes": 281122,
+    "sha256": "8969ae8a163a69db2696e518459c326b8dd6f8e1070829928dbcd36ac320b2ff",
+    "credit": "Fullmetal Alchemist: Brotherhood — Again; YUI",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 30,
+      "duration_seconds": 14,
+      "level_lufs": -18
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/FullmetalAlchemistBrotherhood-OP1.webm",
+      "source_sha256": "03413e15ebf1b358e7dc6105a832a8b608c2afe943b2a2305f8e6457214646f6"
+    }
+  },
+  {
+    "id": "a15",
+    "path": "Audio/a15.mp3",
+    "bytes": 281121,
+    "sha256": "1d52fff22f87877731936595c43793724a9d2033c2f20ff421e655c4fa1794ea",
+    "credit": "Parasyte: The Maxim — Let Me Hear; Fear, and Loathing in Las Vegas",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 7,
+      "duration_limit_seconds": 14,
+      "repeat": 1,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "fracuna1/Anime-audio",
+      "commit": "e1d440be32c755b601ae64fe2ad7ab2750c848af",
+      "path": "Parasyte the maxim Opening - Let Me Hear_tv (mp3cut.net) (1).mp3",
+      "url": "https://raw.githubusercontent.com/fracuna1/Anime-audio/e1d440be32c755b601ae64fe2ad7ab2750c848af/Parasyte%20the%20maxim%20Opening%20-%20Let%20Me%20Hear_tv%20%28mp3cut.net%29%20%281%29.mp3",
+      "source_sha256": "3c6355ac9f92f7febaf1dfb24f86b8bc798427a0cdf3f51d9abcddbc95e6e1ef"
+    }
+  }
+]

@@ -22,8 +22,8 @@
 Из корня репозитория:
 
 ```bash
-python sigame-packs/tools/build_pack.py
-python sigame-packs/tools/validate_pack.py dist/sigame-pack/Bro-Pack-120.siq
+python sigame-packs/tools/build_pack.py --pack sigame-packs/friends-120
+python sigame-packs/tools/validate_pack.py dist/sigame-pack/Bro-Pack-120.siq --pack sigame-packs/friends-120
 dotnet run --project sigame-packs/tools/OfficialLoader --configuration Release -- dist/sigame-pack/Bro-Pack-120.siq dist/sigame-pack/build-info.json
 ```
 

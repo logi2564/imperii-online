@@ -1,9 +1,9 @@
-name: Build and validate the 120-question SIGame pack
+name: Build and validate the 140-question ULTRA HARD SIGame pack
 on:
   push:
     branches: [sigame-friends-pack]
     paths:
-      - 'sigame-packs/friends-120/**'
+      - 'sigame-packs/friends-140/**'
       - 'sigame-packs/tools/build_pack.py'
       - 'sigame-packs/tools/pack_model.py'
       - 'sigame-packs/tools/validate_pack.py'
@@ -35,13 +35,13 @@ jobs:
       - name: Build the offline quiz from the reviewed media
         run: python sigame-packs/tools/build_pack.py
       - name: Validate the exact SIQ archive and decode all embedded media
-        run: python sigame-packs/tools/validate_pack.py dist/sigame-pack/Bro-Pack-120.siq
+        run: python sigame-packs/tools/validate_pack.py dist/sigame-pack/Bro-Pack-140-UltraHard.siq
       - name: Import the exact package with the official SIGame library
         shell: bash
-        run: dotnet run --project sigame-packs/tools/OfficialLoader --configuration Release -- dist/sigame-pack/Bro-Pack-120.siq dist/sigame-pack/build-info.json | tee dist/sigame-pack/official-import.txt
+        run: dotnet run --project sigame-packs/tools/OfficialLoader --configuration Release -- dist/sigame-pack/Bro-Pack-140-UltraHard.siq dist/sigame-pack/build-info.json | tee dist/sigame-pack/official-import.txt
       - name: Publish the validated playable quiz pack
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          gh release create "sigame-bro-pack-120-${GITHUB_SHA::8}" dist/sigame-pack/Bro-Pack-120.siq dist/sigame-pack/Bro-Pack-120.siq.sha256 dist/sigame-pack/How-to-play.txt dist/sigame-pack/validation.json dist/sigame-pack/official-import.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'BRO PACK - 120 questions for SIGame' --notes-file sigame-packs/friends-120/HOW-TO-PLAY.txt
+          gh release create "sigame-bro-pack-140-ultrahard-${GITHUB_SHA::8}" dist/sigame-pack/Bro-Pack-140-UltraHard.siq dist/sigame-pack/Bro-Pack-140-UltraHard.siq.sha256 dist/sigame-pack/How-to-play.txt dist/sigame-pack/validation.json dist/sigame-pack/official-import.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'BRO PACK - 140 ULTRA HARD questions for SIGame' --notes-file sigame-packs/friends-140/HOW-TO-PLAY.txt

@@ -112,6 +112,6 @@ def validate(path: Path, pack_dir: Path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('file', type=Path)
-    parser.add_argument('--pack', type=Path, default=Path(__file__).resolve().parent.parent / 'friends-120')
+    parser.add_argument('--pack', type=Path, default=Path(__file__).resolve().parent.parent / 'friends-140')
     args = parser.parse_args()
     validate(args.file, args.pack)

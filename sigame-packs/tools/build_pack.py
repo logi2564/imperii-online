@@ -48,7 +48,7 @@ def build(pack_dir: Path, output_dir: Path):
         'difficulty': str(pack['difficulty']), 'language': pack['language'],
     })
     tags = element(root, 'tags')
-    for tag in ['Видеоигры', 'Аниме', 'Warcraft', 'Terraria', 'Для друзей']:
+    for tag in dict.fromkeys(['Видеоигры', 'Аниме', 'Warcraft', 'Terraria', 'Для друзей'] + pack.get('tags', [])):
         element(tags, 'tag', tag)
     info(root, authors=pack['authors'], comments=pack['description'])
     rounds = element(root, 'rounds')
@@ -83,7 +83,8 @@ def build(pack_dir: Path, output_dir: Path):
                 comments = [question.get('note', '')]
                 if m:
                     comments.append(m['credit'])
-                info(q, sources=[m['source']['url']] if m else [], comments='\n'.join(filter(None, comments)))
+                sources = ([m['source']['url']] if m else []) + question.get('sources', [])
+                info(q, sources=sources, comments='\n'.join(filter(None, comments)))
                 element(q, 'type', name='simple')
                 scenario = element(q, 'scenario')
                 if m:
@@ -107,6 +108,8 @@ def build(pack_dir: Path, output_dir: Path):
     types = ET.Element('Types', xmlns=TYPES_NS)
     for extension, mime in [('xml', 'si/xml'), ('jpg', 'image/jpeg'), ('mp3', 'audio/mpeg')]:
         ET.SubElement(types, 'Default', Extension=extension, ContentType=mime)
+    if any(Path(m['path']).suffix.lower() == '.png' for m in media):
+        ET.SubElement(types, 'Default', Extension='png', ContentType='image/png')
     entries = {'content.xml': xml_bytes(root), '[Content_Types].xml': xml_bytes(types)}
     # Legacy text stores are present even though metadata is written inline.
     entries['Texts/authors.xml'] = b'<?xml version="1.0" encoding="utf-8"?><authors />'
@@ -139,7 +142,7 @@ def build(pack_dir: Path, output_dir: Path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--pack', type=Path, default=Path(__file__).resolve().parent.parent / 'friends-120')
+    parser.add_argument('--pack', type=Path, default=Path(__file__).resolve().parent.parent / 'friends-140')
     parser.add_argument('--output', type=Path, default=Path('dist/sigame-pack'))
     args = parser.parse_args()
     build(args.pack, args.output)

@@ -1,0 +1,2590 @@
+[
+  {
+    "id": "a01",
+    "path": "Images/a01.jpg",
+    "bytes": 41367,
+    "sha256": "44c0540236c73a333d267fc0d5c26bd2095be77357b9c8533213d849281f41a8",
+    "credit": "Serial Experiments Lain; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/SerialExperimentsLain-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/serial_experiments_lain?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "875877952b0522d02e568af588322ebf36a47a347ada597215811ec906e55d4c",
+      "name": "Serial Experiments Lain",
+      "slug": "serial_experiments_lain",
+      "song": {
+        "id": 1069,
+        "title": "DUVET",
+        "artists": [
+          {
+            "id": 1361,
+            "name": "BOA",
+            "slug": "boa",
+            "information": null,
+            "artistsong": {
+              "id": 9391,
+              "alias": null,
+              "as": null,
+              "member_alias": null,
+              "member_as": null,
+              "relevance": null
+            }
+          }
+        ]
+      }
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 48,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a02",
+    "path": "Images/a02.jpg",
+    "bytes": 184562,
+    "sha256": "38a3383e74be72803fd234db67088e319b32b681747dcc66cc1fa5460edc2999",
+    "credit": "Haibane Renmei; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/HaibaneRenmei-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/haibane_renmei?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "917b82df0f50e7dd7d83798afbbf69885c4b91d566769ae48ca038be4ade5d7c",
+      "name": "Haibane Renmei",
+      "slug": "haibane_renmei",
+      "song": {
+        "id": 1442,
+        "title": "Free Bird",
+        "artists": []
+      }
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 48,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a03",
+    "path": "Images/a03.jpg",
+    "bytes": 35304,
+    "sha256": "0685367b4f9baf06ab310a92f72bf4009019970f48796ad3bf82a149f4816a5e",
+    "credit": "Texhnolyze; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/Texhnolyze-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/texhnolyze?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "38a0d794d9a9ba30c1e3a91371495188ef0aec62924d8bfcb37c61bda14449f4",
+      "name": "Texhnolyze",
+      "slug": "texhnolyze",
+      "song": {
+        "id": 1759,
+        "title": "Guardian Angel (Xavier's Edit)",
+        "artists": []
+      }
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 27,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a04",
+    "path": "Images/a04.jpg",
+    "bytes": 78402,
+    "sha256": "428962cde0a20b31b3fbd8ff6495f923bc968958626c8cd4a0ed669e20cbb7fe",
+    "credit": "Ergo Proxy; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/ErgoProxy-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/ergo_proxy?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "1a32ffee56be344391e4a93a5e2c81a5d4e98bf5e6f1295ceb8c4a61b2971a3d",
+      "name": "Ergo Proxy",
+      "slug": "ergo_proxy",
+      "song": {
+        "id": 2562,
+        "title": "Kiri",
+        "artists": []
+      }
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 18,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a05",
+    "path": "Images/a05.jpg",
+    "bytes": 23302,
+    "sha256": "194ef8091155c44e61f1d190103d8fea8c8ac74e8db7891c558c019fa604c724",
+    "credit": "Wolf's Rain; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/WolfsRain-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/wolfs_rain?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "246fc2545dc57909428617c8a63dabcab61c12c2c814fe7d1946d1ef1cfc13e2",
+      "name": "Wolf's Rain",
+      "slug": "wolfs_rain",
+      "song": {
+        "id": 1782,
+        "title": "Stray",
+        "artists": []
+      }
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 67,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a06",
+    "path": "Images/a06.jpg",
+    "bytes": 88960,
+    "sha256": "55b6461fa69ab9f16a68752c9aa75ba30a256a416a10b252c6730c7fd4d9c1df",
+    "credit": "Mushishi; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/Mushishi-OP1-NCBD1080.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/mushishi?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "a79a266df87d37d967817bbd711a8333f535165dee22924092be842c9b74a124",
+      "name": "Mushishi",
+      "slug": "mushishi",
+      "song": {
+        "id": 2093,
+        "title": "The Sore Feet Song",
+        "artists": []
+      }
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 27,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a07",
+    "path": "Images/a07.jpg",
+    "bytes": 132185,
+    "sha256": "378712c2cf47e80a56ccb92ee105ee3bc3f18b36261bbae2427aa0ea1aebf562",
+    "credit": "Katanagatari; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/Katanagatari-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/katanagatari?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "e08bc28bdf355906c128950adf3d69886eefb6ebb752515335a2e52985b1c51b",
+      "name": "Katanagatari",
+      "slug": "katanagatari",
+      "song": {
+        "id": 3915,
+        "title": "Meiya Kadenrou",
+        "artists": []
+      }
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 27,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a08",
+    "path": "Images/a08.jpg",
+    "bytes": 168461,
+    "sha256": "d8292ec57539b214154164800433417644184eb13d52be871dc3a5b365885486",
+    "credit": "Houseki no Kuni; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/HousekiNoKuni-OP1-NCBD1080.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/houseki_no_kuni?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "4ad5ce2ea4d7a41200aa26c6a69849c1bad7eeb0bb2b0030c7c109bffd1cea23",
+      "name": "Houseki no Kuni",
+      "slug": "houseki_no_kuni",
+      "song": {
+        "id": 7309,
+        "title": "Kyoumen no Nami",
+        "artists": [
+          {
+            "id": 269,
+            "name": "YURiKA",
+            "slug": "yurika",
+            "information": null,
+            "artistsong": {
+              "id": 5191,
+              "alias": null,
+              "as": null,
+              "member_alias": null,
+              "member_as": null,
+              "relevance": null
+            }
+          }
+        ]
+      }
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 67,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a09",
+    "path": "Images/a09.jpg",
+    "bytes": 82418,
+    "sha256": "995cc2beabf8001908828a7c3b79d7da625d02db0ab067fbcfb4d1dc937bdfec",
+    "credit": "Baccano!; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/Baccano-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/baccano?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "96f6b056c8244b830905857c26fcf21f6d0ae8737ce5573f7d8c50e54f655280",
+      "name": "Baccano!",
+      "slug": "baccano",
+      "song": {
+        "id": 2692,
+        "title": "Gun's & Roses",
+        "artists": [
+          {
+            "id": 355,
+            "name": "Paradise Lunch",
+            "slug": "paradise_lunch",
+            "information": null,
+            "artistsong": {
+              "id": 5855,
+              "alias": null,
+              "as": null,
+              "member_alias": null,
+              "member_as": null,
+              "relevance": null
+            }
+          }
+        ]
+      }
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 27,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a10",
+    "path": "Images/a10.jpg",
+    "bytes": 97558,
+    "sha256": "4b90e75b255f915e62180df3e9b0e037f2d7f83918028659089fc5690c54715e",
+    "credit": "Mousou Dairinin; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/MousouDairinin-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/mousou_dairinin?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "2eb38867b014e2d7065a45ba6b11591afa3ebab9943c3b84595893a67510c5e9",
+      "name": "Mousou Dairinin",
+      "slug": "mousou_dairinin",
+      "song": {
+        "id": 2057,
+        "title": "Yume no Shima Shinen Kouen/Dream Island Obsessional Park",
+        "artists": [
+          {
+            "id": 236,
+            "name": "Susumu Hirasawa",
+            "slug": "susumu_hirasawa",
+            "information": null,
+            "artistsong": {
+              "id": 4510,
+              "alias": null,
+              "as": null,
+              "member_alias": null,
+              "member_as": null,
+              "relevance": null
+            }
+          }
+        ]
+      }
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 27,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a11",
+    "path": "Images/a11.jpg",
+    "bytes": 214913,
+    "sha256": "c54d62b10c26f04199be1781745257a034b05e612c3d6f30fbf70baeb08b1629",
+    "credit": "Mononoke; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/Mononoke-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/mononoke?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "25fd6a170dcde8845a260d79f3248fbd5f9aff49bddd46c47722a94c81cb301b",
+      "name": "Mononoke",
+      "slug": "mononoke",
+      "song": {
+        "id": 2709,
+        "title": "Kagen no Tsuki",
+        "artists": [
+          {
+            "id": 1809,
+            "name": "Charlie Kosei",
+            "slug": "charlie_kosei",
+            "information": null,
+            "artistsong": {
+              "id": 10016,
+              "alias": null,
+              "as": null,
+              "member_alias": null,
+              "member_as": null,
+              "relevance": null
+            }
+          },
+          {
+            "id": 1912,
+            "name": "Ryouta Komatsu",
+            "slug": "ryouta_komatsu",
+            "information": null,
+            "artistsong": {
+              "id": 10162,
+              "alias": null,
+              "as": null,
+              "member_alias": null,
+              "member_as": null,
+              "relevance": null
+            }
+          }
+        ]
+      }
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 27,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a12",
+    "path": "Images/a12.jpg",
+    "bytes": 92654,
+    "sha256": "7d1c13a1d9c379d79cbdbdf8a80a7ad9d799c0ffd3992215d5d1a3936f0b3028",
+    "credit": "Ping Pong The Animation; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/PingPong-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/ping_pong_the_animation?include=animethemes.animethemeentries.videos",
+      "source_sha256": "fb4a0ac54029125136e9ae0e351e7c25939606bbf9e3627338d1719d3437b1aa",
+      "name": "Ping Pong The Animation",
+      "slug": "ping_pong_the_animation"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 67,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a13",
+    "path": "Images/a13.jpg",
+    "bytes": 102241,
+    "sha256": "09b029f1456afef79d7b9e783af0c896fbb55b9b2876425f5508f71262f833fc",
+    "credit": "Dennou Coil; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/DennouCoil-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/dennou_coil?include=animethemes.animethemeentries.videos",
+      "source_sha256": "a562b85258902660ff45933e2f993fa6da2ee5c64381380e04bd88e8f43eabff",
+      "name": "Dennou Coil",
+      "slug": "dennou_coil"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 67,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a14",
+    "path": "Images/a14.jpg",
+    "bytes": 27624,
+    "sha256": "38874930e8fa4150ac086fa23cef20f49d87b0289a6ed4b809f63f29504283bc",
+    "credit": "Gankutsuou; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/Gankutsuou-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/gankutsuou?include=animethemes.animethemeentries.videos",
+      "source_sha256": "d5e3f7991e2a242dd2026c823f7d9cd270e8b619cc1fecd8e8d4ca56dd4c3fc4",
+      "name": "Gankutsuou",
+      "slug": "gankutsuou"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 48,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a15",
+    "path": "Images/a15.jpg",
+    "bytes": 111987,
+    "sha256": "5cd527a816bf60648ba819c3423d8f0a3cedb1afc32d0d998a94bb16a2881c4c",
+    "credit": "Planetes; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/Planetes-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/planetes?include=animethemes.animethemeentries.videos",
+      "source_sha256": "55369c617f1843595b021929f9e22a61540db94122d2052f91d25b3733f11620",
+      "name": "Planetes",
+      "slug": "planetes"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 27,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a16",
+    "path": "Images/a16.jpg",
+    "bytes": 65310,
+    "sha256": "58fb44f62273b4915605d01bb493b2538c39b3bde2411cf8ae83dcb71dffeac4",
+    "credit": "Kaiba; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/Kaiba-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/kaiba?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "49727893608ea1cfd15db9e3a547818c8f37b8b0a60e21eedb25507aec9271c4",
+      "name": "Kaiba",
+      "slug": "kaiba",
+      "song": {
+        "id": 3126,
+        "title": "Never",
+        "artists": []
+      }
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 67,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a17",
+    "path": "Images/a17.jpg",
+    "bytes": 31001,
+    "sha256": "232cc55eecaac1186cc1114653cf340bebb461e931659fbdeedfbef5ea8292c0",
+    "credit": "Saraiya Goyou; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/SaraiyaGoyou-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/saraiya_goyou?include=animethemes.animethemeentries.videos",
+      "source_sha256": "6b750797d27292269f78a03ad25d931035931654f95fca794f8dcbaa196eb628",
+      "name": "Saraiya Goyou",
+      "slug": "saraiya_goyou"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 67,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a18",
+    "path": "Images/a18.jpg",
+    "bytes": 121194,
+    "sha256": "571ce687fa5237c96dce779555b6cbf0cc1e0a758e3dd8e65afe97513db4544a",
+    "credit": "Bokurano; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/Bokurano-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/bokurano?include=animethemes.animethemeentries.videos",
+      "source_sha256": "b7a0c9277e42cb95578a0af9184dcc3626316a36b11baa4a195024df31a068d7",
+      "name": "Bokurano",
+      "slug": "bokurano"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 67,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a19",
+    "path": "Images/a19.jpg",
+    "bytes": 112414,
+    "sha256": "c2b5aa07117373952f705ab1ab30d09c9484cf4e49667c57732b58bb8ebd8ab7",
+    "credit": "Seirei no Moribito; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/SeireiNoMoribito-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/seirei_no_moribito?include=animethemes.animethemeentries.videos",
+      "source_sha256": "1213606d29c0ec0b665e08dbd1d3543e1479d4b20836dc33ac7c6cbcbf8779e8",
+      "name": "Seirei no Moribito",
+      "slug": "seirei_no_moribito"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 48,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "a20",
+    "path": "Images/a20.jpg",
+    "bytes": 75009,
+    "sha256": "9d59be474383c4790e3c616d6c01ee5e6a50beaf022652dc2967ed3c3219c6dc",
+    "credit": "Hyouge Mono; кадр оригинального опенинга через AnimeThemes; права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/HyougeMono-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/hyouge_mono?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "c3c64188fbae2a756b4452cb88aae6c276dbb882f6e1807ad77dd84d876d909b",
+      "name": "Hyouge Mono",
+      "slug": "hyouge_mono",
+      "song": {
+        "id": 4255,
+        "title": "Bowl Man",
+        "artists": []
+      }
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 67,
+      "operation": "FFmpeg single-frame JPEG extraction; no answer overlay"
+    }
+  },
+  {
+    "id": "g01",
+    "path": "Images/g01.jpg",
+    "bytes": 75281,
+    "sha256": "e8f862b576622b79c4dd23654984b35da3084807912e07d81cc98de137159b2f",
+    "credit": "Arcanum: Of Steamworks and Magick Obscura; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/500810/ss_8be5819326c5d0d7bee2df3bed57d8834afcd64d.1920x1080.jpg?t=1472585780",
+      "source_sha256": "e8f862b576622b79c4dd23654984b35da3084807912e07d81cc98de137159b2f",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=500810",
+      "steam_appid": "500810",
+      "game": "Arcanum: Of Steamworks and Magick Obscura"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g02",
+    "path": "Images/g02.jpg",
+    "bytes": 890967,
+    "sha256": "692e70f21d28ce9d3bc89ff5de7f51514859c777794f2787db44b274f4c91c38",
+    "credit": "Battle Realms: Zen Edition; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1025600/ss_7de0682abe246e2b95023a89cb5eaebcbaeaaea0.1920x1080.jpg?t=1739493630",
+      "source_sha256": "692e70f21d28ce9d3bc89ff5de7f51514859c777794f2787db44b274f4c91c38",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=1025600",
+      "steam_appid": "1025600",
+      "game": "Battle Realms: Zen Edition"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g03",
+    "path": "Images/g03.jpg",
+    "bytes": 198657,
+    "sha256": "41975031f47a0e8b1470c62b8ce59afefc84229a65d7fcfbebe8730e6d8b52e8",
+    "credit": "Kohan II: Kings of War; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/97130/ss_bd64e4dc2563a9e25ca994a800536c90e7ae723e.1920x1080.jpg?t=1783633330",
+      "source_sha256": "41975031f47a0e8b1470c62b8ce59afefc84229a65d7fcfbebe8730e6d8b52e8",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=97130",
+      "steam_appid": "97130",
+      "game": "Kohan II: Kings of War"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g04",
+    "path": "Images/g04.jpg",
+    "bytes": 569800,
+    "sha256": "8e8995ed3fa651a0fb27e7170960d950e7dcd38602b84c6f83ca4e4c97a7aa29",
+    "credit": "PERIMETER: Legate Edition; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2530170/ss_ddef947484312c18abc948fa142149529f91673a.1920x1080.jpg?t=1726812799",
+      "source_sha256": "8e8995ed3fa651a0fb27e7170960d950e7dcd38602b84c6f83ca4e4c97a7aa29",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=2530170",
+      "steam_appid": "2530170",
+      "game": "PERIMETER: Legate Edition"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g05",
+    "path": "Images/g05.jpg",
+    "bytes": 460121,
+    "sha256": "5094f3915b0c4d76c3dbbcd8e4f054875ab5e173d34b22adc447a817ee88a05b",
+    "credit": "Ground Control Anthology; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/254820/ss_e82f01d80453678033c0a7728f715b4d836de3eb.1920x1080.jpg?t=1579791410",
+      "source_sha256": "5094f3915b0c4d76c3dbbcd8e4f054875ab5e173d34b22adc447a817ee88a05b",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=254820",
+      "steam_appid": "254820",
+      "game": "Ground Control Anthology"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g06",
+    "path": "Images/g06.jpg",
+    "bytes": 670020,
+    "sha256": "eae531f750851ab4872babb34fd3991f2b3388c2701b2616aa1b410414431d43",
+    "credit": "Zanzarah: The Hidden Portal; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/384570/ss_c921176dca78dff8d4a41384af86a9b813fbecac.1920x1080.jpg?t=1789475286",
+      "source_sha256": "eae531f750851ab4872babb34fd3991f2b3388c2701b2616aa1b410414431d43",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=384570",
+      "steam_appid": "384570",
+      "game": "Zanzarah: The Hidden Portal"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g07",
+    "path": "Images/g07.jpg",
+    "bytes": 233270,
+    "sha256": "9b89b5cd2fefc93c52550c7bc29e7d793b4f43c50701f0c09cdae71f7bc8b31a",
+    "credit": "SpellForce - Platinum Edition; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/39540/ss_963cee10495d110c395ff8adee9241033d3f2e3b.1920x1080.jpg?t=1618008861",
+      "source_sha256": "9b89b5cd2fefc93c52550c7bc29e7d793b4f43c50701f0c09cdae71f7bc8b31a",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=39540",
+      "steam_appid": "39540",
+      "game": "SpellForce - Platinum Edition"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g08",
+    "path": "Images/g08.jpg",
+    "bytes": 141981,
+    "sha256": "cf2ca0b53562f86e8e3e145a60a6fd3b14905108e062899cfad67cf84e4cf24d",
+    "credit": "Dungeon Siege II; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/39200/ss_789bca4294a6dd6b9ccdf7ba57bd89687ea244e4.1920x1080.jpg?t=1779884923",
+      "source_sha256": "cf2ca0b53562f86e8e3e145a60a6fd3b14905108e062899cfad67cf84e4cf24d",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=39200",
+      "steam_appid": "39200",
+      "game": "Dungeon Siege II"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g09",
+    "path": "Images/g09.jpg",
+    "bytes": 519890,
+    "sha256": "fd44a5a8c7a0c10789995ea784c318d8e96e4d59fbc034d3e88d67d581c37270",
+    "credit": "Warlords Battlecry III; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/433280/ss_a6770b1f10ad08ce0421569e59b4693db603a9e8.1920x1080.jpg?t=1681167161",
+      "source_sha256": "fd44a5a8c7a0c10789995ea784c318d8e96e4d59fbc034d3e88d67d581c37270",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=433280",
+      "steam_appid": "433280",
+      "game": "Warlords Battlecry III"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g10",
+    "path": "Images/g10.jpg",
+    "bytes": 852993,
+    "sha256": "0bce1893842ac2043d82674d2b1e4c3eac08e42527b4bf1c00edd8f0858ab584",
+    "credit": "Seven Kingdoms 2 HD; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/338800/ss_4a97bd1b3f69f613754af9e2bdd8b708963eeb46.1920x1080.jpg?t=1683130376",
+      "source_sha256": "0bce1893842ac2043d82674d2b1e4c3eac08e42527b4bf1c00edd8f0858ab584",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=338800",
+      "steam_appid": "338800",
+      "game": "Seven Kingdoms 2 HD"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g11",
+    "path": "Images/g11.jpg",
+    "bytes": 949252,
+    "sha256": "baaef87569acdb751109e42adaf8a1f8c60714b233c2a092a8845c1c4a90808e",
+    "credit": "Celtic Kings: Rage of War; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/827000/ss_e926c54a9320476eb0a5dfb7d567e83f2c7c7f80.1920x1080.jpg?t=1594028372",
+      "source_sha256": "baaef87569acdb751109e42adaf8a1f8c60714b233c2a092a8845c1c4a90808e",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=827000",
+      "steam_appid": "827000",
+      "game": "Celtic Kings: Rage of War"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g12",
+    "path": "Images/g12.jpg",
+    "bytes": 447481,
+    "sha256": "5e2b8793e8c230cee2e2fecfb680ecc4b4aedba6a77c1de3ecba8ab74893a8a4",
+    "credit": "Rising Kingdoms; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/827050/ss_967f55d0d1b6256071a6565167d19c0c1fcd6995.1920x1080.jpg?t=1563893760",
+      "source_sha256": "5e2b8793e8c230cee2e2fecfb680ecc4b4aedba6a77c1de3ecba8ab74893a8a4",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=827050",
+      "steam_appid": "827050",
+      "game": "Rising Kingdoms"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g13",
+    "path": "Images/g13.jpg",
+    "bytes": 204178,
+    "sha256": "faa905740b8b85b94471bec8d846d96a011351ed9033c3206c21d7e455a13302",
+    "credit": "Etherlords II; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/270790/ss_5a2ad227336ce343533b8796e703666f59430318.1920x1080.jpg?t=1570706747",
+      "source_sha256": "faa905740b8b85b94471bec8d846d96a011351ed9033c3206c21d7e455a13302",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=270790",
+      "steam_appid": "270790",
+      "game": "Etherlords II"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g14",
+    "path": "Images/g14.jpg",
+    "bytes": 254836,
+    "sha256": "d3263fa04928521cfd4c542691020f321de77ee540c3400c611180de23f30503",
+    "credit": "The I of the Dragon; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/279720/ss_08801b3fb0c43199fc89946b2df7ec6f76d43f0f.1920x1080.jpg?t=1719228268",
+      "source_sha256": "d3263fa04928521cfd4c542691020f321de77ee540c3400c611180de23f30503",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=279720",
+      "steam_appid": "279720",
+      "game": "The I of the Dragon"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g15",
+    "path": "Images/g15.jpg",
+    "bytes": 379739,
+    "sha256": "669a4e0ab2fbb9949b6bf11321fad7fe14b8a1f99730587d72837e9b0625026a",
+    "credit": "War Wind; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1741140/ss_48cb70f548c97240e62e5d5ee73877744ab38241.1920x1080.jpg?t=1728494111",
+      "source_sha256": "669a4e0ab2fbb9949b6bf11321fad7fe14b8a1f99730587d72837e9b0625026a",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=1741140",
+      "steam_appid": "1741140",
+      "game": "War Wind"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g16",
+    "path": "Images/g16.jpg",
+    "bytes": 376953,
+    "sha256": "f177334b17cb1b02dddc892d4abf9da48e163847fb8200344a7e4352120b5730",
+    "credit": "Demigod; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/202710/ss_883b1ebbd2705575a6954e4e7dc683df2b884917.1920x1080.jpg?t=1788798492",
+      "source_sha256": "f177334b17cb1b02dddc892d4abf9da48e163847fb8200344a7e4352120b5730",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=202710",
+      "steam_appid": "202710",
+      "game": "Demigod"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g17",
+    "path": "Images/g17.jpg",
+    "bytes": 327012,
+    "sha256": "510b7263f208ddaa56a33fe56a63b927799ef3e6c4a9a7b83aaa44d79d61f2fe",
+    "credit": "Majesty Gold HD; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/25990/ss_b7dc5c85b1c1fd262e9d95c902ec85b16ca426cc.1920x1080.jpg?t=1713279683",
+      "source_sha256": "510b7263f208ddaa56a33fe56a63b927799ef3e6c4a9a7b83aaa44d79d61f2fe",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=25990",
+      "steam_appid": "25990",
+      "game": "Majesty Gold HD"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g18",
+    "path": "Images/g18.jpg",
+    "bytes": 192194,
+    "sha256": "98b34dafe7510a7127dce9a761a9ca49ff5590d44ef6083f63317ab1af7390d3",
+    "credit": "Tzar: The Burden of the Crown; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/825730/ss_618f1f9fda36145e2205927b92f6551b46f504f6.1920x1080.jpg?t=1561462007",
+      "source_sha256": "98b34dafe7510a7127dce9a761a9ca49ff5590d44ef6083f63317ab1af7390d3",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=825730",
+      "steam_appid": "825730",
+      "game": "Tzar: The Burden of the Crown"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g19",
+    "path": "Images/g19.jpg",
+    "bytes": 760536,
+    "sha256": "9a7c9a22cd4cb58cf4e9bbcc5d8e7265ac6ed4b64d9b420a8101887559f64220",
+    "credit": "Knights and Merchants; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/253900/ss_cd3d971128ec52d748a3bd24423b5268fc5dc260.1920x1080.jpg?t=1597837870",
+      "source_sha256": "9a7c9a22cd4cb58cf4e9bbcc5d8e7265ac6ed4b64d9b420a8101887559f64220",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=253900",
+      "steam_appid": "253900",
+      "game": "Knights and Merchants"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "g20",
+    "path": "Images/g20.jpg",
+    "bytes": 347520,
+    "sha256": "290573008e98ffd05e7a3a0f1f587f939603274347e6e905b820ea286f892071",
+    "credit": "Majesty 2; официальный скриншот из галереи Steam, права у авторов игры.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/25980/ss_3e00a49d83e3a025e9a0f076ff611a24468c60a9.1920x1080.jpg?t=1669909907",
+      "source_sha256": "290573008e98ffd05e7a3a0f1f587f939603274347e6e905b820ea286f892071",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=25980",
+      "steam_appid": "25980",
+      "game": "Majesty 2"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original gallery JPEG; unmodified"
+    }
+  },
+  {
+    "id": "h01",
+    "path": "Images/h01.png",
+    "bytes": 2250904,
+    "sha256": "a2f2e6cb10e738a59373eec6b3756c4fb0a366e609d29fe68e58d3bd20c02b38",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h01",
+      "source_sha256": "a2f2e6cb10e738a59373eec6b3756c4fb0a366e609d29fe68e58d3bd20c02b38",
+      "generator": "image_gen",
+      "prompt_sha256": "7d3217249745bb58e8aac4e74eefd0c65bc32561acfa9f6eebdd9c1a9215d93a"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h02",
+    "path": "Images/h02.png",
+    "bytes": 2554193,
+    "sha256": "bb4563126f8d7d5380cb666037d771b402dda3432dd3e8640376e9dd3cf21242",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h02",
+      "source_sha256": "bb4563126f8d7d5380cb666037d771b402dda3432dd3e8640376e9dd3cf21242",
+      "generator": "image_gen",
+      "prompt_sha256": "7cee391fa3180af1a79a7e9a896ae405416cc92e8893a1bddef4f073fe8b774d"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h03",
+    "path": "Images/h03.png",
+    "bytes": 2636184,
+    "sha256": "9c8a17f01891833cdcd196d6cf99013fcd5e678b38db2c85ddcc794a8c0bbae6",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h03",
+      "source_sha256": "9c8a17f01891833cdcd196d6cf99013fcd5e678b38db2c85ddcc794a8c0bbae6",
+      "generator": "image_gen",
+      "prompt_sha256": "04f7130f78ffebeee36fa03e940f4120b7e43689db67e0366d1f087a21088d37"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h04",
+    "path": "Images/h04.png",
+    "bytes": 2595342,
+    "sha256": "af65d0d7a23d0ac8f20232c94d273cca974e49bb56f0687dac2fa785de4ead4f",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h04",
+      "source_sha256": "af65d0d7a23d0ac8f20232c94d273cca974e49bb56f0687dac2fa785de4ead4f",
+      "generator": "image_gen",
+      "prompt_sha256": "8112a4c16fe114f5bf5c52d29dc3b278d009773a46cb8d0f4d3e4b13bca93bc3"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h05",
+    "path": "Images/h05.png",
+    "bytes": 2821928,
+    "sha256": "f7d97ab2fa7419217f9a20c29860c77c57bd23a8f5342c9e9879793f4f78a8f1",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h05",
+      "source_sha256": "f7d97ab2fa7419217f9a20c29860c77c57bd23a8f5342c9e9879793f4f78a8f1",
+      "generator": "image_gen",
+      "prompt_sha256": "f24153660831c849322db03e4db16392d02971dccc0680632bbadcb101a082aa"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h06",
+    "path": "Images/h06.png",
+    "bytes": 2881699,
+    "sha256": "3f2f69987641c9af53d1710bce7ddddf5842c6d2f36e67bce077a4b2c0f835f1",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h06",
+      "source_sha256": "3f2f69987641c9af53d1710bce7ddddf5842c6d2f36e67bce077a4b2c0f835f1",
+      "generator": "image_gen",
+      "prompt_sha256": "a839302f9393bba88c439b905c6b51152f92def2bda0e82f24e01987341827dd"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h07",
+    "path": "Images/h07.png",
+    "bytes": 2249230,
+    "sha256": "b3501c52412e752ddab3d56355b1e3f9cc9e059a351738f4970f42bc819d8d9e",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h07",
+      "source_sha256": "b3501c52412e752ddab3d56355b1e3f9cc9e059a351738f4970f42bc819d8d9e",
+      "generator": "image_gen",
+      "prompt_sha256": "f1b551683f9422265c3220f05486d6a90df8c01549c6a9a4e31361196e4ff167"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h08",
+    "path": "Images/h08.png",
+    "bytes": 2475609,
+    "sha256": "555599bc1105558d560fcddcfaa98bdabccbc3f9a5939b8214449b7ba5e717cd",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h08",
+      "source_sha256": "555599bc1105558d560fcddcfaa98bdabccbc3f9a5939b8214449b7ba5e717cd",
+      "generator": "image_gen",
+      "prompt_sha256": "01a003272bb3ff4b71cdc83c8697de4439861bf99d0a58a198ba4c398999bba0"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h09",
+    "path": "Images/h09.png",
+    "bytes": 2465276,
+    "sha256": "b990b41e310db1f731153744ba63e97bb19d3ed088806d132a4434733d68a442",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h09",
+      "source_sha256": "b990b41e310db1f731153744ba63e97bb19d3ed088806d132a4434733d68a442",
+      "generator": "image_gen",
+      "prompt_sha256": "7cfd37c34dc01a3982e76faa7ec531f9faf7e19054d909722cab5e1fa07ff4b4"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h10",
+    "path": "Images/h10.png",
+    "bytes": 2694710,
+    "sha256": "b0abcecd82e6778e98582f05dc6cd7c81edc914b98a603a6e536e97bdfa00880",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h10",
+      "source_sha256": "b0abcecd82e6778e98582f05dc6cd7c81edc914b98a603a6e536e97bdfa00880",
+      "generator": "image_gen",
+      "prompt_sha256": "bbb12c9fbe11a3ff31b75de7c092cbe34d64a7e1cb02a9430a83097b6cc2a7c2"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h11",
+    "path": "Images/h11.png",
+    "bytes": 2458276,
+    "sha256": "686c25e74533eadabecf3538490e9de0fffe94bd4c7989faf9ceeca2fb48e55c",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h11",
+      "source_sha256": "686c25e74533eadabecf3538490e9de0fffe94bd4c7989faf9ceeca2fb48e55c",
+      "generator": "image_gen",
+      "prompt_sha256": "304894ac71f8ae05144c29f571a13a984999a6c145938cd6163ec3d4d8e9ccfe"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h12",
+    "path": "Images/h12.png",
+    "bytes": 2375325,
+    "sha256": "8403435b129fe981a482b026a47cf483b9d58c9441b69d0a17185720cf98085c",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h12",
+      "source_sha256": "8403435b129fe981a482b026a47cf483b9d58c9441b69d0a17185720cf98085c",
+      "generator": "image_gen",
+      "prompt_sha256": "cc75a20dc366413bb19f103e499825559fe2137a9cdd2339ebe933dde67a0bf1"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h13",
+    "path": "Images/h13.png",
+    "bytes": 2596499,
+    "sha256": "1fbb6c1efeb154d75f47f3bdd09da8fff2e4e0ace52b506e9274bb01adc86028",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h13",
+      "source_sha256": "1fbb6c1efeb154d75f47f3bdd09da8fff2e4e0ace52b506e9274bb01adc86028",
+      "generator": "image_gen",
+      "prompt_sha256": "e7c7824d16eb7f5ba1e4511a97314048c3a4a4f268408ca54f6fc646d1fcd206"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h14",
+    "path": "Images/h14.png",
+    "bytes": 2632537,
+    "sha256": "c3eb1d18915dd8b2182be37c7e957ccc33ad617d771dcbd5e639927d829f1f61",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h14",
+      "source_sha256": "c3eb1d18915dd8b2182be37c7e957ccc33ad617d771dcbd5e639927d829f1f61",
+      "generator": "image_gen",
+      "prompt_sha256": "3889c56d57a8e135037a4ad6bbea279dd07a3e006ca771a719c53291adb8402a"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h15",
+    "path": "Images/h15.png",
+    "bytes": 2908369,
+    "sha256": "85460fc7cd942d92c87ce1e068f79825293bc55d27db0441b7e138fa75818031",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h15",
+      "source_sha256": "85460fc7cd942d92c87ce1e068f79825293bc55d27db0441b7e138fa75818031",
+      "generator": "image_gen",
+      "prompt_sha256": "e2d50fac70448b7f692a3e1ea8ddb79efadab2287460c1115ed81c2a9c8427b5"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h16",
+    "path": "Images/h16.png",
+    "bytes": 3036124,
+    "sha256": "0718de50fa89dcc02dd5a9123195648bc66f09045861938fa9a0a43cbe88337b",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h16",
+      "source_sha256": "0718de50fa89dcc02dd5a9123195648bc66f09045861938fa9a0a43cbe88337b",
+      "generator": "image_gen",
+      "prompt_sha256": "3f89fa28c84678f6f32200da5ae833a408916832eb4dfe0fc472299c24cce365"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h17",
+    "path": "Images/h17.png",
+    "bytes": 2645223,
+    "sha256": "579a9a5583c68a2f33004c93be82563fa6e66d31afd4399cf3600bef8bf6a99e",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h17",
+      "source_sha256": "579a9a5583c68a2f33004c93be82563fa6e66d31afd4399cf3600bef8bf6a99e",
+      "generator": "image_gen",
+      "prompt_sha256": "3e673c9bd41de5175dd6047e5a54bb232e1b3b1947ecf1625523bc0440d0bb9e"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h18",
+    "path": "Images/h18.png",
+    "bytes": 2766995,
+    "sha256": "038b0549d55aa1f9b4ca8bd31f4e42b6ac927efcaf433e228c66929457101f50",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h18",
+      "source_sha256": "038b0549d55aa1f9b4ca8bd31f4e42b6ac927efcaf433e228c66929457101f50",
+      "generator": "image_gen",
+      "prompt_sha256": "f746ea6322990d45aa1a6f1502dc209532335a895ab877b5d4c3e01387446253"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h19",
+    "path": "Images/h19.png",
+    "bytes": 2450232,
+    "sha256": "53ca22f334300b3f788c6f6fba5c2c66285a1f75f6488064e121b564b8cbf124",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h19",
+      "source_sha256": "53ca22f334300b3f788c6f6fba5c2c66285a1f75f6488064e121b564b8cbf124",
+      "generator": "image_gen",
+      "prompt_sha256": "7cf5de8c8d3af2acec1ca227f1d8d8b27d027855c03882d340bd5eb27c1dfac9"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h20",
+    "path": "Images/h20.png",
+    "bytes": 2985648,
+    "sha256": "0bbbfe06791e57bf3eb7ee0ea09dedf5af0ce55d389af1157ff009c7255c21e0",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h20",
+      "source_sha256": "0bbbfe06791e57bf3eb7ee0ea09dedf5af0ce55d389af1157ff009c7255c21e0",
+      "generator": "image_gen",
+      "prompt_sha256": "52e383af45f1ef2424fd4e517d795f33255275390185fe84eb82d0d820a53425"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "mu01",
+    "path": "Audio/mu01.mp3",
+    "bytes": 141105,
+    "sha256": "a461a1e8e82cbef0cc04e4e2c918b6ecf2962a85a123916e0f9868dccb144c1b",
+    "credit": "Terraria — Overworld Day; Scott Lloyd Shelly / Resonance Array / Re-Logic",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 80,
+      "duration_seconds": 7
+    },
+    "source": {
+      "repo": "Woobdachoom/Terraria-Soundtrack",
+      "commit": "8a4fd18f369072c1d07e5af4edb1a7bd4e473d1d",
+      "path": "Scott Lloyd Shelly - Terraria Soundtrack - 01 Overworld Day.mp3",
+      "url": "https://raw.githubusercontent.com/Woobdachoom/Terraria-Soundtrack/8a4fd18f369072c1d07e5af4edb1a7bd4e473d1d/Scott%20Lloyd%20Shelly%20-%20Terraria%20Soundtrack%20-%2001%20Overworld%20Day.mp3",
+      "source_sha256": "7c0fcb0c6a7542ababf3889f1747a673ee979af0ee68e0b75d8f838baab749d2"
+    }
+  },
+  {
+    "id": "mu02",
+    "path": "Audio/mu02.mp3",
+    "bytes": 141105,
+    "sha256": "059a9e6ed77abaf37a895e1ca119e63b9547499e8336becb3f3840266c22b7a9",
+    "credit": "Minecraft — Sweden; C418 / Daniel Rosenfeld",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 145,
+      "duration_seconds": 7
+    },
+    "source": {
+      "repo": "medoomem/minecraft-assets-1.20.4",
+      "commit": "14534e563e276c999932f2a427194c1f65cbf273",
+      "path": "assets/minecraft/sounds/music/game/sweden.ogg",
+      "url": "https://raw.githubusercontent.com/medoomem/minecraft-assets-1.20.4/14534e563e276c999932f2a427194c1f65cbf273/assets/minecraft/sounds/music/game/sweden.ogg",
+      "source_sha256": "25984ac6655998148d10ab249ef2724f4cf1638aa67dbd0471fde0939d8db368"
+    }
+  },
+  {
+    "id": "mu03",
+    "path": "Audio/mu03.mp3",
+    "bytes": 141105,
+    "sha256": "873585b5bca0b6edbed659c671992f58e233c3d0cd143f10af554877b0f2b8a4",
+    "credit": "World of Warcraft — Stormwind; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 65,
+      "duration_seconds": 7
+    },
+    "source": {
+      "repo": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "commit": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/08_Stormwind.ogg",
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/08_Stormwind.ogg",
+      "source_sha256": "899c73fdfa9b81fe8674203a4c36dcc94bbd75c88f0348c5552d9c2f92754540"
+    }
+  },
+  {
+    "id": "mu04",
+    "path": "Audio/mu04.mp3",
+    "bytes": 141105,
+    "sha256": "1231d2de955105a0cd1169191cedb3851cb2fa643cb93e8bd0a65a88406ef29d",
+    "credit": "Warcraft III: Reign of Chaos — Main Menu; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 45,
+      "duration_seconds": 7
+    },
+    "source": {
+      "repo": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "commit": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/WC3_ROC_main_menu.ogg",
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/WC3_ROC_main_menu.ogg",
+      "source_sha256": "5d4c7e2bbc86ffc665471f8ff046704d8130861c3ae95bd2b5ebfbe66d784e18"
+    }
+  },
+  {
+    "id": "mu05",
+    "path": "Audio/mu05.mp3",
+    "bytes": 141105,
+    "sha256": "35ee8a2da4cc6d587b4ddb25e881e48cfd25f3826278d3a0dc334fd59dab14af",
+    "credit": "Among Us — Main Theme; Innersloth / Marcus Bromander",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 43,
+      "duration_seconds": 7
+    },
+    "source": {
+      "repo": "batuhankrbb/AmongUSSoundboard",
+      "commit": "62904261bf615258de24a8cff35b22707d6fa241",
+      "path": "AmongUSSoundboard/Resources/Sounds/Main-Theme.mp3",
+      "url": "https://raw.githubusercontent.com/batuhankrbb/AmongUSSoundboard/62904261bf615258de24a8cff35b22707d6fa241/AmongUSSoundboard/Resources/Sounds/Main-Theme.mp3",
+      "source_sha256": "81e76c70fad13c1c26790032f1b4011eb0433e0033124a954c02515adaf91fe0"
+    }
+  },
+  {
+    "id": "mu06",
+    "path": "Audio/mu06.mp3",
+    "bytes": 141105,
+    "sha256": "695454f36dcb7f7437ba3aedeaf2d5fe5889c180ae7bb9a72a7eee5d634c19ca",
+    "credit": "World of Warcraft — Orgrimmar; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/09_Orgrimmar.ogg",
+      "repository": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "source_ref": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/09_Orgrimmar.ogg",
+      "source_sha256": "a7a5d3a005c087c4e829b313d08d45013edbc158ce97556068fccb515ae3a464"
+    }
+  },
+  {
+    "id": "mu07",
+    "path": "Audio/mu07.mp3",
+    "bytes": 141105,
+    "sha256": "39565f0d206010731ceea472d96809b649857e497efb2b7904166298c5330942",
+    "credit": "World of Warcraft — Ironforge; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 69,
+      "duration_seconds": 7
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/13_Ironforge.ogg",
+      "repository": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "source_ref": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/13_Ironforge.ogg",
+      "source_sha256": "39cce17c499117a535e1fcd09198d424648bd399a2f8b37b2d0b3c008a06d6aa"
+    }
+  },
+  {
+    "id": "mu08",
+    "path": "Audio/mu08.mp3",
+    "bytes": 141105,
+    "sha256": "37f38cf9cf69c46a4fd236be88664d2b8a349a686e572f799959618430ad3572",
+    "credit": "World of Warcraft — Darnassus; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 74,
+      "duration_seconds": 7
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/12_Darnassus.ogg",
+      "repository": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "source_ref": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/12_Darnassus.ogg",
+      "source_sha256": "f40817bf3f1d2179551bb9b1421d96668fed3f1cd15615f6bbc441a1408d352f"
+    }
+  },
+  {
+    "id": "mu09",
+    "path": "Audio/mu09.mp3",
+    "bytes": 141105,
+    "sha256": "ee8da89be8d7e2e0ece9fd0d5ad148c1fe7e233ec3cb1ed53af35ed4b4f4332f",
+    "credit": "World of Warcraft — The Undercity; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 55,
+      "duration_seconds": 7
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/10_The_Undercity.ogg",
+      "repository": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "source_ref": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/10_The_Undercity.ogg",
+      "source_sha256": "3a3476e49fa3243e3c83e78934438589a08fadf0ef5ea94ac07d18789ed39ca1"
+    }
+  },
+  {
+    "id": "mu10",
+    "path": "Audio/mu10.mp3",
+    "bytes": 141105,
+    "sha256": "f24ae2fc9c95c8ab8ddef382a9d1ef75be65ca0ec8c54124b6ff0f489e1e6e5d",
+    "credit": "World of Warcraft — Thunder Bluff; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 61,
+      "duration_seconds": 7
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/11_Thunder_Bluff.ogg",
+      "repository": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "source_ref": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/11_Thunder_Bluff.ogg",
+      "source_sha256": "da33eee1f50282d7733479c77e2e94d4accaca7bda063798a18fa28657d49491"
+    }
+  },
+  {
+    "id": "mu11",
+    "path": "Audio/mu11.mp3",
+    "bytes": 141105,
+    "sha256": "edcabe63cecabe72fecb3b4f469533cac054f8c96bbc628f66a4b8e07a2d86a9",
+    "credit": "Warcraft: Orcs & Humans — Human 1; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 88,
+      "duration_seconds": 7
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/WC1_Human_1.ogg",
+      "repository": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "source_ref": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/WC1_Human_1.ogg",
+      "source_sha256": "84047cbee640fff25a65bd52331829ca8c4e6704c9685cdaf5e9decff72bdae2"
+    }
+  },
+  {
+    "id": "mu12",
+    "path": "Audio/mu12.mp3",
+    "bytes": 141105,
+    "sha256": "fd41757d44df257892453288fada952a2e3e707876241597c4452e954148ef3d",
+    "credit": "Warcraft II — Orc 1; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 70,
+      "duration_seconds": 7
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/WC2_Orc_01.ogg",
+      "repository": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "source_ref": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/WC2_Orc_01.ogg",
+      "source_sha256": "defe7101f42728636176683b013d1b1e4855269db46b1d18b3f303467ada8b62"
+    }
+  },
+  {
+    "id": "mu13",
+    "path": "Audio/mu13.mp3",
+    "bytes": 141105,
+    "sha256": "34525be13c22ee87b26150e100459ef43cb3337006186a219c2b9b10bb3bf747",
+    "credit": "Warcraft III — Arcane Echoes; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 117,
+      "duration_seconds": 7
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/WC3_Arcane_Echoes.ogg",
+      "repository": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "source_ref": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/WC3_Arcane_Echoes.ogg",
+      "source_sha256": "8e050b1f3179f9dcf8276f8e993cb01dcae33fcbe7dee7d5ee926627f67e4513"
+    }
+  },
+  {
+    "id": "mu14",
+    "path": "Audio/mu14.mp3",
+    "bytes": 141105,
+    "sha256": "cd8837f472f5eb46ce6766a854c9a2ac414e7307b308ea1a2502f414b4071d04",
+    "credit": "Terraria — Overworld Night; Scott Lloyd Shelly / Re-Logic",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 77,
+      "duration_seconds": 7
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Woobdachoom/Terraria-Soundtrack/8a4fd18f369072c1d07e5af4edb1a7bd4e473d1d/Scott%20Lloyd%20Shelly%20-%20Terraria%20Soundtrack%20-%2003%20Overworld%20Night.mp3",
+      "repository": "Woobdachoom/Terraria-Soundtrack",
+      "source_ref": "8a4fd18f369072c1d07e5af4edb1a7bd4e473d1d",
+      "path": "Scott Lloyd Shelly - Terraria Soundtrack - 03 Overworld Night.mp3",
+      "source_sha256": "c925ce279deb6c36f637d4bf4bdceabc8b50a27a859da00c8805b656c44934ee"
+    }
+  },
+  {
+    "id": "mu15",
+    "path": "Audio/mu15.mp3",
+    "bytes": 141105,
+    "sha256": "aac051a4407ef63d7c348dc0ea26240bd2053f95453e9aded0421fbe012b61a7",
+    "credit": "Minecraft — Mice on Venus; C418 / Daniel Rosenfeld",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 170,
+      "duration_seconds": 7
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/medoomem/minecraft-assets-1.20.4/14534e563e276c999932f2a427194c1f65cbf273/assets/minecraft/sounds/music/game/mice_on_venus.ogg",
+      "repository": "medoomem/minecraft-assets-1.20.4",
+      "source_ref": "14534e563e276c999932f2a427194c1f65cbf273",
+      "path": "assets/minecraft/sounds/music/game/mice_on_venus.ogg",
+      "source_sha256": "a47cf88c0fdfe5de1e3f2cd8a1f1b955b474622e1b3b07269783f9755f902b05"
+    }
+  },
+  {
+    "id": "mu16",
+    "path": "Audio/mu16.mp3",
+    "bytes": 141105,
+    "sha256": "e83e9d9be9006d477f00b0fc828b10c7a90194ddbde3672196b647f009b3fffe",
+    "credit": "Terraria — Underground; Scott Lloyd Shelly / Re-Logic",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 97,
+      "duration_seconds": 7
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Woobdachoom/Terraria-Soundtrack/8a4fd18f369072c1d07e5af4edb1a7bd4e473d1d/Scott%20Lloyd%20Shelly%20-%20Terraria%20Soundtrack%20-%2005%20Underground.mp3",
+      "repository": "Woobdachoom/Terraria-Soundtrack",
+      "source_ref": "8a4fd18f369072c1d07e5af4edb1a7bd4e473d1d",
+      "path": "Scott Lloyd Shelly - Terraria Soundtrack - 05 Underground.mp3",
+      "source_sha256": "7586bb82d1779e92af862ebe3ae3aadcf95b8caa76253dc714f48859a0cd6c51"
+    }
+  },
+  {
+    "id": "mu17",
+    "path": "Audio/mu17.mp3",
+    "bytes": 141105,
+    "sha256": "1b0d6c8ddfa786e7138cbf2b4333cfafd0a74d628bdee3fc1d762dcc83753a68",
+    "credit": "Terraria — Eerie; Scott Lloyd Shelly / Re-Logic",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 95,
+      "duration_seconds": 7
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Woobdachoom/Terraria-Soundtrack/8a4fd18f369072c1d07e5af4edb1a7bd4e473d1d/Scott%20Lloyd%20Shelly%20-%20Terraria%20Soundtrack%20-%2002%20Eerie.mp3",
+      "repository": "Woobdachoom/Terraria-Soundtrack",
+      "source_ref": "8a4fd18f369072c1d07e5af4edb1a7bd4e473d1d",
+      "path": "Scott Lloyd Shelly - Terraria Soundtrack - 02 Eerie.mp3",
+      "source_sha256": "d2269bd2ed0b820af01294a71ccd3b6209e26d56bc01f2a9e0d208773967fa02"
+    }
+  },
+  {
+    "id": "mu18",
+    "path": "Audio/mu18.mp3",
+    "bytes": 141105,
+    "sha256": "bfdd86c2ca4ef9323318b4b15b1c9d5d7c8a8cd6a1c6b236701c3be4e8f63eaf",
+    "credit": "Terraria — Title Screen; Scott Lloyd Shelly / Re-Logic",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 40,
+      "duration_seconds": 7
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Woobdachoom/Terraria-Soundtrack/8a4fd18f369072c1d07e5af4edb1a7bd4e473d1d/Scott%20Lloyd%20Shelly%20-%20Terraria%20Soundtrack%20-%2004%20Title%20Screen.mp3",
+      "repository": "Woobdachoom/Terraria-Soundtrack",
+      "source_ref": "8a4fd18f369072c1d07e5af4edb1a7bd4e473d1d",
+      "path": "Scott Lloyd Shelly - Terraria Soundtrack - 04 Title Screen.mp3",
+      "source_sha256": "99d6acde2a693054694df2c8d6ea7d9d0206f436f890cda94660674c27eb51d7"
+    }
+  },
+  {
+    "id": "mu19",
+    "path": "Audio/mu19.mp3",
+    "bytes": 141105,
+    "sha256": "906849eac2a7c924c80a7831929ef312d5282aa1ccb683582c53bdb1187ef39e",
+    "credit": "World of Warcraft — Elwynn Forest; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 69,
+      "duration_seconds": 7
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/14_Elwynn_Forest.ogg",
+      "repository": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "source_ref": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/14_Elwynn_Forest.ogg",
+      "source_sha256": "0375ef7a23979907ac44a46ce6ffb8634f85878ac662c1bceb3a070107d0043c"
+    }
+  },
+  {
+    "id": "mu20",
+    "path": "Audio/mu20.mp3",
+    "bytes": 141105,
+    "sha256": "91bc90750bbebb8b00dd85e27dea5ad10d71069b2a730215417e1b0cc44e1055",
+    "credit": "World of Warcraft — Tanaris; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 72,
+      "duration_seconds": 7
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/21_Tanaris.ogg",
+      "repository": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "source_ref": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/21_Tanaris.ogg",
+      "source_sha256": "1020732bca0fba75a19b43221919e373d3075167e3e37cb30a61ccc19e03a257"
+    }
+  },
+  {
+    "id": "o01",
+    "path": "Audio/o01.mp3",
+    "bytes": 141106,
+    "sha256": "570191ba3cae231039cb25db63806a9c3e8cc35a23ef285b0027755ae5f88831",
+    "credit": "Serial Experiments Lain; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/SerialExperimentsLain-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/serial_experiments_lain?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "875877952b0522d02e568af588322ebf36a47a347ada597215811ec906e55d4c",
+      "name": "Serial Experiments Lain",
+      "slug": "serial_experiments_lain",
+      "song": {
+        "id": 1069,
+        "title": "DUVET",
+        "artists": [
+          {
+            "id": 1361,
+            "name": "BOA",
+            "slug": "boa",
+            "information": null,
+            "artistsong": {
+              "id": 9391,
+              "alias": null,
+              "as": null,
+              "member_alias": null,
+              "member_as": null,
+              "relevance": null
+            }
+          }
+        ]
+      }
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o02",
+    "path": "Audio/o02.mp3",
+    "bytes": 141106,
+    "sha256": "aa667f0434e68cfdcef93df8910a745a280dc1321cd3bca4d005e56307e95767",
+    "credit": "Haibane Renmei; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/HaibaneRenmei-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/haibane_renmei?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "917b82df0f50e7dd7d83798afbbf69885c4b91d566769ae48ca038be4ade5d7c",
+      "name": "Haibane Renmei",
+      "slug": "haibane_renmei",
+      "song": {
+        "id": 1442,
+        "title": "Free Bird",
+        "artists": []
+      }
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o03",
+    "path": "Audio/o03.mp3",
+    "bytes": 141106,
+    "sha256": "9fc8e8fa72592d774a8629a3a26960d2cfca1531ee6800c01d831bbe763d5617",
+    "credit": "Texhnolyze; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/Texhnolyze-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/texhnolyze?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "38a0d794d9a9ba30c1e3a91371495188ef0aec62924d8bfcb37c61bda14449f4",
+      "name": "Texhnolyze",
+      "slug": "texhnolyze",
+      "song": {
+        "id": 1759,
+        "title": "Guardian Angel (Xavier's Edit)",
+        "artists": []
+      }
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o04",
+    "path": "Audio/o04.mp3",
+    "bytes": 141106,
+    "sha256": "015ddf27931c1fd2f77630b9363fcd8e343808a4e39c21f72bade3887d10a2ed",
+    "credit": "Ergo Proxy; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/ErgoProxy-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/ergo_proxy?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "1a32ffee56be344391e4a93a5e2c81a5d4e98bf5e6f1295ceb8c4a61b2971a3d",
+      "name": "Ergo Proxy",
+      "slug": "ergo_proxy",
+      "song": {
+        "id": 2562,
+        "title": "Kiri",
+        "artists": []
+      }
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o05",
+    "path": "Audio/o05.mp3",
+    "bytes": 141106,
+    "sha256": "b15b772c958fd44c5aae30ac03bc71a7329721744bd133a1d20da92370ca2d56",
+    "credit": "Wolf's Rain; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/WolfsRain-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/wolfs_rain?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "246fc2545dc57909428617c8a63dabcab61c12c2c814fe7d1946d1ef1cfc13e2",
+      "name": "Wolf's Rain",
+      "slug": "wolfs_rain",
+      "song": {
+        "id": 1782,
+        "title": "Stray",
+        "artists": []
+      }
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o06",
+    "path": "Audio/o06.mp3",
+    "bytes": 141106,
+    "sha256": "4a31826fa03c3408cff96bd389c5d88a4cf3255392ba3b3ac3fddf99432837c0",
+    "credit": "Mushishi; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/Mushishi-OP1-NCBD1080.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/mushishi?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "a79a266df87d37d967817bbd711a8333f535165dee22924092be842c9b74a124",
+      "name": "Mushishi",
+      "slug": "mushishi",
+      "song": {
+        "id": 2093,
+        "title": "The Sore Feet Song",
+        "artists": []
+      }
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o07",
+    "path": "Audio/o07.mp3",
+    "bytes": 141106,
+    "sha256": "2888e6cbd693250601ebb8c7cc06019a09e28643a397047279d453faad063d43",
+    "credit": "Katanagatari; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/Katanagatari-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/katanagatari?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "e08bc28bdf355906c128950adf3d69886eefb6ebb752515335a2e52985b1c51b",
+      "name": "Katanagatari",
+      "slug": "katanagatari",
+      "song": {
+        "id": 3915,
+        "title": "Meiya Kadenrou",
+        "artists": []
+      }
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o08",
+    "path": "Audio/o08.mp3",
+    "bytes": 141106,
+    "sha256": "52db783f3be391457c7a41cbd4ed52e750abca7a12b499063ef409d48b234b60",
+    "credit": "Houseki no Kuni; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/HousekiNoKuni-OP1-NCBD1080.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/houseki_no_kuni?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "4ad5ce2ea4d7a41200aa26c6a69849c1bad7eeb0bb2b0030c7c109bffd1cea23",
+      "name": "Houseki no Kuni",
+      "slug": "houseki_no_kuni",
+      "song": {
+        "id": 7309,
+        "title": "Kyoumen no Nami",
+        "artists": [
+          {
+            "id": 269,
+            "name": "YURiKA",
+            "slug": "yurika",
+            "information": null,
+            "artistsong": {
+              "id": 5191,
+              "alias": null,
+              "as": null,
+              "member_alias": null,
+              "member_as": null,
+              "relevance": null
+            }
+          }
+        ]
+      }
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o09",
+    "path": "Audio/o09.mp3",
+    "bytes": 141106,
+    "sha256": "ddec75235d3eed538e5dd71b02e71e9bb2c6296e70f9be62742e400daac3c57e",
+    "credit": "Baccano!; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/Baccano-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/baccano?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "96f6b056c8244b830905857c26fcf21f6d0ae8737ce5573f7d8c50e54f655280",
+      "name": "Baccano!",
+      "slug": "baccano",
+      "song": {
+        "id": 2692,
+        "title": "Gun's & Roses",
+        "artists": [
+          {
+            "id": 355,
+            "name": "Paradise Lunch",
+            "slug": "paradise_lunch",
+            "information": null,
+            "artistsong": {
+              "id": 5855,
+              "alias": null,
+              "as": null,
+              "member_alias": null,
+              "member_as": null,
+              "relevance": null
+            }
+          }
+        ]
+      }
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o10",
+    "path": "Audio/o10.mp3",
+    "bytes": 141106,
+    "sha256": "1a54351ba643ccc72c2423314dc32e1cb625dbab1487a47a8dcf3a2f63014279",
+    "credit": "Mousou Dairinin; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/MousouDairinin-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/mousou_dairinin?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "2eb38867b014e2d7065a45ba6b11591afa3ebab9943c3b84595893a67510c5e9",
+      "name": "Mousou Dairinin",
+      "slug": "mousou_dairinin",
+      "song": {
+        "id": 2057,
+        "title": "Yume no Shima Shinen Kouen/Dream Island Obsessional Park",
+        "artists": [
+          {
+            "id": 236,
+            "name": "Susumu Hirasawa",
+            "slug": "susumu_hirasawa",
+            "information": null,
+            "artistsong": {
+              "id": 4510,
+              "alias": null,
+              "as": null,
+              "member_alias": null,
+              "member_as": null,
+              "relevance": null
+            }
+          }
+        ]
+      }
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o11",
+    "path": "Audio/o11.mp3",
+    "bytes": 141106,
+    "sha256": "47a10e07e34d4fbc40c7f9d88b0fb527f32ab3cc50899360734ba00abd5adcf1",
+    "credit": "Mononoke; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/Mononoke-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/mononoke?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "25fd6a170dcde8845a260d79f3248fbd5f9aff49bddd46c47722a94c81cb301b",
+      "name": "Mononoke",
+      "slug": "mononoke",
+      "song": {
+        "id": 2709,
+        "title": "Kagen no Tsuki",
+        "artists": [
+          {
+            "id": 1809,
+            "name": "Charlie Kosei",
+            "slug": "charlie_kosei",
+            "information": null,
+            "artistsong": {
+              "id": 10016,
+              "alias": null,
+              "as": null,
+              "member_alias": null,
+              "member_as": null,
+              "relevance": null
+            }
+          },
+          {
+            "id": 1912,
+            "name": "Ryouta Komatsu",
+            "slug": "ryouta_komatsu",
+            "information": null,
+            "artistsong": {
+              "id": 10162,
+              "alias": null,
+              "as": null,
+              "member_alias": null,
+              "member_as": null,
+              "relevance": null
+            }
+          }
+        ]
+      }
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o12",
+    "path": "Audio/o12.mp3",
+    "bytes": 141106,
+    "sha256": "c07397cfcf2184c4b90f016b5b4dd836d431c65354fadb7a1072e9299f73547e",
+    "credit": "Ping Pong The Animation; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/PingPong-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/ping_pong_the_animation?include=animethemes.animethemeentries.videos",
+      "source_sha256": "fb4a0ac54029125136e9ae0e351e7c25939606bbf9e3627338d1719d3437b1aa",
+      "name": "Ping Pong The Animation",
+      "slug": "ping_pong_the_animation"
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o13",
+    "path": "Audio/o13.mp3",
+    "bytes": 141106,
+    "sha256": "ef16a4c91d442581a931a5dcd2eed52dab07aa09a7fdc1fbc566025b1ed7cd53",
+    "credit": "Dennou Coil; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/DennouCoil-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/dennou_coil?include=animethemes.animethemeentries.videos",
+      "source_sha256": "a562b85258902660ff45933e2f993fa6da2ee5c64381380e04bd88e8f43eabff",
+      "name": "Dennou Coil",
+      "slug": "dennou_coil"
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o14",
+    "path": "Audio/o14.mp3",
+    "bytes": 141106,
+    "sha256": "7a4759c32cb936d59f49321f0974431d4757307e57905b6c16cc33df9da6baff",
+    "credit": "Gankutsuou; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/Gankutsuou-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/gankutsuou?include=animethemes.animethemeentries.videos",
+      "source_sha256": "d5e3f7991e2a242dd2026c823f7d9cd270e8b619cc1fecd8e8d4ca56dd4c3fc4",
+      "name": "Gankutsuou",
+      "slug": "gankutsuou"
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o15",
+    "path": "Audio/o15.mp3",
+    "bytes": 141106,
+    "sha256": "428c064c13a83f939e9a33d92d8491e2d40fef27a474db1876b2b48c3b42db6a",
+    "credit": "Planetes; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/Planetes-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/planetes?include=animethemes.animethemeentries.videos",
+      "source_sha256": "55369c617f1843595b021929f9e22a61540db94122d2052f91d25b3733f11620",
+      "name": "Planetes",
+      "slug": "planetes"
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o16",
+    "path": "Audio/o16.mp3",
+    "bytes": 141106,
+    "sha256": "dcdabe9053c93e32addfd6c1dcf5d32195fb94250bf16aea2e18b5ae7acb66e9",
+    "credit": "Kaiba; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/Kaiba-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/kaiba?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "49727893608ea1cfd15db9e3a547818c8f37b8b0a60e21eedb25507aec9271c4",
+      "name": "Kaiba",
+      "slug": "kaiba",
+      "song": {
+        "id": 3126,
+        "title": "Never",
+        "artists": []
+      }
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o17",
+    "path": "Audio/o17.mp3",
+    "bytes": 141106,
+    "sha256": "cab5c9c810ace3b40b0c51c6a49709a3be4d524012eaf58249f077acdc78d068",
+    "credit": "Saraiya Goyou; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/SaraiyaGoyou-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/saraiya_goyou?include=animethemes.animethemeentries.videos",
+      "source_sha256": "6b750797d27292269f78a03ad25d931035931654f95fca794f8dcbaa196eb628",
+      "name": "Saraiya Goyou",
+      "slug": "saraiya_goyou"
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o18",
+    "path": "Audio/o18.mp3",
+    "bytes": 141106,
+    "sha256": "2a35db8a5296147a4e2873d65899f7e7a159495188f9daf3d7f1944e6cb50164",
+    "credit": "Bokurano; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/Bokurano-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/bokurano?include=animethemes.animethemeentries.videos",
+      "source_sha256": "b7a0c9277e42cb95578a0af9184dcc3626316a36b11baa4a195024df31a068d7",
+      "name": "Bokurano",
+      "slug": "bokurano"
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o19",
+    "path": "Audio/o19.mp3",
+    "bytes": 141106,
+    "sha256": "78e3c8ebe8a6214eb6f1b546bc3fccabf3f199cb2f6d7c474a853a3426c306a2",
+    "credit": "Seirei no Moribito; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/SeireiNoMoribito-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/seirei_no_moribito?include=animethemes.animethemeentries.videos",
+      "source_sha256": "1213606d29c0ec0b665e08dbd1d3543e1479d4b20836dc33ac7c6cbcbf8779e8",
+      "name": "Seirei no Moribito",
+      "slug": "seirei_no_moribito"
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "o20",
+    "path": "Audio/o20.mp3",
+    "bytes": 141106,
+    "sha256": "e42b04ba994c9276f0dd347b0e10a0c3dedfdaf478fca98e491f0062a12cbc9a",
+    "credit": "Hyouge Mono; фрагмент оригинального опенинга через AnimeThemes; права у авторов записи.",
+    "source": {
+      "url": "https://v.animethemes.moe/HyougeMono-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/hyouge_mono?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "c3c64188fbae2a756b4452cb88aae6c276dbb882f6e1807ad77dd84d876d909b",
+      "name": "Hyouge Mono",
+      "slug": "hyouge_mono",
+      "song": {
+        "id": 4255,
+        "title": "Bowl Man",
+        "artists": []
+      }
+    },
+    "processing": {
+      "type": "audio",
+      "start_seconds": 48,
+      "duration_seconds": 7,
+      "loudness_target_lufs": -18,
+      "bitrate_kbps": 160,
+      "operation": "short MP3 excerpt with stripped title/artist metadata"
+    }
+  },
+  {
+    "id": "v01",
+    "path": "Audio/v01.mp3",
+    "bytes": 64305,
+    "sha256": "bfb025a6d625cc3011bbe00ca0e708a189ca20572214e25433e8032a95819d3c",
+    "credit": "World of Warcraft (Tauren); звуковая подборка Taylan Aydinli (https://github.com/taylan); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 3.149773,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/taylan/openpeon-wow-tauren/v1.0.0/sounds/0240-mess-with-the-bull-you-get-the-horns.ogg",
+      "source_sha256": "078715b91a8d13eed09981c2e7561afec677c145bdc21fcef417bb588ab19b70",
+      "manifest_url": "https://raw.githubusercontent.com/taylan/openpeon-wow-tauren/v1.0.0/openpeon.json",
+      "pack_label": "Mess with the bull, you get the horns.",
+      "pack_name": "wow-tauren"
+    }
+  },
+  {
+    "id": "v02",
+    "path": "Audio/v02.mp3",
+    "bytes": 51766,
+    "sha256": "041b0dca982d23bc38be1de7adae111d273c0a133ec599d4cda75ef79981b7d1",
+    "credit": "Undead Lich (Warcraft III); звуковая подборка iamunhoz (https://github.com/iamunhoz); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 2.6,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/iamunhoz/openpeon-wc3-lich/v1.0.0/sounds/HeroLichYes5.wav",
+      "source_sha256": "736684d0f0b5e3c3ed9680271e18c8df02dd5c7ac892207de16f6c1305a60207",
+      "manifest_url": "https://raw.githubusercontent.com/iamunhoz/openpeon-wc3-lich/v1.0.0/openpeon.json",
+      "pack_label": "Direct my hatred.",
+      "pack_name": "wc3_lich"
+    }
+  },
+  {
+    "id": "v03",
+    "path": "Audio/v03.mp3",
+    "bytes": 52811,
+    "sha256": "09989790b584a7538bc0fd4aeb13ba008f9e2e386147728e8513e30807191cd8",
+    "credit": "Jaina Proudmore (WarCraft 3); звуковая подборка OmegaZero (https://github.com/OmegaZero); MIT; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 2.6,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/OmegaZero/openpeon-jaina/v1.0.0/sounds/JainaThatsCurious.wav",
+      "source_sha256": "7a4f79bf601fac19e65388ec8dca7186485987e3179941a13e0e6d3bebfb8bf5",
+      "manifest_url": "https://raw.githubusercontent.com/OmegaZero/openpeon-jaina/v1.0.0/openpeon.json",
+      "pack_label": "That's Curious...",
+      "pack_name": "wc3_jaina"
+    }
+  },
+  {
+    "id": "v04",
+    "path": "Audio/v04.mp3",
+    "bytes": 51766,
+    "sha256": "6380897d1d25367ea96768f6c9ae09860783e36d4ba6e8e591f4563be4ec0268",
+    "credit": "Corrupted Arthas (WarCraft 3); звуковая подборка OmegaZero (https://github.com/OmegaZero); MIT; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 2.6,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/OmegaZero/openpeon-corrupted-arthas/v1.0.3/sounds/TreadLightly.wav",
+      "source_sha256": "6ee804b8738e6c6f1301c8c676d0c09876d0d677923bc0ed4af4a7cc01211b0e",
+      "manifest_url": "https://raw.githubusercontent.com/OmegaZero/openpeon-corrupted-arthas/v1.0.3/openpeon.json",
+      "pack_label": "Tread Lightly",
+      "pack_name": "wc3_corrupted_arthas"
+    }
+  },
+  {
+    "id": "v05",
+    "path": "Audio/v05.mp3",
+    "bytes": 53333,
+    "sha256": "e0a065ff41e71fc3a9bfd69fa2b755750f42f0babeb76543b045541ed31f5d21",
+    "credit": "Орк-батрак (Russian); звуковая подборка Artyom Mezin (https://github.com/Sogl); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 2.6,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Sogl/openpeon-wc2-peon-ru/v1.0.1/sounds/owhat3.wav",
+      "source_sha256": "74d5abca79964acffdb3a47fc5b3b24f193c86719c8ab018f6dc27df04f8a752",
+      "manifest_url": "https://raw.githubusercontent.com/Sogl/openpeon-wc2-peon-ru/v1.0.1/openpeon.json",
+      "pack_label": "Глор-дук",
+      "pack_name": "wc2_peon_ru"
+    }
+  },
+  {
+    "id": "v06",
+    "path": "Audio/v06.mp3",
+    "bytes": 53333,
+    "sha256": "8f49186ed1d9292b0a60100d697ababeb7be39a36f80920735e318839045a79a",
+    "credit": "StarCraft Ghost; звуковая подборка kschmidtjr1 (https://github.com/kschmidtjr1); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 2.6,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/kschmidtjr1/openpeon-sc_ghost/v1.0.0/sounds/IHearThat.mp3",
+      "source_sha256": "4dfdc606a60e5bf974efc0a77af7aa49a51a7743f4168a06526d459f5299182c",
+      "manifest_url": "https://raw.githubusercontent.com/kschmidtjr1/openpeon-sc_ghost/v1.0.0/openpeon.json",
+      "pack_label": "I hear that.",
+      "pack_name": "sc_ghost"
+    }
+  },
+  {
+    "id": "v07",
+    "path": "Audio/v07.mp3",
+    "bytes": 53333,
+    "sha256": "55b98c042a8709efadf4b06b93b6a2efd978adf64014028fbcfa3d17e267ad78",
+    "credit": "Terran Science Vessel (StarCraft); звуковая подборка PD (https://github.com/JazzFiend); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 2.6,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/JazzFiend/my-openpeon-packs/v1.2.1/sc_science_vessel/sounds/tvewht03.wav",
+      "source_sha256": "e2553a42aed3079be6828bfa951d408aa5ded8bb5fd5903f8dba9e089db77db9",
+      "manifest_url": "https://raw.githubusercontent.com/JazzFiend/my-openpeon-packs/v1.2.1/sc_science_vessel/openpeon.json",
+      "pack_label": "We have you on visual.",
+      "pack_name": "sc_science_vessel"
+    }
+  },
+  {
+    "id": "v08",
+    "path": "Audio/v08.mp3",
+    "bytes": 51766,
+    "sha256": "f71406e5fac0c42d28b034f6b34a7f368ff5cb34f19a8ad7e374c772ef0a2a74",
+    "credit": "StarCraft Medic; звуковая подборка kschmidtjr1 (https://github.com/kschmidtjr1); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 2.6,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/PeonPing/og-packs/v1.3.0/sc_medic/sounds/DidSomeonePageMe.mp3",
+      "source_sha256": "d2385a2a935537aa669aa7e1f819cfd1906693251078e3516f5f8a8bf56a8244",
+      "manifest_url": "https://raw.githubusercontent.com/PeonPing/og-packs/v1.3.0/sc_medic/openpeon.json",
+      "pack_label": "Did someone page me?",
+      "pack_name": "sc_medic"
+    }
+  },
+  {
+    "id": "v09",
+    "path": "Audio/v09.mp3",
+    "bytes": 58558,
+    "sha256": "5abfdb11b58042ef9a48acb1a3d66757d44ae85b920afa628c898b8598d5735d",
+    "credit": "StarCraft Goliath; звуковая подборка kschmidtjr1 (https://github.com/kschmidtjr1); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 2.8532650000000004,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/kschmidtjr1/openpeon-sc_goliath/v1.0.0/sounds/NavCommLocked.mp3",
+      "source_sha256": "3c7ba8750955f751ebf9f543d5e8edaae86e2b06466538ab44491240ac015c0c",
+      "manifest_url": "https://raw.githubusercontent.com/kschmidtjr1/openpeon-sc_goliath/v1.0.0/openpeon.json",
+      "pack_label": "Nav-comm locked.",
+      "pack_name": "sc_goliath"
+    }
+  },
+  {
+    "id": "v10",
+    "path": "Audio/v10.mp3",
+    "bytes": 62215,
+    "sha256": "ecc62776167b5c4dd281057b609f9e83223277ef05c11946d3f98cb90a0a4761",
+    "credit": "StarCraft Dropship; звуковая подборка kschmidtjr1 (https://github.com/kschmidtjr1); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 3.036122,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/kschmidtjr1/openpeon-sc_dropship/v1.0.0/sounds/InThePipeFiveByFive.mp3",
+      "source_sha256": "152256ea1fb212b8a3fd7f86b30b1d5352447e3a1520a350a52ad9bfb0cb2cf9",
+      "manifest_url": "https://raw.githubusercontent.com/kschmidtjr1/openpeon-sc_dropship/v1.0.0/openpeon.json",
+      "pack_label": "In the pipe, five by five.",
+      "pack_name": "sc_dropship"
+    }
+  },
+  {
+    "id": "v11",
+    "path": "Audio/v11.mp3",
+    "bytes": 53333,
+    "sha256": "c5def35eb29829622fb2416c2abfc4500a2f1484a1441824cd7a5970b01f578c",
+    "credit": "Carrier (StarCraft II); звуковая подборка Bryce Evans (https://github.com/bryce-evans); Fair Use; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 2.6,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/bryce-evans/openpeon-sc2-carrier/v1.0.0/sounds/awaiting-the-call.ogg",
+      "source_sha256": "c2c5fcbbea4b952d5f1f6d0d70ca3d5598567cad2001b5fdf9e25309505606c4",
+      "manifest_url": "https://raw.githubusercontent.com/bryce-evans/openpeon-sc2-carrier/v1.0.0/openpeon.json",
+      "pack_label": "Awaiting the call",
+      "pack_name": "sc2_carrier"
+    }
+  },
+  {
+    "id": "v12",
+    "path": "Audio/v12.mp3",
+    "bytes": 53333,
+    "sha256": "72fd57d5d085406602d8a4785af0004ab223180e12be6548f3ccca2cc60a4631",
+    "credit": "Stalker (StarCraft II); звуковая подборка Sergej Lopatkin (https://github.com/selop); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 2.6,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/selop/peon-pack-stalker-sc2/v1.1.0/sounds/state-thy-bidding.mp3",
+      "source_sha256": "0e246717323ebcfa1d4c1e77a101d87639b3be5fd6958d5c419637bb23052867",
+      "manifest_url": "https://raw.githubusercontent.com/selop/peon-pack-stalker-sc2/v1.1.0/openpeon.json",
+      "pack_label": "State thy bidding",
+      "pack_name": "sc2_stalker"
+    }
+  },
+  {
+    "id": "v13",
+    "path": "Audio/v13.mp3",
+    "bytes": 74231,
+    "sha256": "97ee56a0b9f9427afdeeda141aa2749bc5c17d84fd00d07a0723098994d45928",
+    "credit": "StarCraft II Abathur; звуковая подборка AlexZhangji (https://github.com/AlexZhangji); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 3.649252,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/AlexZhangji/peon-ping-sc2/v1.0.0/sc2_abathur/sounds/AbathurCommander_Evolution01.ogg",
+      "source_sha256": "7b9729d5f5a06088d6f861c81df6bdd873b5bca8c92f5371edbc81afdd648c70",
+      "manifest_url": "https://raw.githubusercontent.com/AlexZhangji/peon-ping-sc2/v1.0.0/sc2_abathur/openpeon.json",
+      "pack_label": "Evolution01",
+      "pack_name": "sc2_abathur"
+    }
+  },
+  {
+    "id": "v14",
+    "path": "Audio/v14.mp3",
+    "bytes": 69007,
+    "sha256": "4cb47ab5b727c5574e4f44fa182bfa83359ac5f8f47d63876826dd2986a0bb97",
+    "credit": "StarCraft II Alarak; звуковая подборка AlexZhangji (https://github.com/AlexZhangji); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 3.3737410000000003,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/AlexZhangji/peon-ping-sc2/v1.0.0/sc2_alarak/sounds/AlarakCommander_Thanks01.ogg",
+      "source_sha256": "f46b694c5f99e0ed7c3e248ba981f4d9ff090b9f9cf9e63aa1cf264e8eccd7dc",
+      "manifest_url": "https://raw.githubusercontent.com/AlexZhangji/peon-ping-sc2/v1.0.0/sc2_alarak/openpeon.json",
+      "pack_label": "Thanks01",
+      "pack_name": "sc2_alarak"
+    }
+  },
+  {
+    "id": "v15",
+    "path": "Audio/v15.mp3",
+    "bytes": 74231,
+    "sha256": "98478b442890686d74d1404cd7930073e00870cd73669d5edcb0d2e19c292754",
+    "credit": "StarCraft II Stetmann; звуковая подборка AlexZhangji (https://github.com/AlexZhangji); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 3.655873,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/AlexZhangji/peon-ping-sc2/v1.0.0/sc2_stetmann/sounds/StetmannCommander_Auto_UnitsLost00.ogg",
+      "source_sha256": "4d162ae670cce41454c189e23c13eb43f9a1008c9b984740997cb4bc2e978f57",
+      "manifest_url": "https://raw.githubusercontent.com/AlexZhangji/peon-ping-sc2/v1.0.0/sc2_stetmann/openpeon.json",
+      "pack_label": "Auto_UnitsLost00",
+      "pack_name": "sc2_stetmann"
+    }
+  },
+  {
+    "id": "v16",
+    "path": "Audio/v16.mp3",
+    "bytes": 99831,
+    "sha256": "1fab1e5f643c1c0d6a73700e6ecca98d5133104502ae0a53dbc20ebffe80a9b1",
+    "credit": "Invoker (Dota 2); звуковая подборка bwarren2 (https://github.com/bwarren2); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 4.916939,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/bwarren2/peonpack-invoker/v1.0.0/sounds/NewAgeOfKnowledge.mp3",
+      "source_sha256": "d3dd21b18191f3439cab245c48ed33dde04c5e5e10c8a30694d77b9b2258c77c",
+      "manifest_url": "https://raw.githubusercontent.com/bwarren2/peonpack-invoker/v1.0.0/openpeon.json",
+      "pack_label": "So begins a new age of knowledge.",
+      "pack_name": "dota2_invoker"
+    }
+  },
+  {
+    "id": "v17",
+    "path": "Audio/v17.mp3",
+    "bytes": 65350,
+    "sha256": "35f1bfb456b2ed339e086b6f8d2818f18ed48e34b3aacd48a36258c8fa005e1f",
+    "credit": "Hoodwink (Dota 2); звуковая подборка Joel (https://github.com/joppecino); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 3.21,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/joppecino/openpeon-hoodwink/v1.0.1/sounds/hw-start-9.mp3",
+      "source_sha256": "9e279c955363843a3101e14d980b81a01255851156b80c95d288d4fe3c4abfce",
+      "manifest_url": "https://raw.githubusercontent.com/joppecino/openpeon-hoodwink/v1.0.1/openpeon.json",
+      "pack_label": "I step through the forest like it's not even there.",
+      "pack_name": "dota2-hoodwink"
+    }
+  },
+  {
+    "id": "v18",
+    "path": "Audio/v18.mp3",
+    "bytes": 70574,
+    "sha256": "47ad39dc45e8f7d3abba6bc01b3ab0503f633ca42a021d2bbd57155715229db5",
+    "credit": "Ember Spirit (Dota 2); звуковая подборка kmelkon (https://github.com/kmelkon); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 3.454082,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/kmelkon/openpeon-dota2/main/dota2_ember_spirit/sounds/AllActionIsReaction.mp3",
+      "source_sha256": "b3e08fd6ef549564b153272a24aad22539a124714d6f318f1cb8ce701b72b30b",
+      "manifest_url": "https://raw.githubusercontent.com/kmelkon/openpeon-dota2/main/dota2_ember_spirit/openpeon.json",
+      "pack_label": "All action is reaction.",
+      "pack_name": "dota2_ember_spirit"
+    }
+  },
+  {
+    "id": "v19",
+    "path": "Audio/v19.mp3",
+    "bytes": 84158,
+    "sha256": "61c58dcc43d59bea67b1dbe0ab8c01f4f7be511ed48e95eb949e19834193b19e",
+    "credit": "Zeus (Dota 2); звуковая подборка kmelkon (https://github.com/kmelkon); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 4.133265,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/kmelkon/openpeon-dota2/main/dota2_zeus/sounds/ManProposesGodDisposes.mp3",
+      "source_sha256": "09931970bea681fca63e0ab01d5351e8ec0b10954a23a21bd7cfbe0595eaa326",
+      "manifest_url": "https://raw.githubusercontent.com/kmelkon/openpeon-dota2/main/dota2_zeus/openpeon.json",
+      "pack_label": "Man proposes, God disposes.",
+      "pack_name": "dota2_zeus"
+    }
+  },
+  {
+    "id": "v20",
+    "path": "Audio/v20.mp3",
+    "bytes": 77366,
+    "sha256": "0af80c7aa95f5556d5e0c7b4a4c3af91d5795c787e3a070671b99d63caee7477",
+    "credit": "Phantom Lancer (Dota 2); звуковая подборка kmelkon (https://github.com/kmelkon); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 3.793673,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/kmelkon/openpeon-dota2/v1.0.0/dota2_phantom_lancer/sounds/WeAreCoiledReadyToStrike.mp3",
+      "source_sha256": "71dfd3041950db71e1dee31f9def92a0f09d6b7bc3124c3e5e54d9a841e6b067",
+      "manifest_url": "https://raw.githubusercontent.com/kmelkon/openpeon-dota2/v1.0.0/dota2_phantom_lancer/openpeon.json",
+      "pack_label": "We are coiled, ready to strike.",
+      "pack_name": "dota2_phantom_lancer"
+    }
+  }
+]

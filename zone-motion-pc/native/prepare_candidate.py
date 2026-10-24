@@ -72,6 +72,10 @@ with zipfile.ZipFile(apk) as package:
         relative = Path(name[len(prefix):])
         assert not relative.is_absolute() and '..' not in relative.parts
         dest = data / relative
+        # The game assembly is rebuilt below. Loading the old DLL into the data
+        # parser holds a Windows file handle and prevents replacing that DLL.
+        if relative.as_posix() == 'Managed/Assembly-CSharp.dll':
+            continue
         # Use matching Windows engine modules, while retaining game/SDK libraries.
         if relative.parts[0] == 'Managed' and dest.exists():
             continue
@@ -82,7 +86,9 @@ with zipfile.ZipFile(apk) as package:
         dest.write_bytes(package.read(name))
 
 print('Adapting game assets', flush=True)
-environment = UnityPy.load(str(data))
+asset_paths = [str(path) for path in data.rglob('*') if path.is_file() and
+               not {'Managed', 'Mono', 'MonoBleedingEdge'}.intersection(path.relative_to(data).parts)]
+environment = UnityPy.load(*asset_paths)
 counts = collections.Counter()
 protected_build_settings = None
 for obj in environment.objects:

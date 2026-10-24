@@ -1,0 +1,27 @@
+name: Verify legitimate Windows and Android RTS crossplay options
+on:
+  push:
+    branches: [rts-crossplay]
+    paths: ['rts-crossplay/check_sources.py', '.github/workflows/rts-crossplay-check.yml']
+permissions:
+  contents: write
+jobs:
+  sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Read public developer and store descriptions
+        run: python rts-crossplay/check_sources.py
+      - name: Preserve public source evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          cd dist/rts-source-check
+          zip -q ../RTS-public-source-check.zip *.json
+          cd ../..
+          gh release create "rts-source-check-${GITHUB_SHA::8}" dist/RTS-public-source-check.zip --target "$GITHUB_SHA" --prerelease --latest=false --title 'Windows and Android RTS availability research' --notes 'Public developer and store descriptions used to verify availability, pricing and crossplay. This is reference material, not a game download.'

@@ -82,8 +82,8 @@ jobs:
           RELEASE_COMMIT: ${{ github.sha }}
         shell: powershell
         run: |
-          $tag = 'zone-motion-pc-v0.1-' + $env:RELEASE_COMMIT.Substring(0, 8)
-          gh release create $tag dist/native-package/ZoneMotion-PC-Windows.exe dist/native-package/ZoneMotion-PC-Windows.exe.sha256 --target $env:RELEASE_COMMIT --prerelease --latest=false --title 'Zone Motion для Windows — EXE, первая сборка 0.1' --notes-file zone-motion-pc/native/README-WINDOWS.txt
+          $tag = 'zone-motion-pc-v0.1.1-' + $env:RELEASE_COMMIT.Substring(0, 8)
+          gh release create $tag dist/native-package/ZoneMotion-PC-Windows.exe dist/native-package/ZoneMotion-PC-Windows.exe.sha256 --target $env:RELEASE_COMMIT --prerelease --latest=false --title 'Zone Motion для Windows — совместимая сборка 0.1.1' --notes-file zone-motion-pc/native/README-WINDOWS.txt
           exit $LASTEXITCODE
       - name: Preserve startup diagnostics for review
         if: always()

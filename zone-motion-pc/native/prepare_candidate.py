@@ -113,16 +113,28 @@ for obj in environment.objects:
     elif obj.type.name == 'BuildSettings':
         tree = obj.read_typetree()
         # Keep all existing license, watermark and authorization fields verbatim.
-        protected_build_settings = {key: value for key, value in tree.items() if key != 'm_GraphicsAPIs'}
+        platform_fields = {'m_GraphicsAPIs', 'preloadedPlugins'}
+        protected_build_settings = {key: value for key, value in tree.items() if key not in platform_fields}
         tree['m_GraphicsAPIs'] = [21, 0, 0, 0]  # Vulkan; original shaders include SPIR-V.
+        # The original preloads are Android Tango/Oculus libraries, not Windows
+        # dependencies. Google Play already uses the game's offline SDK client.
+        counts['removed_android_plugin_preloads'] = len(tree['preloadedPlugins'])
+        tree['preloadedPlugins'] = []
         obj.save_typetree(tree)
         assert {key: value for key, value in obj.read_typetree().items()
-                if key != 'm_GraphicsAPIs'} == protected_build_settings
+                if key not in platform_fields} == protected_build_settings
 
 for file in environment.files.values():
     if isinstance(file, UnityPy.files.SerializedFile) and file.target_platform == BuildTarget.Android:
         file.target_platform = BuildTarget.StandaloneWindows64
-        (data / file.name).write_bytes(file.save())
+        # UnityPy keeps the serialized integer separately from the public enum.
+        # Updating just target_platform leaves the saved header marked Android.
+        file._m_TargetPlatform = int(BuildTarget.StandaloneWindows64)
+        saved = file.save()
+        check = UnityPy.load(saved)
+        assert all(f.target_platform == BuildTarget.StandaloneWindows64 for f in check.files.values()
+                   if isinstance(f, UnityPy.files.SerializedFile)), file.name
+        (data / file.name).write_bytes(saved)
         counts['adapted_serialized_files'] += 1
 
 # Route through an existing menu lifecycle method: built runtime-init metadata

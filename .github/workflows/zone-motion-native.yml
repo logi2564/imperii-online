@@ -11,6 +11,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: zone-motion-native-probe
+  cancel-in-progress: true
+
 jobs:
   native:
     runs-on: windows-latest

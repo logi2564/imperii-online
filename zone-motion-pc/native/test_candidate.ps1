@@ -23,8 +23,9 @@ public static class NativeGameWindowCapture {
     public struct Rect { public int Left, Top, Right, Bottom; }
     [DllImport("user32.dll")]
     public static extern bool GetWindowRect(IntPtr hwnd, out Rect rect);
-    [DllImport("user32.dll")]
-    public static extern bool PrintWindow(IntPtr hwnd, IntPtr hdc, uint flags);
+    [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    public static extern IntPtr SendMessageTimeout(IntPtr hwnd, uint message,
+        IntPtr wparam, IntPtr lparam, uint flags, uint timeout, out IntPtr result);
 }
 '@
         $bounds = New-Object NativeGameWindowCapture+Rect
@@ -35,7 +36,11 @@ public static class NativeGameWindowCapture {
         $image = New-Object Drawing.Bitmap($width, $height)
         $graphics = [Drawing.Graphics]::FromImage($image)
         $dc = $graphics.GetHdc()
-        try { $printed = [NativeGameWindowCapture]::PrintWindow($handle, $dc, 2) }
+        try {
+            $messageResult = [IntPtr]::Zero
+            $printed = [NativeGameWindowCapture]::SendMessageTimeout($handle, 0x0317,
+                $dc, [IntPtr]30, 2, 2000, [ref]$messageResult) -ne [IntPtr]::Zero
+        }
         finally { $graphics.ReleaseHdc($dc) }
         if ($printed) {
             $image.Save((Join-Path $reports 'startup-game-window.png'), [Drawing.Imaging.ImageFormat]::Png)
@@ -46,6 +51,20 @@ public static class NativeGameWindowCapture {
         $process.MainWindowTitle | Out-File -LiteralPath (Join-Path $reports 'game-window.txt') -Encoding utf8
     } catch {
         $_ | Out-String | Out-File -LiteralPath (Join-Path $reports 'capture-error.txt') -Encoding utf8
+    }
+}
+function Collect-GameLogs {
+    $paths = @(
+        (Join-Path $game 'ZoneMotionPC_Data\output_log.txt'),
+        (Join-Path $env:USERPROFILE 'AppData\LocalLow\Sokol\Zone Motion PC\Player.log'),
+        (Join-Path $env:USERPROFILE 'AppData\LocalLow\Sokol\Zone Motion PC\output_log.txt')
+    )
+    $number = 0
+    foreach ($path in $paths) {
+        if (Test-Path -LiteralPath $path) {
+            Copy-Item -LiteralPath $path -Destination (Join-Path $reports ("game-default-$number.log"))
+            $number++
+        }
     }
 }
 try {
@@ -70,6 +89,7 @@ try {
     python "$PSScriptRoot\validate_frames.py" $reports
     if ($LASTEXITCODE -ne 0) { throw 'Native game screenshots or scene state are invalid.' }
 } catch {
+    Collect-GameLogs
     if (-not (Test-Path -LiteralPath (Join-Path $reports 'startup-game-window.png'))) { Capture-GameWindow }
     $message = $_.Exception.Message
     if (Test-Path -LiteralPath $log) {

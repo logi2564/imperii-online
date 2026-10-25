@@ -30,6 +30,8 @@ jobs:
                   print(f'::notice::{host}/{ref}: HTTP {response.status}, {response.headers.get("Content-Type")}, {len(data)} bytes')
               except Exception as error:
                 print(f'::warning::{host}/{ref}: {type(error).__name__}: {error}')
+                if hasattr(error, 'read'):
+                  print('::notice::Hosting response: ' + str(dict(error.headers))[:500] + ' BODY ' + error.read(400).decode(errors='replace').replace('\n', ' '))
           PY
       - uses: actions/setup-python@v5
         with:
@@ -46,6 +48,8 @@ jobs:
           else
             echo "BROWSER_EXECUTABLE=$browser_bin" >> "$GITHUB_ENV"
           fi
+      - name: Check the real public phone links and published game files
+        run: python sigame-arcade/tests/live.py
       - name: Prepare metadata, QR codes and the local test site
         run: |
           python sigame-arcade/tools/build.py --prepare
@@ -71,9 +75,6 @@ jobs:
           cp sigame-arcade/smoke-report.json sigame-arcade/playthrough-report.json sigame-arcade/embedded-report.json sigame-arcade/qr-report.json dist/arcade/
           cp sigame-arcade/home-desktop.png dist/arcade/Preview-PC.png
           cp sigame-arcade/home-mobile.png dist/arcade/Preview-Phone.png
-      - name: Check the real public phone links and published game files
-        run: |
-          python sigame-arcade/tests/live.py
           cp sigame-arcade/live-report.json dist/arcade/
       - name: Publish the playable packs and offline games
         env:

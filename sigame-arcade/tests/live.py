@@ -26,6 +26,15 @@ for name in ['index.html', 'style.css', 'catalog.js', 'engine.js', 'games.js', '
         except Exception as error:
             if attempt == 3:
                 print(f'::error::Public asset {name}: {type(error).__name__}: {error}', flush=True)
+                with sync_playwright() as playwright:
+                    browser = playwright.chromium.launch(executable_path=os.environ.get('BROWSER_EXECUTABLE'), args=['--no-sandbox'])
+                    page = browser.new_page()
+                    try:
+                        response = page.goto(PUBLIC, wait_until='networkidle', timeout=30000)
+                        print(f'::notice::Public browser response: {response.status}; {page.title()}; {page.locator("body").inner_text()[:300]}'.replace('\n', ' '), flush=True)
+                    except Exception as browser_error:
+                        print(f'::notice::Public browser: {browser_error}'.replace('\n', ' ')[:600], flush=True)
+                    browser.close()
                 raise
             time.sleep(5)
 

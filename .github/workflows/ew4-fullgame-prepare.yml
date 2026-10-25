@@ -1,0 +1,46 @@
+name: Prepare complete EW4 game text and Android engine
+on:
+  push:
+    branches: [ew4-fullgame]
+    paths: ['ew4-online/fullgame/translate_ru.py', 'ew4-online/fullgame/translation-input.json', '.github/workflows/ew4-fullgame-prepare.yml']
+permissions:
+  contents: write
+jobs:
+  translation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Translate the complete public game text
+        run: python ew4-online/fullgame/translate_ru.py --input ew4-online/fullgame/translation-input.json --output translated-ru.json
+      - name: Publish reviewable translation files
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release create "ew4-russian-text-${GITHUB_SHA::8}" translated-ru.json translation-coverage.json --target "$GITHUB_SHA" --prerelease --latest=false --title 'EW4 complete Russian text for review - not a game build' --notes 'Public game text only. Machine translated draft; the game interface has reviewed overrides. No user files or crash logs.'
+  android-engine:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.100'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Build the existing complete Android game engine and assets
+        run: |
+          dotnet workload install android --version 10.0.100
+          git clone --depth 1 --branch v0.2.19-20261024 https://github.com/aztksilence111/ew4-rewrite.git .work/engine
+          npm --prefix .work/engine/tools/frontend ci --no-audit --no-fund
+          dotnet publish .work/engine/rewrite/Ew4.Android -c Release -p:AndroidSdkDirectory="$ANDROID_HOME" -p:AndroidPackageFormats=apk -p:AndroidKeyStore=false

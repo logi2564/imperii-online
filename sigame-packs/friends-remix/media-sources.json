@@ -1,0 +1,1698 @@
+[
+  {
+    "credit": "Grand Theft Auto V 增强版; настоящий игровой скриншот из официальной галереи Steam.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3240220/f2e70b5823510daa062293ff0b03821e1dee2d37/ss_f2e70b5823510daa062293ff0b03821e1dee2d37.1920x1080.jpg?t=1781187782",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=3240220",
+      "name": "Grand Theft Auto V 增强版",
+      "source_sha256": "4e4c6cb47cf492ef50f20b978a9112484bf3593cff6602df566631fd2c1c8461"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original gallery screenshot copied without pixel edits"
+    },
+    "id": "g01",
+    "path": "Images/g01.jpg",
+    "bytes": 974650,
+    "sha256": "4e4c6cb47cf492ef50f20b978a9112484bf3593cff6602df566631fd2c1c8461"
+  },
+  {
+    "credit": "Cyberpunk 2077; настоящий игровой скриншот из официальной галереи Steam.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/0ed9487e305983d60646ba163a3d8970efb6b347/ss_0ed9487e305983d60646ba163a3d8970efb6b347.1920x1080.jpg?t=1792682505",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=1091500",
+      "name": "Cyberpunk 2077",
+      "source_sha256": "0ed3f2de4a7e9d9dc87f01712e6c8cffc7d84badfb1661dbcc5e9b678d0997b3"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original gallery screenshot copied without pixel edits"
+    },
+    "id": "g02",
+    "path": "Images/g02.jpg",
+    "bytes": 359048,
+    "sha256": "0ed3f2de4a7e9d9dc87f01712e6c8cffc7d84badfb1661dbcc5e9b678d0997b3"
+  },
+  {
+    "id": "g03",
+    "path": "Images/g03.jpg",
+    "bytes": 177733,
+    "sha256": "6f4e94850d51226288549d983a21f0ccc731922c7e8b9698fd7e79f4b485073d",
+    "credit": "Counter-Strike 2 — Valve; игровой скриншот со страницы игры в Steam",
+    "processing": {
+      "type": "image",
+      "max_width": 1280
+    },
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/ss_0f8cf82d019c614760fd20801f2bb4001da7ea77.1920x1080.jpg?t=1791824795",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=730",
+      "name": "Counter-Strike 2",
+      "source_sha256": "f8e7411cecd0dfe4b300865174ae2bd7a28ced935db5aa61784933b4dce97db5"
+    }
+  },
+  {
+    "id": "g04",
+    "path": "Images/g04.jpg",
+    "bytes": 270846,
+    "sha256": "cf1d8352e85a159ecc7a1500ed114e1fa681ed54f5cf701475574f2ff9c85250",
+    "credit": "Dota 2 — Valve; игровой скриншот со страницы игры в Steam",
+    "processing": {
+      "type": "image",
+      "max_width": 1280
+    },
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/570/ss_ad8eee787704745ccdecdfde3a5cd2733704898d.1920x1080.jpg?t=1791407503",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=570",
+      "name": "Dota 2",
+      "source_sha256": "5477fb3a2264c3b99375e1708934793357d4faf803ce80e94d5cc8208039c52f"
+    }
+  },
+  {
+    "credit": "Red Dead Redemption 2; настоящий игровой скриншот из официальной галереи Steam.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1174180/ss_668dafe477743f8b50b818d5bbfcec669e9ba93e.1920x1080.jpg?t=1759502961",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=1174180",
+      "name": "Red Dead Redemption 2",
+      "source_sha256": "72b74560c4ba51ab197da73e73dc7bfcb1bfe8657bd9e12057510d5ae3592b2f"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original gallery screenshot copied without pixel edits"
+    },
+    "id": "g05",
+    "path": "Images/g05.jpg",
+    "bytes": 439806,
+    "sha256": "72b74560c4ba51ab197da73e73dc7bfcb1bfe8657bd9e12057510d5ae3592b2f"
+  },
+  {
+    "id": "g06",
+    "path": "Images/g06.jpg",
+    "bytes": 179613,
+    "sha256": "f9fda68d7ad61ce5a8f9155aaca6f45b270559a0265f248adaa69a80bfa6726e",
+    "credit": "Elden Ring — FromSoftware / Bandai Namco; игровой скриншот со страницы игры в Steam",
+    "processing": {
+      "type": "image",
+      "max_width": 1280
+    },
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/ss_943bf6fe62352757d9070c1d33e50b92fe8539f1.1920x1080.jpg?t=1790290043",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=1245620",
+      "name": "ELDEN RING",
+      "source_sha256": "a36496ede706be315339f1ab0d4aacbb7269ec29870fbc9902af0d36ed06ee42"
+    }
+  },
+  {
+    "id": "g07",
+    "path": "Images/g07.jpg",
+    "bytes": 218339,
+    "sha256": "84656e96e3d17098213b263ff604c3a9b243365da74391fa468bf96e8ff45059",
+    "credit": "The Witcher 3 — CD Projekt Red; игровой скриншот со страницы игры в Steam",
+    "processing": {
+      "type": "image",
+      "max_width": 1280
+    },
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/f7f564ecedd09b3e503b071a637aeefdedbeedd8/ss_f7f564ecedd09b3e503b071a637aeefdedbeedd8.1920x1080.jpg?t=1790845156",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=292030",
+      "name": "The Witcher 3: Wild Hunt — Remastered",
+      "source_sha256": "05e2fed4f63c527cfbef1ff07b2fed1b010168e37388600333a27a681c00715d"
+    }
+  },
+  {
+    "id": "g08",
+    "path": "Images/g08.jpg",
+    "bytes": 212177,
+    "sha256": "f7ee4098065b7e89c547b19d7283cbaa0de03a072f191f04d5696f814be190ea",
+    "credit": "World of Warcraft — Blizzard Entertainment; архив Daribon, подпись автора DEMSIX сохранена",
+    "processing": {
+      "type": "image",
+      "frame_seconds": null,
+      "max_width": 1280
+    },
+    "source": {
+      "repo": "Daribon/Vanilla-Screenshot-Archive",
+      "commit": "0f4d4aa15559aaf24a066e456a6fd8d457a28906",
+      "path": "Cities/Stormwind/001 - tJSrB.jpg",
+      "url": "https://raw.githubusercontent.com/Daribon/Vanilla-Screenshot-Archive/0f4d4aa15559aaf24a066e456a6fd8d457a28906/Cities/Stormwind/001%20-%20tJSrB.jpg",
+      "source_sha256": "c49e279e5e4ee542f6545af55abc5aea29e89dce3142bc280c4e4e62c9c78957"
+    }
+  },
+  {
+    "id": "g09",
+    "path": "Images/g09.jpg",
+    "bytes": 140126,
+    "sha256": "2339522a25a7821cdf733db7cc8ccedb496a2276eeac3cad4d05c6c7b0d4409e",
+    "credit": "Warcraft III — Blizzard Entertainment; пользовательская карта, архив hunzsig-warcraft3",
+    "processing": {
+      "type": "image",
+      "frame_seconds": null,
+      "max_width": 1280
+    },
+    "source": {
+      "repo": "hunzsig-warcraft3/assets-models",
+      "commit": "6ee33a51ca7ec0d0e8775c14b2818976c9557be3",
+      "path": "_res/temp/WC3ScrnShot_042221_102742_01.jpg",
+      "url": "https://raw.githubusercontent.com/hunzsig-warcraft3/assets-models/6ee33a51ca7ec0d0e8775c14b2818976c9557be3/_res/temp/WC3ScrnShot_042221_102742_01.jpg",
+      "source_sha256": "0297d704c07c765877ca3af24f318715c49139ff25995e53630331c6df34bf39"
+    }
+  },
+  {
+    "credit": "Hogwarts Legacy; настоящий игровой скриншот из официальной галереи Steam.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/990080/ss_94058497bf0f8fabdde17ee8d59bece609a60663.1920x1080.jpg?t=1790708992",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=990080",
+      "name": "Hogwarts Legacy",
+      "source_sha256": "7f192801655c889e5a6ce68b65f2f75193f2cff299f57af089aac2920a30dcc7"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original gallery screenshot copied without pixel edits"
+    },
+    "id": "g10",
+    "path": "Images/g10.jpg",
+    "bytes": 255006,
+    "sha256": "7f192801655c889e5a6ce68b65f2f75193f2cff299f57af089aac2920a30dcc7"
+  },
+  {
+    "credit": "Rust; настоящий игровой скриншот из официальной галереи Steam.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/252490/ss_0e646f1a70e5cb8eed00efef8adb9579d40d5b2e.1920x1080.jpg?t=1781536981",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=252490",
+      "name": "Rust",
+      "source_sha256": "6c385b01c24d275dcef9e7d6e97e6f8e96d551e29eab60fdb72d2986a9124988"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original gallery screenshot copied without pixel edits"
+    },
+    "id": "g11",
+    "path": "Images/g11.jpg",
+    "bytes": 626619,
+    "sha256": "6c385b01c24d275dcef9e7d6e97e6f8e96d551e29eab60fdb72d2986a9124988"
+  },
+  {
+    "credit": "Lethal Company; настоящий игровой скриншот из официальной галереи Steam.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1966720/ss_78075e9a94675823024f12fce9d69b243cca94f8.1920x1080.jpg?t=1775380053",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=1966720",
+      "name": "Lethal Company",
+      "source_sha256": "307eca1fbdf89d0259e9a50fd7f8f6608949d45a830f9e4836f97c500a3ed5cf"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original gallery screenshot copied without pixel edits"
+    },
+    "id": "g12",
+    "path": "Images/g12.jpg",
+    "bytes": 264472,
+    "sha256": "307eca1fbdf89d0259e9a50fd7f8f6608949d45a830f9e4836f97c500a3ed5cf"
+  },
+  {
+    "credit": "Phasmophobia; настоящий игровой скриншот из официальной галереи Steam.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/739630/1ec54d1d45005e5ddd8360b05e5bbdea3a9090f2/ss_1ec54d1d45005e5ddd8360b05e5bbdea3a9090f2.1920x1080.jpg?t=1791632508",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=739630",
+      "name": "Phasmophobia",
+      "source_sha256": "191fdcb910f38fd8aafcbba63faba30129dc5db5d8fdb2d1376434188d80844a"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original gallery screenshot copied without pixel edits"
+    },
+    "id": "g13",
+    "path": "Images/g13.jpg",
+    "bytes": 347593,
+    "sha256": "191fdcb910f38fd8aafcbba63faba30129dc5db5d8fdb2d1376434188d80844a"
+  },
+  {
+    "credit": "Valheim; настоящий игровой скриншот из официальной галереи Steam.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/892970/f7a47b4bd150ce1a2c6ec88f7d79fd57e7c538c8/ss_f7a47b4bd150ce1a2c6ec88f7d79fd57e7c538c8.1920x1080.jpg?t=1791544831",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=892970",
+      "name": "Valheim",
+      "source_sha256": "35d08bd3d6d6e126d6530ec71debdf067d1efc235c4ad6bafc8c4d91dc8114be"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original gallery screenshot copied without pixel edits"
+    },
+    "id": "g14",
+    "path": "Images/g14.jpg",
+    "bytes": 491449,
+    "sha256": "35d08bd3d6d6e126d6530ec71debdf067d1efc235c4ad6bafc8c4d91dc8114be"
+  },
+  {
+    "credit": "Among Us; настоящий игровой скриншот из официальной галереи Steam.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/945360/ss_b7374128e5b786a302a716bca038d604b00ffe46.1920x1080.jpg?t=1792187809",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=945360",
+      "name": "Among Us",
+      "source_sha256": "058345927bc8e140b717eb8e288dd84458936d9375c6a2f73b833691137a752a"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original gallery screenshot copied without pixel edits"
+    },
+    "id": "g15",
+    "path": "Images/g15.jpg",
+    "bytes": 295473,
+    "sha256": "058345927bc8e140b717eb8e288dd84458936d9375c6a2f73b833691137a752a"
+  },
+  {
+    "credit": "Detroit: Become Human; настоящий игровой скриншот из официальной галереи Steam.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1222140/ss_9e6c271b6d11b1d0f35da336fb57b35fed0079d1.1920x1080.jpg?t=1667468479",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=1222140",
+      "name": "Detroit: Become Human",
+      "source_sha256": "155784ed46b9b0789ab190f33e421f204c0815042b779cca602f19b72d7611c9"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original gallery screenshot copied without pixel edits"
+    },
+    "id": "g16",
+    "path": "Images/g16.jpg",
+    "bytes": 466650,
+    "sha256": "155784ed46b9b0789ab190f33e421f204c0815042b779cca602f19b72d7611c9"
+  },
+  {
+    "credit": "Resident Evil 4; настоящий игровой скриншот из официальной галереи Steam.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2050650/ss_59d1b19964cc532213df92c8287b75a0bffeb33c.1920x1080.jpg?t=1772502922",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=2050650",
+      "name": "Resident Evil 4",
+      "source_sha256": "237c8adb3fb56753f81f5599378da275c7c21af56603435b78e70ccfe0c2e2ae"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original gallery screenshot copied without pixel edits"
+    },
+    "id": "g17",
+    "path": "Images/g17.jpg",
+    "bytes": 371746,
+    "sha256": "237c8adb3fb56753f81f5599378da275c7c21af56603435b78e70ccfe0c2e2ae"
+  },
+  {
+    "credit": "Stray; настоящий игровой скриншот из официальной галереи Steam.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1332010/ss_e8f0cbd5efdba352e89c4cfcee3fe991a1e1be8a.1920x1080.jpg?t=1785424330",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=1332010",
+      "name": "Stray",
+      "source_sha256": "a9d216692227c2b27b51e78d076431f0b2efee9d6974d69114e37eb17a6bc901"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original gallery screenshot copied without pixel edits"
+    },
+    "id": "g18",
+    "path": "Images/g18.jpg",
+    "bytes": 384073,
+    "sha256": "a9d216692227c2b27b51e78d076431f0b2efee9d6974d69114e37eb17a6bc901"
+  },
+  {
+    "credit": "Palworld / 幻兽帕鲁; настоящий игровой скриншот из официальной галереи Steam.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1623730/ss_b3cea7c9f04a67d784d4c6a0c157a11d6268b189.1920x1080.jpg?t=1790336367",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=1623730",
+      "name": "Palworld / 幻兽帕鲁",
+      "source_sha256": "f3980fa4c2de88c38aa58979ecc93cd1e7c4258d7fb946a34408fd720d0fdf73"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original gallery screenshot copied without pixel edits"
+    },
+    "id": "g19",
+    "path": "Images/g19.jpg",
+    "bytes": 442780,
+    "sha256": "f3980fa4c2de88c38aa58979ecc93cd1e7c4258d7fb946a34408fd720d0fdf73"
+  },
+  {
+    "credit": "DOOM Eternal; настоящий игровой скриншот из официальной галереи Steam.",
+    "source": {
+      "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/782330/ss_7e6a2148321c8024285e3924903d8897cac95358.1920x1080.jpg?t=1783432602",
+      "metadata_url": "https://store.steampowered.com/api/appdetails?appids=782330",
+      "name": "DOOM Eternal",
+      "source_sha256": "87ec2311cf4f6a73dd66bf84d052ab5d997d14bc35553c1a673b9143ec4e02b2"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original gallery screenshot copied without pixel edits"
+    },
+    "id": "g20",
+    "path": "Images/g20.jpg",
+    "bytes": 519323,
+    "sha256": "87ec2311cf4f6a73dd66bf84d052ab5d997d14bc35553c1a673b9143ec4e02b2"
+  },
+  {
+    "credit": "Семья шпиона; кадр оригинального опенинга через AnimeThemes. Права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/SpyXFamily-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/spy_x_family?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "9a89fc12525edc0942fc658a57a14b3950da1e9537cf946e4b6f541f51034475",
+      "name": "Семья шпиона"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 37,
+      "operation": "Single-frame FFmpeg extraction; no title overlay"
+    },
+    "id": "f01",
+    "path": "Images/f01.jpg",
+    "bytes": 89820,
+    "sha256": "8a74bc8457b92973da2785de0e8604983fc6178195f2de581ee264daced7a20f"
+  },
+  {
+    "credit": "Клинок, рассекающий демонов; кадр оригинального опенинга через AnimeThemes. Права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/KimetsuNoYaiba-OP1-NCBD1080.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/kimetsu_no_yaiba?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "edd11c43f8fe1e3ad3afe38654e164b3ff4da52f06e6f3848055db115e4cd456",
+      "name": "Клинок, рассекающий демонов"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 56,
+      "operation": "Single-frame FFmpeg extraction; no title overlay"
+    },
+    "id": "f02",
+    "path": "Images/f02.jpg",
+    "bytes": 40513,
+    "sha256": "b8d0da8c1f1be0a59c555c4b2dac02d1d0bc604e7f9cce17bf55b7661e077ef3"
+  },
+  {
+    "credit": "Невероятные приключения ДжоДжо; кадр оригинального опенинга через AnimeThemes. Права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/JoJoNoKimyouNaBouken-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/jojo_no_kimyou_na_bouken_2012?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "a429bdf8e8c250c662cdfc09e55c771288dc96e2f2db0fb88acd139c3d0477f5",
+      "name": "Невероятные приключения ДжоДжо"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 56,
+      "operation": "Single-frame FFmpeg extraction; no title overlay"
+    },
+    "id": "f03",
+    "path": "Images/f03.jpg",
+    "bytes": 99020,
+    "sha256": "e5425d97249479bf991b30c826519f96991b6d52189824f3bed4c44a91bc37cc"
+  },
+  {
+    "credit": "Провожающая в последний путь Фрирен; кадр оригинального опенинга через AnimeThemes. Права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/SousouNoFrieren-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/sousou_no_frieren?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "15e76feab7c2572fbd02e274bd1f443d5cd1096f8d25ba1f55479913025a86aa",
+      "name": "Провожающая в последний путь Фрирен"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 18,
+      "operation": "Single-frame FFmpeg extraction; no title overlay"
+    },
+    "id": "f04",
+    "path": "Images/f04.jpg",
+    "bytes": 108443,
+    "sha256": "94690baa50f0152dd32cee62aa0059d5c0c1ea04ff42fe97d876fe34034b4995"
+  },
+  {
+    "credit": "Дандадан; кадр оригинального опенинга через AnimeThemes. Права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/Dandadan-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/dandadan?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "037bdbfcf5c1018bc84146068419a169a21eabbffcfbb070eba1780d928552c9",
+      "name": "Дандадан"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 18,
+      "operation": "Single-frame FFmpeg extraction; no title overlay"
+    },
+    "id": "f05",
+    "path": "Images/f05.jpg",
+    "bytes": 98824,
+    "sha256": "54c3b5591791035a21410f05062b20e6bc39fdcf3f41834d662c642870ececd1"
+  },
+  {
+    "credit": "Поднятие уровня в одиночку; кадр оригинального опенинга через AnimeThemes. Права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/SoloLeveling-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/ore_dake_level_up_na_ken?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "79afcc64180b7ebbbd4f7abc903963c5d61b6e6b726f02ef3f07a690ce3030c7",
+      "name": "Поднятие уровня в одиночку"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 72,
+      "operation": "Single-frame FFmpeg extraction; no title overlay"
+    },
+    "id": "f06",
+    "path": "Images/f06.jpg",
+    "bytes": 44555,
+    "sha256": "ea1455ea6486472095fc77de80c479a76deb1b78a6794945506e95efdb80d5ad"
+  },
+  {
+    "credit": "Кайдзю № 8; кадр оригинального опенинга через AnimeThemes. Права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/Kaijuu8Gou-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/kaijuu_8_gou?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "2f2a723a85a962508c70d4a1bc272fc7c969a4987c39a6595de10f51591e63c1",
+      "name": "Кайдзю № 8"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 72,
+      "operation": "Single-frame FFmpeg extraction; no title overlay"
+    },
+    "id": "f07",
+    "path": "Images/f07.jpg",
+    "bytes": 172609,
+    "sha256": "f2d454decd5f18dcf7bbdac1284cd6330ac45889175f2ef3722e75fecf3e0659"
+  },
+  {
+    "credit": "Монолог фармацевта; кадр оригинального опенинга через AnimeThemes. Права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/KusuriyaNoHitorigoto-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/kusuriya_no_hitorigoto?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "c2aa04df43deeaf72b9541d8b2b353c4fe5bb008a881711c2e01ab4febb38bfa",
+      "name": "Монолог фармацевта"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 72,
+      "operation": "Single-frame FFmpeg extraction; no title overlay"
+    },
+    "id": "f08",
+    "path": "Images/f08.jpg",
+    "bytes": 73356,
+    "sha256": "7476e04281336ba53b40b344617f19bd15d75557d9693a6f42c46ab0fb434450"
+  },
+  {
+    "credit": "Re:Zero; кадр оригинального опенинга через AnimeThemes. Права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/ReZero-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/rezero_kara_hajimeru_isekai_seikatsu?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "f52469c4ea6efadeab9cbf115ca3da1d12a15bad7557b32ffa3d01e5d685c006",
+      "name": "Re:Zero"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 37,
+      "operation": "Single-frame FFmpeg extraction; no title overlay"
+    },
+    "id": "f09",
+    "path": "Images/f09.jpg",
+    "bytes": 18238,
+    "sha256": "60f88b9ab0dd6e99fc116054090d03c15935beae1cc758a2b16ae7cc2d1a1ebd"
+  },
+  {
+    "credit": "Синяя тюрьма; кадр оригинального опенинга через AnimeThemes. Права у создателей аниме.",
+    "source": {
+      "url": "https://v.animethemes.moe/BlueLock-OP1.webm",
+      "metadata_url": "https://api.animethemes.moe/anime/blue_lock?include=animethemes.animethemeentries.videos,animethemes.song.artists",
+      "source_sha256": "dee9cddd56f3f670d94a990a39390c2c86dd9d0f7e202bbe410da89630c4d823",
+      "name": "Синяя тюрьма"
+    },
+    "processing": {
+      "type": "image",
+      "frame_seconds": 18,
+      "operation": "Single-frame FFmpeg extraction; no title overlay"
+    },
+    "id": "f10",
+    "path": "Images/f10.jpg",
+    "bytes": 85139,
+    "sha256": "4f2bb249e90a5cb7180a0d809ad669c8e6afe0105f3dc8ff11e1877f9de5558c"
+  },
+  {
+    "id": "o01",
+    "path": "Audio/o01.mp3",
+    "bytes": 141105,
+    "sha256": "a12b3fee994825f3cedeed65c433b8cab7dc6eed7767db4ad30ff4c1aef7aad0",
+    "credit": "Jujutsu Kaisen — Kaikai Kitan; Eve",
+    "processing": {
+      "type": "audio",
+      "operation": "7-second excerpt of the previously identified opening clip",
+      "start_in_previous_clip_seconds": 2,
+      "seconds": 7,
+      "previous_clip_sha256": "dc681e95cd00f70152a926ed837348c3be598d853fab6705134a4bbc0479883d"
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/JujutsuKaisen-OP1.webm",
+      "source_sha256": "b18d6f71a964dbd520c04905d477be1e6d317d77d0775572cc6eb18c559e82f4"
+    }
+  },
+  {
+    "id": "o02",
+    "path": "Audio/o02.mp3",
+    "bytes": 141105,
+    "sha256": "222883af7bee3c71f753f634d4403c104b27be76ca40cdd415b928c386539cff",
+    "credit": "Chainsaw Man — Kick Back; Kenshi Yonezu",
+    "processing": {
+      "type": "audio",
+      "operation": "7-second excerpt of the previously identified opening clip",
+      "start_in_previous_clip_seconds": 2,
+      "seconds": 7,
+      "previous_clip_sha256": "fe8d1b37a587a0cc85d3c8bce8e27b1fa157fe42522987f5ea1a4a12d174d49d"
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/ChainsawMan-OP1.webm",
+      "source_sha256": "afeea1202397d8f8df96b96c7873c1ff0930c6560124ef05031bddf399a7e0fb"
+    }
+  },
+  {
+    "id": "o03",
+    "path": "Audio/o03.mp3",
+    "bytes": 141105,
+    "sha256": "59a4a8c25bc9e8e2637ae48cf47acfae2ec5b48d805e1a7fc0daf21cbfa18ee7",
+    "credit": "Tokyo Ghoul — Unravel; TK from Ling tosite sigure",
+    "processing": {
+      "type": "audio",
+      "operation": "7-second excerpt of the previously identified opening clip",
+      "start_in_previous_clip_seconds": 2,
+      "seconds": 7,
+      "previous_clip_sha256": "aee43969dd05afa7a8302d774b245cde0c4d33e550d26f262857f5d81c75dd3f"
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/TokyoGhoul-OP1.webm",
+      "source_sha256": "365325741db827b818c4539358c3712257a01a0c19f870e09521ec5715bffc62"
+    }
+  },
+  {
+    "id": "o04",
+    "path": "Audio/o04.mp3",
+    "bytes": 141105,
+    "sha256": "92dc0024cd1c64603500534580fe1d06068b55f008f0e66d0ddef6e5957e36bc",
+    "credit": "Shingeki no Kyojin — Guren no Yumiya; Linked Horizon",
+    "processing": {
+      "type": "audio",
+      "operation": "7-second excerpt of the previously identified opening clip",
+      "start_in_previous_clip_seconds": 2,
+      "seconds": 7,
+      "previous_clip_sha256": "4354c666d34dbac6bbd99d2cd0fe1dead6786d873527f89480f01621376045b8"
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/ShingekiNoKyojin-OP1.webm",
+      "source_sha256": "9f1f9e494822d74b55755721da98e3dc9aa1fbf7d07e12a3400cc6b43581dbab"
+    }
+  },
+  {
+    "id": "o05",
+    "path": "Audio/o05.mp3",
+    "bytes": 141105,
+    "sha256": "5c6cfdfe6c722f953457e6cd92df1a06ab81b74b84a4550bc50c8c7438e73b10",
+    "credit": "One Punch Man — The Hero!!; JAM Project",
+    "processing": {
+      "type": "audio",
+      "operation": "7-second excerpt of the previously identified opening clip",
+      "start_in_previous_clip_seconds": 2,
+      "seconds": 7,
+      "previous_clip_sha256": "6cb53b136f17bc7cf31c1f4c2081ea6a6d9e3bb187aa01f281e8f7062a945435"
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/OnePunchMan-OP1.webm",
+      "source_sha256": "bab218a76e7b9ef65e83f92d2c656b2e08abadd73d78d384605c3d3cbbf017d8"
+    }
+  },
+  {
+    "id": "o06",
+    "path": "Audio/o06.mp3",
+    "bytes": 141105,
+    "sha256": "36136b63ef557c00ecb84793db6f0b1f47555712c77e39a33c134aea2446a9d6",
+    "credit": "Mob Psycho 100 — 99; MOB CHOIR",
+    "processing": {
+      "type": "audio",
+      "operation": "7-second excerpt of the previously identified opening clip",
+      "start_in_previous_clip_seconds": 2,
+      "seconds": 7,
+      "previous_clip_sha256": "4c536c23d02062c3f502cccbf7971a82d250109643fdce13d29d73048ef335d7"
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/MobPsycho100-OP1.webm",
+      "source_sha256": "758eb8f0c28cf7e1b2b2c28e2459875e097bf599e21973b63e0bb58d9e2a0991"
+    }
+  },
+  {
+    "id": "o07",
+    "path": "Audio/o07.mp3",
+    "bytes": 141105,
+    "sha256": "1af02dd09a8d90731ae5901197fceab214abd2207f2f5bdb58189c3c6fb15707",
+    "credit": "Bleach — Asterisk; Orange Range",
+    "processing": {
+      "type": "audio",
+      "operation": "7-second excerpt of the previously identified opening clip",
+      "start_in_previous_clip_seconds": 2,
+      "seconds": 7,
+      "previous_clip_sha256": "0776809da0b7a47fb7459bea63444484c6867b3638303667eb1c7f2d6ae266f5"
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/Bleach-OP1.webm",
+      "source_sha256": "bc3fc7c83a909c35c0b387b0d93d21a841977e3d35ab2060ece654e895e1a677"
+    }
+  },
+  {
+    "id": "o08",
+    "path": "Audio/o08.mp3",
+    "bytes": 141105,
+    "sha256": "c15bb49803196b0d1f035fe912c3e2cea56d6e031850c30760e54ff459b86109",
+    "credit": "Sword Art Online — Crossing Field; LiSA",
+    "processing": {
+      "type": "audio",
+      "operation": "7-second excerpt of the previously identified opening clip",
+      "start_in_previous_clip_seconds": 2,
+      "seconds": 7,
+      "previous_clip_sha256": "4c624f16c7478363ceb2da7e3dbf2cd3d64fe307f76c08cc7deeab2af2a50331"
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/SwordArtOnline-OP1.webm",
+      "source_sha256": "526fe54c49bd2e1762a1872381d616a3704fbd36a0ea573d411709b4d73ba513"
+    }
+  },
+  {
+    "id": "o09",
+    "path": "Audio/o09.mp3",
+    "bytes": 141105,
+    "sha256": "084c19bb375ca93e11957f86534cd22f61fe492efe69fcd2ba5f3af29d4e940c",
+    "credit": "No Game No Life — This Game; Konomi Suzuki",
+    "processing": {
+      "type": "audio",
+      "operation": "7-second excerpt of the previously identified opening clip",
+      "start_in_previous_clip_seconds": 2,
+      "seconds": 7,
+      "previous_clip_sha256": "048cec176730241015dce9526e66eca631226e889d8ec87c9abb4608b6a23cd8"
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/NoGameNoLife-OP1.webm",
+      "source_sha256": "4eccf8e5b6d1fab22d8dfb2bd827461e74b4b5e7517f9f14cc1df4dd75bae7e3"
+    }
+  },
+  {
+    "id": "o10",
+    "path": "Audio/o10.mp3",
+    "bytes": 141105,
+    "sha256": "cff501369ba30b9e825e100a17dfdbd1f2f0331a21b0ac1c7381a0f6804aa107",
+    "credit": "Steins;Gate — Hacking to the Gate; Kanako Itou",
+    "processing": {
+      "type": "audio",
+      "operation": "7-second excerpt of the previously identified opening clip",
+      "start_in_previous_clip_seconds": 2,
+      "seconds": 7,
+      "previous_clip_sha256": "b23f16e265a1ad9841716be6c995db8e5e2e1a782dc8f5f8598e7ddcdd56ce67"
+    },
+    "source": {
+      "url": "https://v.animethemes.moe/SteinsGate-OP1.webm",
+      "source_sha256": "77196ab5b0f550c03b7706e0c9ffeb987ee51a1a2081fba9c001528eca63b21b"
+    }
+  },
+  {
+    "id": "v01",
+    "path": "Audio/v01.mp3",
+    "bytes": 133268,
+    "sha256": "dec5c86959e1e0aa13c8028d00912181a616ca2618c8e5edc0fe170b6c35797b",
+    "credit": "Minecraft — Mojang; звук повышения уровня",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 0,
+      "duration_limit_seconds": 7,
+      "repeat": 3,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "medoomem/minecraft-assets-1.20.4",
+      "commit": "14534e563e276c999932f2a427194c1f65cbf273",
+      "path": "assets/minecraft/sounds/random/levelup.ogg",
+      "url": "https://raw.githubusercontent.com/medoomem/minecraft-assets-1.20.4/14534e563e276c999932f2a427194c1f65cbf273/assets/minecraft/sounds/random/levelup.ogg",
+      "source_sha256": "22cc3fe0419fd8d59b74c091cf11afcd0c60fa20a9186b7f997fc31d5c131cba"
+    }
+  },
+  {
+    "id": "v02",
+    "path": "Audio/v02.mp3",
+    "bytes": 103488,
+    "sha256": "b4aaa0432a07cf0d6ea4541aa166ac7822a744853da4f9523f6462652fb93404",
+    "credit": "Among Us — Innersloth; сигнал экстренного собрания",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 0,
+      "duration_limit_seconds": 6,
+      "repeat": 2,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "batuhankrbb/AmongUSSoundboard",
+      "commit": "62904261bf615258de24a8cff35b22707d6fa241",
+      "path": "AmongUSSoundboard/Resources/Sounds/Emergency-Meeting.mp3",
+      "url": "https://raw.githubusercontent.com/batuhankrbb/AmongUSSoundboard/62904261bf615258de24a8cff35b22707d6fa241/AmongUSSoundboard/Resources/Sounds/Emergency-Meeting.mp3",
+      "source_sha256": "366e57b549d154d7ed50868fee78abebb70372661f23cf663bb6585770c34cb7"
+    }
+  },
+  {
+    "id": "v03",
+    "path": "Audio/v03.mp3",
+    "sha256": "c60c23c5e856789f980856e7a1724a4a90c8e0781230ca191a3fd3e71a2606fd",
+    "bytes": 89382,
+    "credit": "Warcraft III — Blizzard Entertainment; батрак орков",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 0,
+      "duration_seconds": 4.409,
+      "repeat_short_effects": true,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/warmwind/warcraft3-claude-code-sound-hook/e2da155786e9f4c571bf2d02c4af79012452f7f6/sounds/orc/complete/work_complete.mp3",
+      "repository": "warmwind/warcraft3-claude-code-sound-hook",
+      "source_ref": "e2da155786e9f4c571bf2d02c4af79012452f7f6",
+      "path": "sounds/orc/complete/work_complete.mp3",
+      "source_sha256": "5b8d66f7accb80ecd8245d6d6b709c106cf2d3ccca082d1ec945ba74de8096df"
+    }
+  },
+  {
+    "id": "v04",
+    "path": "Audio/v04.mp3",
+    "sha256": "790a0ab92e294ab54b4f0f67c819b4716cea28d33afedd3225097bd5addfc5d8",
+    "bytes": 130133,
+    "credit": "Portal 2 — Valve / Ellen McLain; GLaDOS; звуковая подборка DoubleGremlin181 (https://github.com/DoubleGremlin181); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 0,
+      "duration_seconds": 6.447,
+      "repeat_short_effects": true,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/PeonPing/og-packs/v1.0.0/glados/sounds/BecauseImAPotato.mp3",
+      "manifest_sha256": "1e6066a66018f56092b917ae36123f84278b1fb29979642cee664760a1549d8b",
+      "repository": "PeonPing/og-packs",
+      "source_ref": "v1.0.0",
+      "pack_author": {
+        "name": "DoubleGremlin181",
+        "github": "DoubleGremlin181"
+      },
+      "pack_name": "glados",
+      "label": "Because I'm a potato.",
+      "path": "glados/sounds/BecauseImAPotato.mp3",
+      "source_sha256": "319f0c9d9deac001d6528a01a04afe2b93a3cefbda973b06d15c900990965df0",
+      "pack_license": "CC-BY-NC-4.0",
+      "pack_manifest_url": "https://raw.githubusercontent.com/PeonPing/og-packs/v1.0.0/glados/openpeon.json"
+    }
+  },
+  {
+    "credit": "GTA San Andreas; короткая игровая запись из пользовательского набора cybersnus/gta-sa-peonping. Права на игру и голос у их авторов.",
+    "source": {
+      "url": "https://raw.githubusercontent.com/cybersnus/gta-sa-peonping/v1.1.0/sounds/ah-shit-here-we-go-again.wav",
+      "source_sha256": "799a98037ad51e1228f62b9e2d0107b7214ee9d4dd383d0b8b355a09ae90396b",
+      "repository": "cybersnus/gta-sa-peonping",
+      "source_ref": "v1.1.0",
+      "label": "Ah shit, here we go again"
+    },
+    "processing": {
+      "type": "audio",
+      "peak_target": "-2 dBTP",
+      "normalization": "-18 LUFS",
+      "max_seconds": 8,
+      "short_samples_repeated": true
+    },
+    "id": "v05",
+    "path": "Audio/v05.mp3",
+    "bytes": 125954,
+    "sha256": "8021603ddf90280c2686d2f99031d6a444ccfa544a66d68d9f6fcbfdaf9be20e"
+  },
+  {
+    "id": "v06",
+    "path": "Audio/v06.mp3",
+    "bytes": 51766,
+    "sha256": "6380897d1d25367ea96768f6c9ae09860783e36d4ba6e8e591f4563be4ec0268",
+    "credit": "Corrupted Arthas (WarCraft 3); звуковая подборка OmegaZero (https://github.com/OmegaZero); MIT; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 2.6,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/OmegaZero/openpeon-corrupted-arthas/v1.0.3/sounds/TreadLightly.wav",
+      "source_sha256": "6ee804b8738e6c6f1301c8c676d0c09876d0d677923bc0ed4af4a7cc01211b0e",
+      "manifest_url": "https://raw.githubusercontent.com/OmegaZero/openpeon-corrupted-arthas/v1.0.3/openpeon.json",
+      "pack_label": "Tread Lightly",
+      "pack_name": "wc3_corrupted_arthas"
+    }
+  },
+  {
+    "id": "v07",
+    "path": "Audio/v07.mp3",
+    "bytes": 52811,
+    "sha256": "09989790b584a7538bc0fd4aeb13ba008f9e2e386147728e8513e30807191cd8",
+    "credit": "Jaina Proudmore (WarCraft 3); звуковая подборка OmegaZero (https://github.com/OmegaZero); MIT; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 2.6,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/OmegaZero/openpeon-jaina/v1.0.0/sounds/JainaThatsCurious.wav",
+      "source_sha256": "7a4f79bf601fac19e65388ec8dca7186485987e3179941a13e0e6d3bebfb8bf5",
+      "manifest_url": "https://raw.githubusercontent.com/OmegaZero/openpeon-jaina/v1.0.0/openpeon.json",
+      "pack_label": "That's Curious...",
+      "pack_name": "wc3_jaina"
+    }
+  },
+  {
+    "id": "v08",
+    "path": "Audio/v08.mp3",
+    "bytes": 51766,
+    "sha256": "041b0dca982d23bc38be1de7adae111d273c0a133ec599d4cda75ef79981b7d1",
+    "credit": "Undead Lich (Warcraft III); звуковая подборка iamunhoz (https://github.com/iamunhoz); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 2.6,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/iamunhoz/openpeon-wc3-lich/v1.0.0/sounds/HeroLichYes5.wav",
+      "source_sha256": "736684d0f0b5e3c3ed9680271e18c8df02dd5c7ac892207de16f6c1305a60207",
+      "manifest_url": "https://raw.githubusercontent.com/iamunhoz/openpeon-wc3-lich/v1.0.0/openpeon.json",
+      "pack_label": "Direct my hatred.",
+      "pack_name": "wc3_lich"
+    }
+  },
+  {
+    "id": "v09",
+    "path": "Audio/v09.mp3",
+    "bytes": 64305,
+    "sha256": "bfb025a6d625cc3011bbe00ca0e708a189ca20572214e25433e8032a95819d3c",
+    "credit": "World of Warcraft (Tauren); звуковая подборка Taylan Aydinli (https://github.com/taylan); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 3.149773,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/taylan/openpeon-wow-tauren/v1.0.0/sounds/0240-mess-with-the-bull-you-get-the-horns.ogg",
+      "source_sha256": "078715b91a8d13eed09981c2e7561afec677c145bdc21fcef417bb588ab19b70",
+      "manifest_url": "https://raw.githubusercontent.com/taylan/openpeon-wow-tauren/v1.0.0/openpeon.json",
+      "pack_label": "Mess with the bull, you get the horns.",
+      "pack_name": "wow-tauren"
+    }
+  },
+  {
+    "id": "v10",
+    "path": "Audio/v10.mp3",
+    "sha256": "246b55393d61980d564c2d4fed6f34349f55a496118f4a2b489bddd7820586c7",
+    "bytes": 131178,
+    "credit": "Warcraft / World of Warcraft — Blizzard Entertainment; мурлок; звуковая подборка Ferror (https://github.com/Ferror); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 0,
+      "duration_seconds": 6.499,
+      "repeat_short_effects": true,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/PeonPing/og-packs/v1.1.0/murloc/sounds/mrrgll.mp3",
+      "manifest_sha256": "e9b5c431d0fcc907d7992634c6636188d533fd7e90370018c803d89528680153",
+      "repository": "PeonPing/og-packs",
+      "source_ref": "v1.1.0",
+      "pack_author": {
+        "name": "Ferror",
+        "github": "Ferror"
+      },
+      "pack_name": "murloc",
+      "label": "Mrglglgl!",
+      "path": "murloc/sounds/mrrgll.mp3",
+      "source_sha256": "53b93d0f24c5e164d06f0ab7c50d287c5f283577ad9f362f35419f16fa2703ae",
+      "pack_license": "CC-BY-NC-4.0",
+      "pack_manifest_url": "https://raw.githubusercontent.com/PeonPing/og-packs/v1.1.0/murloc/openpeon.json"
+    }
+  },
+  {
+    "id": "v11",
+    "path": "Audio/v11.mp3",
+    "bytes": 99831,
+    "sha256": "1fab1e5f643c1c0d6a73700e6ecca98d5133104502ae0a53dbc20ebffe80a9b1",
+    "credit": "Invoker (Dota 2); звуковая подборка bwarren2 (https://github.com/bwarren2); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 4.916939,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/bwarren2/peonpack-invoker/v1.0.0/sounds/NewAgeOfKnowledge.mp3",
+      "source_sha256": "d3dd21b18191f3439cab245c48ed33dde04c5e5e10c8a30694d77b9b2258c77c",
+      "manifest_url": "https://raw.githubusercontent.com/bwarren2/peonpack-invoker/v1.0.0/openpeon.json",
+      "pack_label": "So begins a new age of knowledge.",
+      "pack_name": "dota2_invoker"
+    }
+  },
+  {
+    "id": "v12",
+    "path": "Audio/v12.mp3",
+    "sha256": "c201507214457663ccbdea025c1c4c54d818465ed8248a5cc76ab6bf0c33a163",
+    "bytes": 79978,
+    "credit": "Dota 2 — Valve; Axe; звуковая подборка x-n2o (https://github.com/x-n2o); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 0,
+      "duration_seconds": 3.939,
+      "repeat_short_effects": true,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/PeonPing/og-packs/v1.3.0/dota2_axe/sounds/AxeIsReady.mp3",
+      "manifest_sha256": "5c1dd1cdc3c1517ca7c554b9bab4b5ca22f99ba3cc625ec7e4c527bd266b28a8",
+      "repository": "PeonPing/og-packs",
+      "source_ref": "v1.3.0",
+      "pack_author": {
+        "name": "x-n2o",
+        "github": "x-n2o"
+      },
+      "pack_name": "dota2_axe",
+      "label": "Axe is ready!",
+      "path": "dota2_axe/sounds/AxeIsReady.mp3",
+      "source_sha256": "37f0465e42d22f50607fa4edf610d4a714d7ff4abfae515cfd7892bf60bacc57",
+      "pack_license": "CC-BY-NC-4.0",
+      "pack_manifest_url": "https://raw.githubusercontent.com/PeonPing/og-packs/v1.3.0/dota2_axe/openpeon.json"
+    }
+  },
+  {
+    "id": "v13",
+    "path": "Audio/v13.mp3",
+    "bytes": 84158,
+    "sha256": "61c58dcc43d59bea67b1dbe0ab8c01f4f7be511ed48e95eb949e19834193b19e",
+    "credit": "Zeus (Dota 2); звуковая подборка kmelkon (https://github.com/kmelkon); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 4.133265,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/kmelkon/openpeon-dota2/main/dota2_zeus/sounds/ManProposesGodDisposes.mp3",
+      "source_sha256": "09931970bea681fca63e0ab01d5351e8ec0b10954a23a21bd7cfbe0595eaa326",
+      "manifest_url": "https://raw.githubusercontent.com/kmelkon/openpeon-dota2/main/dota2_zeus/openpeon.json",
+      "pack_label": "Man proposes, God disposes.",
+      "pack_name": "dota2_zeus"
+    }
+  },
+  {
+    "id": "v14",
+    "path": "Audio/v14.mp3",
+    "bytes": 65350,
+    "sha256": "35f1bfb456b2ed339e086b6f8d2818f18ed48e34b3aacd48a36258c8fa005e1f",
+    "credit": "Hoodwink (Dota 2); звуковая подборка Joel (https://github.com/joppecino); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "duration_seconds": 3.21,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/joppecino/openpeon-hoodwink/v1.0.1/sounds/hw-start-9.mp3",
+      "source_sha256": "9e279c955363843a3101e14d980b81a01255851156b80c95d288d4fe3c4abfce",
+      "manifest_url": "https://raw.githubusercontent.com/joppecino/openpeon-hoodwink/v1.0.1/openpeon.json",
+      "pack_label": "I step through the forest like it's not even there.",
+      "pack_name": "dota2-hoodwink"
+    }
+  },
+  {
+    "credit": "Overwatch - Doomfist; короткая игровая запись из пользовательского набора heron--/overwatch-peon-pings. Права на игру и голос у их авторов.",
+    "source": {
+      "url": "https://raw.githubusercontent.com/heron--/overwatch-peon-pings/v1.0.0/doomfist/sounds/session_start_6.mp3",
+      "source_sha256": "c54edf7bb3e985946f80210ceb50972196def2b68407048e6715eaad2855735e",
+      "repository": "heron--/overwatch-peon-pings",
+      "source_ref": "v1.0.0",
+      "label": "And they say chivalry is dead."
+    },
+    "processing": {
+      "type": "audio",
+      "peak_target": "-2 dBTP",
+      "normalization": "-18 LUFS",
+      "max_seconds": 8,
+      "short_samples_repeated": true
+    },
+    "id": "v15",
+    "path": "Audio/v15.mp3",
+    "bytes": 84158,
+    "sha256": "a4a23ff23558567a2e1346b23da941b57865552830814d275a843e965e103113"
+  },
+  {
+    "credit": "Minecraft Villager; короткая игровая запись из пользовательского набора Mahamurahti/openpeon-minecraft-villager. Права на игру и голос у их авторов.",
+    "source": {
+      "url": "https://raw.githubusercontent.com/Mahamurahti/openpeon-minecraft-villager/v1.0.1/sounds/villager_deny1.ogg",
+      "source_sha256": "694d49fb97864b5aeb5500de68db1d1ff0ad9e709496f8e9e98e09892d5f24ea",
+      "repository": "Mahamurahti/openpeon-minecraft-villager",
+      "source_ref": "v1.0.1",
+      "label": "Hrr."
+    },
+    "processing": {
+      "type": "audio",
+      "peak_target": "-2 dBTP",
+      "normalization": "-18 LUFS",
+      "max_seconds": 8,
+      "short_samples_repeated": true
+    },
+    "id": "v16",
+    "path": "Audio/v16.mp3",
+    "bytes": 88860,
+    "sha256": "b35bd9a365b142ad134cb045e754bd64c0044a2214773f8827584684752b3fca"
+  },
+  {
+    "id": "v17",
+    "path": "Audio/v17.mp3",
+    "sha256": "b7634f0d7acf4a53c9bc0442578ff3fdf4bad5084688deefa5ce78ed061cd6c2",
+    "bytes": 124909,
+    "credit": "Warcraft III — Blizzard Entertainment; светлячок ночных эльфов",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 0,
+      "duration_seconds": 6.18,
+      "repeat_short_effects": true,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/warmwind/warcraft3-claude-code-sound-hook/e2da155786e9f4c571bf2d02c4af79012452f7f6/sounds/nightelf/complete/WispReady1.wav",
+      "repository": "warmwind/warcraft3-claude-code-sound-hook",
+      "source_ref": "e2da155786e9f4c571bf2d02c4af79012452f7f6",
+      "path": "sounds/nightelf/complete/WispReady1.wav",
+      "source_sha256": "84532af8adec5c3ed0c99b195a44a6f980e23af1d678d9a618f244ec33d60be1"
+    }
+  },
+  {
+    "id": "v18",
+    "path": "Audio/v18.mp3",
+    "sha256": "f45fc7976017ac15be4425d6f7b51c34bff6aeac35b6458d07c462ab2bc910ec",
+    "bytes": 81023,
+    "credit": "Warcraft III — Blizzard Entertainment; послушник нежити",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 0,
+      "duration_seconds": 3.986,
+      "repeat_short_effects": true,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/warmwind/warcraft3-claude-code-sound-hook/e2da155786e9f4c571bf2d02c4af79012452f7f6/sounds/undead/complete/AcolyteReady1.wav",
+      "repository": "warmwind/warcraft3-claude-code-sound-hook",
+      "source_ref": "e2da155786e9f4c571bf2d02c4af79012452f7f6",
+      "path": "sounds/undead/complete/AcolyteReady1.wav",
+      "source_sha256": "7cc45ad6ab8acf708178a5bae6fb15036a0bb4ac8d582dfb8f549e2d1d319b94"
+    }
+  },
+  {
+    "id": "v19",
+    "path": "Audio/v19.mp3",
+    "bytes": 78933,
+    "sha256": "98543850d88e9d7f0decdfbec8b88ef33cb589587c9987467fd39c8773223a22",
+    "credit": "Terraria — Re-Logic; звук смерти игрока",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 0,
+      "duration_limit_seconds": 5,
+      "repeat": 3,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "BananaPix4613/terrarian-figura-sounds",
+      "commit": "2463cc6d6566713de7a7f5dcf9d90a81db83df35",
+      "path": "sounds/player/death/player_killed.ogg",
+      "url": "https://raw.githubusercontent.com/BananaPix4613/terrarian-figura-sounds/2463cc6d6566713de7a7f5dcf9d90a81db83df35/sounds/player/death/player_killed.ogg",
+      "source_sha256": "f2aa29834be1f61d26e7ec1da05e06c622193770e586b0979d78e219f94650e2"
+    }
+  },
+  {
+    "id": "v20",
+    "path": "Audio/v20.mp3",
+    "sha256": "b39fcf722e02f7e99d39b4ea645aaed67d8cd504130b7efeb05cfc07b370fd7e",
+    "bytes": 64827,
+    "credit": "Counter-Strike — Valve; Enemy spotted; звуковая подборка colbyfayock (https://github.com/colbyfayock); CC-BY-NC-4.0; короткий фрагмент, громкость выровнена",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 0,
+      "duration_seconds": 3.187,
+      "repeat_short_effects": true,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/colbyfayock/openpeon-counterstrike/v1.0.2/sounds/enemy-spotted.wav",
+      "manifest_sha256": "87189d450468f7f69bf25d0292a8f6c18366063e52f4875da7adf283ff428015",
+      "repository": "colbyfayock/openpeon-counterstrike",
+      "source_ref": "v1.0.2",
+      "pack_author": {
+        "name": "colbyfayock",
+        "github": "colbyfayock"
+      },
+      "pack_name": "counterstrike",
+      "label": "Enemy spotted!",
+      "path": "sounds/enemy-spotted.wav",
+      "source_sha256": "e67956fd3b4eb16eb0e890d6edc78a92a86c1bfa6b3a036af1031e6fe18fc363",
+      "pack_license": "CC-BY-NC-4.0",
+      "pack_manifest_url": "https://raw.githubusercontent.com/colbyfayock/openpeon-counterstrike/v1.0.2/openpeon.json"
+    }
+  },
+  {
+    "id": "m01",
+    "path": "Audio/m01.mp3",
+    "bytes": 281121,
+    "sha256": "ba5391ae1b90de2f02ad8065c7e4147e91022e76f6e5d2c4b84343517a679049",
+    "credit": "Minecraft — Sweden; C418 / Daniel Rosenfeld",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 16,
+      "duration_limit_seconds": 14,
+      "repeat": 1,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "medoomem/minecraft-assets-1.20.4",
+      "commit": "14534e563e276c999932f2a427194c1f65cbf273",
+      "path": "assets/minecraft/sounds/music/game/sweden.ogg",
+      "url": "https://raw.githubusercontent.com/medoomem/minecraft-assets-1.20.4/14534e563e276c999932f2a427194c1f65cbf273/assets/minecraft/sounds/music/game/sweden.ogg",
+      "source_sha256": "25984ac6655998148d10ab249ef2724f4cf1638aa67dbd0471fde0939d8db368"
+    }
+  },
+  {
+    "id": "m02",
+    "path": "Audio/m02.mp3",
+    "bytes": 281121,
+    "sha256": "175d19461f52f0576e71ebc0f4c99596607382ecf982dec28ef0edecbad5bd86",
+    "credit": "Warcraft III: Reign of Chaos — Main Menu; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 12,
+      "duration_limit_seconds": 14,
+      "repeat": 1,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "commit": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/WC3_ROC_main_menu.ogg",
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/WC3_ROC_main_menu.ogg",
+      "source_sha256": "5d4c7e2bbc86ffc665471f8ff046704d8130861c3ae95bd2b5ebfbe66d784e18"
+    }
+  },
+  {
+    "id": "m03",
+    "path": "Audio/m03.mp3",
+    "bytes": 281121,
+    "sha256": "22eb689d9e9507ebc738e584ecbd397b136f3dc26829ddc3b9660c846c7f8dbb",
+    "credit": "World of Warcraft — Stormwind; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 8,
+      "duration_limit_seconds": 14,
+      "repeat": 1,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "commit": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/08_Stormwind.ogg",
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/08_Stormwind.ogg",
+      "source_sha256": "899c73fdfa9b81fe8674203a4c36dcc94bbd75c88f0348c5552d9c2f92754540"
+    }
+  },
+  {
+    "id": "m04",
+    "path": "Audio/m04.mp3",
+    "bytes": 281121,
+    "sha256": "8964405f90c20d23c859b8c9c118c28a59b9aba789d8691169e9d6343a7084dd",
+    "credit": "Among Us — Main Theme; Innersloth / Marcus Bromander",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 12,
+      "duration_limit_seconds": 14,
+      "repeat": 1,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "batuhankrbb/AmongUSSoundboard",
+      "commit": "62904261bf615258de24a8cff35b22707d6fa241",
+      "path": "AmongUSSoundboard/Resources/Sounds/Main-Theme.mp3",
+      "url": "https://raw.githubusercontent.com/batuhankrbb/AmongUSSoundboard/62904261bf615258de24a8cff35b22707d6fa241/AmongUSSoundboard/Resources/Sounds/Main-Theme.mp3",
+      "source_sha256": "81e76c70fad13c1c26790032f1b4011eb0433e0033124a954c02515adaf91fe0"
+    }
+  },
+  {
+    "credit": "GTA San Andreas; короткая игровая запись из пользовательского набора cybersnus/gta-sa-peonping. Права на игру и голос у их авторов.",
+    "source": {
+      "url": "https://raw.githubusercontent.com/cybersnus/gta-sa-peonping/v1.1.0/sounds/mission-passed.wav",
+      "source_sha256": "0058cb59dc0297f0c5ca8bc066baea4e776e86ec587788c64a0b7a934c958075",
+      "repository": "cybersnus/gta-sa-peonping",
+      "source_ref": "v1.1.0",
+      "label": "Mission Passed - Respect+"
+    },
+    "processing": {
+      "type": "audio",
+      "peak_target": "-2 dBTP",
+      "normalization": "-18 LUFS",
+      "max_seconds": 8,
+      "short_samples_repeated": false
+    },
+    "id": "m05",
+    "path": "Audio/m05.mp3",
+    "bytes": 151031,
+    "sha256": "da45a889b648e53767de13bc37b3b50b16dd2af85e9eabeef2e1d6ab0bc59a1e"
+  },
+  {
+    "id": "m06",
+    "path": "Audio/m06.mp3",
+    "sha256": "6a0580997c556f50ff6c5daba5113d070aaf87cc81a7bc2f026976c83d999b72",
+    "bytes": 281121,
+    "credit": "World of Warcraft — Orgrimmar; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 8,
+      "duration_seconds": 14,
+      "repeat_short_effects": false,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/09_Orgrimmar.ogg",
+      "repository": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "source_ref": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/09_Orgrimmar.ogg",
+      "source_sha256": "a7a5d3a005c087c4e829b313d08d45013edbc158ce97556068fccb515ae3a464"
+    }
+  },
+  {
+    "id": "m07",
+    "path": "Audio/m07.mp3",
+    "sha256": "6dadf9aff911952fcc86cdff2316dcb8cc7a6c761cc80d056de48601e6e8238c",
+    "bytes": 281121,
+    "credit": "Warcraft III — Arcane Echoes; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 8,
+      "duration_seconds": 14,
+      "repeat_short_effects": false,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/WC3_Arcane_Echoes.ogg",
+      "repository": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "source_ref": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/WC3_Arcane_Echoes.ogg",
+      "source_sha256": "8e050b1f3179f9dcf8276f8e993cb01dcae33fcbe7dee7d5ee926627f67e4513"
+    }
+  },
+  {
+    "id": "m08",
+    "path": "Audio/m08.mp3",
+    "bytes": 281121,
+    "sha256": "6fd5cdaa476cb61055f2928e6e1a5a66606029e5bd26a765baf80a2e16ef58e9",
+    "credit": "Terraria — Overworld Day; Scott Lloyd Shelly / Resonance Array / Re-Logic",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 4,
+      "duration_limit_seconds": 14,
+      "repeat": 1,
+      "level_lufs": -18
+    },
+    "source": {
+      "repo": "Woobdachoom/Terraria-Soundtrack",
+      "commit": "8a4fd18f369072c1d07e5af4edb1a7bd4e473d1d",
+      "path": "Scott Lloyd Shelly - Terraria Soundtrack - 01 Overworld Day.mp3",
+      "url": "https://raw.githubusercontent.com/Woobdachoom/Terraria-Soundtrack/8a4fd18f369072c1d07e5af4edb1a7bd4e473d1d/Scott%20Lloyd%20Shelly%20-%20Terraria%20Soundtrack%20-%2001%20Overworld%20Day.mp3",
+      "source_sha256": "7c0fcb0c6a7542ababf3889f1747a673ee979af0ee68e0b75d8f838baab749d2"
+    }
+  },
+  {
+    "id": "m09",
+    "path": "Audio/m09.mp3",
+    "sha256": "e4b750fe2d1b1cfc97769e106411b17a1fb6a5cc622ea22b36ba46c64c1dac49",
+    "bytes": 281121,
+    "credit": "Minecraft — Mice on Venus; C418 / Daniel Rosenfeld",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 8,
+      "duration_seconds": 14,
+      "repeat_short_effects": false,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/medoomem/minecraft-assets-1.20.4/14534e563e276c999932f2a427194c1f65cbf273/assets/minecraft/sounds/music/game/mice_on_venus.ogg",
+      "repository": "medoomem/minecraft-assets-1.20.4",
+      "source_ref": "14534e563e276c999932f2a427194c1f65cbf273",
+      "path": "assets/minecraft/sounds/music/game/mice_on_venus.ogg",
+      "source_sha256": "a47cf88c0fdfe5de1e3f2cd8a1f1b955b474622e1b3b07269783f9755f902b05"
+    }
+  },
+  {
+    "id": "m10",
+    "path": "Audio/m10.mp3",
+    "sha256": "4495c49ac72ba107a7cf154e6d15dbebf8fa75059d9ac07bec4ecb4b905658b6",
+    "bytes": 281121,
+    "credit": "World of Warcraft — Elwynn Forest; Blizzard Entertainment",
+    "processing": {
+      "type": "audio",
+      "start_seconds": 8,
+      "duration_seconds": 14,
+      "repeat_short_effects": false,
+      "loudness_target_lufs": -18
+    },
+    "source": {
+      "url": "https://raw.githubusercontent.com/Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod/21cfa84a052d303fd2bf115425395da03032cc03/music/wc_music/14_Elwynn_Forest.ogg",
+      "repository": "Warcraft-GoA-Development-Team/Warcraft-Guardians-of-Azeroth-2-Music-Submod",
+      "source_ref": "21cfa84a052d303fd2bf115425395da03032cc03",
+      "path": "music/wc_music/14_Elwynn_Forest.ogg",
+      "source_sha256": "0375ef7a23979907ac44a46ce6ffb8634f85878ac662c1bceb3a070107d0043c"
+    }
+  },
+  {
+    "id": "h01",
+    "path": "Images/h01.png",
+    "bytes": 2250904,
+    "sha256": "a2f2e6cb10e738a59373eec6b3756c4fb0a366e609d29fe68e58d3bd20c02b38",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h01",
+      "source_sha256": "a2f2e6cb10e738a59373eec6b3756c4fb0a366e609d29fe68e58d3bd20c02b38",
+      "generator": "image_gen",
+      "prompt_sha256": "7d3217249745bb58e8aac4e74eefd0c65bc32561acfa9f6eebdd9c1a9215d93a"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h04",
+    "path": "Images/h04.png",
+    "bytes": 2595342,
+    "sha256": "af65d0d7a23d0ac8f20232c94d273cca974e49bb56f0687dac2fa785de4ead4f",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h04",
+      "source_sha256": "af65d0d7a23d0ac8f20232c94d273cca974e49bb56f0687dac2fa785de4ead4f",
+      "generator": "image_gen",
+      "prompt_sha256": "8112a4c16fe114f5bf5c52d29dc3b278d009773a46cb8d0f4d3e4b13bca93bc3"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h05",
+    "path": "Images/h05.png",
+    "bytes": 2821928,
+    "sha256": "f7d97ab2fa7419217f9a20c29860c77c57bd23a8f5342c9e9879793f4f78a8f1",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h05",
+      "source_sha256": "f7d97ab2fa7419217f9a20c29860c77c57bd23a8f5342c9e9879793f4f78a8f1",
+      "generator": "image_gen",
+      "prompt_sha256": "f24153660831c849322db03e4db16392d02971dccc0680632bbadcb101a082aa"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h06",
+    "path": "Images/h06.png",
+    "bytes": 2881699,
+    "sha256": "3f2f69987641c9af53d1710bce7ddddf5842c6d2f36e67bce077a4b2c0f835f1",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h06",
+      "source_sha256": "3f2f69987641c9af53d1710bce7ddddf5842c6d2f36e67bce077a4b2c0f835f1",
+      "generator": "image_gen",
+      "prompt_sha256": "a839302f9393bba88c439b905c6b51152f92def2bda0e82f24e01987341827dd"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h07",
+    "path": "Images/h07.png",
+    "bytes": 2249230,
+    "sha256": "b3501c52412e752ddab3d56355b1e3f9cc9e059a351738f4970f42bc819d8d9e",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h07",
+      "source_sha256": "b3501c52412e752ddab3d56355b1e3f9cc9e059a351738f4970f42bc819d8d9e",
+      "generator": "image_gen",
+      "prompt_sha256": "f1b551683f9422265c3220f05486d6a90df8c01549c6a9a4e31361196e4ff167"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h08",
+    "path": "Images/h08.png",
+    "bytes": 2475609,
+    "sha256": "555599bc1105558d560fcddcfaa98bdabccbc3f9a5939b8214449b7ba5e717cd",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h08",
+      "source_sha256": "555599bc1105558d560fcddcfaa98bdabccbc3f9a5939b8214449b7ba5e717cd",
+      "generator": "image_gen",
+      "prompt_sha256": "01a003272bb3ff4b71cdc83c8697de4439861bf99d0a58a198ba4c398999bba0"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h09",
+    "path": "Images/h09.png",
+    "bytes": 2465276,
+    "sha256": "b990b41e310db1f731153744ba63e97bb19d3ed088806d132a4434733d68a442",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h09",
+      "source_sha256": "b990b41e310db1f731153744ba63e97bb19d3ed088806d132a4434733d68a442",
+      "generator": "image_gen",
+      "prompt_sha256": "7cfd37c34dc01a3982e76faa7ec531f9faf7e19054d909722cab5e1fa07ff4b4"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h11",
+    "path": "Images/h11.png",
+    "bytes": 2458276,
+    "sha256": "686c25e74533eadabecf3538490e9de0fffe94bd4c7989faf9ceeca2fb48e55c",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h11",
+      "source_sha256": "686c25e74533eadabecf3538490e9de0fffe94bd4c7989faf9ceeca2fb48e55c",
+      "generator": "image_gen",
+      "prompt_sha256": "304894ac71f8ae05144c29f571a13a984999a6c145938cd6163ec3d4d8e9ccfe"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h14",
+    "path": "Images/h14.png",
+    "bytes": 2632537,
+    "sha256": "c3eb1d18915dd8b2182be37c7e957ccc33ad617d771dcbd5e639927d829f1f61",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h14",
+      "source_sha256": "c3eb1d18915dd8b2182be37c7e957ccc33ad617d771dcbd5e639927d829f1f61",
+      "generator": "image_gen",
+      "prompt_sha256": "3889c56d57a8e135037a4ad6bbea279dd07a3e006ca771a719c53291adb8402a"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h15",
+    "path": "Images/h15.png",
+    "bytes": 2908369,
+    "sha256": "85460fc7cd942d92c87ce1e068f79825293bc55d27db0441b7e138fa75818031",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h15",
+      "source_sha256": "85460fc7cd942d92c87ce1e068f79825293bc55d27db0441b7e138fa75818031",
+      "generator": "image_gen",
+      "prompt_sha256": "e2d50fac70448b7f692a3e1ea8ddb79efadab2287460c1115ed81c2a9c8427b5"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h16",
+    "path": "Images/h16.png",
+    "bytes": 3036124,
+    "sha256": "0718de50fa89dcc02dd5a9123195648bc66f09045861938fa9a0a43cbe88337b",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h16",
+      "source_sha256": "0718de50fa89dcc02dd5a9123195648bc66f09045861938fa9a0a43cbe88337b",
+      "generator": "image_gen",
+      "prompt_sha256": "3f89fa28c84678f6f32200da5ae833a408916832eb4dfe0fc472299c24cce365"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h18",
+    "path": "Images/h18.png",
+    "bytes": 2766995,
+    "sha256": "038b0549d55aa1f9b4ca8bd31f4e42b6ac927efcaf433e228c66929457101f50",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h18",
+      "source_sha256": "038b0549d55aa1f9b4ca8bd31f4e42b6ac927efcaf433e228c66929457101f50",
+      "generator": "image_gen",
+      "prompt_sha256": "f746ea6322990d45aa1a6f1502dc209532335a895ab877b5d4c3e01387446253"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h19",
+    "path": "Images/h19.png",
+    "bytes": 2450232,
+    "sha256": "53ca22f334300b3f788c6f6fba5c2c66285a1f75f6488064e121b564b8cbf124",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h19",
+      "source_sha256": "53ca22f334300b3f788c6f6fba5c2c66285a1f75f6488064e121b564b8cbf124",
+      "generator": "image_gen",
+      "prompt_sha256": "7cf5de8c8d3af2acec1ca227f1d8d8b27d027855c03882d340bd5eb27c1dfac9"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "id": "h03",
+    "path": "Images/h03.png",
+    "bytes": 2636184,
+    "sha256": "9c8a17f01891833cdcd196d6cf99013fcd5e678b38db2c85ddcc794a8c0bbae6",
+    "credit": "Авторская AI-иллюстрация для пака; image_gen, Codex, 24.10.2026. Персонажи принадлежат их правообладателям. Это не игровой скриншот.",
+    "source": {
+      "url": "Авторская иллюстрация: image_gen, 24.10.2026; generation-prompts.json#h03",
+      "source_sha256": "9c8a17f01891833cdcd196d6cf99013fcd5e678b38db2c85ddcc794a8c0bbae6",
+      "generator": "image_gen",
+      "prompt_sha256": "04f7130f78ffebeee36fa03e940f4120b7e43689db67e0366d1f087a21088d37"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "original generated PNG, copied byte-for-byte; no editing"
+    }
+  },
+  {
+    "credit": "Новая авторская иллюстрация, image_gen, Codex, 25.10.2026. Права на персонажа у его авторов.",
+    "source": {
+      "url": "Авторская иллюстрация image_gen; generation-prompts.json#n01",
+      "generator": "image_gen",
+      "source_sha256": "fff1f936bf80a8ced0966cbbdb02e94c64b3602e043b9f97371d1d8aca30ba05",
+      "prompt_summary": "SPARROW + TREVOR PHILIPS, GTA V; receding hairline, dirty V-neck shirt, grey sweatpants and desert trailer"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original generated PNG copied byte-for-byte; no editing"
+    },
+    "id": "n01",
+    "path": "Images/n01.png",
+    "bytes": 2675392,
+    "sha256": "fff1f936bf80a8ced0966cbbdb02e94c64b3602e043b9f97371d1d8aca30ba05"
+  },
+  {
+    "credit": "Новая авторская иллюстрация, image_gen, Codex, 25.10.2026. Права на персонажа у его авторов.",
+    "source": {
+      "url": "Авторская иллюстрация image_gen; generation-prompts.json#n02",
+      "generator": "image_gen",
+      "source_sha256": "d9b085b91add688778d838c9053ac040657e7b273b4e2ea13563cc83f17611eb",
+      "prompt_summary": "RHINOCEROS + KRATOS; nose horn, red warpaint, beard, northern leather armour and Leviathan axe"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original generated PNG copied byte-for-byte; no editing"
+    },
+    "id": "n02",
+    "path": "Images/n02.png",
+    "bytes": 2889360,
+    "sha256": "d9b085b91add688778d838c9053ac040657e7b273b4e2ea13563cc83f17611eb"
+  },
+  {
+    "credit": "Новая авторская иллюстрация, image_gen, Codex, 25.10.2026. Права на персонажа у его авторов.",
+    "source": {
+      "url": "Авторская иллюстрация image_gen; generation-prompts.json#n03",
+      "generator": "image_gen",
+      "source_sha256": "cd6dee0c6d4a91e0a788efbbe3a2893dec3df8739b35a49b546d5856b384be0e",
+      "prompt_summary": "SEAL + GERALT; flippers, white hair, yellow eyes, wolf medallion, two swords and witcher leather armour"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original generated PNG copied byte-for-byte; no editing"
+    },
+    "id": "n03",
+    "path": "Images/n03.png",
+    "bytes": 2646308,
+    "sha256": "cd6dee0c6d4a91e0a788efbbe3a2893dec3df8739b35a49b546d5856b384be0e"
+  },
+  {
+    "credit": "Новая авторская иллюстрация, image_gen, Codex, 25.10.2026. Права на персонажа у его авторов.",
+    "source": {
+      "url": "Авторская иллюстрация image_gen; generation-prompts.json#n04",
+      "generator": "image_gen",
+      "source_sha256": "7fc62dbc3190252adcde69d0fc1a882861ed9f4ba691d3b14e82de2c74689396",
+      "prompt_summary": "PANDA + DOOM SLAYER; black-and-white panda, green Praetor armour, raised helmet and Super Shotgun"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original generated PNG copied byte-for-byte; no editing"
+    },
+    "id": "n04",
+    "path": "Images/n04.png",
+    "bytes": 2516344,
+    "sha256": "7fc62dbc3190252adcde69d0fc1a882861ed9f4ba691d3b14e82de2c74689396"
+  },
+  {
+    "credit": "Новая авторская иллюстрация, image_gen, Codex, 25.10.2026. Права на персонажа у его авторов.",
+    "source": {
+      "url": "Авторская иллюстрация image_gen; generation-prompts.json#n05",
+      "generator": "image_gen",
+      "source_sha256": "674e8c1cf001084dfbe5ddba1ba1b008b855a55b3b5b1934504fae836f868ba5",
+      "prompt_summary": "CAPYBARA + STEVE; capybara snout, turquoise shirt, blue-purple pants and pixel diamond pickaxe"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original generated PNG copied byte-for-byte; no editing"
+    },
+    "id": "n05",
+    "path": "Images/n05.png",
+    "bytes": 2091644,
+    "sha256": "674e8c1cf001084dfbe5ddba1ba1b008b855a55b3b5b1934504fae836f868ba5"
+  },
+  {
+    "credit": "Новая авторская иллюстрация, image_gen, Codex, 25.10.2026. Права на персонажа у его авторов.",
+    "source": {
+      "url": "Авторская иллюстрация image_gen; generation-prompts.json#n06",
+      "generator": "image_gen",
+      "source_sha256": "014adda3cc8277c1dab73938bcd5dfe1c264ff6bc231416d564299fa685469f2",
+      "prompt_summary": "ORCA + LEON S KENNEDY; eye patches, dorsal fin, swept blond fringe and Resident Evil 4 shearling jacket"
+    },
+    "processing": {
+      "type": "image",
+      "operation": "Original generated PNG copied byte-for-byte; no editing"
+    },
+    "id": "n06",
+    "path": "Images/n06.png",
+    "bytes": 2392322,
+    "sha256": "014adda3cc8277c1dab73938bcd5dfe1c264ff6bc231416d564299fa685469f2"
+  }
+]

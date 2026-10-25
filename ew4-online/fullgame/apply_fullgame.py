@@ -47,7 +47,7 @@ app.Use(async (context,next) => {
  p.write_text(s)
  # No WebGL probe or driver initialization. A bounded 2D surface and 30 Hz animation.
  edit(web+'app.js','hd:true,screen:100','hd:false,screen:100')
- edit(web+'app.js',"settings.followAi=settings.followAi===true;","settings.followAi=settings.followAi===true;\nsettings.cityLanguage='ru';settings.geographicLanguage='ru';")
+ edit(web+'app.js',"settings.followAi=settings.followAi===true;","settings.followAi=settings.followAi===true;\nif(window.Ew4Ru){settings.cityLanguage='ru';settings.geographicLanguage='ru';}")
  edit(web+'app.js','  renderDirty=false;lastRenderTime=time;',"  if(time-lastRenderTime<32){renderRequest=requestAnimationFrame(render);return;}\n  renderDirty=false;lastRenderTime=time;")
  edit(web+'app.js','Math.min(window.devicePixelRatio||1,3,','Math.min(window.devicePixelRatio||1,1.25,')
  edit(web+'app.js',"const text=translated?.name===name?translated[settings.cityLanguage]:Ew4MenuArt.cityName(name,settings.cityLanguage,cityNames);","const text=window.Ew4Ru?.cities?.[String(name).toUpperCase()]||(translated?.name===name?translated.en:Ew4MenuArt.cityName(name,'en',cityNames));")
@@ -65,7 +65,7 @@ app.Use(async (context,next) => {
  edit(web+'original-ui.js','return root.Ew4Ru&&point>=32&&point<0x0530||','return root.Ew4Ru&&point>=32||')
  edit(web+'native-locale.js','get labels(){return data.labels;}', 'get labels(){return data.labels;},get cities(){return data.cities||{};}')
  # Translate geographic lettering rather than reusing English artwork labels.
- p=root/(web+'battlefield.js');s=p.read_text(encoding='utf-8');s=s.replace("const chinese=this.api.geographicLanguage==='zh'&&label.textZh;","const russian=this.api.geographicLanguage==='ru';const labelText=russian?window.Ew4Ru.text(label.textZh||''):label.textZh;const chinese=(russian||this.api.geographicLanguage==='zh')&&labelText;")
+ p=root/(web+'battlefield.js');s=p.read_text(encoding='utf-8');s=s.replace("const chinese=this.api.geographicLanguage==='zh'&&label.textZh;","const russian=!!window.Ew4Ru&&this.api.geographicLanguage==='ru';const labelText=russian?window.Ew4Ru.text(label.textZh||''):label.textZh;const chinese=(russian||this.api.geographicLanguage==='zh')&&labelText;")
  s=s.replace("(chinese?'zh':'en')","(chinese?this.api.geographicLanguage:'en')").replace('prepareMapText(label.textZh','prepareMapText(labelText').replace('availableText(label.textZh)','availableText(labelText)');p.write_text(s)
  edit(web+'menus.js',"b.append(this.api.uiImage(placement.frm1,Number(placement.w),Number(placement.h)));","b.append(this.lettering(chapter.name,'font_text_2_cn_hd','#343929',Number(placement.w)-8,'center',{singleLine:true}));")
  edit(web+'native-locale.js',"title.append('European War 4'","title.append('Европейская война 4'")

@@ -1,10 +1,10 @@
 """Collect short, genuine media candidates for the familiar-games remix."""
 from pathlib import Path
-import concurrent.futures,hashlib,json,subprocess,urllib.request,zipfile
+import concurrent.futures,hashlib,json,subprocess,urllib.request,urllib.parse,zipfile,time
 ROOT=Path('dist/remix-review');CACHE=Path('dist/remix-cache');ROOT.mkdir(parents=True,exist_ok=True);CACHE.mkdir(parents=True,exist_ok=True)
 GAMES={'gta5':['3240220','271590'],'rdr2':['1174180'],'cyberpunk':['1091500'],'hogwarts':['990080'],'rust':['252490'],'lethal':['1966720'],'phasmo':['739630'],'amongus':['945360'],'valheim':['892970'],'re4':['2050650'],'stray':['1332010'],'doom':['782330'],'palworld':['1623730'],'detroit':['1222140']}
 ANIME={
- 'jojo':('jojo_no_kimyou_na_bouken_stardust_crusaders',['JojoNoKimyouNaBoukenStardustCrusaders-OP1','JojoNoKimyouNaBouken2012-OP1']),
+ 'jojo':('jojo_no_kimyou_na_bouken_2012',['JoJoNoKimyouNaBouken2012-OP1','JoJoNoKimyouNaBoukenStardustCrusaders-OP1','JoJoNoKimyouNaBouken-OP1']),
  'demon':('kimetsu_no_yaiba',['KimetsuNoYaiba-OP1']),
  'spy':('spy_x_family',['SpyXFamily-OP1']),
  'frieren':('sousou_no_frieren',['SousouNoFrieren-OP1']),
@@ -16,11 +16,16 @@ ANIME={
  'bluelock':('blue_lock',['BlueLock-OP1']),
 }
 def fetch(url,limit=180_000_000):
- req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 (FriendsQuiz media review)'})
- with urllib.request.urlopen(req,timeout=55)as r:
-  b=r.read(limit+1)
-  if len(b)>limit:raise ValueError('source exceeds size limit')
-  return b
+ for attempt in range(4):
+  try:
+   req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 (FriendsQuiz media review)'})
+   with urllib.request.urlopen(req,timeout=55)as r:
+    b=r.read(limit+1)
+    if len(b)>limit:raise ValueError('source exceeds size limit')
+    return b
+  except Exception as e:
+   if getattr(e,'code',None)==404 or attempt==3:raise
+   time.sleep(2*(attempt+1))
 
 def ff(*args):subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y',*map(str,args)],check=True,timeout=180)
 def links(v):
@@ -44,7 +49,7 @@ def anime(item):
  key,(slug,stems)=item;errors=[];urls=[];api='https://api.animethemes.moe/anime/'+slug+'?include=animethemes.animethemeentries.videos,animethemes.song.artists'
  try:
   data=json.loads(fetch(api,10_000_000));(ROOT/(key+'-metadata.json')).write_text(json.dumps(data,ensure_ascii=False));urls=[u for u in links(data)if '-OP1' in u]
- except Exception as e:errors.append(type(e).__name__)
+ except Exception as e:errors.append(type(e).__name__+': '+str(e)[:180])
  urls+=['https://v.animethemes.moe/'+stem+'.webm'for stem in stems]
  for u in dict.fromkeys(urls):
   try:

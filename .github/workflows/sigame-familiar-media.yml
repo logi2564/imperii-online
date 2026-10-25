@@ -13,6 +13,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Install the frame extractor
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - run: python -u sigame-packs/tools/prepare_familiar.py
       - name: Publish short media candidates for inspection
         env:

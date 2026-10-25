@@ -77,6 +77,7 @@ app.Use(async (context,next) => {
  s=s.replace('<script src="native-locale.js"></script>', '<script src="native-locale.js"></script>\n<script src="full-controls.js" defer></script>')
  s=s.replace('</head>','<link rel="stylesheet" href="full-game.css"></head>');index.write_text(s)
  for name in ['full-controls.js','full-game.css']:shutil.copyfile(HERE/name,root/(web+name))
+ shutil.copyfile(BASE/'localization/DejaVu-LICENSE.txt',root/(web+'DejaVu-LICENSE.txt'))
  # Android includes the actual C# game engine, every campaign/map and all game media.
  p=root/'rewrite/Ew4.Android/MainActivity.cs';s=subprocess.check_output(['git','-C',str(root),'show','HEAD:rewrite/Ew4.Android/MainActivity.cs'],text=True)
  s=s.replace('[Activity(Label = "欧陆战争4 重构",','[Activity(Name="org.logi2564.ew4fullgame.GameActivity", Label = "Европейская война 4",')

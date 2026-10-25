@@ -17,7 +17,9 @@ try:
   target=out/('EuropeanWar4-Full-Android-test.apk'if diagnostic else'EuropeanWar4-Full-Android.apk');shutil.copyfile(candidates[-1],target)
   with zipfile.ZipFile(target)as z:
    names=z.namelist();assert 'assets/www/native-ru.json'in names;assert 'assets/www/content/ui/main.png'in names
-   battles=[n for n in names if n.startswith('assets/original/')and n.endswith('.btl')];assert len(battles)>=100
+   battles=[n for n in names if n.startswith('assets/original/')and n.endswith('.btl')]
+   expected={'assets/original/'+p.relative_to(root/'rewrite/data/original').as_posix() for p in (root/'rewrite/data/original').rglob('*.btl')}
+   assert expected and expected.issubset(set(names)), 'The APK must contain every original battle file'
    assert any(n.startswith('lib/arm64-v8a/')for n in names)
    assert target.stat().st_size>30*1024*1024
   digest=hashlib.sha256(target.read_bytes()).hexdigest();Path(str(target)+'.sha256').write_text(digest+'  '+target.name+'\n')

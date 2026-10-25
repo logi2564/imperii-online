@@ -3,6 +3,9 @@ on:
   push:
     branches: [ew4-fullgame]
     paths: ['.github/workflows/ew4-fullgame-capture.yml']
+concurrency:
+  group: ew4-released-apk-touch
+  cancel-in-progress: true
 permissions:
   contents: write
 jobs:
@@ -38,7 +41,7 @@ jobs:
                   matches=[]
                   for n in nodes():
                       label=n.get('text','')+' '+n.get('content-desc','')
-                      if text not in label:continue
+                      if text not in label or n.get('enabled')=='false':continue
                       b=list(map(int,re.findall(r'\d+',n.get('bounds',''))))
                       if len(b)==4 and b[2]>b[0] and b[3]>b[1]:matches.append((n.get('clickable')!='true',(b[2]-b[0])*(b[3]-b[1]),b))
                   if matches:return sorted(matches)[0][2]
@@ -57,7 +60,7 @@ jobs:
               adb('shell','svc','wifi','disable');adb('shell','svc','data','disable')
               adb('shell','am','start','-W','-S','-n','org.logi2564.ew4fullgame/.GameActivity')
               stage='offline_main_menu';find('Кампания');time.sleep(2);shot('android-release-main.png')
-              stage='touch_campaign';tap('Кампания');tap('Императорский');tap('Открыть')
+              stage='touch_campaign';tap('Кампания');tap('Императорский');tap('войти')
               find('Осада Тулона');time.sleep(1);shot('android-release-campaigns.png')
               stage='touch_start_battle';tap('Начать кампанию');find('Закрыть сведения');time.sleep(1);shot('android-release-mission.png')
               report.update(result='PASS',released_apk_sha256='ca82cdcea3d27c14f193dc74847f648dec2a94f49f36138881ce361323400e70',release_build=True,debugging_not_enabled=True,real_android_touch_input=True,network_disabled=True,main_menu=True,campaign_opened=True,mission_started=True,physical_android_device_tested=False)

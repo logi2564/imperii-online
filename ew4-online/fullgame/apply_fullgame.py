@@ -10,12 +10,12 @@ def full(root):
   (root/relative).write_bytes(subprocess.check_output(['git','-C',str(root),'show','HEAD:'+relative]))
  apply(root)
  def edit(relative,old,new):
-  p=root/relative;s=p.read_text()
+  p=root/relative;s=p.read_text(encoding='utf-8')
   if s.count(old)!=1:raise ValueError('Full-game patch missing or ambiguous: '+relative+' '+old[:80])
   p.write_text(s.replace(old,new))
  web='rewrite/Ew4.Web/wwwroot/'
  # Offline single-player uses an independent engine and save directory on Windows.
- program=root/'rewrite/Ew4.Web/Program.cs';s=program.read_text()
+ program=root/'rewrite/Ew4.Web/Program.cs';s=program.read_text(encoding='utf-8')
  s=s.replace('app.Use(onlineRoom.Handle);','''var solo = new Lazy<ModStore>(() => new ModStore(store.Base, Path.Combine(saves,"single-mods"), Path.Combine(saves,"single")));
 app.Use(async (context,next) => {
     string path=context.Request.Path.Value ?? "/";
@@ -33,14 +33,14 @@ app.Use(async (context,next) => {
  s=s.replace('if(path=="/single") {context.Request.Path="/";await next(context);return;}','''if(path=="/single") {context.Response.ContentType="text/html; charset=utf-8";context.Response.Headers.CacheControl="no-store";await context.Response.Body.WriteAsync(store.Frontend(File.ReadAllBytes(Path.Combine(frontend,"index.html")),".html"));return;}''')
  program.write_text(s)
  # Restore only when the user explicitly opens multiplayer, never on process startup.
- p=root/'rewrite/Ew4.Web/OnlineRoom.cs';s=p.read_text();start=s.index('        if (config.Scenario != null) choices =');end=s.index('\n    private void Persist()',start)
+ p=root/'rewrite/Ew4.Web/OnlineRoom.cs';s=p.read_text(encoding='utf-8');start=s.index('        if (config.Scenario != null) choices =');end=s.index('\n    private void Persist()',start)
  restore=s[start:end];restore=restore[:restore.rfind('\n    }')]
  s=s[:start]+'    }\n    private bool restored;\n    private void EnsureRestored() { lock(gate) { if(restored)return;restored=true;\n'+restore+'\n    }}\n'+s[end:]
  marker='        object? response = null; int status = 200;';s=s.replace(marker,'        EnsureRestored();\n'+marker);s=s.replace('version = "0.2.0"','version = "0.3.0"');p.write_text(s)
  # Full single-player and network mode share graphics, but never state or RPC routes.
  edit(web+'app.js',"fetch('/api/' + route", "fetch((!window.Ew4OnlineMode&&location.hostname!=='ew4.local'?'/solo-api/':'/api/') + route")
- p=root/(web+'online-client.js');s=p.read_text();p.write_text("if(location.pathname==='/game'||new URLSearchParams(location.search).get('online')==='1'){\n"+s+"\n}else{window.Ew4OnlineMode=false;}\n")
- p=root/(web+'native.js');s=p.read_text().replace("autoEnter=true","autoEnter=false").replace("'/game?native=1'","'/game?native=1&online=1&renderer=canvas'")
+ p=root/(web+'online-client.js');s=p.read_text(encoding='utf-8');p.write_text("if(location.pathname==='/game'||new URLSearchParams(location.search).get('online')==='1'){\n"+s+"\n}else{window.Ew4OnlineMode=false;}\n")
+ p=root/(web+'native.js');s=p.read_text(encoding='utf-8').replace("autoEnter=true","autoEnter=false").replace("'/game?native=1'","'/game?native=1&online=1&renderer=canvas'")
  s=s.replace("action('solo',()=>setup('solo'));","action('solo',async()=>{if(window.Ew4Desktop)await Ew4Desktop.home();else window.Ew4App?.home();});")
  s=s.replace("$('fullscreen').onclick=()=>window.Ew4Desktop?.fullscreen();$('exit').onclick=()=>window.Ew4Desktop?.quit();","$('fullscreen').onclick=()=>window.Ew4Desktop?.fullscreen();$('exit').onclick=()=>{if(window.Ew4Desktop)Ew4Desktop.quit();else window.Ew4App?.home();};")
  s=s.replace("if(token){await api('login'", "autoEnter=hash.has('join');if(token){await api('login'")
@@ -65,7 +65,7 @@ app.Use(async (context,next) => {
  edit(web+'original-ui.js','return root.Ew4Ru&&point>=32&&point<0x0530||','return root.Ew4Ru&&point>=32||')
  edit(web+'native-locale.js','get labels(){return data.labels;}', 'get labels(){return data.labels;},get cities(){return data.cities||{};}')
  # Translate geographic lettering rather than reusing English artwork labels.
- p=root/(web+'battlefield.js');s=p.read_text();s=s.replace("const chinese=this.api.geographicLanguage==='zh'&&label.textZh;","const russian=this.api.geographicLanguage==='ru';const labelText=russian?window.Ew4Ru.text(label.textZh||''):label.textZh;const chinese=(russian||this.api.geographicLanguage==='zh')&&labelText;")
+ p=root/(web+'battlefield.js');s=p.read_text(encoding='utf-8');s=s.replace("const chinese=this.api.geographicLanguage==='zh'&&label.textZh;","const russian=this.api.geographicLanguage==='ru';const labelText=russian?window.Ew4Ru.text(label.textZh||''):label.textZh;const chinese=(russian||this.api.geographicLanguage==='zh')&&labelText;")
  s=s.replace("(chinese?'zh':'en')","(chinese?this.api.geographicLanguage:'en')").replace('prepareMapText(label.textZh','prepareMapText(labelText').replace('availableText(label.textZh)','availableText(labelText)');p.write_text(s)
  edit(web+'menus.js',"b.append(this.api.uiImage(placement.frm1,Number(placement.w),Number(placement.h)));","b.append(this.lettering(chapter.name,'font_text_2_cn_hd','#343929',Number(placement.w)-8,'center',{singleLine:true}));")
  edit(web+'native-locale.js',"title.append('European War 4'","title.append('Европейская война 4'")
@@ -73,7 +73,7 @@ app.Use(async (context,next) => {
  edit(web+'original-ui.js','      for(const char of value){',"      if(root.Ew4Ru&&!options.singleLine&&Number.isFinite(limit)){\n        let wrapped='',used=0,space='';\n        for(const word of value.match(/\\n|[^\\S\\n]+|[^\\s]+/g)||[]){\n          if(word==='\\n'){wrapped+='\\n';used=0;space='';continue;}\n          if(/^\\s+$/.test(word)){space=word;continue;}\n          const size=[...word].reduce((sum,c)=>sum+advance(c),0),gap=[...space].reduce((sum,c)=>sum+advance(c),0);\n          if(used&&used+gap+size>limit&&size<=limit){wrapped+='\\n';used=0;space='';}\n          if(used){wrapped+=space;used+=gap;}wrapped+=word;used+=size;space='';\n        }\n        value=wrapped;\n      }\n      for(const char of value){")
  # The game text changes at the display layer only; runtime source fingerprints stay valid.
  edit('rewrite/Ew4.Client/ClientContent.cs','return reader.ReadToEnd();', 'string text=reader.ReadToEnd();return name=="stringtable_cn.ini"?RussianGameText.Apply(text):text;')
- index=root/(web+'index.html');s=index.read_text().replace('<html lang="zh-CN">','<html lang="ru">').replace('<title>欧陆战争4</title>','<title>Европейская война 4 — Наполеон</title>')
+ index=root/(web+'index.html');s=index.read_text(encoding='utf-8').replace('<html lang="zh-CN">','<html lang="ru">').replace('<title>欧陆战争4</title>','<title>Европейская война 4 — Наполеон</title>')
  s=s.replace('<script src="native-locale.js"></script>', '<script src="native-locale.js"></script>\n<script src="full-controls.js" defer></script>')
  s=s.replace('</head>','<link rel="stylesheet" href="full-game.css"></head>');index.write_text(s)
  for name in ['full-controls.js','full-game.css']:shutil.copyfile(HERE/name,root/(web+name))
@@ -106,8 +106,8 @@ app.Use(async (context,next) => {
         private bool Allowed(string? url)=>Uri.TryCreate(url,UriKind.Absolute,out var value)&&value.Scheme=="https"&&(value.Host=="ew4.local"||value.GetLeftPart(UriPartial.Authority)==peer());''')
  s=s.replace('if (uri?.Host != "ew4.local") return Response("text/plain", "External request blocked", 403);','if (uri?.Host != "ew4.local") return Allowed(uri?.ToString())?null:Response("text/plain","Запрос заблокирован",403);')
  p.write_text(s)
- p=root/'rewrite/Ew4.Android/Ew4.Android.csproj';s=p.read_text().replace('org.ew4.reconstruction','org.logi2564.ew4fullgame').replace('欧陆战争4 重构','Европейская война 4').replace('<ApplicationVersion>22</ApplicationVersion>','<ApplicationVersion>30</ApplicationVersion>').replace('<ApplicationDisplayVersion>0.2.19</ApplicationDisplayVersion>','<ApplicationDisplayVersion>0.3.0</ApplicationDisplayVersion>');s=s.replace('<Import Project="../Frontend.Build.targets" />','<ItemGroup><AndroidAsset Remove="../data/client/fonts/parts/**/*" /></ItemGroup><Import Project="../Frontend.Build.targets" />');p.write_text(s)
- p=root/'rewrite/Ew4.Android/Properties/AndroidManifest.xml';s=p.read_text().replace('欧陆战争4 重构','Европейская война 4');p.write_text(s)
+ p=root/'rewrite/Ew4.Android/Ew4.Android.csproj';s=p.read_text(encoding='utf-8').replace('org.ew4.reconstruction','org.logi2564.ew4fullgame').replace('欧陆战争4 重构','Европейская война 4').replace('<ApplicationVersion>22</ApplicationVersion>','<ApplicationVersion>30</ApplicationVersion>').replace('<ApplicationDisplayVersion>0.2.19</ApplicationDisplayVersion>','<ApplicationDisplayVersion>0.3.0</ApplicationDisplayVersion>');s=s.replace('<Import Project="../Frontend.Build.targets" />','<ItemGroup><AndroidAsset Remove="../data/client/fonts/parts/**/*" /></ItemGroup><Import Project="../Frontend.Build.targets" />');p.write_text(s)
+ p=root/'rewrite/Ew4.Android/Properties/AndroidManifest.xml';s=p.read_text(encoding='utf-8').replace('欧陆战争4 重构','Европейская война 4');p.write_text(s)
  report=build(root);(root/(web+'full-locale-report.json')).write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
 
 if __name__=='__main__':full(Path(sys.argv[1]).resolve())

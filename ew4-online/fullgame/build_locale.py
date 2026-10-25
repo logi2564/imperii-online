@@ -6,8 +6,8 @@ sys.path.insert(0,str(HERE.parent/'localization'))
 from build_dictionary import ini,RU,CUSTOM,LABELS,normal
 
 def build(root):
-    inputs=json.loads((HERE/'translation-input.json').read_text());translated=json.loads((HERE/'translated-ru.json').read_text())
-    source=ini(root/'rewrite/data/original/stringtable_cn.ini');english=json.loads((HERE/'table-english.json').read_text())
+    inputs=json.loads((HERE/'translation-input.json').read_text(encoding='utf-8'));translated=json.loads((HERE/'translated-ru.json').read_text(encoding='utf-8'))
+    source=ini(root/'rewrite/data/original/stringtable_cn.ini');english=json.loads((HERE/'table-english.json').read_text(encoding='utf-8'))
     missing=[k for k,v in inputs.items() if v not in translated]
     if missing:raise ValueError('Russian translation incomplete: '+str(len(missing))+' entries')
     def ru(text):

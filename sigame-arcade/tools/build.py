@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 ROOT=Path(__file__).resolve().parents[2]
 SITE=ROOT/'mini-games';OUT=ROOT/'dist/arcade'
 NS='http://vladimirkhil.com/ygpackage3.0.xsd'
-PUBLIC='https://logi2564.github.io/imperii-online/mini-games/'
+PUBLIC='https://rawcdn.githack.com/logi2564/imperii-online/arcade-61-v1/mini-games/index.html'
 
 def catalog():
  source="global.window={};"+(SITE/'catalog.js').read_text()+";process.stdout.write(JSON.stringify(window.ARCADE_GAMES));"

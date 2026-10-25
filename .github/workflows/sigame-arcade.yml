@@ -56,6 +56,10 @@ jobs:
           cp sigame-arcade/smoke-report.json sigame-arcade/playthrough-report.json sigame-arcade/embedded-report.json sigame-arcade/qr-report.json dist/arcade/
           cp sigame-arcade/home-desktop.png dist/arcade/Preview-PC.png
           cp sigame-arcade/home-mobile.png dist/arcade/Preview-Phone.png
+      - name: Check the real public phone links and published game files
+        run: |
+          python sigame-arcade/tests/live.py
+          cp sigame-arcade/live-report.json dist/arcade/
       - name: Publish the playable packs and offline games
         env:
           GH_TOKEN: ${{ github.token }}

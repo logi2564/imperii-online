@@ -22,6 +22,7 @@ def build(root):
         dictionary[text]=ru(text)
         if key.startswith('city:'):cities[key[5:]]=ru(text)
     dictionary.update(CUSTOM)
+    dictionary.update({'进入':'Открыть ','保存到':'Сохранить в ','自动存档':'автосохранение','存档 ':'сохранение ','空':'Пусто','任务目标':'Задачи','回合  ':'Ход  ','星':' звёзд'})
     dictionary.update({'Headquarter':'Штаб','Options':'Настройки','Tutorials':'Обучение','Quit':'Выход','RECRUIT':'Нанять','SCENARIO':'Кампании','English':'Русский','中文':'Русский','城市名称':'Названия городов','地理名称':'Географические названия','你好':'Здравствуйте'})
     table.update({k:dictionary.get(v,v) for k,v in table.items()})
     result={'language':'ru','dictionary':dictionary,'russian':RU,'labels':LABELS,'cities':cities,'table':table,'method':'machine_translated_game_text_with_reviewed_interface_overrides'}

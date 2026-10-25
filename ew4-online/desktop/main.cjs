@@ -6,13 +6,17 @@ const path=require('node:path');
 const os=require('node:os');
 const net=require('node:net');
 const testMode=process.argv.includes('--test-mode');
+const launched=Date.now();
+app.disableHardwareAcceleration();
+app.commandLine.appendSwitch('disable-webgl');
+app.commandLine.appendSwitch('disable-gpu');
 if(process.platform==='win32')app.setAppUserModelId('logi2564.ew4online');
 function arg(name){const i=process.argv.indexOf(name);return i<0?null:process.argv[i+1];}
 const root=arg('--app-root')||path.resolve(__dirname,'../..');
 if(arg('--profile'))app.setPath('userData',path.resolve(arg('--profile')));
 else app.setPath('userData',path.join(app.getPath('appData'),'BroEW4Desktop'));
 if(testMode&&process.platform==='linux')app.commandLine.appendSwitch('no-sandbox');
-let window,server,tunnel,stopping=false,localOrigin,allowedOrigin;
+let window,server,tunnel,stopping=false,localOrigin,allowedOrigin,hostToken;
 const folder=testMode?path.join(app.getPath('userData'),'state'):path.join(process.env.LOCALAPPDATA||app.getPath('userData'),'BroEW4Online');
 const saves=path.join(folder,'saves');
 const publicFile=path.join(saves,'public-url.txt');
@@ -51,9 +55,10 @@ else {
   app.on('window-all-closed',()=>app.quit());
   app.whenReady().then(async()=>{
     Menu.setApplicationMenu(null);
-    window=new BrowserWindow({width:1280,height:800,minWidth:720,minHeight:480,show:false,title:'European War 4 — Napoleon',icon:path.join(__dirname,'game-icon.png'),
+    window=new BrowserWindow({width:1152,height:720,minWidth:720,minHeight:480,show:false,title:'European War 4 — Napoleon',icon:path.join(__dirname,'game-icon.png'),
       backgroundColor:'#1e211d',autoHideMenuBar:true,
-      webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true,autoplayPolicy:'no-user-gesture-required',devTools:testMode}});
+      webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true,webgl:false,backgroundThrottling:true,autoplayPolicy:'no-user-gesture-required',devTools:testMode}});
+    await window.loadFile(path.join(__dirname,'loading.html'));window.show();
     window.webContents.setWindowOpenHandler(()=>({action:'deny'}));
     window.webContents.on('will-navigate',(event,url)=>{try{if(new URL(url).origin!==allowedOrigin)event.preventDefault();}catch{event.preventDefault();}});
     window.webContents.on('will-attach-webview',event=>event.preventDefault());
@@ -71,6 +76,8 @@ else {
     });
     ipcMain.on('ew4:fullscreen',event=>{if(event.sender===window?.webContents)window.setFullScreen(!window.isFullScreen());});
     ipcMain.handle('ew4:copy',(event,text)=>{if(event.sender!==window?.webContents||text.length>2000)return false;clipboard.writeText(text);return true;});
+    ipcMain.handle('ew4:home',async event=>{if(event.sender!==window?.webContents)throw Error('Invalid sender');allowedOrigin=localOrigin;await window.loadURL(localOrigin+'/single?native=1&renderer=canvas');return true;});
+    ipcMain.handle('ew4:multiplayer',async event=>{if(event.sender!==window?.webContents)throw Error('Invalid sender');allowedOrigin=localOrigin;await window.loadURL(localOrigin+'/native#host='+hostToken);return true;});
     ipcMain.handle('ew4:join',async(event,code)=>{
       if(event.sender!==window?.webContents)throw Error('Invalid sender');
       const invite=decode(code);allowedOrigin=invite.origin;
@@ -84,9 +91,10 @@ else {
       server=start(executable,['--urls',localOrigin,'--contentRoot',path.join(root,'server'),'--data-root',path.join(root,'server','data'),'--save-root',saves]);
       await untilReady(localOrigin);
       const cfg=JSON.parse(fs.readFileSync(path.join(saves,'online-room.json'),'utf8'));
-      await window.loadURL(localOrigin+'/native#host='+cfg.hostToken);
+      hostToken=cfg.hostToken;
+      await window.loadURL(localOrigin+'/single?native=1&renderer=canvas');
       window.show();
-      if(testMode)fs.writeFileSync(path.join(app.getPath('userData'),'native-ready.json'),JSON.stringify({ready:true,origin:localOrigin,window:true,externalBrowser:false}));
+      if(testMode)fs.writeFileSync(path.join(app.getPath('userData'),'native-ready.json'),JSON.stringify({ready:true,origin:localOrigin,window:true,externalBrowser:false,startupMs:Date.now()-launched,renderer:"canvas",hardwareAcceleration:false}));
     }catch(error){log(error.stack);dialog.showErrorBox('European War 4',error.message);app.quit();}
   }).catch(error=>{log(error.stack);clean();app.exit(1);});
 }

@@ -22,6 +22,9 @@ def run(a):
             wait_for(lambda:urllib.request.urlopen(f'http://127.0.0.1:{port}/json/version',timeout=2).status==200)
             desktop=pw.chromium.connect_over_cdp(f'http://127.0.0.1:{port}')
             context=desktop.contexts[0];host=context.pages[0] if context.pages else context.wait_for_event('page')
+            if a.full:
+                host.wait_for_function("()=>document.querySelector('#full-multiplayer-button')&&!document.querySelector('#full-multiplayer-button').disabled",timeout=60000)
+                host.locator('#full-multiplayer-button').click();host.locator('#full-create').click()
             host.wait_for_function("()=>!!document.querySelector('#multiplayer')&&!document.querySelector('#multiplayer').disabled",timeout=60000)
             stage='create_room'
             host.locator('#multiplayer').click();host.locator('#country option[value="fra"]').wait_for(state='attached')
@@ -36,7 +39,7 @@ def run(a):
                 except (OSError,ValueError):return False
             wait_for(public_ready,90)
             stage='android_install'
-            package='org.logi2564.ew4online';activity=package+'/.GameActivity'
+            package='org.logi2564.ew4fullgame' if a.full else 'org.logi2564.ew4online';activity=package+'/.GameActivity'
             adb('logcat','-c')
             stage='android_install_apk';adb('install','-r',a.apk.resolve())
             stage='android_start_activity';adb('shell','am','start','-W','-S','-n',activity,'--es','invite',code)
@@ -50,6 +53,9 @@ def run(a):
             from urllib.parse import urlsplit
             debugger=urlsplit(targets[0]['webSocketDebuggerUrl'])
             phone=WebView(f'ws://127.0.0.1:{cdp}'+debugger.path,log)
+            if a.full:
+                phone.wait("document.querySelector('#full-multiplayer-button')&&!document.querySelector('#full-multiplayer-button').disabled",90)
+                phone.click('#full-multiplayer-button');phone.select('#friend-code',code);phone.click('#full-connect')
             stage='android_choose_country'
             phone.wait('!!document.querySelector('+json.dumps('#faction option[value="'+guest_seat+'"]')+')')
             phone.select('#faction',guest_seat);phone.click('#choose')
@@ -125,4 +131,5 @@ def run(a):
 if __name__=='__main__':
     p=argparse.ArgumentParser()
     for name in ['electron','app','root','apk','output']:p.add_argument('--'+name,type=Path,required=True)
+    p.add_argument('--full',action='store_true')
     run(p.parse_args())

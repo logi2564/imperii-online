@@ -1,6 +1,8 @@
 'use strict';
 const {contextBridge,ipcRenderer}=require('electron');
 contextBridge.exposeInMainWorld('Ew4Desktop',Object.freeze({
+  home:()=>ipcRenderer.invoke('ew4:home'),
+  multiplayer:()=>ipcRenderer.invoke('ew4:multiplayer'),
   quit:()=>ipcRenderer.send('ew4:quit'),
   fullscreen:()=>ipcRenderer.send('ew4:fullscreen'),
   copy:text=>ipcRenderer.invoke('ew4:copy',String(text)),

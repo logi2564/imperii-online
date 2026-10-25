@@ -1,9 +1,11 @@
 {
   "name": "ew4-napoleon-desktop",
   "productName": "European War 4 Napoleon",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "European War 4 in its own application window with in-game multiplayer",
   "private": true,
   "main": "main.cjs",
-  "devDependencies": { "electron": "45.0.0" }
+  "devDependencies": {
+    "electron": "45.0.0"
+  }
 }

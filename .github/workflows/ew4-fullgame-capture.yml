@@ -62,9 +62,16 @@ jobs:
               stage='offline_main_menu';find('Кампания');time.sleep(2);shot('android-release-main.png')
               stage='touch_campaign';tap('Кампания');tap('Императорский');tap('войти')
               find('Осада Тулона');time.sleep(1);shot('android-release-campaigns.png')
-              stage='touch_start_battle';tap('Начать кампанию');find('Закрыть сведения');time.sleep(1);shot('android-release-mission.png')
+              stage='touch_start_button';tap('Начать кампанию');stage='mission_intro';find('Победа');time.sleep(1);shot('android-release-mission.png')
               report.update(result='PASS',released_apk_sha256='ca82cdcea3d27c14f193dc74847f648dec2a94f49f36138881ce361323400e70',release_build=True,debugging_not_enabled=True,real_android_touch_input=True,network_disabled=True,main_menu=True,campaign_opened=True,mission_started=True,physical_android_device_tested=False)
-          except Exception as e:report.update(stage=stage,exception_type=type(e).__name__)
+          except Exception as e:
+              report.update(stage=stage,exception_type=type(e).__name__)
+              try:
+                  shot('android-release-touch-state.png')
+                  report['controls']={}
+                  for term in ['Начать кампанию','Закрыть сведения','Победа','Осада Тулона']:
+                      report['controls'][term]=[{'bounds':n.get('bounds'),'enabled':n.get('enabled'),'clickable':n.get('clickable')}for n in nodes()if term in n.get('text','')+' '+n.get('content-desc','')]
+              except Exception:pass
           Path('android-release-touch.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
           if report['result']!='PASS':raise SystemExit(1)
           PY
@@ -88,3 +95,4 @@ jobs:
           if [ -f android-release-main.png ]; then gh release upload ew4-full-v0.3.0-b8ef1459 android-release-main.png --clobber; fi
           if [ -f android-release-campaigns.png ]; then gh release upload ew4-full-v0.3.0-b8ef1459 android-release-campaigns.png --clobber; fi
           if [ -f android-release-mission.png ]; then gh release upload ew4-full-v0.3.0-b8ef1459 android-release-mission.png --clobber; fi
+          if [ -f android-release-touch-state.png ]; then gh release upload ew4-full-v0.3.0-b8ef1459 android-release-touch-state.png --clobber; fi

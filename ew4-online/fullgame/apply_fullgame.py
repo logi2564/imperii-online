@@ -41,7 +41,7 @@ app.Use(async (context,next) => {
  # Full single-player and network mode share graphics, but never state or RPC routes.
  edit(web+'app.js',"fetch('/api/' + route", "fetch((!window.Ew4OnlineMode&&location.hostname!=='ew4.local'?'/solo-api/':'/api/') + route")
  p=root/(web+'online-client.js');s=p.read_text(encoding='utf-8');p.write_text("if(location.pathname==='/game'||new URLSearchParams(location.search).get('online')==='1'){\n"+s+"\n}else{window.Ew4OnlineMode=false;}\n")
- p=root/(web+'native.js');s=p.read_text(encoding='utf-8').replace("autoEnter=true","autoEnter=false").replace("'/game?native=1'","'/game?native=1&online=1&renderer=canvas'")
+ p=root/(web+'native.js');s=p.read_text(encoding='utf-8').replace(",autoEnter=true,",",autoEnter=false,").replace("'/game?native=1'","'/game?native=1&online=1&renderer=canvas'")
  s=s.replace("action('solo',()=>setup('solo'));","action('solo',async()=>{if(window.Ew4Desktop)await Ew4Desktop.home();else window.Ew4App?.home();});")
  s=s.replace("$('fullscreen').onclick=()=>window.Ew4Desktop?.fullscreen();$('exit').onclick=()=>window.Ew4Desktop?.quit();","$('fullscreen').onclick=()=>window.Ew4Desktop?.fullscreen();$('exit').onclick=()=>{if(window.Ew4Desktop)Ew4Desktop.quit();else window.Ew4App?.home();};")
  s=s.replace("if(token){await api('login'", "autoEnter=hash.has('join');if(token){await api('login'")

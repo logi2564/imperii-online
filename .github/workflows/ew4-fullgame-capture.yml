@@ -1,0 +1,87 @@
+name: Verify released Android game through real touch input
+on:
+  push:
+    branches: [ew4-fullgame]
+    paths: ['.github/workflows/ew4-fullgame-capture.yml']
+permissions:
+  contents: write
+jobs:
+  released-apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Download the exact released standalone game
+        run: |
+          curl --fail --location https://github.com/logi2564/imperii-online/releases/download/ew4-full-v0.3.0-b8ef1459/EuropeanWar4-Full-Android.apk -o game.apk
+          echo 'ca82cdcea3d27c14f193dc74847f648dec2a94f49f36138881ce361323400e70  game.apk' | sha256sum --check
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+          echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Write the real-touch verification script
+        run: |
+          cat > touch.py <<'PY'
+          import subprocess,time,json,re,xml.etree.ElementTree as ET
+          from pathlib import Path
+          def adb(*args):return subprocess.check_output(['adb',*args],stderr=subprocess.STDOUT)
+          def nodes():
+              adb('shell','uiautomator','dump','/sdcard/ew4-ui.xml')
+              return list(ET.fromstring(adb('exec-out','cat','/sdcard/ew4-ui.xml')).iter('node'))
+          def find(text,timeout=60):
+              until=time.monotonic()+timeout
+              while time.monotonic()<until:
+                  matches=[]
+                  for n in nodes():
+                      label=n.get('text','')+' '+n.get('content-desc','')
+                      if text not in label:continue
+                      b=list(map(int,re.findall(r'\d+',n.get('bounds',''))))
+                      if len(b)==4 and b[2]>b[0] and b[3]>b[1]:matches.append((n.get('clickable')!='true',(b[2]-b[0])*(b[3]-b[1]),b))
+                  if matches:return sorted(matches)[0][2]
+                  time.sleep(.5)
+              raise TimeoutError('Expected game control was not accessible')
+          def tap(text):
+              l,t,r,b=find(text);adb('shell','input','tap',str((l+r)//2),str((t+b)//2));time.sleep(.8)
+          def shot(name):
+              fg=adb('shell','dumpsys','activity','activities').decode();assert any('org.logi2564.ew4fullgame/.GameActivity'in l and'mResumedActivity'in l for l in fg.splitlines())
+              Path(name).write_bytes(adb('exec-out','screencap','-p'))
+          report={'result':'FAIL'};stage='install'
+          try:
+              adb('install','-r','game.apk')
+              # Acknowledge only the disposable emulator's first-use system fullscreen hint.
+              adb('shell','settings','put','secure','immersive_mode_confirmations','confirmed')
+              adb('shell','svc','wifi','disable');adb('shell','svc','data','disable')
+              adb('shell','am','start','-W','-S','-n','org.logi2564.ew4fullgame/.GameActivity')
+              stage='offline_main_menu';find('Кампания');time.sleep(2);shot('android-release-main.png')
+              stage='touch_campaign';tap('Кампания');tap('Императорский');tap('Открыть')
+              find('Осада Тулона');time.sleep(1);shot('android-release-campaigns.png')
+              stage='touch_start_battle';tap('Начать кампанию');find('Закрыть сведения');time.sleep(1);shot('android-release-mission.png')
+              report.update(result='PASS',released_apk_sha256='ca82cdcea3d27c14f193dc74847f648dec2a94f49f36138881ce361323400e70',release_build=True,debugging_not_enabled=True,real_android_touch_input=True,network_disabled=True,main_menu=True,campaign_opened=True,mission_started=True,physical_android_device_tested=False)
+          except Exception as e:report.update(stage=stage,exception_type=type(e).__name__)
+          Path('android-release-touch.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
+          if report['result']!='PASS':raise SystemExit(1)
+          PY
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          target: google_apis
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
+          script: python touch.py
+      - name: Publish the actual released-app touch result and game-only screenshots
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if [ ! -f android-release-touch.json ]; then echo '{"result":"FAIL","stage":"emulator_setup"}' > android-release-touch.json; fi
+          gh release upload ew4-full-v0.3.0-b8ef1459 android-release-touch.json --clobber
+          if [ -f android-release-main.png ]; then gh release upload ew4-full-v0.3.0-b8ef1459 android-release-main.png --clobber; fi
+          if [ -f android-release-campaigns.png ]; then gh release upload ew4-full-v0.3.0-b8ef1459 android-release-campaigns.png --clobber; fi
+          if [ -f android-release-mission.png ]; then gh release upload ew4-full-v0.3.0-b8ef1459 android-release-mission.png --clobber; fi

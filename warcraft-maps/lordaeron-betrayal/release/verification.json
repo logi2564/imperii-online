@@ -1,7 +1,7 @@
 {
-  "file": "Lordaeron-Wars-1.22-Editable-WC3-1.26.w3x",
-  "bytes": 8214807,
-  "sha256": "8138745565037ed22e23fd8f1b92bf753fc050b210808f930085218516196738",
+  "file": "Lordaeron-Wars-1.22-NewGen-FIX2.w3x",
+  "bytes": 8334699,
+  "sha256": "7cb000dde366c849d77d8c17e69a24e28242e5980916b25132c97841d0c2aa8c",
   "entries": 443,
   "uniqueBlocks": 392,
   "deduplicatedEntries": 51,
@@ -28,5 +28,12 @@
   },
   "warcraft126RuntimeTested": false,
   "windowsWorldEditorTested": false,
-  "editorForOriginalTerrain": "JNGP compatible with Warcraft III 1.26"
+  "editorForOriginalTerrain": "JNGP compatible with Warcraft III 1.26",
+  "sectorSize": 32768,
+  "singleUnitFiles": 0,
+  "version": "NewGen FIX2",
+  "fix": "Replace unsupported SINGLE_UNIT file storage with ordinary sector-based compression for Warcraft III maps",
+  "nativeStormLibVerification": "PASS: all 443 decoded file hashes",
+  "nativeRegressionFixture": "PASS: SINGLE_UNIT fixture rejected with Warcraft III read error 1004",
+  "stormLibCommit": "28c9b4be3f23c6b3a5ff55cacac7dbe5b9cdc4fc"
 }

@@ -10,7 +10,7 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-24.04
-    timeout-minutes: 6
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -22,6 +22,13 @@ jobs:
         run: |
           python -m pip install mpyq==0.2.5
           python warcraft-maps/tools/verify_classic_map.py warcraft-maps/lordaeron-betrayal
+      - name: Verify Warcraft-aware file decoding and the SINGLE_UNIT regression
+        run: |
+          git clone --depth 1 --branch v9.25 https://github.com/ladislav-zezula/StormLib.git /tmp/storm-source
+          test "$(git -C /tmp/storm-source rev-parse HEAD)" = "28c9b4be3f23c6b3a5ff55cacac7dbe5b9cdc4fc"
+          cmake -S /tmp/storm-source -B /tmp/storm-build -DBUILD_SHARED_LIBS=ON -DSTORM_USE_BUNDLED_LIBRARIES=ON -DSTORM_SKIP_INSTALL=ON -DCMAKE_BUILD_TYPE=Release
+          cmake --build /tmp/storm-build --parallel 2
+          python warcraft-maps/tools/verify_storm_map.py /tmp/storm-build/libstorm.so warcraft-maps/lordaeron-betrayal
       - name: Package the map with the Russian instructions
         run: |
           python - <<'PY'
@@ -29,7 +36,7 @@ jobs:
           import zipfile,shutil
           root=Path('warcraft-maps/lordaeron-betrayal')
           shutil.copy2(root/'README-RU.txt',root/'release/README-RU.txt')
-          with zipfile.ZipFile(root/'release/Lordaeron-Wars-1.22-WC3-1.26.zip','w',zipfile.ZIP_DEFLATED,compresslevel=6) as archive:
+          with zipfile.ZipFile(root/'release/Lordaeron-Wars-1.22-NewGen-FIX2.zip','w',zipfile.ZIP_DEFLATED,compresslevel=6) as archive:
               for path in sorted((root/'release').iterdir()):
                   if path.suffix!='.zip':archive.write(path,path.name)
           PY
@@ -38,4 +45,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          gh release create "lordaeron-wc3-126-${GITHUB_SHA::8}" warcraft-maps/lordaeron-betrayal/release/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'Lordaeron Wars 1.22 — восстановленная карта для Warcraft III 1.26' --notes-file warcraft-maps/lordaeron-betrayal/README-RU.txt
+          gh release create "lordaeron-newgen-fix2-${GITHUB_SHA::8}" warcraft-maps/lordaeron-betrayal/release/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'Lordaeron Wars 1.22 — NewGen FIX2: исправлено чтение карты в JNGP/UMSWE' --notes-file warcraft-maps/lordaeron-betrayal/README-RU.txt
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          tag='lordaeron-newgen-fix2-'+os.environ['GITHUB_SHA'][:8]
+          Path('/tmp/old-lordaeron-release-note.txt').write_text('Эта версия содержит ошибку упаковки и не открывается в Warcraft III / NewGenWE.\n\nИсправленный NewGen FIX2: https://github.com/logi2564/imperii-online/releases/tag/'+tag+'\n')
+          PY
+          gh release edit lordaeron-wc3-126-5ebf756b --title 'Lordaeron Wars — НЕ ИСПОЛЬЗОВАТЬ: ошибка упаковки; заменено NewGen FIX2' --notes-file /tmp/old-lordaeron-release-note.txt

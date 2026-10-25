@@ -1,0 +1,12 @@
+__pycache__/
+*.log
+home-*.png
+cards/
+bin/
+obj/
+playwright-report/
+failure-*.png
+game-mobile.png
+puzzle-mobile.png
+catalog.json
+*-report.json

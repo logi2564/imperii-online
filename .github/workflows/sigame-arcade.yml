@@ -1,0 +1,64 @@
+name: Build and publish 61 different SIGame minigames
+on:
+  push:
+    branches: [sigame-minigames]
+    paths:
+      - 'mini-games/**'
+      - 'sigame-arcade/**'
+      - '.github/workflows/sigame-arcade.yml'
+permissions:
+  contents: write
+jobs:
+  arcade:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.426'
+      - name: Install content and browser test tools
+        run: |
+          python -m pip install qrcode==8.2 pillow==11.3.0 playwright==1.55.0 zxing-cpp==2.3.0
+          browser_bin=$(command -v google-chrome || command -v chromium || true)
+          if [ -z "$browser_bin" ]; then
+            python -m playwright install --with-deps chromium
+          else
+            echo "BROWSER_EXECUTABLE=$browser_bin" >> "$GITHUB_ENV"
+          fi
+      - name: Prepare metadata, QR codes and the local test site
+        run: |
+          python sigame-arcade/tools/build.py --prepare
+          python -m http.server 8794 --bind 127.0.0.1 --directory mini-games > /tmp/arcade-http.log 2>&1 &
+          for attempt in 1 2 3 4 5; do
+            if curl -fsS -o /dev/null http://127.0.0.1:8794/; then break; fi
+            sleep 1
+          done
+      - name: Verify every game on desktop and phone and win all 61 through input
+        run: |
+          python sigame-arcade/tests/smoke.py
+          python sigame-arcade/tests/playthrough.py
+      - name: Render question cards and build native and QR packs
+        run: |
+          python sigame-arcade/tools/render_cards.py
+          python sigame-arcade/tests/qrcodes.py
+          python sigame-arcade/tools/build.py
+          python sigame-arcade/tools/validate.py
+      - name: Import both packs using official SIPackages and exercise offline HTML
+        run: |
+          dotnet run --project sigame-arcade/tools/OfficialLoader -- . | tee dist/arcade/official-import.txt
+          ARCADE_TEST_FILE_URLS=1 python sigame-arcade/tests/embedded.py
+          cp sigame-arcade/smoke-report.json sigame-arcade/playthrough-report.json sigame-arcade/embedded-report.json sigame-arcade/qr-report.json dist/arcade/
+          cp sigame-arcade/home-desktop.png dist/arcade/Preview-PC.png
+          cp sigame-arcade/home-mobile.png dist/arcade/Preview-Phone.png
+      - name: Publish the playable packs and offline games
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "sigame-arcade-61-${GITHUB_SHA::8}" dist/arcade/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'БРО · АРКАДА — 61 разная мини-игра для СИГейма, ПК и телефона' --notes-file sigame-arcade/HOW-TO-PLAY.txt

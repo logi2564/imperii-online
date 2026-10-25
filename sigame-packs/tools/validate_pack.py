@@ -13,7 +13,7 @@ import zipfile
 from lxml import etree
 from PIL import Image
 
-from pack_model import expected_counts, rounds_of
+from pack_model import expected_counts, rounds_of, round_type
 
 NS = {'q': 'http://vladimirkhil.com/ygpackage3.0.xsd'}
 
@@ -37,18 +37,27 @@ def validate(path: Path, pack_dir: Path):
         root = ET.fromstring(xml)
         rounds = root.findall('./q:rounds/q:round', NS)
         themes = root.findall('./q:rounds/q:round/q:themes/q:theme', NS)
-        if len(rounds) != counts['rounds'] or any(len(r.findall('./q:themes/q:theme', NS)) != counts['themes_per_round'] for r in rounds):
+        if len(rounds) != counts['rounds']:
             raise ValueError('Wrong round or theme count')
+        for actual, spec in zip(rounds, round_specs, strict=True):
+            if actual.attrib.get('type') != round_type(spec):
+                raise ValueError('Wrong round type')
+            if len(actual.findall('./q:themes/q:theme', NS)) != len(spec['themes']):
+                raise ValueError('Wrong theme count')
         count = 0
         references = []
-        theme_steps = [r.get('price_step', 100) for r in round_specs for _ in r['themes']]
+        theme_specs = [(round_type(r), r.get('price_step', 100)) for r in round_specs for _ in r['themes']]
         signatures = set()
-        for theme, price_step in zip(themes, theme_steps, strict=True):
+        for theme, (kind, price_step) in zip(themes, theme_specs, strict=True):
             questions = theme.findall('./q:questions/q:question', NS)
-            if [int(q.attrib['price']) for q in questions] != [price_step * n for n in range(1, 6)]:
+            prices = [0] if kind == 'final' else [price_step * n for n in range(1, 6)]
+            if [int(q.attrib['price']) for q in questions] != prices:
                 raise ValueError('Invalid game board')
             for q in questions:
                 count += 1
+                wanted_type = 'stakeAll' if kind == 'final' else 'simple'
+                if q.find('./q:type', NS).attrib.get('name') != wanted_type:
+                    raise ValueError('Wrong question type: final must ask all players for stakes')
                 answers = q.findall('./q:right/q:answer', NS)
                 if not answers or any(not (a.text or '').strip() for a in answers):
                     raise ValueError('Missing answer')
@@ -105,6 +114,7 @@ def validate(path: Path, pack_dir: Path):
                     raise ValueError('Silent or clipped audio')
                 results.append({'file': name, 'seconds': round(seconds, 3), 'peak_pcm': peak})
     report = {'result': 'PASS', 'questions': count, 'themes': len(themes), 'rounds': len(rounds),
+              'final_questions': sum(len(t['questions']) for r in round_specs if round_type(r) == 'final' for t in r['themes']),
               'xml_schema': 'official ygpackage3.1.xsd', 'offline_media': len(references), 'media': results}
     path.with_name('validation.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
     print(f"PASS: official XML schema; {count} questions in {len(rounds)} rounds; all {counts['images']} pictures and {counts['audio']} audio files decode; all media embedded and distinct.")

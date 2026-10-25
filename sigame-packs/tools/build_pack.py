@@ -7,7 +7,7 @@ from pathlib import Path
 import xml.etree.ElementTree as ET
 import zipfile
 
-from pack_model import expected_counts, filename_of, rounds_of
+from pack_model import expected_counts, filename_of, rounds_of, round_type
 
 NS = 'http://vladimirkhil.com/ygpackage3.0.xsd'
 TYPES_NS = 'http://schemas.openxmlformats.org/package/2006/content-types'
@@ -58,17 +58,20 @@ def build(pack_dir: Path, output_dir: Path):
     if len(round_specs) != expected['rounds']:
         raise ValueError('Wrong number of rounds')
     for round_spec in round_specs:
-        round_node = element(rounds, 'round', name=round_spec['name'], type='standart')
+        kind = round_type(round_spec)
+        is_final = kind == 'final'
+        round_node = element(rounds, 'round', name=round_spec['name'], type=kind)
         info(round_node)
         themes = element(round_node, 'themes')
         price_step = round_spec.get('price_step', 100)
-        if len(round_spec['themes']) != expected['themes_per_round'] or not isinstance(price_step, int) or price_step < 1:
+        if not is_final and (len(round_spec['themes']) != expected['themes_per_round'] or not isinstance(price_step, int) or price_step < 1):
             raise ValueError('Invalid round board')
         for theme in round_spec['themes']:
             theme_node = element(themes, 'theme', name=theme['name'])
             info(theme_node)
             questions = element(theme_node, 'questions')
-            if [q['price'] for q in theme['questions']] != [price_step * n for n in range(1, 6)]:
+            prices = [0] if is_final else [price_step * n for n in range(1, 6)]
+            if [q['price'] for q in theme['questions']] != prices:
                 raise ValueError('Every theme must have five increasing prices')
             for question in theme['questions']:
                 question_count += 1
@@ -85,7 +88,7 @@ def build(pack_dir: Path, output_dir: Path):
                     comments.append(m['credit'])
                 sources = ([m['source']['url']] if m else []) + question.get('sources', [])
                 info(q, sources=sources, comments='\n'.join(filter(None, comments)))
-                element(q, 'type', name='simple')
+                element(q, 'type', name='stakeAll' if is_final else 'simple')
                 scenario = element(q, 'scenario')
                 if m:
                     element(scenario, 'atom', question['prompt'], type='say')
@@ -134,6 +137,8 @@ def build(pack_dir: Path, output_dir: Path):
     result = {'file': path.name, 'bytes': path.stat().st_size, 'sha256': checksum,
               'rounds': len(round_specs), 'themes': sum(len(r['themes']) for r in round_specs),
               'themes_per_round': expected['themes_per_round'], 'questions': question_count,
+              'final_rounds': sum(round_type(r) == 'final' for r in round_specs),
+              'final_questions': sum(len(t['questions']) for r in round_specs if round_type(r) == 'final' for t in r['themes']),
               'images': image_count, 'audio': audio_count,
               'format': 4, 'external_question_media': 0}
     (output_dir / 'build-info.json').write_text(json.dumps(result, indent=2) + '\n', encoding='utf-8')

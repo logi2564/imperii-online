@@ -163,9 +163,17 @@ for r in range(4):
  rounds.append({'name':f'{r+1}-й раунд — знакомые миры','price_step':(r+1)*100,'themes':themes})
 pack={'name':'БРО-ПАК — РЕМИКС: знакомые игры, аниме и персонаживотные','id':str(uuid.uuid5(uuid.NAMESPACE_URL,'logi2564/sigame/familiar-remix-140-v1')),'date':'25.10.2026','language':'ru-RU','restriction':'16+','difficulty':8,'filename':'Bro-Pack-140-Remix.siq','tags':['Персонаживотные','JoJo','GTA','Знакомые игры','Кривой отзыв'],'authors':['logi2564 — идея и подбор тем; Codex — вопросы, иллюстрации и сборка'],'expectations':{'rounds':4,'themes_per_round':7,'questions':140,'images':50,'audio':40},'description':'Переработанная версия для друзей: 140 вопросов в четырёх раундах. Знакомые игры, современная подборка аниме с JoJo, без повторов аниме-франшиз; 20 персонаживотных, 20 авторских кривых отзывов, голоса, короткие музыкальные фрагменты, боссы и лор. Warcraft III и World of Warcraft сохранены по просьбе автора. Terraria — только два вопроса. Сложность за счёт деталей знакомых миров. У персонаживотных принимается склейка или обе верные части. Все медиа встроены.','rounds':rounds}
 assert sum(len(t['questions'])for r in rounds for t in r['themes'])==len(questions)==140
+final_path=DEST/'final-round.json'
+if final_path.exists():
+ pack['rounds'].append(json.loads(final_path.read_text(encoding='utf-8')))
+ pack['name']='БРО-ПАК — РЕМИКС + ФИНАЛ: 141 вопрос'
+ pack['id']=str(uuid.uuid5(uuid.NAMESPACE_URL,'logi2564/sigame/familiar-remix-141-final-v1'))
+ pack['filename']='Bro-Pack-141-Remix-Final.siq'
+ pack['expectations'].update(rounds=5,questions=141)
+ pack['description']=pack['description'].replace('140 вопросов в четырёх раундах.','140 вопросов в четырёх обычных раундах и пятый раунд — настоящий финал со ставками и одним вопросом. Всего 141 вопрос.')
 (DEST/'pack.json').write_text(json.dumps(pack,ensure_ascii=False,indent=2)+'\n');(DEST/'media-sources.json').write_text(json.dumps(media,ensure_ascii=False,indent=2)+'\n');(DEST/'generation-prompts.json').write_text(json.dumps(generated,ensure_ascii=False,indent=2)+'\n')
 # Only used, opaque files go to the deliverable source folder.
 kept={m['path']for m in media}
 for p in (DEST/'media').rglob('*'):
  if p.is_file()and p.relative_to(DEST/'media').as_posix()not in kept:p.unlink()
-print('Composed',len(questions),'questions with',len(media),'distinct media files')
+print('Composed',sum(len(t['questions'])for r in pack['rounds']for t in r['themes']),'questions with',len(media),'distinct media files')

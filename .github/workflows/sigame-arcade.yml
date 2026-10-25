@@ -16,6 +16,21 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Check public hosting availability
+        run: |
+          python3 - <<'PY'
+          import urllib.request
+          suffix = '/mini-games/index.html'
+          for host in ['rawcdn.githack.com', 'raw.githack.com']:
+            for ref in ['arcade-61-v1', 'c47a3d87de0233c9ebcc18e031b5799304a73291']:
+              url = f'https://{host}/logi2564/imperii-online/{ref}{suffix}'
+              try:
+                with urllib.request.urlopen(url, timeout=20) as response:
+                  data = response.read()
+                  print(f'::notice::{host}/{ref}: HTTP {response.status}, {response.headers.get("Content-Type")}, {len(data)} bytes')
+              except Exception as error:
+                print(f'::warning::{host}/{ref}: {type(error).__name__}: {error}')
+          PY
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

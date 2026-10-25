@@ -23,8 +23,9 @@ for name in ['index.html', 'style.css', 'catalog.js', 'engine.js', 'games.js', '
             assert content == (ROOT / 'mini-games' / name).read_bytes(), name + ' differs from the tested source'
             verified.append({'file': name, 'sha256': hashlib.sha256(content).hexdigest()})
             break
-        except Exception:
+        except Exception as error:
             if attempt == 3:
+                print(f'::error::Public asset {name}: {type(error).__name__}: {error}', flush=True)
                 raise
             time.sleep(5)
 

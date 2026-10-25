@@ -39,4 +39,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-        run: gh release create "sigame-bro-remix-140-${GITHUB_SHA::8}" dist/sigame-remix/Bro-Pack-140-Remix.siq dist/sigame-remix/Bro-Pack-140-Remix.siq.sha256 dist/sigame-remix/How-to-play.txt dist/sigame-remix/validation.json dist/sigame-remix/official-import.txt content-check.json --target "$GITHUB_SHA" --prerelease --latest=false --title 'БРО-ПАК — 140 вопросов: знакомые игры, JoJo и персонаживотные' --notes-file sigame-packs/friends-remix/HOW-TO-PLAY.txt
+        run: |
+          gh release create "sigame-bro-remix-140-${GITHUB_SHA::8}" dist/sigame-remix/Bro-Pack-140-Remix.siq dist/sigame-remix/Bro-Pack-140-Remix.siq.sha256 dist/sigame-remix/How-to-play.txt dist/sigame-remix/validation.json dist/sigame-remix/official-import.txt content-check.json --target "$GITHUB_SHA" --prerelease --latest=false --title 'БРО-ПАК — 140 вопросов: знакомые игры, JoJo и персонаживотные' --notes-file sigame-packs/friends-remix/HOW-TO-PLAY.txt

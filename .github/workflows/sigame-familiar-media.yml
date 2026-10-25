@@ -1,0 +1,21 @@
+name: Collect familiar games and modern anime for the SIGame remix
+on:
+  push:
+    branches: [sigame-friends-pack]
+    paths: ['sigame-packs/tools/prepare_familiar.py', '.github/workflows/sigame-familiar-media.yml']
+permissions:
+  contents: write
+jobs:
+  media:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: python -u sigame-packs/tools/prepare_familiar.py
+      - name: Publish short media candidates for inspection
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release create "sigame-remix-media-${GITHUB_SHA::8}" dist/SIGame-Remix-Media.zip --target "$GITHUB_SHA" --prerelease --latest=false --title 'SIGame remix media candidates - not a playable pack' --notes 'Game screenshots and short original anime frame candidates for review. No complete anime videos or music tracks are included.'

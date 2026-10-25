@@ -24,7 +24,7 @@ try:
    assert target.stat().st_size>30*1024*1024
   digest=hashlib.sha256(target.read_bytes()).hexdigest();Path(str(target)+'.sha256').write_text(digest+'  '+target.name+'\n')
   if not diagnostic:
-   (out/'android-build-info.json').write_text(json.dumps({'file':target.name,'bytes':target.stat().st_size,'sha256':digest,'version':'0.3.0','package':'org.logi2564.ew4fullgame','standalone_game_engine':True,'bundled_resources':True,'campaign_battle_files':len(battles),'offline_single_player':True,'renderer':'canvas2d','menus':'Russian','narrative':'Russian','development_signed':True,'min_sdk':26},indent=2)+'\n')
+   (out/'android-build-info.json').write_text(json.dumps({'file':target.name,'bytes':target.stat().st_size,'sha256':digest,'version':'0.3.1','package':'org.logi2564.ew4fullgame.r31','standalone_game_engine':True,'bundled_resources':True,'campaign_battle_files':len(battles),'offline_single_player':True,'renderer':'canvas2d','menus':'Russian','narrative':'Russian','development_signed':True,'min_sdk':26},indent=2)+'\n')
  report.update(result='PASS',stage='complete')
 except Exception as e:
  report['exception_type']=type(e).__name__

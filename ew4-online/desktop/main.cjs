@@ -16,7 +16,7 @@ const root=arg('--app-root')||path.resolve(__dirname,'../..');
 if(arg('--profile'))app.setPath('userData',path.resolve(arg('--profile')));
 else app.setPath('userData',path.join(app.getPath('appData'),'BroEW4FullGame'));
 if(testMode&&process.platform==='linux')app.commandLine.appendSwitch('no-sandbox');
-let window,server,tunnel,stopping=false,localOrigin,allowedOrigin,hostToken;
+let window,server,tunnel,stopping=false,localOrigin,allowedOrigin,hostToken,networkPromise;
 const folder=testMode?path.join(app.getPath('userData'),'state'):path.join(process.env.LOCALAPPDATA||app.getPath('userData'),'BroEW4FullGame');
 const saves=path.join(folder,'saves');
 const publicFile=path.join(saves,'public-url.txt');
@@ -65,22 +65,41 @@ else {
     window.on('closed',()=>{window=null;app.quit();});
     window.webContents.on('before-input-event',(event,input)=>{if(input.type==='keyDown'&&input.key==='F11'){window.setFullScreen(!window.isFullScreen());event.preventDefault();}});
     ipcMain.on('ew4:quit',event=>{if(event.sender===window?.webContents)app.quit();});
-    ipcMain.handle('ew4:network',event=>{
+    ipcMain.handle('ew4:network',async event=>{
       if(event.sender!==window?.webContents)throw Error('Invalid sender');
-      if(tunnel&&!tunnel.killed&&tunnel.exitCode===null)return true;
-      const file=path.join(root,process.platform==='win32'?'cloudflared.exe':'cloudflared');
-      if(!fs.existsSync(file))throw Error('Файл сетевого соединения отсутствует. Распакуй архив целиком.');
-      tunnel=start(file,['tunnel','--no-autoupdate','--protocol','http2','--url',localOrigin]);
-      const inspect=data=>{const match=data.toString().match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/);if(match)fs.writeFileSync(publicFile,match[0]);};
-      tunnel.stdout.on('data',inspect);tunnel.stderr.on('data',inspect);return true;
+      if(networkPromise)return networkPromise;
+      networkPromise=(async()=>{
+        if(tunnel&&!tunnel.killed&&tunnel.exitCode===null&&fs.existsSync(publicFile))return true;
+        try{fs.unlinkSync(publicFile);}catch{}
+        if(tunnel&&!tunnel.killed)tunnel.kill();
+        const file=path.join(root,process.platform==='win32'?'cloudflared.exe':'cloudflared');
+        if(!fs.existsSync(file))throw Error('Файл сетевого соединения отсутствует. Распакуй архив целиком.');
+        tunnel=start(file,['tunnel','--no-autoupdate','--protocol','http2','--url',localOrigin]);
+        let output='',origin;
+        const inspect=data=>{output=(output+data.toString()).slice(-8192);const match=output.match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/);if(match)origin=match[0];};
+        tunnel.stdout.on('data',inspect);tunnel.stderr.on('data',inspect);
+        try{
+          for(let i=0;i<60;i++){
+            if(tunnel.exitCode!==null||stopping)break;
+            if(origin)try{const r=await fetch(origin+'/health',{signal:AbortSignal.timeout(3000)});if(r.ok&&(await r.json()).protocol===31){fs.writeFileSync(publicFile,origin);return true;}}catch{}
+            await new Promise(resolve=>setTimeout(resolve,1000));
+          }
+          throw Error('Не удалось открыть соединение через интернет. Нажми «Повторить подключение».');
+        }finally{if(!fs.existsSync(publicFile)&&tunnel&&!tunnel.killed)tunnel.kill();}
+      })().finally(()=>networkPromise=null);
+      return networkPromise;
     });
     ipcMain.on('ew4:fullscreen',event=>{if(event.sender===window?.webContents)window.setFullScreen(!window.isFullScreen());});
+    ipcMain.handle('ew4:paste',event=>{if(event.sender!==window?.webContents||new URL(event.senderFrame.url).origin!==localOrigin)throw Error('Invalid sender');return clipboard.readText();});
     ipcMain.handle('ew4:copy',(event,text)=>{if(event.sender!==window?.webContents||text.length>2000)return false;clipboard.writeText(text);return true;});
     ipcMain.handle('ew4:home',async event=>{if(event.sender!==window?.webContents)throw Error('Invalid sender');allowedOrigin=localOrigin;await window.loadURL(localOrigin+'/single?native=1&renderer=canvas');return true;});
-    ipcMain.handle('ew4:multiplayer',async event=>{if(event.sender!==window?.webContents)throw Error('Invalid sender');allowedOrigin=localOrigin;await window.loadURL(localOrigin+'/native#host='+hostToken);return true;});
+    ipcMain.handle('ew4:multiplayer',async event=>{if(event.sender!==window?.webContents)throw Error('Invalid sender');allowedOrigin=localOrigin;await window.loadURL(localOrigin+'/native#host='+hostToken+'&create=1');return true;});
     ipcMain.handle('ew4:join',async(event,code)=>{
       if(event.sender!==window?.webContents)throw Error('Invalid sender');
-      const invite=decode(code);allowedOrigin=invite.origin;
+      const invite=decode(code);
+      try{const r=await fetch(invite.origin+'/health',{signal:AbortSignal.timeout(20000)});if(!r.ok)throw Error('connection');const info=await r.json();if(info.protocol!==31)throw Error('Обновите игру на обоих устройствах до 0.3.1');}
+      catch(e){throw Error(e.message.startsWith('Обновите')?e.message:'Не удалось связаться с ПК. Проверь интернет и попроси свежий код.');}
+      allowedOrigin=invite.origin;
       await window.loadURL(invite.origin+'/native#join='+invite.token);return true;
     });
     try{
@@ -91,7 +110,7 @@ else {
       server=start(executable,['--urls',localOrigin,'--contentRoot',path.join(root,'server'),'--data-root',path.join(root,'server','data'),'--save-root',saves]);
       await untilReady(localOrigin);
       const cfg=JSON.parse(fs.readFileSync(path.join(saves,'online-room.json'),'utf8'));
-      hostToken=cfg.hostToken;
+      hostToken=cfg.hostToken,networkPromise;
       await window.loadURL(localOrigin+'/single?native=1&renderer=canvas');
       window.show();
       if(testMode)fs.writeFileSync(path.join(app.getPath('userData'),'native-ready.json'),JSON.stringify({ready:true,origin:localOrigin,window:true,externalBrowser:false,startupMs:Date.now()-launched,renderer:"canvas",hardwareAcceleration:false}));

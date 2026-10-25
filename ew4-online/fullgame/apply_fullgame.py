@@ -4,6 +4,7 @@ import sys,json,re,shutil,subprocess
 HERE=Path(__file__).resolve().parent;BASE=HERE.parent
 sys.path.insert(0,str(BASE));from apply_overlay import apply
 sys.path.insert(0,str(HERE));from build_locale import build
+from patch_online import patch
 
 def full(root):
  for relative in ['rewrite/Ew4.Client/ClientContent.cs','rewrite/Ew4.Web/wwwroot/menus.js','rewrite/Ew4.Web/wwwroot/battlefield.js','rewrite/Ew4.Android/MainActivity.cs','rewrite/Ew4.Android/Ew4.Android.csproj','rewrite/Ew4.Android/Properties/AndroidManifest.xml']:
@@ -108,6 +109,7 @@ app.Use(async (context,next) => {
  p.write_text(s)
  p=root/'rewrite/Ew4.Android/Ew4.Android.csproj';s=p.read_text(encoding='utf-8').replace('org.ew4.reconstruction','org.logi2564.ew4fullgame').replace('欧陆战争4 重构','Европейская война 4').replace('<ApplicationVersion>22</ApplicationVersion>','<ApplicationVersion>30</ApplicationVersion>').replace('<ApplicationDisplayVersion>0.2.19</ApplicationDisplayVersion>','<ApplicationDisplayVersion>0.3.0</ApplicationDisplayVersion>');s=s.replace('<Import Project="../Frontend.Build.targets" />','<ItemGroup><AndroidAsset Remove="../data/client/fonts/parts/**/*" /></ItemGroup><Import Project="../Frontend.Build.targets" />');p.write_text(s)
  p=root/'rewrite/Ew4.Android/Properties/AndroidManifest.xml';s=p.read_text(encoding='utf-8').replace('欧陆战争4 重构','Европейская война 4');p.write_text(s)
+ patch(root)
  report=build(root);(root/(web+'full-locale-report.json')).write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
 
 if __name__=='__main__':full(Path(sys.argv[1]).resolve())

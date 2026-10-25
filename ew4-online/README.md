@@ -1,10 +1,18 @@
 # European War 4 — complete offline Windows and Android game
 
-Version 0.3.0 ships the actual EW4 Rewrite engine and assets on both platforms. Android has its own campaigns, conquest, headquarters and saves; it no longer requires a PC for single-player. Both apps start at the main menu and load a save only after the player chooses it. Multiplayer still uses a Windows host and an invitation entered inside the full Android game.
+Version 0.3.1 ships the actual EW4 Rewrite engine and assets on both platforms. Android has its own campaigns, conquest, headquarters and saves; it no longer requires a PC for single-player. Both apps start at the main menu and load a save only after the player chooses it. Multiplayer still uses a Windows host and an invitation entered inside the full Android game.
 
-This is a separate unofficial reconstruction, not an update to the official EasyTech APK. The phone package is `org.logi2564.ew4fullgame`, distinct from the older connection-only app. Six campaign chapters, conquest and the engine's built-in content are available. Original assets and rights remain with their owners. See [player instructions](NATIVE-READ-ME.txt).
+This is a separate unofficial reconstruction, not an update to the official EasyTech APK. The phone package is `org.logi2564.ew4fullgame.r31`, distinct from the older connection-only app. Six campaign chapters, conquest and the engine's built-in content are available. Original assets and rights remain with their owners. See [player instructions](NATIVE-READ-ME.txt).
 
-## Changes prompted by the previous build
+## Multiplayer and translation fixes in 0.3.1
+
+End-turn permissions are independent of dialogue acknowledgement and are checked against the authenticated country on the server. Both end buttons lock outside the owning country’s active turn and immediately consume new permissions from an action response. The online AI-skip control is hidden. Tests attempt repeated foreign end commands and both country views.
+
+Creating a party opens setup directly. Invitations become copyable only after the public tunnel health check succeeds. Join checks protocol 31, provides paste and retry controls, and retains the last invitation locally. Lost connections disable input and recover without replacing the seat. Status polling is shared between lobby and game, and JSON responses use compression.
+
+Android serves pinned frontend, art, audio and fonts from its APK while keeping login, status and commands on the authoritative PC. It caps touch rendering at CSS resolution and 24 Hz, and keeps the foreground screen awake. The app has a separate package identifier to avoid deleting a previously installed build with a different development certificate; older saves remain in the older app. Russian overrides cover item errors, dynamic control labels and campaign/conquest/headquarters captions.
+
+## Earlier startup fixes
 
 Windows disables Electron hardware acceleration and WebGL, and explicitly selects Canvas 2D. Animation is capped at 30 Hz and the drawing surface at 1.25 DPR. The game uses a compact bundled Cyrillic font instead of loading the 53 MB Chinese font collection. Online save restoration is deferred until multiplayer is opened. The window shows startup progress immediately, then the real menu. The full game uses a separate `BroEW4FullGame` profile/save root, so an older running client cannot capture the new EXE startup or write to its saves. Older files in `BroEW4Online` are left unchanged.
 

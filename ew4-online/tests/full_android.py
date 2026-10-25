@@ -9,7 +9,7 @@ def freeport():
  with socket.socket()as s:s.bind(('127.0.0.1',0));return s.getsockname()[1]
 def chinese(p):return p.evaluate("Array.from(document.querySelectorAll('[aria-label],[title]')).filter(e=>e.getClientRects().length&&!e.closest('[hidden]')).map(e=>e.getAttribute('aria-label')||e.getAttribute('title')).filter(t=>/[\\u3400-\\u9fff]/.test(t))")
 def main(a):
- out=a.output.resolve();out.mkdir(parents=True,exist_ok=True);report={'result':'FAIL'};stage='install';phone=None;log=(out/'private.log').open('w');package='org.logi2564.ew4fullgame';activity=package+'/.GameActivity'
+ out=a.output.resolve();out.mkdir(parents=True,exist_ok=True);report={'result':'FAIL'};stage='install';phone=None;log=(out/'private.log').open('w');package='org.logi2564.ew4fullgame.r31';activity=package+'/.GameActivity'
  def launch():
   started=time.monotonic();adb('shell','am','start','-W','-S','-n',activity)
   def pid():

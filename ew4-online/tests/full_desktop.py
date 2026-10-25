@@ -41,7 +41,13 @@ def main(a):
    assert all(b['bottom']<=page.viewport_size['height']if page.viewport_size else True for b in nav)
    page.screenshot(path=str(out/'full-main.png'))
    stage='settings_and_headquarters';page.locator('#main-settings').click();assert not visible_chinese(page);page.locator('#close-settings').click()
-   page.locator('#headquarters').click();page.locator('#hq-screen').wait_for(state='visible',timeout=30000);assert not visible_chinese(page);page.screenshot(path=str(out/'full-headquarters.png'));page.locator('#hq-back').click()
+   page.locator('#headquarters').click();page.locator('#hq-screen').wait_for(state='visible',timeout=30000);assert not visible_chinese(page);page.screenshot(path=str(out/'full-headquarters.png'));page.locator('#hq-recruit').click();page.locator('.commander-info').first.click();page.locator('#detail-modal').wait_for(state='visible');assert not visible_chinese(page)
+   if page.locator('.skill-info').count():page.locator('.skill-info').first.click();assert not visible_chinese(page)
+   page.locator('#close-detail').click();page.locator('#hq-back').click()
+   page.evaluate('()=>showMain()');page.locator('[data-mode="2"]').click();assert not visible_chinese(page)
+   assert page.locator('.conquest-caption img').count()==0
+   page.locator('#menu-back').click();page.locator('[data-mode="4"]').click();assert not visible_chinese(page)
+   page.evaluate('()=>showMain()')
    stage='campaign';page.locator('[data-mode="1"]').click();chapters=page.locator('.chapter-entry').count();assert chapters>=6
    page.locator('.chapter-entry').first.click();page.locator('.chapter-preview-confirm').click();page.locator('#campaign-battles .country-entry').first.wait_for(state='visible',timeout=30000)
    missions=page.locator('#campaign-battles .country-entry').count();assert missions>=18;assert not visible_chinese(page)
@@ -55,6 +61,7 @@ def main(a):
    page.locator('#menu-button').click();page.locator('#save').click();page.locator('.save-slot-confirm').nth(1).click()
    page.locator('#detail-modal').wait_for(state='hidden');page.locator('#resume').click()
    assert not visible_chinese(page);page.screenshot(path=str(out/'full-campaign-battle.png'))
+   assert page.evaluate('()=>Ew4Ru.missing')==[], 'An exercised game text is missing its Russian translation'
    stage='performance'
    durations=page.evaluate("async()=>{const original=render,samples=[];render=function(t){const before=performance.now();original(t);samples.push(performance.now()-before);};for(let i=0;i<35;i++){view.x+=i%2?3:-3;requestRender();await new Promise(r=>setTimeout(r,45));}render=original;return samples;}")
    durations.sort();p95=durations[min(len(durations)-1,int(len(durations)*.95))]if durations else None

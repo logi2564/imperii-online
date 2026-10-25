@@ -1,7 +1,7 @@
 'use strict';
 (function(){
  if(new URLSearchParams(location.search).get('native')!=='1')return;
- let data={dictionary:{},russian:{},labels:{}},parts=[],cache=new Map();
+ let data={dictionary:{},russian:{},labels:{}},parts=[],cache=new Map(),missing=new Set();
  const cjk=/[\u3400-\u9fff]/;
  const normal=s=>s.replace(/\s+/g,' ').trim().toLowerCase();
  function text(value){
@@ -9,10 +9,11 @@
   let result=data.dictionary[s]??s;
   if(cjk.test(result))for(const [from,to]of parts)result=result.split(from).join(to);
   result=data.russian[normal(result)]??result;
+  if(cjk.test(result)&&missing.size<500)missing.add(s);
   if(cache.size>20000)cache.clear();cache.set(s,result);return result;
  }
- window.Ew4Ru={text,get labels(){return data.labels;},ready:fetch('/native-ru.json').then(r=>{if(!r.ok)throw Error('Не удалось загрузить перевод');return r.json();}).then(j=>{
-  data=j;parts=Object.entries(j.dictionary).filter(([k])=>k.length<100&&cjk.test(k)).sort((a,b)=>b[0].length-a[0].length);
+ window.Ew4Ru={text,get missing(){return [...missing];},get labels(){return data.labels;},ready:fetch('/native-ru.json').then(r=>{if(!r.ok)throw Error('Не удалось загрузить перевод');return r.json();}).then(j=>{
+  data=j;cache.clear();parts=Object.entries(j.dictionary).filter(([k])=>k.length<100&&cjk.test(k)).sort((a,b)=>b[0].length-a[0].length);
   const style=document.createElement('link');style.rel='stylesheet';style.href='/native-game.css';document.head.append(style);
   document.documentElement.lang='ru';
   for(const image of document.querySelectorAll('.game-title,#loading-screen .loading-stage>img')){

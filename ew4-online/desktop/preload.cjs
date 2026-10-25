@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('Ew4Desktop',Object.freeze({
   multiplayer:()=>ipcRenderer.invoke('ew4:multiplayer'),
   quit:()=>ipcRenderer.send('ew4:quit'),
   fullscreen:()=>ipcRenderer.send('ew4:fullscreen'),
+  paste:()=>ipcRenderer.invoke('ew4:paste'),
   copy:text=>ipcRenderer.invoke('ew4:copy',String(text)),
   startNetwork:()=>ipcRenderer.invoke('ew4:network'),
   join:code=>ipcRenderer.invoke('ew4:join',String(code))

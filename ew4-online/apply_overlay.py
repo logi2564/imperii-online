@@ -56,6 +56,9 @@ window.Ew4OnlineGame={
  pause:()=>{parent.postMessage({type:'ew4-lobby'},location.origin);}
 };
 '''
+    app = replace(app, "  $('end-turn').disabled = busy || !active.human", "  $('end-turn').disabled = (window.Ew4OnlineMode&&!window.Ew4OnlineCanEnd) || busy || !active.human")
+    app = replace(app, "  $('skip-ai').hidden = active.human", "  $('skip-ai').hidden = window.Ew4OnlineMode || active.human")
+    app = replace(app, "    await installState(next);\n  } finally", "    if(window.Ew4OnlineMode)window.ew4OnlinePermissions?.(next.online);\n    await installState(next);\n  } finally")
     write(app_path, app)
     index_path = 'rewrite/Ew4.Web/wwwroot/index.html'
     index = replace(original(index_path), '<script src="startup.js?v=20261021.1"></script>',

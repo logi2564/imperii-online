@@ -27,7 +27,8 @@ def run(a):
                 host.locator('#full-multiplayer-button').click();host.locator('#full-create').click()
             host.wait_for_function("()=>!!document.querySelector('#multiplayer')&&!document.querySelector('#multiplayer').disabled",timeout=60000)
             stage='create_room'
-            host.locator('#multiplayer').click();host.locator('#country option[value="fra"]').wait_for(state='attached')
+            if not a.full:host.locator('#multiplayer').click()
+            host.locator('#country option[value="fra"]').wait_for(state='attached')
             host.locator('#country').select_option('fra');host.locator('#create').click()
             host.wait_for_function("()=>document.querySelector('#code').value.startsWith('EW4-')",timeout=90000)
             code=host.locator('#code').input_value();invite=json.loads(base64.urlsafe_b64decode(code[4:]+'='*((-len(code[4:]))%4)))
@@ -39,7 +40,7 @@ def run(a):
                 except (OSError,ValueError):return False
             wait_for(public_ready,90)
             stage='android_install'
-            package='org.logi2564.ew4fullgame' if a.full else 'org.logi2564.ew4online';activity=package+'/.GameActivity'
+            package='org.logi2564.ew4fullgame.r31' if a.full else 'org.logi2564.ew4online';activity=package+'/.GameActivity'
             adb('logcat','-c')
             stage='android_install_apk';adb('install','-r',a.apk.resolve())
             stage='android_start_activity';adb('shell','am','start','-W','-S','-n',activity,'--es','invite',code)
@@ -69,6 +70,11 @@ def run(a):
             guest_api=Client(invite['u'].rstrip('/'),cfg['guestToken'])
             state=api.state();hfaction=state['playerFaction'];gfaction=guest_api.state()['playerFaction']
             assert hfaction!=gfaction and state['online']['canAct'] and not guest_api.state()['online']['canAct']
+            hf=next(f for f in host.frames if '/game' in f.url)
+            hf.wait_for_function('()=>!Ew4OnlineGame.busy()&&Ew4OnlineCanEnd')
+            assert phone.evaluate(game+'.document.querySelector("#end-turn").disabled')
+            assert phone.evaluate('document.querySelector("#end").disabled')
+            guest_api.call('/api/action',{'op':'end','revision':state['revision']},expected=400)
             uid,target,moved=move(api)
             wait_for(lambda:phone.evaluate(game+'.Ew4OnlineGame.revision()')>=moved['revision'])
             assert next(u['cell'] for u in guest_api.state()['units'] if u['id']==uid)==target
@@ -77,6 +83,12 @@ def run(a):
             phone.wait("!document.querySelector('#end').disabled",60)
             # Select/move use the same controller as actual map taps, not a separate test game.
             phone.wait(game+'.Ew4OnlineCanAct&&!'+game+'.Ew4OnlineGame.busy()',60)
+            stage='reject_host_skipping_guest'
+            host.wait_for_function('()=>document.querySelector("#end").disabled')
+            hf.wait_for_function('()=>document.querySelector("#end-turn").disabled')
+            guest_revision=guest_api.state()['revision']
+            for _ in range(3):api.call('/api/action',{'op':'end','revision':guest_revision},expected=400)
+            assert guest_api.state()['revision']==guest_revision
             stage='android_controller_move'
             state=guest_api.state();revision=state['revision']
             phone.wait(game+'.Ew4OnlineGame.revision()>='+str(revision)+'&&!'+game+'.Ew4OnlineGame.busy()',60)
@@ -89,6 +101,17 @@ def run(a):
             phone.evaluate(game+'.selectCell('+str(unit['cell'])+')')
             phone.evaluate(game+'.selectCell('+str(target2)+')')
             wait_for(lambda:next(u['cell'] for u in api.state()['units'] if u['id']==uid2)==target2)
+            stage='recover_phone_connection'
+            phone.command('Network.enable')
+            phone.command('Network.emulateNetworkConditions',{'offline':True,'latency':0,'downloadThroughput':-1,'uploadThroughput':-1})
+            phone.wait('!document.querySelector("#connection").hidden',45)
+            assert phone.evaluate('document.querySelector("#end").disabled')
+            phone.command('Network.emulateNetworkConditions',{'offline':False,'latency':0,'downloadThroughput':-1,'uploadThroughput':-1})
+            phone.wait('document.querySelector("#connection").hidden&&!document.querySelector("#end").disabled',45)
+            assert guest_api.state()['playerFaction']==gfaction
+            assert next(u['cell'] for u in guest_api.state()['units'] if u['id']==uid2)==target2
+            stats=json.loads(phone.evaluate('Ew4App.stats()'))if a.full else {}
+            if a.full:assert stats['bundledMedia']>30 and stats['remoteMediaFallback']==0,stats
             stage='android_end_turn'
             phone.click('#end');wait_for(lambda:api.call('/online/status')['canAct'],180)
             assert api.state()['round']>=2
@@ -97,7 +120,7 @@ def run(a):
             stage='translated_labels'
             labels=phone.evaluate("Array.from("+game+".document.querySelectorAll('[aria-label],[title]')).filter(e=>e.getClientRects().length&&!e.closest('[hidden]')).map(e=>e.getAttribute('aria-label')||e.getAttribute('title')).filter(t=>/[\\u3400-\\u9fff]/.test(t))")
             assert not labels
-            report.update(real_electron_host=True,installed_android_activity=True,android_emulator=True,external_browser=False,public_https=True,two_independent_countries=True,host_move_synced=True,android_controller_move_synced=True,android_end_turn=True,server_ai_round_two=True,visible_chinese_labels=labels)
+            report.update(real_electron_host=True,installed_android_activity=True,android_emulator=True,external_browser=False,public_https=True,two_independent_countries=True,host_move_synced=True,android_controller_move_synced=True,android_end_turn=True,server_ai_round_two=True,visible_chinese_labels=labels,wrong_turn_buttons_disabled=True,repeated_host_end_cannot_skip_guest=True,phone_reconnect_without_reload=True,bundled_media=stats)
             stage='capture_battle'
             host.screenshot(path=str(out/'desktop-multiplayer.png'))
             # The dedicated emulator has only this foreground full-screen game Activity.

@@ -25,5 +25,5 @@ with zipfile.ZipFile(a.output,'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
     for f in sorted(root.rglob('*')):
         if f.is_file():z.write(f,f.relative_to(root.parent))
 digest=hashlib.sha256(a.output.read_bytes()).hexdigest();Path(str(a.output)+'.sha256').write_text(digest+'  '+a.output.name+'\n')
-(a.output.parent/'native-build-info.json').write_text(json.dumps({'file':a.output.name,'bytes':a.output.stat().st_size,'sha256':digest,'version':'0.3.0','own_desktop_window':True,'external_browser':False,'menus':'Russian','original_narrative':'Russian','hardware_acceleration':False,'renderer':'canvas','offline_campaigns':True,'source':'EW4 Rewrite 0.2.19 plus user-provided EW4 1.4.50 language resources'},indent=2)+'\n')
+(a.output.parent/'native-build-info.json').write_text(json.dumps({'file':a.output.name,'bytes':a.output.stat().st_size,'sha256':digest,'version':'0.3.1','own_desktop_window':True,'external_browser':False,'menus':'Russian','original_narrative':'Russian','hardware_acceleration':False,'renderer':'canvas','offline_campaigns':True,'source':'EW4 Rewrite 0.2.19 plus user-provided EW4 1.4.50 language resources'},indent=2)+'\n')
 print('Packaged own-window game:',a.output.name,a.output.stat().st_size,digest)

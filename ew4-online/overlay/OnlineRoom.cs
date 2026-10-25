@@ -64,16 +64,19 @@ public sealed class OnlineRoom
         if (state["dialogue"] != null || state["scenarioPopup"] != null) return Text(state, "playerFaction") == seat;
         return Text(state, "activeFaction") == seat;
     }
+    private bool CanEnd(string role) => state != null && Seat(role) is string seat
+        && Text(state, "activeFaction") == seat && Text(state, "phase") == "Active"
+        && state["dialogue"] == null && state["scenarioPopup"] == null;
     private JsonObject Snapshot(string role)
     {
         var snapshot = Engine("online-state", new { country = Seat(role) }).AsObject();
-        snapshot["online"] = JsonSerializer.SerializeToNode(new { role, seat = Seat(role), canAct = CanAct(role), sequence });
+        snapshot["online"] = JsonSerializer.SerializeToNode(new { role, seat = Seat(role), canAct = CanAct(role), canEnd = CanEnd(role), sequence });
         return snapshot;
     }
     private object Status(string? role) => role == null ? new { authenticated = false } : (object)new
     {
         authenticated = true, role, started = state != null, scenario = config.Scenario, country = config.Country,
-        hostFaction = config.HostFaction, guestFaction = config.GuestFaction, seat = Seat(role), canAct = CanAct(role),
+        hostFaction = config.HostFaction, guestFaction = config.GuestFaction, seat = Seat(role), canAct = CanAct(role), canEnd = CanEnd(role),
         choices, sequence, revision = state?["revision"], round = state?["round"], solo = state != null && state["localMultiplayer"] == null,
         activeFaction = state?["activeFaction"], playerFaction = state?["playerFaction"],
         phase = state?["phase"], outcome = state?["outcome"], problem,
@@ -215,6 +218,10 @@ public sealed class OnlineRoom
         if (route == "save") { if (role != "host") throw new InvalidOperationException("Партия сохраняется автоматически"); Saved(); return new { ok = true, data = new { saved = true } }; }
         if (route is not ("action" or "deployment" or "commander" or "commerce" or "items" or "exchange"))
             throw new InvalidOperationException("Этот режим недоступен в сетевой партии");
+        // A dialogue may belong to the preceding player while the next turn begins.
+        // It never grants permission to end that next country's turn.
+        if (route == "action" && Text(args, "op") == "end" && !CanEnd(role))
+            throw new InvalidOperationException("Можно завершить только свой активный ход");
         if (!CanAct(role)) throw new InvalidOperationException("Сейчас ход другой страны. Подожди свой ход.");
         if (route == "action" && Text(args, "op") is "ai" or "ai_batch") throw new InvalidOperationException("Ходы компьютера выполняет сервер");
         args["delta"] = false; // Upstream delta history is per process, not per connection.

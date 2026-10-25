@@ -10,14 +10,14 @@ const launched=Date.now();
 app.disableHardwareAcceleration();
 app.commandLine.appendSwitch('disable-webgl');
 app.commandLine.appendSwitch('disable-gpu');
-if(process.platform==='win32')app.setAppUserModelId('logi2564.ew4online');
+if(process.platform==='win32')app.setAppUserModelId('logi2564.ew4fullgame');
 function arg(name){const i=process.argv.indexOf(name);return i<0?null:process.argv[i+1];}
 const root=arg('--app-root')||path.resolve(__dirname,'../..');
 if(arg('--profile'))app.setPath('userData',path.resolve(arg('--profile')));
-else app.setPath('userData',path.join(app.getPath('appData'),'BroEW4Desktop'));
+else app.setPath('userData',path.join(app.getPath('appData'),'BroEW4FullGame'));
 if(testMode&&process.platform==='linux')app.commandLine.appendSwitch('no-sandbox');
 let window,server,tunnel,stopping=false,localOrigin,allowedOrigin,hostToken;
-const folder=testMode?path.join(app.getPath('userData'),'state'):path.join(process.env.LOCALAPPDATA||app.getPath('userData'),'BroEW4Online');
+const folder=testMode?path.join(app.getPath('userData'),'state'):path.join(process.env.LOCALAPPDATA||app.getPath('userData'),'BroEW4FullGame');
 const saves=path.join(folder,'saves');
 const publicFile=path.join(saves,'public-url.txt');
 fs.mkdirSync(saves,{recursive:true});
@@ -55,7 +55,7 @@ else {
   app.on('window-all-closed',()=>app.quit());
   app.whenReady().then(async()=>{
     Menu.setApplicationMenu(null);
-    window=new BrowserWindow({width:1152,height:720,minWidth:720,minHeight:480,show:false,title:'European War 4 — Napoleon',icon:path.join(__dirname,'game-icon.png'),
+    window=new BrowserWindow({width:1152,height:720,minWidth:720,minHeight:480,show:false,title:'Европейская война 4 — Наполеон',icon:path.join(__dirname,'game-icon.png'),
       backgroundColor:'#1e211d',autoHideMenuBar:true,
       webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true,webgl:false,backgroundThrottling:true,autoplayPolicy:'no-user-gesture-required',devTools:testMode}});
     await window.loadFile(path.join(__dirname,'loading.html'));window.show();

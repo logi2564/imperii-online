@@ -6,7 +6,7 @@ This is a separate unofficial reconstruction, not an update to the official Easy
 
 ## Changes prompted by the previous build
 
-Windows disables Electron hardware acceleration and WebGL, and explicitly selects Canvas 2D. Animation is capped at 30 Hz and the drawing surface at 1.25 DPR. The game uses a compact bundled Cyrillic font instead of loading the 53 MB Chinese font collection. Online save restoration is deferred until multiplayer is opened. The window shows startup progress immediately, then the real menu.
+Windows disables Electron hardware acceleration and WebGL, and explicitly selects Canvas 2D. Animation is capped at 30 Hz and the drawing surface at 1.25 DPR. The game uses a compact bundled Cyrillic font instead of loading the 53 MB Chinese font collection. Online save restoration is deferred until multiplayer is opened. The window shows startup progress immediately, then the real menu. The full game uses a separate `BroEW4FullGame` profile/save root, so an older running client cannot capture the new EXE startup or write to its saves. Older files in `BroEW4Online` are left unchanged.
 
 These changes avoid the previous accelerated graphics path; they do not establish the cause of a reported Windows crash. No STOP CODE or dump from the user's computer was available. The optional `Check-Windows.cmd` reads the recent numeric bugcheck code, Windows build and GPU/driver names into a local file, without uploads, dumps or account identifiers. A physical user PC has not been tested.
 

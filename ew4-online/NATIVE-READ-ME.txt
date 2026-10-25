@@ -49,8 +49,9 @@ Canvas 2D, анимация ограничена 30 кадрами, разреш
 в папке игры; ничего не отправляет и не собирает дампы памяти.
 
 СОХРАНЕНИЯ
-Windows: %LOCALAPPDATA%\BroEW4Online\saves\single — одиночная игра;
-%LOCALAPPDATA%\BroEW4Online\saves — сетевая партия и старые файлы.
+Windows: %LOCALAPPDATA%\BroEW4FullGame\saves\single — одиночная игра;
+%LOCALAPPDATA%\BroEW4FullGame\saves — сетевая партия.
+Прежние файлы остаются в %LOCALAPPDATA%\BroEW4Online и не изменяются.
 Android: внутренние данные «Европейская война 4»; удаление приложения удаляет
 эти данные. APK подписан ключом сборки, а не сертификатом Google Play.
 

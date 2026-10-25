@@ -6,7 +6,7 @@ ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'sigame-arcade'
 DRIVER=r'''window.__ARCADE_TEST_DRIVER__=true;window.D={
 step(t){Arcade.testStep(t)},get st(){return Arcade.state},get t(){return Arcade.elapsed},
 point(type,x,y){const c=document.querySelector('#game-canvas'),r=c.getBoundingClientRect();c.dispatchEvent(new PointerEvent(type,{clientX:r.left+x*r.width/480,clientY:r.top+y*r.height/480,pointerId:31,pointerType:'mouse',bubbles:true}))},
-tap(x,y){this.point('pointerdown',x,y);this.point('pointerup',x,y);Arcade.draw()},
+tap(x,y){this.point('pointerdown',x,y);this.point('pointerup',x,y);Arcade.testStep(.18);Arcade.draw()},
 move(x,y){this.point('pointermove',x,y)},hold(x,y){this.point('pointerdown',x,y)},up(x,y){this.point('pointerup',x,y)},
 key(k,v=true){window.dispatchEvent(new KeyboardEvent(v?'keydown':'keyup',{code:k,bubbles:true}));Arcade.draw()},
 press(k){this.key(k,true);this.key(k,false)},
@@ -24,7 +24,7 @@ def bot(code,seconds=150):
  return page.evaluate('([code,seconds])=>{const fn=new Function("s","t",code);for(let i=0;i<seconds*25&&Arcade.mode==="playing";i++){fn(D.st,D.t);D.step(.04)}return{mode:Arcade.mode,state:Arcade.state,elapsed:Arcade.elapsed}}',[code,seconds])
 def gridtap(i,cols,cell,ox,oy):tap(ox+(i%cols+.5)*cell,oy+(i//cols+.5)*cell)
 def keypath(path):
- for k in path:press(k);step(.01)
+ for k in path:press(k);step(.15)
 def astar8(a):
  a=tuple(a);goal=(1,2,3,4,5,6,7,8,0)
  def h(a):return sum(abs(i%3-(v-1)%3)+abs(i//3-(v-1)//3) for i,v in enumerate(a) if v)
@@ -135,21 +135,21 @@ def solve(g):
     if c==v:gridtap(i,4,100,40,95)
   return
  if m=='simon':
-  for r in range(5):
+  for r in range(2):
    step((r+3)*.8+1.1);s=state()
    assert s['phase']=='input',s
    for n in s['seq'][:r+3]:tap(155+n%2*170,180+n//2*160)
   return
  if m=='cups':
-  for _ in range(4):
-   step(6.5);s=state();assert s['phase']=='guess',s;tap(110+s['order'].index(0)*130,255)
+  for _ in range(2):
+   step(4.5);s=state();assert s['phase']=='guess',s;tap(110+s['order'].index(0)*130,255)
   return
  if m=='odd':
   for _ in range(8):gridtap(state()['target'],4,88,64,80)
   return
  if m=='stars':
-  for _ in range(3):
-   step(3.6)
+  for _ in range(2):
+   step(2.1)
    for i in state()['targets']:gridtap(i,4,88,64,80)
   return
  if m=='descending':
@@ -198,9 +198,19 @@ def solve(g):
   page.evaluate('(p)=>D.up(...p)',points[-1]);return
  if m=='parking':return bot('''if(!window.parkStage)window.parkStage=0;const points=[{x:100,y:165},{x:365,y:165}];let p=points[Math.min(window.parkStage,1)],dx=p.x-s.x,dy=p.y-s.y,d=Math.hypot(dx,dy);if(d<13&&Math.abs(s.v)<18&&window.parkStage<2)window.parkStage++;let desired=window.parkStage>=2?-Math.PI/2:Math.atan2(dy,dx),err=Math.atan2(Math.sin(desired-s.a),Math.cos(desired-s.a));let keys=[];if(Math.abs(err)>.05)keys.push(err>0?'ArrowRight':'ArrowLeft');let speed=window.parkStage>=2?0:Math.min(90,d*1.25);if(s.v<speed-4&&Math.abs(err)<.15)keys.push('ArrowUp');if(s.v>speed+5)keys.push('ArrowDown');D.keys(keys);''',160)
  if m=='mines':
-  gridtap(12,5,60,90,84);mines=state()['mines'];assert 12 not in mines
-  for i in range(25):
-   if i not in mines:gridtap(i,5,60,90,84)
+  # Decide only from visible clue numbers. No hidden mine list enters the solver.
+  flags=set()
+  def adjacent(i):return {j for j in range(16)if j!=i and abs(i%4-j%4)<=1 and abs(i//4-j//4)<=1}
+  for _ in range(20):
+   if mode()=='won':return
+   visible={int(i):n for i,n in page.evaluate('Arcade.game.visibleClues').items()};safe=set();changed=False
+   for i,number in visible.items():
+    unknown=adjacent(i)-set(visible)-flags;left=number-len(adjacent(i)&flags)
+    if unknown and left==0:safe|=unknown
+    elif unknown and left==len(unknown):
+     before=len(flags);flags|=unknown;changed|=len(flags)>before
+   assert safe or changed,'Sapper requires guessing'
+   for i in sorted(safe):gridtap(i,4,80,80,82)
   return
  if m=='curling':
   for _ in range(4):
@@ -252,9 +262,9 @@ def solve(g):
   for _ in range(3):tap(240,214);step(3)
   return
  if m=='lanes':return bot('''if(s.gold>=12){let enemy=s.units.filter(u=>u.side===-1).sort((a,b)=>a.x-b.x)[0];let lane=enemy?enemy.lane:0,type=enemy?([2,0,1][enemy.type]):0;D.tap(100+type*140,424);D.tap(200,150+lane*85)}''',170)
- if m=='farm':return bot('''let order=[{type:0,n:2},{type:1,n:2},{type:2,n:1}][Math.min(s.order,2)],active=s.plots.filter(p=>p.type===order.type).length;for(let i=0;i<6;i++){let p=s.plots[i],x=125+(i%3)*115,y=172+Math.floor(i/3)*115;if(p.type===order.type&&p.progress>=[6,8,10][p.type]){D.tap(x,y);break}if(p.type===order.type&&p.wet<=0&&s.water>=1){D.tap(x,y);break}if(p.type<0&&active+s.inventory[order.type]<order.n){D.tap(95+order.type*150,414);D.tap(x,y);break}}''',180)
+ if m=='farm':return bot('''let order=[{type:0,n:1},{type:2,n:1}][Math.min(s.order,1)],active=s.plots.filter(p=>p.type===order.type).length;for(let i=0;i<6;i++){let p=s.plots[i],x=125+(i%3)*115,y=172+Math.floor(i/3)*115;if(p.type===order.type&&p.progress>=[3,4,5][p.type]){D.tap(x,y);break}if(p.type===order.type&&p.wet<=0&&s.water>=1){D.tap(x,y);break}if(p.type<0&&active+s.inventory[order.type]<order.n){D.tap(95+order.type*150,414);D.tap(x,y);break}}''',180)
  if m=='alchemy':
-  for a,b in [(1,2),(1,3),(0,2),(5,6),(3,7),(2,3),(8,9)]:
+  for a,b in [(1,3),(0,2),(5,6)]:
    known=state()['known']
    for v in [a,b]:
     i=known.index(v);tap(82+i%4*105,112+i//4*85)
@@ -283,7 +293,7 @@ def solve(g):
     if n not in seen:seen.add(n);q.append((n,path+[k]))
   raise AssertionError('Stealth level unsolvable')
  if m=='anagram':
-  for word in ['ПОРТАЛ','КОРОНА','МОЛНИЯ']:
+  for word in ['ПОРТАЛ']:
    a=state()['letters'];used=set()
    for char in word:
     i=next(i for i,v in enumerate(a)if v==char and i not in used);used.add(i);tap(80+i*64,317)
@@ -302,13 +312,13 @@ def solve(g):
  if m=='magnet':return bot('''if(!window.magnetStage)window.magnetStage=0;if(window.magnetStage===0&&t>18)window.magnetStage=1;D.hold(window.magnetStage?405:160,window.magnetStage?400:390);''',100)
  if m=='docking':return bot('''let dx=385-s.x,dy=135-s.y,d=Math.hypot(dx,dy),speed=Math.hypot(s.vx,s.vy),desired=d<31?-Math.PI/2:Math.atan2(dy*1.2-s.vy*2,dx*1.2-s.vx*2),err=Math.atan2(Math.sin(desired-s.a),Math.cos(desired-s.a)),keys=[];if(Math.abs(err)>.045)keys.push(err>0?'ArrowRight':'ArrowLeft');if(d<35||speed>Math.min(85,d*1.5)||Math.abs(err)>.7&&speed>35)keys.push('ArrowDown');else if(Math.abs(err)<.2&&d>23)keys.push('ArrowUp');D.keys(keys);''',200)
  if m=='mastermind':
-  candidates=list(itertools.permutations(range(6),4))
+  candidates=list(itertools.permutations(range(4),3))
   def feedback(a,b):
-   exact=sum(x==y for x,y in zip(a,b));return exact,sum(min(a.count(v),b.count(v))for v in range(6))-exact
-  guess=(0,1,2,3)
-  for turn in range(10):
-   for i,c in enumerate(guess):tap(98+i*65,379);tap(67.5+c*65,441)
-   tap(402,379)
+   exact=sum(x==y for x,y in zip(a,b));return exact,sum(min(a.count(v),b.count(v))for v in range(4))-exact
+  guess=(0,1,2)
+  for turn in range(6):
+   for i,c in enumerate(guess):tap(105+i*80,351);tap(81+c*105,433)
+   tap(390,351)
    if mode()=='won':return
    h=state()['history'][-1];f=(h['exact'],h['partial']);candidates=[c for c in candidates if feedback(c,guess)==f];assert candidates
    guess=min(candidates,key=lambda c:max(collections.Counter(feedback(x,c)for x in candidates).values()))

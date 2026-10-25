@@ -1,4 +1,4 @@
-name: Build and publish 61 different SIGame minigames
+name: Build in-question SIGame Blitz with 61 short games
 on:
   push:
     branches: [sigame-minigames]
@@ -9,7 +9,7 @@ on:
 permissions:
   contents: write
 jobs:
-  arcade:
+  blitz:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -19,49 +19,62 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.426'
-      - name: Install content and browser test tools
+      - name: Install the browser and real SI Online renderer test tools
         run: |
-          python -m pip install qrcode==8.2 pillow==11.3.0 playwright==1.55.0 zxing-cpp==2.3.0
+          python -m pip install playwright==1.55.0
+          npm install --prefix "$RUNNER_TEMP/si-blitz-tools" --no-audit --no-fund react@17.0.2 react-dom@17.0.2 esbuild@0.25.0
+          echo "NODE_PATH=$RUNNER_TEMP/si-blitz-tools/node_modules" >> "$GITHUB_ENV"
+          echo "ARCADE_REACT_MODULES=$RUNNER_TEMP/si-blitz-tools/node_modules" >> "$GITHUB_ENV"
           browser_bin=$(command -v google-chrome || command -v chromium || true)
           if [ -z "$browser_bin" ]; then
             python -m playwright install --with-deps chromium
           else
             echo "BROWSER_EXECUTABLE=$browser_bin" >> "$GITHUB_ENV"
           fi
-      - name: Check the real public phone links and published game files
-        run: python sigame-arcade/tests/live.py
-      - name: Prepare metadata, QR codes and the local test site
+      - name: Build one compact HTML game per question
         run: |
+          node --check mini-games/engine.js
+          node --check mini-games/games.js
+          node --check mini-games/app.js
+          node --check mini-games/catalog.js
           python sigame-arcade/tools/build.py --prepare
-          python -m http.server 8794 --bind 127.0.0.1 --directory mini-games > /tmp/arcade-http.log 2>&1 &
+          python sigame-arcade/tools/build.py
+          python sigame-arcade/tools/validate.py
+          python -m http.server 8794 --bind 127.0.0.1 --directory mini-games > /tmp/blitz-http.log 2>&1 &
           for attempt in 1 2 3 4 5; do
             if curl -fsS -o /dev/null http://127.0.0.1:8794/; then break; fi
             sleep 1
           done
-      - name: Verify every game on desktop and phone and win all 61 through input
+      - name: Win every revised game through timed input
+        run: python sigame-arcade/tests/playthrough.py
+      - name: Import SIQ using official SIPackages
+        run: dotnet run --project sigame-arcade/tools/OfficialLoader -- . | tee dist/blitz/official-import.txt
+      - name: Test actual SI Online HTML renderer on desktop and touch phones
         run: |
-          python sigame-arcade/tests/smoke.py
-          python sigame-arcade/tests/playthrough.py
-      - name: Render question cards and build native and QR packs
-        run: |
-          python sigame-arcade/tools/render_cards.py
-          python sigame-arcade/tests/qrcodes.py
-          python sigame-arcade/tools/build.py
-          python sigame-arcade/tools/validate.py
-      - name: Import both packs using official SIPackages and exercise offline HTML
-        run: |
-          dotnet run --project sigame-arcade/tools/OfficialLoader -- . | tee dist/arcade/official-import.txt
-          ARCADE_TEST_FILE_URLS=1 python sigame-arcade/tests/embedded.py
-          cp sigame-arcade/smoke-report.json sigame-arcade/playthrough-report.json sigame-arcade/embedded-report.json sigame-arcade/qr-report.json dist/arcade/
-          cp sigame-arcade/home-desktop.png dist/arcade/Preview-PC.png
-          cp sigame-arcade/home-mobile.png dist/arcade/Preview-Phone.png
-          cp sigame-arcade/live-report.json dist/arcade/
-      - name: Publish the playable packs and offline games
+          python sigame-arcade/tests/embedded.py
+          cp sigame-arcade/playthrough-report.json sigame-arcade/embedded-report.json dist/blitz/
+          cp sigame-arcade/client-g42-phone.png dist/blitz/Preview-Phone.png
+          cp sigame-arcade/client-victory-phone.png dist/blitz/Preview-Private-Answer.png
+      - name: Publish the corrected in-question pack
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          gh release create "sigame-arcade-61-${GITHUB_SHA::8}" dist/arcade/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'БРО · АРКАДА — 61 разная мини-игра для СИГейма, ПК и телефона' --notes-file sigame-arcade/HOW-TO-PLAY.txt
+          release_tag="sigame-blitz-61-${GITHUB_SHA::8}"
+          gh release create "$release_tag" dist/blitz/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'БРО · БЛИЦ — 61 игра внутри СИГейма, по 15–35 секунд' --notes-file sigame-arcade/HOW-TO-PLAY.txt
+          if gh release view sigame-arcade-61-61a378ac > /dev/null 2>&1; then
+            python - <<'PY'
+          import os
+          from pathlib import Path
+          tag='sigame-blitz-61-'+os.environ['GITHUB_SHA'][:8]
+          text='Это предыдущая длинная версия с QR-карточками.\n\nИсправленный короткий пак с играми прямо в вопросах: https://github.com/'+os.environ['GITHUB_REPOSITORY']+'/releases/download/'+tag+'/Bro-Arcade-Blitz-61.siq\n'
+          (Path(os.environ['RUNNER_TEMP'])/'old-arcade-note.md').write_text(text)
+          PY
+            gh release edit sigame-arcade-61-61a378ac --title 'Архив: предыдущая длинная QR-версия — заменена паком БРО БЛИЦ' --notes-file "$RUNNER_TEMP/old-arcade-note.md"
+          fi

@@ -1,0 +1,12 @@
+import React from 'react';
+export const DecisionType={Answer:1};
+export const FixtureState=React.createContext(null);
+export const useAppSelector=selector=>selector(React.useContext(FixtureState));
+const dispatch=action=>{window.fixtureEvents.push(action)};
+export const useAppDispatch=()=>dispatch;
+export const registerCooperativeHtmlVolumeSupport=id=>({type:'volume',id});
+export const unregisterCooperativeHtmlVolumeSupport=id=>({type:'volume-remove',id});
+export const onMediaEnded=value=>({type:'completed',value});
+export const onMediaLoaded=()=>({type:'loaded'});
+export const sendAnswerAsRightByDefault=()=>({type:'answer-right'});
+export const sendAnswerAsWrongByDefault=()=>({type:'answer-wrong'});

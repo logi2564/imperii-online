@@ -1,0 +1,7 @@
+{
+  "repository": "https://github.com/VladimirKhil/SIOnline",
+  "commit": "8aa4e66d6d443132f3e0d0d0e025870ed2fb40fe",
+  "component": "src/components/gameTable/HtmlContent/HtmlContent.tsx",
+  "sha256": "7b9ddedaa4cb1817488134a44c3f7adac2e3a103a39b9954e237af1c8b21b119",
+  "scope": "Unmodified upstream HTML renderer. Test host replaces Redux/server actions only; this is not a complete SI server session."
+}

@@ -15,7 +15,7 @@ builder.Services.Configure<Microsoft.AspNetCore.ResponseCompression.GzipCompress
 var app = builder.Build();
 app.UseResponseCompression();''')
  # No request waits forever. Never retry a mutating move/end automatically.
- edit(web+'app.js',"{method: 'POST', cache: 'no-store'}", "{method: 'POST', cache: 'no-store',signal:window.Ew4OnlineMode?ew4RequestSignal(20000):undefined}")
+ edit(web+'app.js',"{method: 'POST', cache: 'no-store'}", "{method: 'POST', cache: 'no-store',signal:window.Ew4OnlineMode?window.ew4RequestSignal(20000):undefined}")
  edit(web+'app.js',"if(window.Ew4OnlineMode&&route==='action'&&args.op!=='state'&&!window.Ew4OnlineCanAct)","if(window.Ew4OnlineMode&&route==='action'&&args.op==='end'&&!window.Ew4OnlineCanEnd)throw Error('Дождись своего хода');\n  if(window.Ew4OnlineMode&&route==='action'&&args.op!=='state'&&!window.Ew4OnlineCanAct)")
  # Mobile renders at its CSS resolution; PC retains the existing surface cap.
  edit(web+'app.js','Math.min(window.devicePixelRatio||1,1.25,',"Math.min(window.devicePixelRatio||1,navigator.maxTouchPoints>0?1:1.25,")

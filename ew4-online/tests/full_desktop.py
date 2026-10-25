@@ -7,6 +7,7 @@ from integration import wait_for
 def port():
  with socket.socket() as s:s.bind(('127.0.0.1',0));return s.getsockname()[1]
 def visible_chinese(page):
+ page.wait_for_timeout(150)
  return page.evaluate("()=>Array.from(document.querySelectorAll('[aria-label],[title]')).filter(e=>e.getClientRects().length&&!e.closest('[hidden]')).map(e=>e.getAttribute('aria-label')||e.getAttribute('title')).filter(t=>/[\\u3400-\\u9fff]/.test(t))")
 def settle(page):
  page.wait_for_function('()=>!busy&&!sessionTransition',timeout=60000)

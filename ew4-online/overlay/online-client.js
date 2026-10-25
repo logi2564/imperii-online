@@ -1,6 +1,6 @@
 'use strict';
 window.Ew4OnlineMode=true;window.Ew4OnlineCanAct=false;window.Ew4OnlineCanEnd=false;
-function ew4RequestSignal(ms){const c=new AbortController();setTimeout(()=>c.abort(),ms);return c.signal;}
+window.ew4RequestSignal=function(ms){const c=new AbortController();setTimeout(()=>c.abort(),ms);return c.signal;}
 let onlineSequence=-1,onlineFetching=false,onlineStatus=null,onlineParentSeen=0,onlineTimer;
 function onlinePermissions(info){
  window.Ew4OnlineCanAct=!!info?.canAct;window.Ew4OnlineCanEnd=!!info?.canEnd;

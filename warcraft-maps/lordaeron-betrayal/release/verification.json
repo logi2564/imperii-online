@@ -1,0 +1,32 @@
+{
+  "file": "Lordaeron-Wars-1.22-Editable-WC3-1.26.w3x",
+  "bytes": 8214807,
+  "sha256": "8138745565037ed22e23fd8f1b92bf753fc050b210808f930085218516196738",
+  "entries": 443,
+  "uniqueBlocks": 392,
+  "deduplicatedEntries": 51,
+  "mpqVersion": 0,
+  "headerBytes": 32,
+  "allDecodedHashesMatch": true,
+  "underClassic8MiB": true,
+  "originalUploadSha256": "94250cfab9fc1f564356cb1cee911db523c0b7b7a9ec2139938dedfb4f7dacd0",
+  "originalScriptSha256": "6c7e8c20e40b2c1fa4035c8f05258499065a2916ce9c4745ba51571cd2f75111",
+  "originalGameFilesPreserved": 385,
+  "terrainSize": [
+    192,
+    288
+  ],
+  "infoFormat": 25,
+  "triggersFormat": 7,
+  "customTextFormat": 1,
+  "classicScriptCheck": "PASS",
+  "simulatedEditorScriptCheck": "PASS",
+  "classicApiSource": "https://github.com/tdauth/wc3lib/tree/4b221577921c20ab5fac410f0c1d555f64beeb56/src/jass/test",
+  "classicApiSha256": {
+    "Blizzard.j": "a09d19b8e9bffd823c8a114efc11898a99b12a5ac3eb53df3ecc0b2fd4fbda0e",
+    "common.j": "b36170a5a58bbdcf2d47da1df7044376d45dc9ca4784587a5e582c915ffc5f3e"
+  },
+  "warcraft126RuntimeTested": false,
+  "windowsWorldEditorTested": false,
+  "editorForOriginalTerrain": "JNGP compatible with Warcraft III 1.26"
+}

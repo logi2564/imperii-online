@@ -1,0 +1,41 @@
+name: Publish the recovered Lordaeron map for Warcraft III 1.26
+on:
+  push:
+    branches: [warcraft-map-recovery]
+    paths:
+      - 'warcraft-maps/**'
+      - '.github/workflows/warcraft-map-recovery.yml'
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify the downloadable classic map and every asset hash
+        run: |
+          python -m pip install mpyq==0.2.5
+          python warcraft-maps/tools/verify_classic_map.py warcraft-maps/lordaeron-betrayal
+      - name: Package the map with the Russian instructions
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile,shutil
+          root=Path('warcraft-maps/lordaeron-betrayal')
+          shutil.copy2(root/'README-RU.txt',root/'release/README-RU.txt')
+          with zipfile.ZipFile(root/'release/Lordaeron-Wars-1.22-WC3-1.26.zip','w',zipfile.ZIP_DEFLATED,compresslevel=6) as archive:
+              for path in sorted((root/'release').iterdir()):
+                  if path.suffix!='.zip':archive.write(path,path.name)
+          PY
+      - name: Publish direct map and ZIP downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "lordaeron-wc3-126-${GITHUB_SHA::8}" warcraft-maps/lordaeron-betrayal/release/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'Lordaeron Wars 1.22 — восстановленная карта для Warcraft III 1.26' --notes-file warcraft-maps/lordaeron-betrayal/README-RU.txt

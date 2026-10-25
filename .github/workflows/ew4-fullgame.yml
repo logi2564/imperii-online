@@ -39,6 +39,13 @@ jobs:
           python ew4-online/fullgame/apply_fullgame.py .work/engine
           npm --prefix .work/engine/tools/frontend ci --no-audit --no-fund
           python ew4-online/fullgame/build_android.py --upstream .work/engine --output build/android
+      - name: Keep the diagnostic APK available for repeating a failed emulator check
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ew4-diagnostic-apk
+          path: build/android/EuropeanWar4-Full-Android-test.apk
+          if-no-files-found: ignore
       - name: Prepare the real PC host and verification tools
         run: |
           dotnet build .work/engine/rewrite/Ew4.Web -c Release

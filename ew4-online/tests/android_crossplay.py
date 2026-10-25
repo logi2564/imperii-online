@@ -12,7 +12,7 @@ def free_port():
 def adb(*args):
     return subprocess.check_output(['adb',*map(str,args)],stderr=subprocess.STDOUT,text=True)
 def run(a):
-    out=a.output.resolve();out.mkdir(parents=True,exist_ok=True);stage='desktop_start';process=None;phone=None;report={'result':'FAIL','physical_android_device_tested':False}
+    out=a.output.resolve();out.mkdir(parents=True,exist_ok=True);stage='desktop_start';process=None;phone=None;blocked_network=False;report={'result':'FAIL','physical_android_device_tested':False}
     log=(out/'private-electron.log').open('w')
     try:
         with sync_playwright() as pw:
@@ -42,6 +42,7 @@ def run(a):
             stage='android_install'
             package='org.logi2564.ew4fullgame.r31' if a.full else 'org.logi2564.ew4online';activity=package+'/.GameActivity'
             adb('logcat','-c')
+            if a.full:adb('root');adb('wait-for-device')
             stage='android_install_apk';adb('install','-r',a.apk.resolve())
             stage='android_start_activity';adb('shell','am','start','-W','-S','-n',activity,'--es','invite',code)
             stage='android_process'
@@ -101,15 +102,24 @@ def run(a):
             phone.evaluate(game+'.selectCell('+str(unit['cell'])+')')
             phone.evaluate(game+'.selectCell('+str(target2)+')')
             wait_for(lambda:next(u['cell'] for u in api.state()['units'] if u['id']==uid2)==target2)
-            stage='recover_phone_connection'
-            phone.command('Network.enable')
-            phone.command('Network.emulateNetworkConditions',{'offline':True,'latency':0,'downloadThroughput':-1,'uploadThroughput':-1})
+            stage='phone_network_offline'
+            # Disconnect real HTTPS sockets in this disposable, rootable emulator.
+            # WebView's CDP emulation is not a reliable Android network switch.
+            adb('shell','iptables','-I','OUTPUT','-p','tcp','--dport','443','-j','REJECT')
+            blocked_network=True
+            adb('shell','ip6tables','-I','OUTPUT','-p','tcp','--dport','443','-j','REJECT')
+            stage='phone_wait_disconnected'
             phone.wait('!document.querySelector("#connection").hidden',45)
             assert phone.evaluate('document.querySelector("#end").disabled')
-            phone.command('Network.emulateNetworkConditions',{'offline':False,'latency':0,'downloadThroughput':-1,'uploadThroughput':-1})
+            stage='phone_network_online'
+            adb('shell','iptables','-D','OUTPUT','-p','tcp','--dport','443','-j','REJECT')
+            adb('shell','ip6tables','-D','OUTPUT','-p','tcp','--dport','443','-j','REJECT')
+            blocked_network=False
+            stage='phone_wait_reconnected'
             phone.wait('document.querySelector("#connection").hidden&&!document.querySelector("#end").disabled',45)
             assert guest_api.state()['playerFaction']==gfaction
             assert next(u['cell'] for u in guest_api.state()['units'] if u['id']==uid2)==target2
+            stage='phone_local_media'
             stats=json.loads(phone.evaluate('Ew4App.stats()'))if a.full else {}
             if a.full:assert stats['bundledMedia']>30 and stats['remoteMediaFallback']==0,stats
             stage='android_end_turn'
@@ -129,6 +139,9 @@ def run(a):
             stage='PASS';report['result']='PASS'
     except Exception as error:
         report.update(stage=stage,exception_type=type(error).__name__)
+        if phone:
+            try:report['phone_connection_state']=phone.evaluate('({connectionBanner:!document.querySelector("#connection")?.hidden,endDisabled:!!document.querySelector("#end")?.disabled,role:typeof status!=="undefined"?status?.role:null,canEnd:typeof status!=="undefined"?!!status?.canEnd:false})')
+            except Exception:pass
         if isinstance(error,ScriptError):report.update(javascript_exception_class=error.kind,javascript_error_hint=error.hint)
         for command in ['Browser.setDownloadBehavior','Browser.getVersion','Target.setAutoAttach','Target.getTargetInfo','Page.enable','Page.getFrameTree','Page.addScriptToEvaluateOnNewDocument','Emulation.setFocusEmulationEnabled']:
             if command in str(error):report['debugger_command']=command
@@ -142,6 +155,9 @@ def run(a):
         except Exception:pass
         print('Crossplay failed at',stage,type(error).__name__,flush=True)
     finally:
+        if blocked_network:
+            for firewall in ['iptables','ip6tables']:
+                subprocess.run(['adb','shell',firewall,'-D','OUTPUT','-p','tcp','--dport','443','-j','REJECT'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         if phone:phone.close()
         if process:
             process.terminate()

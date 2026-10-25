@@ -1,6 +1,6 @@
 """Collect short, genuine media candidates for the familiar-games remix."""
 from pathlib import Path
-import concurrent.futures,hashlib,json,subprocess,urllib.request,urllib.parse,zipfile,time
+import concurrent.futures,hashlib,json,subprocess,urllib.request,urllib.parse,zipfile,time,os
 ROOT=Path('dist/remix-review');CACHE=Path('dist/remix-cache');ROOT.mkdir(parents=True,exist_ok=True);CACHE.mkdir(parents=True,exist_ok=True)
 GAMES={'gta5':['3240220','271590'],'rdr2':['1174180'],'cyberpunk':['1091500'],'hogwarts':['990080'],'rust':['252490'],'lethal':['1966720'],'phasmo':['739630'],'amongus':['945360'],'valheim':['892970'],'re4':['2050650'],'stray':['1332010'],'doom':['782330'],'palworld':['1623730'],'detroit':['1222140']}
 ANIME={
@@ -12,7 +12,7 @@ ANIME={
  'dandadan':('dandadan',['Dandadan-OP1']),
  'apothecary':('kusuriya_no_hitorigoto',['KusuriyaNoHitorigoto-OP1']),
  'kaiju':('kaijuu_8_gou',['Kaijuu8Gou-OP1','Kaijuu8Gou-OP1v2']),
- 'rezero':('re_zero_kara_hajimeru_isekai_seikatsu',['ReZeroKaraHajimeruIsekaiSeikatsu-OP1']),
+ 'rezero':('rezero_kara_hajimeru_isekai_seikatsu',['ReZero-OP1v2','ReZero-OP1','ReZero-OP1v1']),
  'bluelock':('blue_lock',['BlueLock-OP1']),
 }
 def fetch(url,limit=180_000_000):
@@ -59,6 +59,8 @@ def anime(item):
    return {'key':key,'kind':'anime','ok':True,'url':u,'metadata_url':api,'source_sha256':hashlib.sha256(raw).hexdigest(),'frames':frames}
   except Exception as e:errors.append(type(e).__name__+': '+str(e)[:170])
  return {'key':key,'kind':'anime','ok':False,'errors':errors}
+only=os.environ.get('SIGAME_ONLY_ANIME')
+if only:GAMES={};ANIME={k:v for k,v in ANIME.items()if k==only}
 with concurrent.futures.ThreadPoolExecutor(max_workers=4)as e:rows=list(e.map(game,GAMES.items()))
 with concurrent.futures.ThreadPoolExecutor(max_workers=4)as e:rows+=list(e.map(anime,ANIME.items()))
 (ROOT/'sources.json').write_text(json.dumps(rows,ensure_ascii=False,indent=2))

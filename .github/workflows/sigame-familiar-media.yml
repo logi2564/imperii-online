@@ -16,6 +16,8 @@ jobs:
       - name: Install the frame extractor
         run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - run: python -u sigame-packs/tools/prepare_familiar.py
+        env:
+          SIGAME_ONLY_ANIME: rezero
       - name: Publish short media candidates for inspection
         env:
           GH_TOKEN: ${{ github.token }}

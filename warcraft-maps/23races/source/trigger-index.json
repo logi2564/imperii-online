@@ -1,0 +1,1861 @@
+{
+  "originalTriggers": 262,
+  "gui": 69,
+  "jass": 193,
+  "technical": 3,
+  "total": 265,
+  "sounds": 25,
+  "headerBytes": 94487,
+  "guiIds": [
+    "Information",
+    "Tekst",
+    "Start",
+    "Time_f1",
+    "Time_f2",
+    "Time_f4",
+    "Time_f5",
+    "Time_f6",
+    "Time_f7",
+    "Time_f8",
+    "Liver_Player",
+    "NochangeName1",
+    "NochangeName2",
+    "NochangeName3",
+    "NochangeName4",
+    "NochangeName5",
+    "NochangeName8",
+    "Timedestroy",
+    "Debut",
+    "Camera_command",
+    "Red_color",
+    "Blue_color",
+    "Lightblue_color",
+    "Viol_color",
+    "Yelow_color",
+    "Orange_color",
+    "Green_color",
+    "Rose_color",
+    "Grey_color",
+    "Cyan_color",
+    "Dark_green_color",
+    "Brown_color",
+    "Black_color",
+    "Turn_On",
+    "Turn_Off",
+    "RaceSelect1",
+    "RaceSelect2",
+    "RaceSelect3",
+    "RaceSelect4",
+    "RaceSelect5",
+    "RaceSelect6",
+    "RaceSelect7",
+    "RaceSelect8",
+    "RaceSelect9",
+    "RaceSelect10",
+    "RaceSelect11",
+    "RaceSelect12",
+    "LichKing",
+    "AlAkir",
+    "Kazzak",
+    "RAGNAROSS",
+    "Illidan",
+    "Soul_Eater",
+    "ChoGall",
+    "Kael",
+    "Kenya",
+    "Neptulon",
+    "Terazan",
+    "Maiev",
+    "Gandling",
+    "NZOT",
+    "NZOT_agent",
+    "CTUN",
+    "QOGGSARON",
+    "SHA",
+    "K",
+    "Turn_On_____________________u",
+    "Turn_Off_____________________u",
+    "NochangeName6"
+  ],
+  "entries": [
+    {
+      "name": "Information",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 16,
+      "visualActions": 10,
+      "customScriptLines": 6,
+      "events": 1
+    },
+    {
+      "name": "Tekst",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 0,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "Start",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 28,
+      "visualActions": 28,
+      "customScriptLines": 0,
+      "events": 1
+    },
+    {
+      "name": "Time_f1",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 0,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "Time_f2",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 0,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "Time_f4",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 0,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "Time_f5",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 0,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "Time_f6",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 0,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "Time_f7",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 0,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "Time_f8",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 0,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "Liver_Player",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 1,
+      "customScriptLines": 1,
+      "events": 12
+    },
+    {
+      "name": "AuthorVision",
+      "kind": "JASS",
+      "functions": 4,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "SpawnVision",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "NochangeName1",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 2,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "NochangeName2",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 2,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "NochangeName3",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 2,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "NochangeName4",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 2,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "NochangeName5",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 2,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "NochangeName8",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 2,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "Human",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Orc",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Undead",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "NightElf",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Nerubian",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Dwarfen",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Naga",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "ScorgedElf",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Demon",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "HighElf",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "ForestTroll",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "DarkTroll",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "IceTroll",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "FelOrc",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Kobold",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "ScarletCrusade",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Futborg",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Gnoll",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Faceless",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Ogre",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Draenei",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Bandite",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Tauren",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Pandaren",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Goblin",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Murloc",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Centaur",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Illidari",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Worgen",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Forsaken",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Elemental",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Quraji",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "DarkDwarf",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "TwilightHammer",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Hostkick1",
+      "kind": "JASS",
+      "functions": 5,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Hostkick2",
+      "kind": "JASS",
+      "functions": 5,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Hostkick3",
+      "kind": "JASS",
+      "functions": 5,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Hostkick4",
+      "kind": "JASS",
+      "functions": 5,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Hostkick5",
+      "kind": "JASS",
+      "functions": 5,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Hostkick6",
+      "kind": "JASS",
+      "functions": 5,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Hostkick7",
+      "kind": "JASS",
+      "functions": 5,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Hostkick8",
+      "kind": "JASS",
+      "functions": 5,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Hostkick9",
+      "kind": "JASS",
+      "functions": 5,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Hostkick10",
+      "kind": "JASS",
+      "functions": 5,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Hostkick11",
+      "kind": "JASS",
+      "functions": 5,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Hostkick12",
+      "kind": "JASS",
+      "functions": 5,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "destroy_1",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Timedestroy",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 1,
+      "customScriptLines": 0,
+      "events": 1
+    },
+    {
+      "name": "Debut",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 4,
+      "visualActions": 4,
+      "customScriptLines": 0,
+      "events": 1
+    },
+    {
+      "name": "Revenus",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "ND1",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "ND2",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "ND3",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "ND4",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "ND5",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "ND6",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "ND7",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "ND8",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "ND9",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "KL1",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "KL2",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "KL3",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "KL4",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "KL5",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "KL6",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "KL7",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "KL8",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "KL9",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "KL10",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "KL11",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "KL12",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "KL13",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "KL14",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "PA1",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "PA2",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "PA3",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "PA4",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "PA5",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "BI1",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "BI2",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "BI3",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "BI4",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "BI5",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Bl6",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "BI7",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "BI8",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "BI9",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "BI10",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK1",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK2",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK3",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK4",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK5",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK6",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK7",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK8",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK9",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK10",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK11",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK12",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK13",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK14",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK15",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK16",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK17",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK18",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK19",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK20",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK21",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "EK22",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "OUT1",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "OUT2",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "OUT3",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "OUT4",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "OUT5",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "OUT6",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "OUT7",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "ZN1",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "VE1",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "KT",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Managorn1",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Managorn2",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Managorn3",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Managorn4",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Production_en_chaine",
+      "kind": "JASS",
+      "functions": 4,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Camera_command",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 2,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "Name_command",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Red_color",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 1,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "Blue_color",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 1,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "Lightblue_color",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 1,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "Viol_color",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 1,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "Yelow_color",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 1,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "Orange_color",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 1,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "Green_color",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 1,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "Rose_color",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 1,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "Grey_color",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 1,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "Cyan_color",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 1,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "Dark_green_color",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 1,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "Brown_color",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 1,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "Black_color",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 1,
+      "visualActions": 0,
+      "customScriptLines": 1,
+      "events": 12
+    },
+    {
+      "name": "Turn_On",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 12,
+      "visualActions": 12,
+      "customScriptLines": 0,
+      "events": 0
+    },
+    {
+      "name": "Turn_Off",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 12,
+      "visualActions": 12,
+      "customScriptLines": 0,
+      "events": 0
+    },
+    {
+      "name": "Declare_War_1",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_2",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_5",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_3",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_4",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_6",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_7",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_8",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_9",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_10",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_11",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_12",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Buildings",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Heroes",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Ship",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Select",
+      "kind": "JASS",
+      "functions": 2,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Race",
+      "kind": "JASS",
+      "functions": 4,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "RandomInfo",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "RaceSelect1",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 1,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "RaceSelect2",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 1,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "RaceSelect3",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 1,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "RaceSelect4",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 1,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "RaceSelect5",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 1,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "RaceSelect6",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 1,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "RaceSelect7",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 1,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "RaceSelect8",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 1,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "RaceSelect9",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 1,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "RaceSelect10",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 1,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "RaceSelect11",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 1,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "RaceSelect12",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 1,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "Kil",
+      "kind": "JASS",
+      "functions": 4,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Smertokril",
+      "kind": "JASS",
+      "functions": 4,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "LichKing",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 3,
+      "visualActions": 0,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "AlAkir",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 3,
+      "visualActions": 0,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "Kazzak",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 3,
+      "visualActions": 0,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "RAGNAROSS",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 3,
+      "visualActions": 0,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "Illidan",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 3,
+      "visualActions": 0,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "Soul_Eater",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 3,
+      "visualActions": 0,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "ChoGall",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 3,
+      "visualActions": 0,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "Kael",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 3,
+      "visualActions": 0,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "Kenya",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 3,
+      "visualActions": 0,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "Neptulon",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 3,
+      "visualActions": 0,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "Terazan",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 3,
+      "visualActions": 0,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "Maiev",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 3,
+      "visualActions": 0,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "Gandling",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 3,
+      "visualActions": 0,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "NZOT",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 4,
+      "visualActions": 1,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "NZOT_agent",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 3,
+      "visualActions": 2,
+      "customScriptLines": 1,
+      "events": 1
+    },
+    {
+      "name": "CTUN",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 4,
+      "visualActions": 1,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "QOGGSARON",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 4,
+      "visualActions": 1,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "SHA",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 3,
+      "visualActions": 0,
+      "customScriptLines": 3,
+      "events": 1
+    },
+    {
+      "name": "ItemCraft1",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Lich_King",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Illidan_H",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Cshi_Fire_Hand",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Tirion",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Kern",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Vaish",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Saidan",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Sylvanas",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Farion",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Genn",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Thrall",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Izjor",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "VanCleef",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Ursol",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Vanol",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Magni",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "DrBoom",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "ChoGallLg",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Akama",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Nerub",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "TrollIce",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "TrollDArk",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "TrollForest",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "LorTemarTeron",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Ksavii",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Kargath",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Dagran_Taurissan",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Multiboard_Create",
+      "kind": "JASS",
+      "functions": 2,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "K",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 0,
+      "customScriptLines": 2,
+      "events": 1
+    },
+    {
+      "name": "KH",
+      "kind": "JASS",
+      "functions": 3,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Update",
+      "kind": "JASS",
+      "functions": 2,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Update2",
+      "kind": "JASS",
+      "functions": 2,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "AutoAlly_Copier_____________________u",
+      "kind": "JASS",
+      "functions": 4,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_1_____________________u",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_2_____________________u",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_3_____________________u",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_4_____________________u",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_5_____________________u",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_6_____________________u",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_7_____________________u",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_8_____________________u",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_9_____________________u",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_10_____________________u",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_11_____________________u",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Declare_War_12_____________________u",
+      "kind": "JASS",
+      "functions": 8,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "Turn_On_____________________u",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 12,
+      "visualActions": 12,
+      "customScriptLines": 0,
+      "events": 0
+    },
+    {
+      "name": "Turn_Off_____________________u",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 12,
+      "visualActions": 12,
+      "customScriptLines": 0,
+      "events": 0
+    },
+    {
+      "name": "Voina23",
+      "kind": "JASS",
+      "functions": 4,
+      "reason": "JASS preserves unsupported GUI actions"
+    },
+    {
+      "name": "NochangeName6",
+      "kind": "GUI",
+      "functions": 2,
+      "actions": 2,
+      "visualActions": 2,
+      "customScriptLines": 0,
+      "events": 12
+    },
+    {
+      "name": "gordik0101",
+      "kind": "JASS",
+      "functions": 4,
+      "reason": "JASS preserves unsupported GUI actions"
+    }
+  ]
+}

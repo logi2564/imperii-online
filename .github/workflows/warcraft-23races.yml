@@ -1,4 +1,4 @@
-name: Validate and publish editable 23 Races 3.2D for NewGen 1.26
+name: Validate and publish 262 restored 23 Races triggers for NewGen 1.26
 on:
   push:
     branches: [warcraft-23races-recovery]
@@ -11,6 +11,9 @@ jobs:
   recover:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,7 +43,9 @@ jobs:
         run: python warcraft-maps/23races/tools/verify_map.py /tmp/storm-build/libstorm.so warcraft-maps/23races | tee warcraft-maps/23races/release/native-verification.txt
       - name: Reopen the actual W3X and compile the editor-generated script
         run: |
-          dotnet run --project warcraft-maps/23races/tools/MapCheck -- warcraft-maps/23races/release/23-Races-3.2D-Editable-NewGen-1.26.w3x /tmp/map-check | tee warcraft-maps/23races/release/metadata-verification.txt
+          dotnet run --project warcraft-maps/23races/tools/MapCheck -- warcraft-maps/23races/release/23-Races-3.2D-Triggers-NewGen-1.26.w3x /tmp/map-check | tee warcraft-maps/23races/release/metadata-verification.txt
+          python warcraft-maps/23races/tools/verify_trigger_logic.py warcraft-maps/23races /tmp/map-check/editor-generated.j | tee warcraft-maps/23races/release/trigger-logic-verification.txt
+          cp /tmp/map-check/metadata-check.json warcraft-maps/23races/release/
           /tmp/pjass/pjass /tmp/classic-jass/common.j /tmp/classic-jass/Blizzard.j /tmp/map-check/original-gameplay.j | tee warcraft-maps/23races/release/pjass-original.txt
           /tmp/pjass/pjass /tmp/classic-jass/common.j /tmp/classic-jass/Blizzard.j /tmp/map-check/editor-generated.j | tee warcraft-maps/23races/release/pjass-editor-resave.txt
       - name: Prepare direct W3X and ZIP downloads
@@ -50,9 +55,9 @@ jobs:
           import shutil,hashlib,zipfile
           root=Path('warcraft-maps/23races');out=root/'release'
           shutil.copy2(root/'README-RU.txt',out/'README-RU.txt')
-          file=out/'23-Races-3.2D-Editable-NewGen-1.26.w3x'
+          file=out/'23-Races-3.2D-Triggers-NewGen-1.26.w3x'
           (out/(file.name+'.sha256')).write_text(hashlib.sha256(file.read_bytes()).hexdigest()+'  '+file.name+'\n')
-          with zipfile.ZipFile(out/'23-Races-3.2D-Editable-NewGen-1.26.zip','w',zipfile.ZIP_DEFLATED,compresslevel=6)as z:
+          with zipfile.ZipFile(out/'23-Races-3.2D-Triggers-NewGen-1.26.zip','w',zipfile.ZIP_DEFLATED,compresslevel=6)as z:
               for p in sorted(out.iterdir()):
                   if p.suffix!='.zip':z.write(p,p.name)
               for p in sorted((root/'source').iterdir()):z.write(p,'source/'+p.name)
@@ -62,4 +67,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          gh release create "23races-32d-editable-${GITHUB_SHA::8}" warcraft-maps/23races/release/* --target "$GITHUB_SHA" --prerelease --latest=false --title '23 Расы 3.2D — восстановленная копия для NewGen 1.26 (JASS)' --notes-file warcraft-maps/23races/README-RU.txt
+          gh release create "23races-triggers-${GITHUB_SHA::8}" warcraft-maps/23races/release/* --target "$GITHUB_SHA" --prerelease --latest=false --title '23 Расы 3.2D — 262 отдельных триггера (NewGen 1.26)' --notes-file warcraft-maps/23races/README-RU.txt

@@ -1,0 +1,1315 @@
+{
+  "method": "Token-exact comparison of every original group function; permits whitespace/comments, numeric encodings, and consistent symbol prefixes only. Unmatched candidates retain their full original JASS.",
+  "candidates": 126,
+  "accepted": [
+    "Information",
+    "Tekst",
+    "Start",
+    "Time_f1",
+    "Time_f2",
+    "Time_f4",
+    "Time_f5",
+    "Time_f6",
+    "Time_f7",
+    "Time_f8",
+    "Liver_Player",
+    "NochangeName1",
+    "NochangeName2",
+    "NochangeName3",
+    "NochangeName4",
+    "NochangeName5",
+    "NochangeName8",
+    "Timedestroy",
+    "Debut",
+    "Camera_command",
+    "Red_color",
+    "Blue_color",
+    "Lightblue_color",
+    "Viol_color",
+    "Yelow_color",
+    "Orange_color",
+    "Green_color",
+    "Rose_color",
+    "Grey_color",
+    "Cyan_color",
+    "Dark_green_color",
+    "Brown_color",
+    "Black_color",
+    "Turn_On",
+    "Turn_Off",
+    "RaceSelect1",
+    "RaceSelect2",
+    "RaceSelect3",
+    "RaceSelect4",
+    "RaceSelect5",
+    "RaceSelect6",
+    "RaceSelect7",
+    "RaceSelect8",
+    "RaceSelect9",
+    "RaceSelect10",
+    "RaceSelect11",
+    "RaceSelect12",
+    "LichKing",
+    "AlAkir",
+    "Kazzak",
+    "RAGNAROSS",
+    "Illidan",
+    "Soul_Eater",
+    "ChoGall",
+    "Kael",
+    "Kenya",
+    "Neptulon",
+    "Terazan",
+    "Maiev",
+    "Gandling",
+    "NZOT",
+    "NZOT_agent",
+    "CTUN",
+    "QOGGSARON",
+    "SHA",
+    "K",
+    "Turn_On_____________________u",
+    "Turn_Off_____________________u",
+    "NochangeName6"
+  ],
+  "rejected": {
+    "SpawnVision": [
+      "Trig_SpawnVision_Func002A: generated helper absent"
+    ],
+    "destroy_1": [
+      "Trig_destroy_1_Func003002: generated helper absent",
+      {
+        "function": "Trig_destroy_1_Actions",
+        "offset": 40,
+        "original": [
+          "(",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_destroy_1_Func003002",
+          ")",
+          "endfunction"
+        ],
+        "generated": [
+          "(",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_destroy_1_Func015A",
+          ")",
+          "endfunction"
+        ]
+      }
+    ],
+    "Declare_War_1": [
+      "Trig_Declare_War_1_Func003001001: generated helper absent",
+      "Trig_Declare_War_1_Func003002001: generated helper absent",
+      "Trig_Declare_War_1_Func003002: generated helper absent",
+      "Trig_Declare_War_1_Func004002001: generated helper absent",
+      "Trig_Declare_War_1_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_1_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_1_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_1_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_1_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_1_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_2": [
+      "Trig_Declare_War_2_Func004002001: generated helper absent",
+      "Trig_Declare_War_2_Func004002: generated helper absent",
+      "Trig_Declare_War_2_Func005002001: generated helper absent",
+      "Trig_Declare_War_2_Func005002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_2_Actions",
+        "offset": 31,
+        "original": [
+          "Trig_Declare_War_2_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_2_Func004002",
+          ")",
+          "call",
+          "ForForce",
+          "(",
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function"
+        ],
+        "generated": [
+          "Trig_Declare_War_2_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_2_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "(",
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function"
+        ]
+      }
+    ],
+    "Declare_War_5": [
+      "Trig_Declare_War_5_Func003001001: generated helper absent",
+      "Trig_Declare_War_5_Func003002001: generated helper absent",
+      "Trig_Declare_War_5_Func003002: generated helper absent",
+      "Trig_Declare_War_5_Func004002001: generated helper absent",
+      "Trig_Declare_War_5_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_5_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_5_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_5_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_5_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_5_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_3": [
+      "Trig_Declare_War_3_Func003001001: generated helper absent",
+      "Trig_Declare_War_3_Func003002001: generated helper absent",
+      "Trig_Declare_War_3_Func003002: generated helper absent",
+      "Trig_Declare_War_3_Func004002001: generated helper absent",
+      "Trig_Declare_War_3_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_3_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_3_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_3_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_3_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_3_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_4": [
+      "Trig_Declare_War_4_Func003001001: generated helper absent",
+      "Trig_Declare_War_4_Func003002001: generated helper absent",
+      "Trig_Declare_War_4_Func003002: generated helper absent",
+      "Trig_Declare_War_4_Func004002001: generated helper absent",
+      "Trig_Declare_War_4_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_4_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_4_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_4_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_4_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_4_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_6": [
+      "Trig_Declare_War_6_Func003001001: generated helper absent",
+      "Trig_Declare_War_6_Func003002001: generated helper absent",
+      "Trig_Declare_War_6_Func003002: generated helper absent",
+      "Trig_Declare_War_6_Func004002001: generated helper absent",
+      "Trig_Declare_War_6_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_6_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_6_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_6_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_6_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_6_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_7": [
+      "Trig_Declare_War_7_Func003001001: generated helper absent",
+      "Trig_Declare_War_7_Func003002001: generated helper absent",
+      "Trig_Declare_War_7_Func003002: generated helper absent",
+      "Trig_Declare_War_7_Func004002001: generated helper absent",
+      "Trig_Declare_War_7_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_7_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_7_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_7_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_7_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_7_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_8": [
+      "Trig_Declare_War_8_Func003001001: generated helper absent",
+      "Trig_Declare_War_8_Func003002001: generated helper absent",
+      "Trig_Declare_War_8_Func003002: generated helper absent",
+      "Trig_Declare_War_8_Func004002001: generated helper absent",
+      "Trig_Declare_War_8_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_8_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_8_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_8_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_8_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_8_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_9": [
+      "Trig_Declare_War_9_Func003001001: generated helper absent",
+      "Trig_Declare_War_9_Func003002001: generated helper absent",
+      "Trig_Declare_War_9_Func003002: generated helper absent",
+      "Trig_Declare_War_9_Func004002001: generated helper absent",
+      "Trig_Declare_War_9_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_9_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_9_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_9_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_9_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_9_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_10": [
+      "Trig_Declare_War_10_Func003001001: generated helper absent",
+      "Trig_Declare_War_10_Func003002001: generated helper absent",
+      "Trig_Declare_War_10_Func003002: generated helper absent",
+      "Trig_Declare_War_10_Func004002001: generated helper absent",
+      "Trig_Declare_War_10_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_10_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_10_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_10_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_10_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_10_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_11": [
+      "Trig_Declare_War_11_Func003001001: generated helper absent",
+      "Trig_Declare_War_11_Func003002001: generated helper absent",
+      "Trig_Declare_War_11_Func003002: generated helper absent",
+      "Trig_Declare_War_11_Func004002001: generated helper absent",
+      "Trig_Declare_War_11_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_11_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_11_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_11_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_11_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_11_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_12": [
+      "Trig_Declare_War_12_Func003001001: generated helper absent",
+      "Trig_Declare_War_12_Func003002001: generated helper absent",
+      "Trig_Declare_War_12_Func003002: generated helper absent",
+      "Trig_Declare_War_12_Func004002001: generated helper absent",
+      "Trig_Declare_War_12_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_12_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_12_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_12_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_12_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_12_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Buildings": [
+      "Trig_Buildings_Func001A: generated helper absent"
+    ],
+    "Heroes": [
+      "Trig_Heroes_Func001A: generated helper absent"
+    ],
+    "Ship": [
+      "Trig_Ship_Func001A: generated helper absent"
+    ],
+    "Select": [
+      {
+        "function": "Trig_Select_Actions",
+        "offset": 16,
+        "original": [
+          "udg_Random_system",
+          "[",
+          "1",
+          "]",
+          "=",
+          "1752196449",
+          "set",
+          "udg_Random_system",
+          "[",
+          "2",
+          "]",
+          "=",
+          "1869636975",
+          "set",
+          "udg_Random_system"
+        ],
+        "generated": [
+          "udg_Random_system",
+          "[",
+          "1",
+          "]",
+          "=",
+          "hpea",
+          "set",
+          "udg_Random_system",
+          "[",
+          "2",
+          "]",
+          "=",
+          "opeo",
+          "set",
+          "udg_Random_system"
+        ]
+      }
+    ],
+    "Lich_King": [
+      "Trig_Lich_King_Func002A: generated helper absent"
+    ],
+    "Illidan_H": [
+      "Trig_Illidan_H_Func002A: generated helper absent"
+    ],
+    "Cshi_Fire_Hand": [
+      "Trig_Cshi_Fire_Hand_Func002A: generated helper absent"
+    ],
+    "Tirion": [
+      "Trig_Tirion_Func002A: generated helper absent"
+    ],
+    "Kern": [
+      "Trig_Kern_Func002A: generated helper absent"
+    ],
+    "Vaish": [
+      "Trig_Vaish_Func002A: generated helper absent"
+    ],
+    "Saidan": [
+      "Trig_Saidan_Func002A: generated helper absent"
+    ],
+    "Sylvanas": [
+      "Trig_Sylvanas_Func002A: generated helper absent"
+    ],
+    "Farion": [
+      "Trig_Farion_Func002A: generated helper absent"
+    ],
+    "Genn": [
+      "Trig_Genn_Func002A: generated helper absent"
+    ],
+    "Thrall": [
+      "Trig_Thrall_Func002A: generated helper absent"
+    ],
+    "Izjor": [
+      "Trig_Izjor_Func002A: generated helper absent"
+    ],
+    "VanCleef": [
+      "Trig_VanCleef_Func002A: generated helper absent"
+    ],
+    "Ursol": [
+      "Trig_Ursol_Func002A: generated helper absent"
+    ],
+    "Vanol": [
+      "Trig_Vanol_Func002A: generated helper absent"
+    ],
+    "Magni": [
+      "Trig_Magni_Func002A: generated helper absent"
+    ],
+    "DrBoom": [
+      "Trig_DrBoom_Func002A: generated helper absent"
+    ],
+    "ChoGallLg": [
+      "Trig_ChoGallLg_Func002A: generated helper absent"
+    ],
+    "Akama": [
+      "Trig_Akama_Func002A: generated helper absent"
+    ],
+    "Nerub": [
+      "Trig_Nerub_Func002A: generated helper absent"
+    ],
+    "TrollIce": [
+      "Trig_TrollIce_Func002A: generated helper absent"
+    ],
+    "TrollDArk": [
+      "Trig_TrollDArk_Func002A: generated helper absent"
+    ],
+    "TrollForest": [
+      "Trig_TrollForest_Func002A: generated helper absent"
+    ],
+    "LorTemarTeron": [
+      "Trig_LorTemarTeron_Func002A: generated helper absent"
+    ],
+    "Ksavii": [
+      "Trig_Ksavii_Func002A: generated helper absent"
+    ],
+    "Kargath": [
+      "Trig_Kargath_Func002A: generated helper absent"
+    ],
+    "Dagran_Taurissan": [
+      "Trig_Dagran_Taurissan_Func001A: generated helper absent"
+    ],
+    "Declare_War_1_____________________u": [
+      "Trig_Declare_War_1_____________________u_Func003001001: generated helper absent",
+      "Trig_Declare_War_1_____________________u_Func003002001: generated helper absent",
+      "Trig_Declare_War_1_____________________u_Func003002: generated helper absent",
+      "Trig_Declare_War_1_____________________u_Func004002001: generated helper absent",
+      "Trig_Declare_War_1_____________________u_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_1_____________________u_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_1_____________________u_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_1_____________________u_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_1_____________________u_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_1_____________________u_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_2_____________________u": [
+      "Trig_Declare_War_2_____________________u_Func004002001: generated helper absent",
+      "Trig_Declare_War_2_____________________u_Func004002: generated helper absent",
+      "Trig_Declare_War_2_____________________u_Func005002001: generated helper absent",
+      "Trig_Declare_War_2_____________________u_Func005002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_2_____________________u_Actions",
+        "offset": 31,
+        "original": [
+          "Trig_Declare_War_2_____________________u_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_2_____________________u_Func004002",
+          ")",
+          "call",
+          "ForForce",
+          "(",
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function"
+        ],
+        "generated": [
+          "Trig_Declare_War_2_____________________u_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_2_____________________u_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "(",
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function"
+        ]
+      }
+    ],
+    "Declare_War_3_____________________u": [
+      "Trig_Declare_War_3_____________________u_Func003001001: generated helper absent",
+      "Trig_Declare_War_3_____________________u_Func003002001: generated helper absent",
+      "Trig_Declare_War_3_____________________u_Func003002: generated helper absent",
+      "Trig_Declare_War_3_____________________u_Func004002001: generated helper absent",
+      "Trig_Declare_War_3_____________________u_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_3_____________________u_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_3_____________________u_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_3_____________________u_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_3_____________________u_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_3_____________________u_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_4_____________________u": [
+      "Trig_Declare_War_4_____________________u_Func003001001: generated helper absent",
+      "Trig_Declare_War_4_____________________u_Func003002001: generated helper absent",
+      "Trig_Declare_War_4_____________________u_Func003002: generated helper absent",
+      "Trig_Declare_War_4_____________________u_Func004002001: generated helper absent",
+      "Trig_Declare_War_4_____________________u_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_4_____________________u_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_4_____________________u_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_4_____________________u_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_4_____________________u_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_4_____________________u_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_5_____________________u": [
+      "Trig_Declare_War_5_____________________u_Func003001001: generated helper absent",
+      "Trig_Declare_War_5_____________________u_Func003002001: generated helper absent",
+      "Trig_Declare_War_5_____________________u_Func003002: generated helper absent",
+      "Trig_Declare_War_5_____________________u_Func004002001: generated helper absent",
+      "Trig_Declare_War_5_____________________u_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_5_____________________u_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_5_____________________u_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_5_____________________u_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_5_____________________u_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_5_____________________u_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_6_____________________u": [
+      "Trig_Declare_War_6_____________________u_Func003001001: generated helper absent",
+      "Trig_Declare_War_6_____________________u_Func003002001: generated helper absent",
+      "Trig_Declare_War_6_____________________u_Func003002: generated helper absent",
+      "Trig_Declare_War_6_____________________u_Func004002001: generated helper absent",
+      "Trig_Declare_War_6_____________________u_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_6_____________________u_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_6_____________________u_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_6_____________________u_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_6_____________________u_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_6_____________________u_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_7_____________________u": [
+      "Trig_Declare_War_7_____________________u_Func003001001: generated helper absent",
+      "Trig_Declare_War_7_____________________u_Func003002001: generated helper absent",
+      "Trig_Declare_War_7_____________________u_Func003002: generated helper absent",
+      "Trig_Declare_War_7_____________________u_Func004002001: generated helper absent",
+      "Trig_Declare_War_7_____________________u_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_7_____________________u_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_7_____________________u_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_7_____________________u_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_7_____________________u_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_7_____________________u_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_8_____________________u": [
+      "Trig_Declare_War_8_____________________u_Func003001001: generated helper absent",
+      "Trig_Declare_War_8_____________________u_Func003002001: generated helper absent",
+      "Trig_Declare_War_8_____________________u_Func003002: generated helper absent",
+      "Trig_Declare_War_8_____________________u_Func004002001: generated helper absent",
+      "Trig_Declare_War_8_____________________u_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_8_____________________u_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_8_____________________u_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_8_____________________u_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_8_____________________u_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_8_____________________u_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_9_____________________u": [
+      "Trig_Declare_War_9_____________________u_Func003001001: generated helper absent",
+      "Trig_Declare_War_9_____________________u_Func003002001: generated helper absent",
+      "Trig_Declare_War_9_____________________u_Func003002: generated helper absent",
+      "Trig_Declare_War_9_____________________u_Func004002001: generated helper absent",
+      "Trig_Declare_War_9_____________________u_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_9_____________________u_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_9_____________________u_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_9_____________________u_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_9_____________________u_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_9_____________________u_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_10_____________________u": [
+      "Trig_Declare_War_10_____________________u_Func003001001: generated helper absent",
+      "Trig_Declare_War_10_____________________u_Func003002001: generated helper absent",
+      "Trig_Declare_War_10_____________________u_Func003002: generated helper absent",
+      "Trig_Declare_War_10_____________________u_Func004002001: generated helper absent",
+      "Trig_Declare_War_10_____________________u_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_10_____________________u_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_10_____________________u_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_10_____________________u_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_10_____________________u_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_10_____________________u_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_11_____________________u": [
+      "Trig_Declare_War_11_____________________u_Func003001001: generated helper absent",
+      "Trig_Declare_War_11_____________________u_Func003002001: generated helper absent",
+      "Trig_Declare_War_11_____________________u_Func003002: generated helper absent",
+      "Trig_Declare_War_11_____________________u_Func004002001: generated helper absent",
+      "Trig_Declare_War_11_____________________u_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_11_____________________u_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_11_____________________u_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_11_____________________u_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_11_____________________u_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_11_____________________u_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ],
+    "Declare_War_12_____________________u": [
+      "Trig_Declare_War_12_____________________u_Func003001001: generated helper absent",
+      "Trig_Declare_War_12_____________________u_Func003002001: generated helper absent",
+      "Trig_Declare_War_12_____________________u_Func003002: generated helper absent",
+      "Trig_Declare_War_12_____________________u_Func004002001: generated helper absent",
+      "Trig_Declare_War_12_____________________u_Func004002: generated helper absent",
+      {
+        "function": "Trig_Declare_War_12_____________________u_Actions",
+        "offset": 26,
+        "original": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_12_____________________u_Func003001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_12_____________________u_Func003002",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ],
+        "generated": [
+          "GetPlayersMatching",
+          "(",
+          "Condition",
+          "(",
+          "function",
+          "Trig_Declare_War_12_____________________u_Func004001001",
+          ")",
+          ")",
+          ",",
+          "function",
+          "Trig_Declare_War_12_____________________u_Func004A",
+          ")",
+          "call",
+          "ForForce",
+          "("
+        ]
+      }
+    ]
+  }
+}

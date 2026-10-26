@@ -1,0 +1,1676 @@
+[
+  {
+    "name": "Acolyte_Undead.blp",
+    "key": "acolyte_undead.blp",
+    "cache": "a88dfb752c7600b0d35d75265877334a8d2af392",
+    "bytes": 198870,
+    "originalCompressedBytes": 194433,
+    "sha256": "762bb3173388d30051ea4f1d0b15482fb1f08e2b38017c32a7c6f791017129f5",
+    "why": "texture in war3mapImported\\Acolyte1_portrait.mdx"
+  },
+  {
+    "name": "AncientDragonLord.mdx",
+    "key": "ancientdragonlord.mdx",
+    "cache": "bdd231ec4833acef02191fe0576a778067d9f6f3",
+    "bytes": 392381,
+    "originalCompressedBytes": 262602,
+    "sha256": "ee57794065b79c2dbf1806bda058cde52fad883a3a6b7c744870dcf5d99a3ec8",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "BlackDragon.blp",
+    "key": "blackdragon.blp",
+    "cache": "2d4fdb9fa33877f2cb697e3a5a49d01e84d9747d",
+    "bytes": 2098330,
+    "originalCompressedBytes": 589677,
+    "sha256": "80dafc8fd4c33efb5a8d9a829a7c14a5d6591e5561e4a1ef7c84e96e0a9a2bd3",
+    "why": "metadata asset-optimizations.json"
+  },
+  {
+    "name": "BlackDragon.mdx",
+    "key": "blackdragon.mdx",
+    "cache": "e6eeb6462295e9147ce548eada644edfdd207e47",
+    "bytes": 121528,
+    "originalCompressedBytes": 49486,
+    "sha256": "d7b8434a1ae10656cd6349ba2d680239cac121e836441c842531f1db19af781c",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "BlackDragon_Portrait.mdx",
+    "key": "blackdragon_portrait.mdx",
+    "cache": "403470b04e2396658c81397c4151a6add3e6efa7",
+    "bytes": 35146,
+    "originalCompressedBytes": 16848,
+    "sha256": "e7a674480331b889f241e235d2cfe84c339e0d6e26be56ba2c73cb03bd9816cd",
+    "why": "portrait of blackdragon.mdx"
+  },
+  {
+    "name": "c_drggreen_bod.blp",
+    "key": "c_drggreen_bod.blp",
+    "cache": "0889f846a592b7986e4f6f04c07a93618878862e",
+    "bytes": 2098330,
+    "originalCompressedBytes": 874467,
+    "sha256": "6fc142738da4d7965a5e3837e6268a2bddcbee167006dcc8fe5a30575e6dbe9b",
+    "why": "metadata asset-optimizations.json"
+  },
+  {
+    "name": "c_drggreen_hed.blp",
+    "key": "c_drggreen_hed.blp",
+    "cache": "4bfdec3e9bcb63005b632c0970e0f24f5c71f1d4",
+    "bytes": 2098330,
+    "originalCompressedBytes": 669050,
+    "sha256": "fc7aae82d16430c72006f521b44a0b9431ae210f8bba9f90f50cff364a9b2495",
+    "why": "metadata asset-optimizations.json"
+  },
+  {
+    "name": "c_drggreen_wing.blp",
+    "key": "c_drggreen_wing.blp",
+    "cache": "f570f357795a604bef09e351e50c6ca6fdfb3c8e",
+    "bytes": 2098330,
+    "originalCompressedBytes": 541062,
+    "sha256": "4eb3b3c9cc51135de8a887fc7f50af627dde61334914423eaa56803bd3ca9bf1",
+    "why": "metadata asset-optimizations.json"
+  },
+  {
+    "name": "cave_column01.blp",
+    "key": "cave_column01.blp",
+    "cache": "28142b8536c8a67f0a4e7b5fee78ded1333d22be",
+    "bytes": 162617,
+    "originalCompressedBytes": 160612,
+    "sha256": "982697a14f1557586ff5d93c31d02e438abbaa5ff9f44133cf54d9f63789f9d2",
+    "why": "texture in war3mapImported\\cave_column_03.mdx"
+  },
+  {
+    "name": "cave_decal_mushrooms_02.blp",
+    "key": "cave_decal_mushrooms_02.blp",
+    "cache": "9b91f957b9ee60862f0a350e8cfa02de97c1fee1",
+    "bytes": 321900,
+    "originalCompressedBytes": 321263,
+    "sha256": "a92fdfccd429f5eab1dbbc77c814e9b239a1ac0e55e7dd5d003ff0fc0b2f2155",
+    "why": "texture in war3mapImported\\cave_floor_mushrooms_14.mdx"
+  },
+  {
+    "name": "cave_dust02.blp",
+    "key": "cave_dust02.blp",
+    "cache": "a3a7aa178ab4620a8a7755d9e8f093d4bbc65bc3",
+    "bytes": 68035,
+    "originalCompressedBytes": 66770,
+    "sha256": "d4aeed33ad9e9972658730b8da979da051a4eb9fe37c6221b3e9c3d84a13c551",
+    "why": "texture in war3mapImported\\cave_rubble_07.mdx"
+  },
+  {
+    "name": "cave_entry01.blp",
+    "key": "cave_entry01.blp",
+    "cache": "566a3bc89e72240707c097c70f4d7dc43c87277c",
+    "bytes": 105070,
+    "originalCompressedBytes": 97064,
+    "sha256": "e92d1c81807d022747b77134e1a28ea5450f8b4e499505454da391aec17361cf",
+    "why": "texture in war3mapImported\\cave_entry_01.mdx"
+  },
+  {
+    "name": "cave_floor01.blp",
+    "key": "cave_floor01.blp",
+    "cache": "fab76b72fba562fef4d23494f58b5e4f59bd02a0",
+    "bytes": 143982,
+    "originalCompressedBytes": 143046,
+    "sha256": "5ab4e07329514d4023020728a362bed5ace5e6d13d0905128cf214512df9ecc7",
+    "why": "texture in war3mapImported\\cave_floor_blank_01_shadow.mdx"
+  },
+  {
+    "name": "cave_floor01_path.blp",
+    "key": "cave_floor01_path.blp",
+    "cache": "e6766fb093a4d8cac67b8c6eaf9d920a0be0e9a1",
+    "bytes": 145387,
+    "originalCompressedBytes": 144268,
+    "sha256": "34994e2c1f420d0e202b21c3271c52c5114cf9a3a9306e3ac7330ba36c99e3ad",
+    "why": "texture in war3mapImported\\cave_path_straight_01.mdx"
+  },
+  {
+    "name": "cave_floor02_path.blp",
+    "key": "cave_floor02_path.blp",
+    "cache": "31c4de74dfad638e0a1dc328c7226907ae3846f9",
+    "bytes": 136417,
+    "originalCompressedBytes": 135277,
+    "sha256": "0669fb6d94f61e6e9654547b3725bf94be2b3d75f83eb0dc9cf764d140fe82cb",
+    "why": "texture in war3mapImported\\cave_path_corner_01.mdx"
+  },
+  {
+    "name": "cave_rocks01.blp",
+    "key": "cave_rocks01.blp",
+    "cache": "7beb5935ac84ff453e5f1acdecb56b75cae3c349",
+    "bytes": 93898,
+    "originalCompressedBytes": 91266,
+    "sha256": "476b4db467fb73c26e4e341159994208d82880e5c4a143261d1c474c8240beee",
+    "why": "texture in war3mapImported\\cave_rock_04.mdx"
+  },
+  {
+    "name": "cave_stair01.blp",
+    "key": "cave_stair01.blp",
+    "cache": "1915ad28e7fda7235ed3db5de0252b43d482c4d4",
+    "bytes": 129941,
+    "originalCompressedBytes": 125036,
+    "sha256": "93e7e05d69912e2ae3ef28c20f08b619d0c9c2ca9392985d60ea1208211a60e6",
+    "why": "texture in war3mapImported\\cave_quarter_stair_01.mdx"
+  },
+  {
+    "name": "cave_stalagmite01.blp",
+    "key": "cave_stalagmite01.blp",
+    "cache": "9b5ee4aa66408c3d4ab6bba564e61fb716e77184",
+    "bytes": 151991,
+    "originalCompressedBytes": 150226,
+    "sha256": "ab16ab80854db16a35ffa8db318c4080ca62de8afd953cd935673c2b1ad5fefa",
+    "why": "texture in war3mapImported\\cave_stalagmite_01.mdx"
+  },
+  {
+    "name": "cave_stalagmite02.blp",
+    "key": "cave_stalagmite02.blp",
+    "cache": "8038e399de4712d6c2fe4f641c9e145840e7ecb7",
+    "bytes": 125210,
+    "originalCompressedBytes": 119414,
+    "sha256": "6d9ac507ba7068aa644c1d876491c4d8235678a058d8807962ab8230fb0ccb14",
+    "why": "texture in war3mapImported\\cave_stalagmite_02.mdx"
+  },
+  {
+    "name": "cave_stalagmite04.blp",
+    "key": "cave_stalagmite04.blp",
+    "cache": "031e77b978892d71396e88cd77969c9a15c245be",
+    "bytes": 140512,
+    "originalCompressedBytes": 137999,
+    "sha256": "d2290ad55e245520aab018b44624a27a836a8769abbb8944e8f849daaddf81f6",
+    "why": "texture in war3mapImported\\cave_stalagmite_05.mdx"
+  },
+  {
+    "name": "cave_trim01.blp",
+    "key": "cave_trim01.blp",
+    "cache": "88a1a6774b902c9a1c86e5fa12d41641dc796c29",
+    "bytes": 177544,
+    "originalCompressedBytes": 176549,
+    "sha256": "3b7077499dff10005f8190b76333c9d7e618743e0a2dec8236befcead9f3141b",
+    "why": "texture in war3mapImported\\cave_trim_straight_01.mdx"
+  },
+  {
+    "name": "cave_vent01.blp",
+    "key": "cave_vent01.blp",
+    "cache": "8e4683ad12d66bfea481c8d470d7f463c4d807b4",
+    "bytes": 94458,
+    "originalCompressedBytes": 86196,
+    "sha256": "8a99871c2cf44b4e8e17b315d9b762d2b520365fde2ca961ff0bb9d0abd0100c",
+    "why": "texture in war3mapImported\\cave_vent_01.mdx"
+  },
+  {
+    "name": "cave_wall01.blp",
+    "key": "cave_wall01.blp",
+    "cache": "9559400cda94d80fa8c7ed58e1dbd1b23245fb0c",
+    "bytes": 165749,
+    "originalCompressedBytes": 161649,
+    "sha256": "ed580162cd266a6ef957cbeb32c676be4431c8fae7bb020d3b9fbb1cd8e58461",
+    "why": "texture in war3mapImported\\cave_wall_convex_01.mdx"
+  },
+  {
+    "name": "cave_wall01_quarter.blp",
+    "key": "cave_wall01_quarter.blp",
+    "cache": "194aa7d9def9af865767f59fc4dfc3ebf4942495",
+    "bytes": 28995,
+    "originalCompressedBytes": 27532,
+    "sha256": "5206b2d650ac6555ee72261154a7168443d1d62cfc36dc748deee663cfcab2c5",
+    "why": "texture in war3mapImported\\cave_quarter_straight_01.mdx"
+  },
+  {
+    "name": "Clouds8x8.blp",
+    "key": "clouds8x8.blp",
+    "cache": "736612000169b3d449c95ab5a7ac8ccbd171133d",
+    "bytes": 1399280,
+    "originalCompressedBytes": 469231,
+    "sha256": "c0dd452c305fc4f4c3c7c6d56f97e4bb8a32ca294dc6086ccd41c37b50a65735",
+    "why": "metadata asset-optimizations.json"
+  },
+  {
+    "name": "Clouds_Yanwu_2.blp",
+    "key": "clouds_yanwu_2.blp",
+    "cache": "c8cf5c539050e7abe3196835ea0da89ea4a5f1df",
+    "bytes": 8043,
+    "originalCompressedBytes": 5568,
+    "sha256": "695d7b70f56e30ddaf2e1963ce87e17ab352f090d022c158d0457fb0e5b55436",
+    "why": "texture in war3mapImported\\Clouds 2.mdx"
+  },
+  {
+    "name": "Critter_Birod.blp",
+    "key": "critter_birod.blp",
+    "cache": "17019908d7c4ad084269db31d1e8a5f63305477e",
+    "bytes": 12102,
+    "originalCompressedBytes": 6758,
+    "sha256": "676a6be1f1611c0c3b672f76557c26273b5b0fe1b6262afe330fddcb4c381864",
+    "why": "texture in war3mapImported\\Birod.mdx"
+  },
+  {
+    "name": "Demon_Rune_Ribbon1Red.blp",
+    "key": "demon_rune_ribbon1red.blp",
+    "cache": "5c52e4b3ae216f18b0360ade3aa72ef97dc33383",
+    "bytes": 27879,
+    "originalCompressedBytes": 26125,
+    "sha256": "08469d82034a38350b4ec07ad313d3b664a92ef4e391878df44d53b1fae0d0d9",
+    "why": "texture in war3mapImported\\DEMONM~1.MDX"
+  },
+  {
+    "name": "Firebolt Classic.mdx",
+    "key": "firebolt classic.mdx",
+    "cache": "0975a34b54c338724db5116c95b996fbc2a85478",
+    "bytes": 19064,
+    "originalCompressedBytes": 3553,
+    "sha256": "7e96bc8e74803797485fcb827805b7dda55319b7b0beb40f8a1686e2b194a1a4",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "HeroPitlord_Undead.blp",
+    "key": "heropitlord_undead.blp",
+    "cache": "e703df74fc65ccb572d46c4836ca8aee445c5524",
+    "bytes": 312857,
+    "originalCompressedBytes": 309596,
+    "sha256": "d92b9d3ffa2cde8c7fe1af22e411772c496a9937161a674d4c745b3a81cc5047",
+    "why": "texture in war3mapImported\\HeroPitlord1_Portrait.mdx"
+  },
+  {
+    "name": "NewZigguratscarycreepytex.TGA",
+    "key": "newzigguratscarycreepytex.tga",
+    "cache": "b8e87342a2fb735c7b3b8e7717f9b0bfd7bb843f",
+    "bytes": 165582,
+    "originalCompressedBytes": 153943,
+    "sha256": "fe1b2a68070247f64dbe936fe1a3e39e9f23c4b9cf0793f1ab30c74e5d8e0dfb",
+    "why": "texture in war3mapImported\\DEMONM~1.MDX"
+  },
+  {
+    "name": "pivot.mdx",
+    "key": "pivot.mdx",
+    "cache": "bb36fa688b1a2079d7d2bc5f83022c204ae0110f",
+    "bytes": 11041,
+    "originalCompressedBytes": 2311,
+    "sha256": "4e36e72c6db4faa00cab990e62135330a3481b98a01267ca4aafe3544a54a3ee",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "ReplaceableTextures\\CommandButtons\\ATTwosc.blp",
+    "key": "replaceabletextures\\commandbuttons\\attwosc.blp",
+    "cache": "dc4b7f3ab391bc6e5f71569d467ef53826560856",
+    "bytes": 5386,
+    "originalCompressedBytes": 5236,
+    "sha256": "8015d9855f6722fec12c76d724664333e1a14a26961505eb0729caf04ceb0178",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "ReplaceableTextures\\CommandButtons\\BTNDragomHOLET.blp",
+    "key": "replaceabletextures\\commandbuttons\\btndragomholet.blp",
+    "cache": "bfbbbe5dbb56465467fb36ab76b6dbfbc2ca7d51",
+    "bytes": 4751,
+    "originalCompressedBytes": 4653,
+    "sha256": "73dce7019915517edf8f770dd40f5062c9dc26eb304dcde91d942a024f7715e5",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "ReplaceableTextures\\CommandButtons\\BTNDragon1.blp",
+    "key": "replaceabletextures\\commandbuttons\\btndragon1.blp",
+    "cache": "0d9f3652ce47ce54c9029afb18670fef41fecc68",
+    "bytes": 4935,
+    "originalCompressedBytes": 4825,
+    "sha256": "26ccdc964932000d8f56125404871ba1ad1d16c604672c2224d27dcbcf6e9d20",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "ReplaceableTextures\\CommandButtons\\BTNDragon1ON.blp",
+    "key": "replaceabletextures\\commandbuttons\\btndragon1on.blp",
+    "cache": "2f0e5fc53148ccbd50038a23ab96e23727510196",
+    "bytes": 5019,
+    "originalCompressedBytes": 4912,
+    "sha256": "bf231d7e89bc155a391de912a4ebea3e60b746fa3a372d2166978a92fd492fad",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "ReplaceableTextures\\CommandButtons\\BTNDragonOTMEH.blp",
+    "key": "replaceabletextures\\commandbuttons\\btndragonotmeh.blp",
+    "cache": "47bccbfc2ba5059f4bc7333ab07f242c1974f8ad",
+    "bytes": 4141,
+    "originalCompressedBytes": 4026,
+    "sha256": "3226bc35aa54a60dad52a459fc82fe36381163ccc119d4783df10ab8b3a13763",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "ReplaceableTextures\\CommandButtons\\BTNfwefqfqwOFF.blp",
+    "key": "replaceabletextures\\commandbuttons\\btnfwefqfqwoff.blp",
+    "cache": "123a6a1967de05e501a5e798a19cbdc7b9d0d536",
+    "bytes": 4493,
+    "originalCompressedBytes": 4375,
+    "sha256": "324527679f359b51cbacc412482a2d16298db13e58010226ed1054824d3afe74",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "ReplaceableTextures\\CommandButtons\\PASDragonKOXA.blp",
+    "key": "replaceabletextures\\commandbuttons\\pasdragonkoxa.blp",
+    "cache": "3a7e9f4a839379c2b02d047b01ad3b84bac4a071",
+    "bytes": 3889,
+    "originalCompressedBytes": 3791,
+    "sha256": "31e2e161e3f5aa01970d4f94398bb92f0fba6debe1f92a7703f49da462615a31",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "ReplaceableTextures\\CommandButtons\\PASEyas.blp",
+    "key": "replaceabletextures\\commandbuttons\\paseyas.blp",
+    "cache": "ecc726b35cc51d3610396a002827c71baac8b7c0",
+    "bytes": 6300,
+    "originalCompressedBytes": 2956,
+    "sha256": "d111eaa01cf4f0b48e575f08cc16963ee1a6ae627b8a7ad4e407524822852d8e",
+    "why": "metadata items.json"
+  },
+  {
+    "name": "ReplaceableTextures\\CommandButtons\\PASlos.blp",
+    "key": "replaceabletextures\\commandbuttons\\paslos.blp",
+    "cache": "96d1d21187257533cd51668c2ba15c6f2f0c5e0c",
+    "bytes": 6300,
+    "originalCompressedBytes": 3278,
+    "sha256": "abe5a51bba581154721c5fac895f46447c9a9dea53e75ae2c0b11968226fb8bd",
+    "why": "metadata items.json"
+  },
+  {
+    "name": "ReplaceableTextures\\CommandButtons\\PASodo.blp",
+    "key": "replaceabletextures\\commandbuttons\\pasodo.blp",
+    "cache": "3b9ab7f9e770126d4eba8e982d60adb7cec6a5a8",
+    "bytes": 6300,
+    "originalCompressedBytes": 3322,
+    "sha256": "acd55b4a295cc1252eca7f443d6ca1d3b26719fe6f7c928828dce973a6671dc5",
+    "why": "metadata items.json"
+  },
+  {
+    "name": "Textures\\VampireSplat.blp",
+    "key": "textures\\vampiresplat.blp",
+    "cache": "2c6a18243236e4454dd74287ab9dc1261a5a3645",
+    "bytes": 58792,
+    "originalCompressedBytes": 52895,
+    "sha256": "f423b86cf1cfa5f001e3e7b043648b3244b1883c0712798a13c90148870fc8de",
+    "why": "texture in war3mapImported\\VampireBarracks.mdx"
+  },
+  {
+    "name": "UI\\Widgets\\Console\\Human\\human-console-buttonstates2.blp",
+    "key": "ui\\widgets\\console\\human\\human-console-buttonstates2.blp",
+    "cache": "e574b02ff0cae85c1691f39db0e545a0b82fb900",
+    "bytes": 73637,
+    "originalCompressedBytes": 57042,
+    "sha256": "6718e02711f52dba36caf44a650cb2216eb94387ddfc4537dce53dfe64fc3f40",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "UI\\Widgets\\Escmenu\\Human\\human-options-button-background.blp",
+    "key": "ui\\widgets\\escmenu\\human\\human-options-button-background.blp",
+    "cache": "0b4461bf4af41c31de2bc33dc7358e5f52b8785d",
+    "bytes": 115823,
+    "originalCompressedBytes": 98889,
+    "sha256": "d561eeb322f410ba6ab267eb84d70f270fec8dbd239c7e8aacb807545297873e",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "UI\\Widgets\\Escmenu\\Human\\human-options-button-highlight.blp",
+    "key": "ui\\widgets\\escmenu\\human\\human-options-button-highlight.blp",
+    "cache": "9a4947392505103a612fd12b8359ae7f6ec874e3",
+    "bytes": 21408,
+    "originalCompressedBytes": 8362,
+    "sha256": "0f0969f911bf9f45a390fe8d88b58c0b08fc1461ef17128d8392024016466549",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "UI\\Widgets\\Escmenu\\Human\\human-options-menu-background.blp",
+    "key": "ui\\widgets\\escmenu\\human\\human-options-menu-background.blp",
+    "cache": "2175c38be759751c1978af204680207bb5b03f7d",
+    "bytes": 115823,
+    "originalCompressedBytes": 98889,
+    "sha256": "d561eeb322f410ba6ab267eb84d70f270fec8dbd239c7e8aacb807545297873e",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "UI\\Widgets\\Escmenu\\Human\\human-options-menu-border.blp",
+    "key": "ui\\widgets\\escmenu\\human\\human-options-menu-border.blp",
+    "cache": "44340e353c4dbab3b49c17f11eb12ce95793d10f",
+    "bytes": 51867,
+    "originalCompressedBytes": 48820,
+    "sha256": "34d610be7d481f8e3d7932550057af9d944ebd06ebb0e9454e2b84ad036dc73e",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3map.doo",
+    "key": "war3map.doo",
+    "cache": "50d58f47dcc74d683bf7453451d1cc0dbd8ec77a",
+    "bytes": 108174,
+    "originalCompressedBytes": 22186,
+    "sha256": "c22495765e561e337642023dcff43b82cc4a6f04abc4fc00e24eacebf7fad008",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.imp",
+    "key": "war3map.imp",
+    "cache": "10f74e9ba492c6d15e3748d0d1eb59d7b1bc967b",
+    "bytes": 42674,
+    "originalCompressedBytes": 8137,
+    "sha256": "6c90601a2cd55a41f3412e6bb2af3059d70fae7606c341ee849ff27b8698655b",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.j",
+    "key": "war3map.j",
+    "cache": "50a326d889db4f413b81a995e03a9637075ccef7",
+    "bytes": 106205,
+    "originalCompressedBytes": 25408,
+    "sha256": "3026a5fefc29518d2640609850aeeeabfae7345b90f45b9c96bdfd65c943f69e",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.mmp",
+    "key": "war3map.mmp",
+    "cache": "cacd5e358e0b415202c894ae1856a267ea25aaeb",
+    "bytes": 216,
+    "originalCompressedBytes": 151,
+    "sha256": "2dbee2c6a2d6ea99601ed4519c6540cea11d015738bdda57048d6bb817ee89fa",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.shd",
+    "key": "war3map.shd",
+    "cache": "75f4840d7157c23dd653bba4a06b5ef193aab92a",
+    "bytes": 1327104,
+    "originalCompressedBytes": 10048,
+    "sha256": "0f7cfb43327ad082e6362afa8bcb4f762da9c55356e9c002f0b2697f0b6cd138",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.w3a",
+    "key": "war3map.w3a",
+    "cache": "f00611f640b8c61f5de5bbc51ca0ec3a902ce800",
+    "bytes": 13942,
+    "originalCompressedBytes": 3074,
+    "sha256": "0612cc6dee34e18a52a66a5b71d58e1c4c06d7b5413181a6b81e2001385f1317",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.w3b",
+    "key": "war3map.w3b",
+    "cache": "1cf4a74440afdbfadb575d5534fef20a284b3830",
+    "bytes": 396,
+    "originalCompressedBytes": 175,
+    "sha256": "0a1fe5bf525a6e041cbcb93c5a1856c02a1a1b20ab537bb24f609b08f46206c2",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.w3c",
+    "key": "war3map.w3c",
+    "cache": "0d767d4e59b6d3f34570f15d3a0f16b88492f5fc",
+    "bytes": 161,
+    "originalCompressedBytes": 91,
+    "sha256": "250a0524ca7ee831efc86664831140262228a2fdccaa879f2808c60fe168cf7e",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.w3d",
+    "key": "war3map.w3d",
+    "cache": "c028303923d145bf760b390cb437e5d38a0a8fd9",
+    "bytes": 8620,
+    "originalCompressedBytes": 962,
+    "sha256": "f5992f044283364d574b14b3ce6fe837159372017b41fa80548956d3c4c3e702",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.w3e",
+    "key": "war3map.w3e",
+    "cache": "a58c0644753c3cbb4b9d5f4a747aefacfc3ed141",
+    "bytes": 584724,
+    "originalCompressedBytes": 82984,
+    "sha256": "e3c83f413f67d01d2545d6556e2d4706aaee6e9f61e7b019eefd0107ce399bea",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.w3h",
+    "key": "war3map.w3h",
+    "cache": "d05e719ddacae4985f2499938cd933f3a4751b46",
+    "bytes": 354,
+    "originalCompressedBytes": 177,
+    "sha256": "73d2c3694a820bdef02f8b832c025eab49802a4c10bb74e5f386391db68a1d38",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.w3i",
+    "key": "war3map.w3i",
+    "cache": "e02a17327e81ad12657fa1f0ca6dae508f23728e",
+    "bytes": 835,
+    "originalCompressedBytes": 388,
+    "sha256": "f6f18e0ace82e88ffb3a3d097b1ed0face5c35bf38b58b641571f37977827909",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.w3q",
+    "key": "war3map.w3q",
+    "cache": "bced3ec2a192ec0ed26bcc49327e48fb52485312",
+    "bytes": 660,
+    "originalCompressedBytes": 207,
+    "sha256": "587b702100b63f6de1317508e9a06741aa9c216fcf78eb220bc020738628c0ea",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.w3r",
+    "key": "war3map.w3r",
+    "cache": "42cc0b3259b01a6dd7a5fe4a719d213d7e950a01",
+    "bytes": 1010,
+    "originalCompressedBytes": 433,
+    "sha256": "f4f1fe5220344a1ae365fdeaa088601a30df01c9f89498d519a09f91fd30e208",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.w3s",
+    "key": "war3map.w3s",
+    "cache": "cea6a08c270e072d353173401885f7b53dd215f1",
+    "bytes": 134,
+    "originalCompressedBytes": 105,
+    "sha256": "ea59b2bb56fcf354c73952aa36cfc2e1d163cb2dbdb74b5e9a75e0acb6b2efa1",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.w3t",
+    "key": "war3map.w3t",
+    "cache": "791e0faa4a70755af7444050bbbf272ae51de5d7",
+    "bytes": 1377,
+    "originalCompressedBytes": 389,
+    "sha256": "754c00dec9329a5eecfcee6ef69229c00998b3bd91df9ff0bada0a7c92d55dad",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.w3u",
+    "key": "war3map.w3u",
+    "cache": "54d0c0c7512ea9242c558ee067b77236d171e8aa",
+    "bytes": 6798,
+    "originalCompressedBytes": 1633,
+    "sha256": "73dc6f42eb5660e03c0c15410a6a59f13d47dd9c4e3b81918d10b973f9c630ec",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.wct",
+    "key": "war3map.wct",
+    "cache": "e6b6c8f4da2bcb526c73856241e48de94aecec88",
+    "bytes": 123186,
+    "originalCompressedBytes": 34621,
+    "sha256": "394f0e19d1e0d06eec3f1cc807aeb8d0d31cdef92c2ca8d6b71a1076273134d4",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.wpm",
+    "key": "war3map.wpm",
+    "cache": "75319c2f53ea11465c2482c76090b989da037327",
+    "bytes": 1327120,
+    "originalCompressedBytes": 17915,
+    "sha256": "5c08f197c51b6b9e2207e35e66917bfd24af789b5fed892080d2aee64c07ca90",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.wtg",
+    "key": "war3map.wtg",
+    "cache": "0a0541a3bae29dd548e8f0641a21b46549121474",
+    "bytes": 5547,
+    "originalCompressedBytes": 1357,
+    "sha256": "534a7be3b1d700b1efd24f3a3b0807587901ae6edb635cfd33d43661da007309",
+    "why": "native map file"
+  },
+  {
+    "name": "war3map.wts",
+    "key": "war3map.wts",
+    "cache": "069298cf7c3e61a0ae40f2a61b42ba2c02268fb0",
+    "bytes": 61807,
+    "originalCompressedBytes": 13758,
+    "sha256": "627e79d830abcd994aae84b6bda2fcf397103cb615344a0cfaa6511a5ede22fb",
+    "why": "native map file"
+  },
+  {
+    "name": "war3mapImported\\Acolyte1.mdx",
+    "key": "war3mapimported\\acolyte1.mdx",
+    "cache": "ef9fe6218d7df457f354294ccfdce2be3d3158f2",
+    "bytes": 76410,
+    "originalCompressedBytes": 37453,
+    "sha256": "fc43e59cd77f43565ce61668222315d65bd7b432fafa2b6780c8e4a849f4fc7c",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "war3mapImported\\Acolyte1_portrait.mdx",
+    "key": "war3mapimported\\acolyte1_portrait.mdx",
+    "cache": "3472d4c02ab783175751286a1bac60bb5fe77b42",
+    "bytes": 26072,
+    "originalCompressedBytes": 12937,
+    "sha256": "53be410930b1f1a6de7f5e35e7554bfa2341bd88475ec0a9963047ed800e0be9",
+    "why": "portrait of war3mapimported\\acolyte1.mdx"
+  },
+  {
+    "name": "war3mapImported\\ATCAdvancedRepair.blp",
+    "key": "war3mapimported\\atcadvancedrepair.blp",
+    "cache": "53ba1e4724c56034459e8f05d450974815fd5d71",
+    "bytes": 4904,
+    "originalCompressedBytes": 4805,
+    "sha256": "df1e1324e70fd10856bff42063af6cad79433c80258c3461128d5af2d4dd3019",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\ATCBloodOffering.blp",
+    "key": "war3mapimported\\atcbloodoffering.blp",
+    "cache": "6b25300c636a035282327c4b728a993751e6c2f8",
+    "bytes": 3789,
+    "originalCompressedBytes": 3695,
+    "sha256": "e44afc2f6a0a348ebbf0358c0865e4613adaf52584992723329f7e9dda086fce",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\ATCImprovedRepair.blp",
+    "key": "war3mapimported\\atcimprovedrepair.blp",
+    "cache": "2ed7ba8e683612204253a08188f62b3e86254954",
+    "bytes": 4818,
+    "originalCompressedBytes": 4699,
+    "sha256": "ebd491636e61468f911062070fefa3da5c01e86eca627e92501a71d2c5832264",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\Birod.mdx",
+    "key": "war3mapimported\\birod.mdx",
+    "cache": "79daa48be19495a56a5076039dee107dd48854ea",
+    "bytes": 88285,
+    "originalCompressedBytes": 23010,
+    "sha256": "18973ae4dc4c054b236a63cff823a47461fa2482938163abc5fbdb70758eb356",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\Blood Explosion.mdx",
+    "key": "war3mapimported\\blood explosion.mdx",
+    "cache": "0a1aa7296243641b8e41d0b30a8f4d98e9c1387f",
+    "bytes": 10142,
+    "originalCompressedBytes": 3945,
+    "sha256": "8031af34d7d566c70ec142a55b36fea69da2f96772ac421beb4d5993eb9e7b22",
+    "why": "original script"
+  },
+  {
+    "name": "war3mapImported\\Blood LakeRed.mdx",
+    "key": "war3mapimported\\blood lakered.mdx",
+    "cache": "7484fb02d3ac3f4d860bb04d54066ad53fdb9aeb",
+    "bytes": 16842,
+    "originalCompressedBytes": 5835,
+    "sha256": "4989350b0b51243953a0ee9611ec759aaa4669acbef662988057df0afa274ccb",
+    "why": "original script"
+  },
+  {
+    "name": "war3mapImported\\Blood Missile.mdx",
+    "key": "war3mapimported\\blood missile.mdx",
+    "cache": "635c26cc2cb4acc8950edf5893a8505d6bbe9535",
+    "bytes": 7638,
+    "originalCompressedBytes": 1277,
+    "sha256": "8289391a70e86bd121bac153d788372fa440e38ac75bad199d0be98814389a09",
+    "why": "original script"
+  },
+  {
+    "name": "war3mapImported\\Blood Slam.mdx",
+    "key": "war3mapimported\\blood slam.mdx",
+    "cache": "1d3a8ca2529f113d728294d18bdd12c137da6d61",
+    "bytes": 8852,
+    "originalCompressedBytes": 2596,
+    "sha256": "d4f41c1eaa837aa327e47237006ed8b62b58dce801a4aa8d59190f484ea78585",
+    "why": "original script"
+  },
+  {
+    "name": "war3mapImported\\BTNBloodOffering.blp",
+    "key": "war3mapimported\\btnbloodoffering.blp",
+    "cache": "3aa7d92847eb2ecdd1a1137f211a6934a9513a28",
+    "bytes": 3868,
+    "originalCompressedBytes": 3748,
+    "sha256": "940f53c65d22baa1188a51f253e4239ca48b0321365282dec74ef309c8a57383",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\BTNBreatheFire.blp",
+    "key": "war3mapimported\\btnbreathefire.blp",
+    "cache": "0341a066c2959c64a31237a74eba8830e23ed43d",
+    "bytes": 5383,
+    "originalCompressedBytes": 5293,
+    "sha256": "0bcb4088de9db923d840be6f88e47caa6fdf0206a90355b1a350e459f052f623",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\BTNDragonWing.blp",
+    "key": "war3mapimported\\btndragonwing.blp",
+    "cache": "811d3eebd291cba923efb06af6c2c7a9ecba6fc0",
+    "bytes": 6300,
+    "originalCompressedBytes": 5402,
+    "sha256": "9c36577bcbed91cd000192633434b3c62b8e53df31ced43b340380bd0969f95b",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\cave_column_01.mdx",
+    "key": "war3mapimported\\cave_column_01.mdx",
+    "cache": "97f463eb6296b565634e211eb16dd8432eb770fa",
+    "bytes": 69364,
+    "originalCompressedBytes": 28959,
+    "sha256": "097c5dff91b70e331a0d3a06de676234ce3df9213967828c5e844327d4ca268b",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_column_02.mdx",
+    "key": "war3mapimported\\cave_column_02.mdx",
+    "cache": "c6629c5d143a2113ef8fe2f59cd3ee17861ea23c",
+    "bytes": 69364,
+    "originalCompressedBytes": 28985,
+    "sha256": "4ff7c176e6b176a7fe747bae0205e38873b6e546f4a0946ee4f589c1cea3aed3",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_column_03.mdx",
+    "key": "war3mapimported\\cave_column_03.mdx",
+    "cache": "adab3b77ad9894c2ca58efdf218a26befaba5453",
+    "bytes": 69364,
+    "originalCompressedBytes": 29055,
+    "sha256": "794c19f7afe12ccfdf80267355b881ca255bcf88976032a37112d387a880be1e",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_entry_01.mdx",
+    "key": "war3mapimported\\cave_entry_01.mdx",
+    "cache": "3970c8cb88a858fc5504db7b9e3af4155e9ed213",
+    "bytes": 319375,
+    "originalCompressedBytes": 119327,
+    "sha256": "1f9d8e69905cd8f4c804181c27439570d94774e389d291d07ddfcb67523f4ffb",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_floor_blank_01_shadow.mdx",
+    "key": "war3mapimported\\cave_floor_blank_01_shadow.mdx",
+    "cache": "c6ce92f60b0ba87f9b41393bea073e585a92de54",
+    "bytes": 1324,
+    "originalCompressedBytes": 313,
+    "sha256": "8f557dd81953792ce2b6e47583ae4b55989429d0c4a1b260bc0d2b924c984dd7",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_floor_mushrooms_14.mdx",
+    "key": "war3mapimported\\cave_floor_mushrooms_14.mdx",
+    "cache": "46cb8d09a824c09c030e32d58536f8a4c8852898",
+    "bytes": 1324,
+    "originalCompressedBytes": 368,
+    "sha256": "edc78da3c0ec6e07af320645bfae3a521ad74c3e04baf089b6cec12ad89c338d",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_path_corner_01.mdx",
+    "key": "war3mapimported\\cave_path_corner_01.mdx",
+    "cache": "5eb24c2f38bbec38f84bf42b5d505025dff40219",
+    "bytes": 1324,
+    "originalCompressedBytes": 316,
+    "sha256": "10a603dcb0bff0b3b29888f19bc2b973b86808a88c453db035365ed0dc25d5f0",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_path_straight_01.mdx",
+    "key": "war3mapimported\\cave_path_straight_01.mdx",
+    "cache": "f2126a04f1564328fe3197a03c74f6c42be86837",
+    "bytes": 1324,
+    "originalCompressedBytes": 318,
+    "sha256": "20b485becd70f5861ecf47c50fc9c1e1b64712fd13bfbc7d03caf5ae11c696f4",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_quarter_concave_01.mdx",
+    "key": "war3mapimported\\cave_quarter_concave_01.mdx",
+    "cache": "8aacbb0803b5c63645ed8a2992fb4a7af91debd0",
+    "bytes": 1756,
+    "originalCompressedBytes": 464,
+    "sha256": "9643a720afd877bfa60c0a98c6e96ab495402581e2543f364ac4e07a158fd8f1",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_quarter_diagonal_01.mdx",
+    "key": "war3mapimported\\cave_quarter_diagonal_01.mdx",
+    "cache": "d6321a78646291d406533f73b33c27a50ccf0bb9",
+    "bytes": 1324,
+    "originalCompressedBytes": 337,
+    "sha256": "66f60afe6f55b3439c28c06e76d27f78fe474b0a171316192e54cf8c8675a183",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_quarter_stair_01.mdx",
+    "key": "war3mapimported\\cave_quarter_stair_01.mdx",
+    "cache": "aa4eb2233c8c2d1350f7ad212ff77c04cb50fa01",
+    "bytes": 15709,
+    "originalCompressedBytes": 6016,
+    "sha256": "d2540928222617b0ae1747f7e6d21032a56a28518ebe2943223c09d5ec432d34",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_quarter_straight_01.mdx",
+    "key": "war3mapimported\\cave_quarter_straight_01.mdx",
+    "cache": "17bec747de13364150b0bbd09575d0f62fcce79f",
+    "bytes": 1324,
+    "originalCompressedBytes": 325,
+    "sha256": "dd1082a2e39beb6bbcc6b38f7d2bd3e1f10c0d46fcfdf8c63d5cbe81a0e03585",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_rock_01.mdx",
+    "key": "war3mapimported\\cave_rock_01.mdx",
+    "cache": "777d8962cc13494fa845d9c3b2b4eeb001bee652",
+    "bytes": 4330,
+    "originalCompressedBytes": 1524,
+    "sha256": "674baeb155d698ecb0e45e47ad05742f43117ea95bb73d48045ee62a7c12e5f5",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_rock_02.mdx",
+    "key": "war3mapimported\\cave_rock_02.mdx",
+    "cache": "c347664238c3ea0e95c7ece8bf37c91a1bd66e5d",
+    "bytes": 4750,
+    "originalCompressedBytes": 1748,
+    "sha256": "492c1760cb906135870a358b0996690b26c2fb98bed9bda0c128b149526cfc41",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_rock_03.mdx",
+    "key": "war3mapimported\\cave_rock_03.mdx",
+    "cache": "a4e9831c44691d1867476f5dbc3bb546e62321c6",
+    "bytes": 6535,
+    "originalCompressedBytes": 2354,
+    "sha256": "1a131915eb968bdc063e318c680615f17f95fc7c56f3e828c69d36c4e49652e7",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_rock_04.mdx",
+    "key": "war3mapimported\\cave_rock_04.mdx",
+    "cache": "93bd7e89479a98c9d89bb042ce9e8c32617a8cc6",
+    "bytes": 4645,
+    "originalCompressedBytes": 1715,
+    "sha256": "71cb6f43a7e2717bad668ce5931bfd1876507dd17516c044622353a06ba35929",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_rubble_01.mdx",
+    "key": "war3mapimported\\cave_rubble_01.mdx",
+    "cache": "9765a34748c61b2dbaea9f8d7bdd99d8bd679c3d",
+    "bytes": 1324,
+    "originalCompressedBytes": 326,
+    "sha256": "0009225dbcdc03674c2a42705099f4d01dfb4880647c99830e601d98d2fae787",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_rubble_07.mdx",
+    "key": "war3mapimported\\cave_rubble_07.mdx",
+    "cache": "79adf1229189761d7c52e5f1139a526fb9b075f4",
+    "bytes": 8802,
+    "originalCompressedBytes": 3120,
+    "sha256": "61a141741b04d7a9529176ce434b6f7b84ea6e260f9df0dab571ef0f6b7c652e",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_stalagmite_01.mdx",
+    "key": "war3mapimported\\cave_stalagmite_01.mdx",
+    "cache": "03fb82dde200e03d6ee0fb4082093bbf47520e9e",
+    "bytes": 42496,
+    "originalCompressedBytes": 17375,
+    "sha256": "f74326a46eb578e7450b89e74c692b571f079f999d31fc8f217bdaf3300cb857",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_stalagmite_02.mdx",
+    "key": "war3mapimported\\cave_stalagmite_02.mdx",
+    "cache": "ec65fb7ed013245ba0d21e0eda6fbe14349a04d0",
+    "bytes": 44308,
+    "originalCompressedBytes": 17421,
+    "sha256": "5e6f4ab438e5e3d08bef752037a7469fcda842b073d5dcb8a955eb3c671a1049",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_stalagmite_05.mdx",
+    "key": "war3mapimported\\cave_stalagmite_05.mdx",
+    "cache": "f23b65eba9ed88982a42b6b5acc567875936a521",
+    "bytes": 15091,
+    "originalCompressedBytes": 5264,
+    "sha256": "09308ff76145bf4363b60add9917117badedb74738676c1c178171ad62bee3a7",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_trim_straight_01.mdx",
+    "key": "war3mapimported\\cave_trim_straight_01.mdx",
+    "cache": "22b7d0d37c91af5d25140ca2a1e41c7e456f8bd9",
+    "bytes": 12268,
+    "originalCompressedBytes": 4410,
+    "sha256": "a5cd5731cd2913250ec84e09650c811c2c6e3facfa26b5f198dd6988d848367f",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_trim_straight_04.mdx",
+    "key": "war3mapimported\\cave_trim_straight_04.mdx",
+    "cache": "c241f1ab3972492d2bc4525d64df05d2dd417264",
+    "bytes": 12235,
+    "originalCompressedBytes": 4390,
+    "sha256": "2f4743bf43d5da36b72bd8897202c0cfd3180bc2ccbaed371091ec8f8c847339",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_vent_01.mdx",
+    "key": "war3mapimported\\cave_vent_01.mdx",
+    "cache": "ef048def251022b9e463e1b382aada2b4b243bed",
+    "bytes": 33517,
+    "originalCompressedBytes": 12767,
+    "sha256": "bdb29e320ca9af1816ae90ff3334a414cbfd08aba83e7c00c6d63fee467eced3",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_wall_concave_01.mdx",
+    "key": "war3mapimported\\cave_wall_concave_01.mdx",
+    "cache": "6bdbb71cc7436219bf1d6470cca78eefc3b875da",
+    "bytes": 1756,
+    "originalCompressedBytes": 481,
+    "sha256": "5d757c05a0ec155a6469e9330b18835c72efdd7b8f982701a3c754b0378de0b9",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_wall_convex_01.mdx",
+    "key": "war3mapimported\\cave_wall_convex_01.mdx",
+    "cache": "ef269c44d17d2250f61e318541e819a148478d27",
+    "bytes": 1324,
+    "originalCompressedBytes": 331,
+    "sha256": "e8699f6ec87dcd85f16bef236140f9185219038f321cd9d346117e891ab92f95",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_wall_diagonal_01.mdx",
+    "key": "war3mapimported\\cave_wall_diagonal_01.mdx",
+    "cache": "27c418caf9c9ec889018eaccfd46f34bef85ef35",
+    "bytes": 6604,
+    "originalCompressedBytes": 2161,
+    "sha256": "9cf92b82d0f6a99b0770fed32ab4ae082d802c2c563d6d1aa8abf9716eac6f49",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\cave_wall_straight_01.mdx",
+    "key": "war3mapimported\\cave_wall_straight_01.mdx",
+    "cache": "4e22942d8c6d228c38577f2a922ca63f80a3df9b",
+    "bytes": 6571,
+    "originalCompressedBytes": 2014,
+    "sha256": "a826efb4d80725105a6069da82d08d9b9df82e5e2c5484074741a25f6489855f",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\Clouds 2.mdx",
+    "key": "war3mapimported\\clouds 2.mdx",
+    "cache": "2648673c667aa7c488760374799776c96f5ca3e8",
+    "bytes": 2262,
+    "originalCompressedBytes": 521,
+    "sha256": "f2e00e7efa2d90ad39a2473e8cc7ddff5637df4c6d457d1c28dad3a7510c5945",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\Crack Shockwave.mdx",
+    "key": "war3mapimported\\crack shockwave.mdx",
+    "cache": "8a4ab2e2a0ec2a27a820c0fac1617213b57a27fe",
+    "bytes": 6545,
+    "originalCompressedBytes": 1132,
+    "sha256": "356608b6a2d27d5897d6041e39299c56ad364858424515a5f446e3164761bd36",
+    "why": "original script"
+  },
+  {
+    "name": "war3mapImported\\Death Nova.mdx",
+    "key": "war3mapimported\\death nova.mdx",
+    "cache": "6990afe3c6ffa8e50998bf8240a731f6af487a16",
+    "bytes": 264324,
+    "originalCompressedBytes": 117797,
+    "sha256": "291384c9747218bdf4b8e73fb1b9e14dffc2b5881ca7b37b6f1375ed20fe9f55",
+    "why": "original script"
+  },
+  {
+    "name": "war3mapImported\\DEMONM~1.MDX",
+    "key": "war3mapimported\\demonm~1.mdx",
+    "cache": "12624acdd7457f08af4c583307bbcdb3961c2f8b",
+    "bytes": 67895,
+    "originalCompressedBytes": 31241,
+    "sha256": "a6c690207419753ff51859ccda6e9cd74e0e0407e6785f56a9bb11eb6a62d05e",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "war3mapImported\\fb_whisp_fire_8x8.blp",
+    "key": "war3mapimported\\fb_whisp_fire_8x8.blp",
+    "cache": "8f4f0259d28490fd00ec6e6da1e6f8087067f684",
+    "bytes": 190504,
+    "originalCompressedBytes": 162117,
+    "sha256": "13d7743597cf284e1c912ab421f0f7c841c7c0851b15f71f112da2169a322668",
+    "why": "texture in Firebolt Classic.mdx"
+  },
+  {
+    "name": "war3mapImported\\flareshot_tail.blp",
+    "key": "war3mapimported\\flareshot_tail.blp",
+    "cache": "27ce7b78db662ee06b90c50d927d658fb4f4aad2",
+    "bytes": 53308,
+    "originalCompressedBytes": 51341,
+    "sha256": "99cda1711f12beb2b2a45e63c9f4db9b6c2645f9539aa5a9b7cef8a73207fb34",
+    "why": "texture in Firebolt Classic.mdx"
+  },
+  {
+    "name": "war3mapImported\\flaresimple_bw.blp",
+    "key": "war3mapimported\\flaresimple_bw.blp",
+    "cache": "565562caaaa9d93a2fcf9270b308695ca8547c39",
+    "bytes": 27149,
+    "originalCompressedBytes": 25665,
+    "sha256": "74b76a6623cc6183ef0a2038b8db2066d89ffb7ff2b586f67af3a5e001eb948c",
+    "why": "texture in Firebolt Classic.mdx"
+  },
+  {
+    "name": "war3mapImported\\HeroPitLord1.mdx",
+    "key": "war3mapimported\\heropitlord1.mdx",
+    "cache": "fe8e45c55e760a57421fbc68090d196f3230c896",
+    "bytes": 448186,
+    "originalCompressedBytes": 235381,
+    "sha256": "338c05d6c25c39d04eb99bb88f8fb377675e906f571f5bd143838789aacfd979",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "war3mapImported\\HeroPitlord1_Portrait.mdx",
+    "key": "war3mapimported\\heropitlord1_portrait.mdx",
+    "cache": "cf67e8a42f98078b96164cabb55b6500ec286a81",
+    "bytes": 81994,
+    "originalCompressedBytes": 39847,
+    "sha256": "40d907fc37809d8b020622990e1f2461a26eae65e5b14fe216c8dad52d5b61d9",
+    "why": "portrait of war3mapimported\\heropitlord1.mdx"
+  },
+  {
+    "name": "war3mapImported\\largesmoke1.blp",
+    "key": "war3mapimported\\largesmoke1.blp",
+    "cache": "9accd4aa45a15fea82fcd210ea484ce5bef2e260",
+    "bytes": 19566,
+    "originalCompressedBytes": 17879,
+    "sha256": "c32c681251f2624ed58d4f969adb18bb947a495d5a5bff7b50a0186dbb52fc1d",
+    "why": "texture in Firebolt Classic.mdx"
+  },
+  {
+    "name": "war3mapImported\\lava (1).blp",
+    "key": "war3mapimported\\lava (1).blp",
+    "cache": "fe012c58d57de064873580f2cfaf8b89f2b3639b",
+    "bytes": 68529,
+    "originalCompressedBytes": 67032,
+    "sha256": "dfc47ef1b03d0520d46823e8052cd31f33280c92c9296bf2ea0c410f41cd8c81",
+    "why": "texture in war3mapImported\\lava.mdx"
+  },
+  {
+    "name": "war3mapImported\\lava (2).blp",
+    "key": "war3mapimported\\lava (2).blp",
+    "cache": "fbcdf42e70bfd6587c3fbcecf29980a1bcb2e292",
+    "bytes": 159990,
+    "originalCompressedBytes": 126178,
+    "sha256": "3fdd30a766aa5e33cdd30472d0700a799cf1d29f182fa4d1cd2baded8ae2b91c",
+    "why": "texture in war3mapImported\\lava.mdx"
+  },
+  {
+    "name": "war3mapImported\\lava (3).blp",
+    "key": "war3mapimported\\lava (3).blp",
+    "cache": "66e4495240355d21881b8653887cdf46809dd097",
+    "bytes": 19060,
+    "originalCompressedBytes": 16769,
+    "sha256": "477a6f50dab9161dc976d6b8855ad7b79ca3e20677afc1c8c68412a4119861c3",
+    "why": "texture in war3mapImported\\lava.mdx"
+  },
+  {
+    "name": "war3mapImported\\lava.mdx",
+    "key": "war3mapimported\\lava.mdx",
+    "cache": "e8c85b5d340af83d42a8633486482a600d97dc08",
+    "bytes": 11276,
+    "originalCompressedBytes": 3566,
+    "sha256": "f0184e52819139176e14ac0df8efad352ed49bb7591bc347e4ed0af46b45fe0e",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\moon_bw.blp",
+    "key": "war3mapimported\\moon_bw.blp",
+    "cache": "04be419f4cf845f27b4186f73b152b4723ba99a9",
+    "bytes": 15768,
+    "originalCompressedBytes": 13232,
+    "sha256": "f08d18b1738ba0bfa26b49071b611ea679552931e5a0ab486bd2879f20f99f0c",
+    "why": "texture in Firebolt Classic.mdx"
+  },
+  {
+    "name": "war3mapImported\\MoonWellCasterArt1.mdx",
+    "key": "war3mapimported\\moonwellcasterart1.mdx",
+    "cache": "b616d48b460a3cd5fb77b5c4feb6b0b8522dc5d4",
+    "bytes": 1483,
+    "originalCompressedBytes": 332,
+    "sha256": "fa181ec250bfc7e1e53de0e71c5b30d9b15e9a3e4c6e48648e9c2f45e31c0d2f",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\PAS_BloodCurseV2.blp",
+    "key": "war3mapimported\\pas_bloodcursev2.blp",
+    "cache": "0c8e3e3183541f1823481794c0e21eec120852ba",
+    "bytes": 10102,
+    "originalCompressedBytes": 8276,
+    "sha256": "33421551acd0f84ced1ae1779a4c5e5f3f7317ab61ac7b3eacd631472dbe7ff5",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\PAS_CR_GoldP.blp",
+    "key": "war3mapimported\\pas_cr_goldp.blp",
+    "cache": "1102599e82aafd69ad2bfa6aafaf107a36445b26",
+    "bytes": 3550,
+    "originalCompressedBytes": 3460,
+    "sha256": "b0403e4d26f22f8c6e9a90f9ad3ec7a183e588c7f4b8f34b93139ebec7661c75",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASAcolyte_Undead.blp",
+    "key": "war3mapimported\\pasacolyte_undead.blp",
+    "cache": "006a6a5972840c28b8472bfee363cc7b57fc30de",
+    "bytes": 2356,
+    "originalCompressedBytes": 2154,
+    "sha256": "104bc66ebd2cd160d5fa5086a2f8b7b42ad6f86a712e82fd9d6ec160a233e885",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "war3mapImported\\PASAlsNLold.blp",
+    "key": "war3mapimported\\pasalsnlold.blp",
+    "cache": "9140197c979cd359525adc7cec66bc5fb6728063",
+    "bytes": 3722,
+    "originalCompressedBytes": 3608,
+    "sha256": "233f141995db4b487b36344f3e6ea19f94b3feb7f6051e50350a2ce555523901",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\PASChampionTal13.1.blp",
+    "key": "war3mapimported\\paschampiontal13.1.blp",
+    "cache": "d4c0570c4447215f50bbcc3e5258a604d92788a8",
+    "bytes": 5357,
+    "originalCompressedBytes": 5258,
+    "sha256": "2ead5359bb9d254e5804ea9ff78b797f5998077929e20c2a465059864d5f8e94",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\PASCR_Food_Pack.blp",
+    "key": "war3mapimported\\pascr_food_pack.blp",
+    "cache": "24c787a1ed8c082f7fe56cd22d9bcb7caaebbbc2",
+    "bytes": 8628,
+    "originalCompressedBytes": 6701,
+    "sha256": "8c979da059c1b30d77573ea8f5f532f77b8c002fa028d0107a15309cadebdbdc",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASdqdwqdq.blp",
+    "key": "war3mapimported\\pasdqdwqdq.blp",
+    "cache": "5239409538d6f74c238766b7379ffb40fd62c09f",
+    "bytes": 6300,
+    "originalCompressedBytes": 3586,
+    "sha256": "e4bba66f614b12b867f6557442984c897e6a7ad7f476d600e466ba0b84ff9edb",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\PASEmpty_Agi.blp",
+    "key": "war3mapimported\\pasempty_agi.blp",
+    "cache": "6e73c31f59b8d30da0d9df37371fd5e2637c37a4",
+    "bytes": 3899,
+    "originalCompressedBytes": 3795,
+    "sha256": "710fd6e5e804a0b22e87d608fe9da5cbce51cf1bf012fde9ca909df2788c04a8",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASEmpty_INT.blp",
+    "key": "war3mapimported\\pasempty_int.blp",
+    "cache": "604e1190e53e7b3fc53a523ed7d669f2b53c3764",
+    "bytes": 6300,
+    "originalCompressedBytes": 3104,
+    "sha256": "4aaaf52aa2df1865f4cd88fb523be51b17ed8a63f125f1e70d9c943ce524a6c5",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASEmpty_STR.blp",
+    "key": "war3mapimported\\pasempty_str.blp",
+    "cache": "7d28e41804ec0e6127906ade04a64fc63f838a09",
+    "bytes": 6300,
+    "originalCompressedBytes": 4010,
+    "sha256": "a675cff0f65887ffbb11bc61369ba664877baaf9f37e44d9a53e3acf1db95d74",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASfewfwfw.blp",
+    "key": "war3mapimported\\pasfewfwfw.blp",
+    "cache": "9da1a1be8b3494c3eca40e50e0db84d28032d6a3",
+    "bytes": 3405,
+    "originalCompressedBytes": 3299,
+    "sha256": "51138f91cebc6336648077fe48fec4ce5faba524a994910dd76cb5054c4c4311",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "war3mapImported\\PASFireShield.blp",
+    "key": "war3mapimported\\pasfireshield.blp",
+    "cache": "1d2047e810331249470f10ad22b8b771c30cbb89",
+    "bytes": 4375,
+    "originalCompressedBytes": 4273,
+    "sha256": "2f6cc686616c5f180da5d59c05f4db0c05a80fead354390a0fdd58eeae6aadda",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASfwefqfqw.blp",
+    "key": "war3mapimported\\pasfwefqfqw.blp",
+    "cache": "2bf4b1dac13fa78b6623a997232992cf54047ffc",
+    "bytes": 6300,
+    "originalCompressedBytes": 3323,
+    "sha256": "8de69f7c270295c8ef34db2b286d53d44508804f6898cd47dae8543f001a4892",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\PASGoldPile.blp",
+    "key": "war3mapimported\\pasgoldpile.blp",
+    "cache": "c7d7caf579bbb67e31ca2171bd382aefbc492dd5",
+    "bytes": 6300,
+    "originalCompressedBytes": 4887,
+    "sha256": "9135c16b88435d4a6466e6801f1bacd332f1c53105d96b25adc87b07cd613f48",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASHailOfBlades3.blp",
+    "key": "war3mapimported\\pashailofblades3.blp",
+    "cache": "961ee16e050890ea3ab7210b7b66777f4eb0c0d2",
+    "bytes": 6300,
+    "originalCompressedBytes": 3930,
+    "sha256": "70ffc15bf6104f6ce92afcf70802b648b3d78b23e56bf5a017c81f4f5580f5bd",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASHumanAdvBuild.blp",
+    "key": "war3mapimported\\pashumanadvbuild.blp",
+    "cache": "e68861e2c21a64212eb411695e1da73bb2e0f76a",
+    "bytes": 3296,
+    "originalCompressedBytes": 3114,
+    "sha256": "3f5d2c788ae0ebe8e13497d6e512e946523f02f4b09bdddda16b892642ccad5f",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\PAShz2.blp",
+    "key": "war3mapimported\\pashz2.blp",
+    "cache": "ffcf77e37eacf703acc748a69c3cd48a0c1b1448",
+    "bytes": 4553,
+    "originalCompressedBytes": 4442,
+    "sha256": "77f035dea00bf17791acc5ce3cbfaa0d15db477ec6f8ba880e3e36ba69ba7deb",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASIceShield.blp",
+    "key": "war3mapimported\\pasiceshield.blp",
+    "cache": "4417addb4ea8ccdb5c5ee4a9d4b28e91f44a1e1a",
+    "bytes": 4437,
+    "originalCompressedBytes": 4351,
+    "sha256": "3018b3c298219f9f1ec85465e5c3dab295b87ae8d986a1a7bccd7409c014b9e6",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASKAPG_Wood_Spike.blp",
+    "key": "war3mapimported\\paskapg_wood_spike.blp",
+    "cache": "7047b15236139bab37fbbf32bf7e401934627f98",
+    "bytes": 6964,
+    "originalCompressedBytes": 4670,
+    "sha256": "514a58fb82149ff85415b7896abadfe3458f8690db956dd11d568b7f6949022a",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASKoboldMelee1.blp",
+    "key": "war3mapimported\\paskoboldmelee1.blp",
+    "cache": "2cde93c61946e225acd52c5af4d0aa698fe70b71",
+    "bytes": 6300,
+    "originalCompressedBytes": 3865,
+    "sha256": "0acc831dbaea518bd4e12d5164627ac964fb5a6cd9e1df1366efe7f184e0838d",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\PASLight & Darkness.blp",
+    "key": "war3mapimported\\paslight & darkness.blp",
+    "cache": "269186ec45600e3f0d654820ab60a3ac8ca3d8dc",
+    "bytes": 6300,
+    "originalCompressedBytes": 4272,
+    "sha256": "9b0325c3f8d088f48c38fb902a8a8ba7bf32767da39dd5b46ba10349b154b64f",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\PASNerubianShield.blp",
+    "key": "war3mapimported\\pasnerubianshield.blp",
+    "cache": "846df4cc417076b9e6fb7f2a0b5eabdf7b79e6cb",
+    "bytes": 4149,
+    "originalCompressedBytes": 4060,
+    "sha256": "7a7136449cb0c8f29155fe16a5930fcebc4955bf53699bff478e28e16242e73e",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASOgrePassive.blp",
+    "key": "war3mapimported\\pasogrepassive.blp",
+    "cache": "29d9a0a6fca6768bb7ddb73a5fc72aeda97b2078",
+    "bytes": 4626,
+    "originalCompressedBytes": 4540,
+    "sha256": "333668516ee60fb178d1ac2adfc69fbb93a6e5992d9c46bb46bb85b6869ed73b",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASPurpleAttack.blp",
+    "key": "war3mapimported\\paspurpleattack.blp",
+    "cache": "7ad74bd4faa3da78918f2c664e837f2b0d3b27fe",
+    "bytes": 6300,
+    "originalCompressedBytes": 4328,
+    "sha256": "48f73cfb72ef32533c3f2859babaaabb46010ef9a98cfddc55150ace7fa942cf",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASPurpleAttackGround.blp",
+    "key": "war3mapimported\\paspurpleattackground.blp",
+    "cache": "ed1bc7a76dc6e84259dafb807ca9dcc735880b89",
+    "bytes": 6300,
+    "originalCompressedBytes": 3892,
+    "sha256": "f85cacdb7d7994ed850fbb9f02381fe0fd3a5b838cf23d82b4267e7e88f3390b",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASPurpleCancel.blp",
+    "key": "war3mapimported\\paspurplecancel.blp",
+    "cache": "123f8d9bef128cfd02b3d2cbbc05e58bb409f4ec",
+    "bytes": 6300,
+    "originalCompressedBytes": 4350,
+    "sha256": "82c70a2acd9590b9ec9adfaf86344aa6a54bcf51807c926abd2d4e9dd56b5b83",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASPurpleHoldPosition.blp",
+    "key": "war3mapimported\\paspurpleholdposition.blp",
+    "cache": "668f123b1ceaed1edf1606463c3a061036b67990",
+    "bytes": 6300,
+    "originalCompressedBytes": 4417,
+    "sha256": "6eb7f3971e2cfc4182ca540e11813b1da8e7782b106f6211e226b52d89b39b1c",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASPurpleMove.blp",
+    "key": "war3mapimported\\paspurplemove.blp",
+    "cache": "871dc32ed2471d1a3f42f451cfeb5b8b145fd740",
+    "bytes": 6300,
+    "originalCompressedBytes": 3966,
+    "sha256": "d244ce1f320ad5a6e2b2d955903519827e49db6b04c5492c9906c63c203ccf69",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASPurplePatrol.blp",
+    "key": "war3mapimported\\paspurplepatrol.blp",
+    "cache": "c7c74d1530c7598f256d5aad3e5ac720428e50aa",
+    "bytes": 6300,
+    "originalCompressedBytes": 4375,
+    "sha256": "38d561e65eeeaa39f97a02f5618b5f936b8d65a6135067323a4356e2dfe50cbc",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASPurpleStop.blp",
+    "key": "war3mapimported\\paspurplestop.blp",
+    "cache": "33bd806b347f9010ab83fe5f3226f6bb46f85894",
+    "bytes": 6300,
+    "originalCompressedBytes": 4274,
+    "sha256": "01754ff8e19734d636da4c5a91954d2ee77fddaa7932269956c8be299228d642",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASReturnResources2.blp",
+    "key": "war3mapimported\\pasreturnresources2.blp",
+    "cache": "8771e1749b822d6e78af91b2d3d15639efa89ad9",
+    "bytes": 15282,
+    "originalCompressedBytes": 13307,
+    "sha256": "9a12f82eac02f9472e9b8f80566d814aedaed663f132d12db913e3055aa8d3c3",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\PASsad.blp",
+    "key": "war3mapimported\\passad.blp",
+    "cache": "8a097f6f53b4b84e1f1612a42a95ee1c6492043c",
+    "bytes": 5071,
+    "originalCompressedBytes": 4962,
+    "sha256": "10e26ddb7ff8905f7810e34be101a3e2b3ab0c3a78d48dcd320c4d1ab724bcca",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASScourgeAdvBuild.blp",
+    "key": "war3mapimported\\passcourgeadvbuild.blp",
+    "cache": "13c2a902a7d5aa55e46c4569a8d4ffb480302356",
+    "bytes": 3937,
+    "originalCompressedBytes": 3840,
+    "sha256": "de159f3221829aec68b8f41cdeb8c0c2ff5b7279728b50184551e3e31de7bfd1",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\PASShadowChain.blp",
+    "key": "war3mapimported\\passhadowchain.blp",
+    "cache": "090512b22d19c7c43abd1f9117d8b4df698a9c1f",
+    "bytes": 3359,
+    "originalCompressedBytes": 3260,
+    "sha256": "89d77457b581c9249651ecafb5559e150fe7f0f1acb735c936a004d73f817895",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASshield.blp",
+    "key": "war3mapimported\\passhield.blp",
+    "cache": "ce74fa96ea0dfafbef44d844751f4c6759e0b78e",
+    "bytes": 4475,
+    "originalCompressedBytes": 4369,
+    "sha256": "3ba3f442ff868d946d87b0ffec496ae8b406f904f8bbbb6c6dcc47fcbd4bc9f0",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASshieldnormal.blp",
+    "key": "war3mapimported\\passhieldnormal.blp",
+    "cache": "38ecb9ed5c84635c10b024b94610bd37a18f50e9",
+    "bytes": 6300,
+    "originalCompressedBytes": 3340,
+    "sha256": "2ee002363b39996579808b2d1353eece5aac57b37f7df27989e8487a010ba005",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASSpell_1.blp",
+    "key": "war3mapimported\\passpell_1.blp",
+    "cache": "dfbea586113de0ba05604a117ce6a15f828266c0",
+    "bytes": 6300,
+    "originalCompressedBytes": 4130,
+    "sha256": "d7a520c0b463e901726f0e5e28340fbf82621ed809bfc51ea7ecb6bf5b3926de",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASSpell_3.blp",
+    "key": "war3mapimported\\passpell_3.blp",
+    "cache": "9d7ebc5861e6ecb58be3db83cb23c73fd899070c",
+    "bytes": 6300,
+    "originalCompressedBytes": 4486,
+    "sha256": "2a574e6714075e3de9992dc28be7fc84cb64faec15f55aab0a48832461b47e74",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASUndead (6).blp",
+    "key": "war3mapimported\\pasundead (6).blp",
+    "cache": "9e572997d8e87ec307b63ad13ccd578e36dafae6",
+    "bytes": 7876,
+    "originalCompressedBytes": 6597,
+    "sha256": "ffec8c46e405c37c148aac7affdb89d1ff6a57a68eed32609e8c41e7469f5882",
+    "why": "metadata abilities.json"
+  },
+  {
+    "name": "war3mapImported\\PASVampireAltar.blp",
+    "key": "war3mapimported\\pasvampirealtar.blp",
+    "cache": "8ec952c8b4664c2321739252c35550a3c4503f27",
+    "bytes": 4187,
+    "originalCompressedBytes": 4074,
+    "sha256": "fe68bf15fb31f81737b9001b789b04ea0106999925194864acfa202c2dfc6fcf",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "war3mapImported\\PASVampireBarracks.blp",
+    "key": "war3mapimported\\pasvampirebarracks.blp",
+    "cache": "3f4911ff240fb16bc9d9579ba768d9128a6341e2",
+    "bytes": 4114,
+    "originalCompressedBytes": 3903,
+    "sha256": "6b2e4bb0fbca2a95121760799a7d56c42df269f991172a9a66bc1c18aabb0654",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "war3mapImported\\PASVampirePool.blp",
+    "key": "war3mapimported\\pasvampirepool.blp",
+    "cache": "473b59a8161b255016e20d1316e5e95738b0ed35",
+    "bytes": 3694,
+    "originalCompressedBytes": 3581,
+    "sha256": "a5f104331e579c6493af4cec0e3e8dac89b935fe6e8f555ce2d1ee3f4f92bea1",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "war3mapImported\\PASVampireTown1.blp",
+    "key": "war3mapimported\\pasvampiretown1.blp",
+    "cache": "a827afa04c7f4dddaaeb4f9dffd717d6a6992f3b",
+    "bytes": 4089,
+    "originalCompressedBytes": 3951,
+    "sha256": "d66c0468e40bbd4abf438b6b156fef94b1986dbbc1529ea65307cdf4d800b5c6",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "war3mapImported\\PASVampireTown2.blp",
+    "key": "war3mapimported\\pasvampiretown2.blp",
+    "cache": "d28f07fdc042de8a662d59b8b2cb8704549400ed",
+    "bytes": 4575,
+    "originalCompressedBytes": 4470,
+    "sha256": "e54cc1ed5576d837945d9f1320254af182a1c9e902ae0e3eb8db679e1ad0eb6e",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "war3mapImported\\PASVampireTown3.blp",
+    "key": "war3mapimported\\pasvampiretown3.blp",
+    "cache": "e98809bb3d714293586671007e93d59659c29609",
+    "bytes": 4036,
+    "originalCompressedBytes": 3903,
+    "sha256": "e6bf99ad7665603eca450b8a87f528d65f465a597fe9d863fb7949fbc8b2af18",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "war3mapImported\\PASWood-Bash.blp",
+    "key": "war3mapimported\\paswood-bash.blp",
+    "cache": "5913d5dffa568c4b7de05991e098db1bc47e55c0",
+    "bytes": 6300,
+    "originalCompressedBytes": 4280,
+    "sha256": "c65df8af1bfcc78f8e8eb96bd03cc86121454ee59f8ef13dbfd7c283bf68756d",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\PASWoodThrust.blp",
+    "key": "war3mapimported\\paswoodthrust.blp",
+    "cache": "df6736978d61a39998e5abe1fa3a5cd9e915c2de",
+    "bytes": 3002,
+    "originalCompressedBytes": 2896,
+    "sha256": "1cf234ddc6a0a6c0602fc6723797a54a69cc8660ea891c74265d347700dbbb65",
+    "why": "text resource in war3mapSkin.txt"
+  },
+  {
+    "name": "war3mapImported\\smoke_bw.blp",
+    "key": "war3mapimported\\smoke_bw.blp",
+    "cache": "dc87aa580933d5947e754b3c50bacbe9b08b3ccb",
+    "bytes": 18095,
+    "originalCompressedBytes": 16687,
+    "sha256": "a1303cc23bf38fa22bda51d1961dfc376148054eeb084e32ac3b3a31e87f7b3a",
+    "why": "texture in Firebolt Classic.mdx"
+  },
+  {
+    "name": "war3mapImported\\sound01.mp3",
+    "key": "war3mapimported\\sound01.mp3",
+    "cache": "22ae77416e8d09bccec32dfebdae48468c437252",
+    "bytes": 3634154,
+    "originalCompressedBytes": 3578058,
+    "sha256": "b44374263b07b76cb254109551191ea48926d23273cce03eb07de095b22ee2cb",
+    "why": "metadata asset-optimizations.json"
+  },
+  {
+    "name": "war3mapImported\\Thick fog1.mdx",
+    "key": "war3mapimported\\thick fog1.mdx",
+    "cache": "b91bccb9f9a77e953a820c4475464f95705c8614",
+    "bytes": 20076,
+    "originalCompressedBytes": 7325,
+    "sha256": "86a8fe4ad0365b26b325f9a80963372b016ecdc71cbe7baf7ea4aa7dd168b125",
+    "why": "metadata doodad-definitions.json"
+  },
+  {
+    "name": "war3mapImported\\VampireAltar.mdx",
+    "key": "war3mapimported\\vampirealtar.mdx",
+    "cache": "0a3d44e9f32c0c7bf2c798d72171e882ba4c9657",
+    "bytes": 144692,
+    "originalCompressedBytes": 72204,
+    "sha256": "b9afe199d2c37328fe35d0d6e04153397d32548278cbc069c67cf19dcb6ba20a",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "war3mapImported\\VampireBarracks.mdx",
+    "key": "war3mapimported\\vampirebarracks.mdx",
+    "cache": "1982ec2f9083d05332223e78763cd05bd1bca8cc",
+    "bytes": 166907,
+    "originalCompressedBytes": 77894,
+    "sha256": "8b45cef6cd02182d440884bd79b9ae6c294c90760dbf6c1ba16ce8aa90f9ebbe",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "war3mapImported\\VampirePool.mdx",
+    "key": "war3mapimported\\vampirepool.mdx",
+    "cache": "58ffb8290e894d22bd91a7fd16ae06012b599ef1",
+    "bytes": 94723,
+    "originalCompressedBytes": 38466,
+    "sha256": "694a0880225660c8950100b3a3dd4d6842f68a2fbf0dea74ff9a0eaa0ca7f483",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "war3mapImported\\VampireTown.mdx",
+    "key": "war3mapimported\\vampiretown.mdx",
+    "cache": "f7336177d1803f13e2b9c1daa83b39769f1c4914",
+    "bytes": 593439,
+    "originalCompressedBytes": 216115,
+    "sha256": "a1a6740a64e11e0a2c0ccd28fcde502599d9aa93a10011d75a6a1592a2611486",
+    "why": "metadata units.json"
+  },
+  {
+    "name": "war3mapMap.blp",
+    "key": "war3mapmap.blp",
+    "cache": "e3f6d5c2ad70a35f349de52db0ee4a9350966f32",
+    "bytes": 7378,
+    "originalCompressedBytes": 5866,
+    "sha256": "c9bd737c79e0a8196ca384a8f8b47fa7a43053608935f7a5df26b1b462b2a3e0",
+    "why": "native map file"
+  },
+  {
+    "name": "war3mapMisc.txt",
+    "key": "war3mapmisc.txt",
+    "cache": "fe9d9e8b70a88c55bca1142848f811fc1d4834d0",
+    "bytes": 74,
+    "originalCompressedBytes": 82,
+    "sha256": "c6fe8e39d47349048162211799cfa2d2dbfe5820eb4199ec66c7761d2dd758da",
+    "why": "native map file"
+  },
+  {
+    "name": "war3mapPreview.tga",
+    "key": "war3mappreview.tga",
+    "cache": "2cad17d30d5c3439af57f72e9861028a8c29fc14",
+    "bytes": 262162,
+    "originalCompressedBytes": 76019,
+    "sha256": "295857fea1e9291bdc6c4090cce075c7a6ebb3715eb14938b9bd25bebfa2dd04",
+    "why": "native map file"
+  },
+  {
+    "name": "war3mapSkin.txt",
+    "key": "war3mapskin.txt",
+    "cache": "8071b814c160c7deb8cc955f73351cab296cdc14",
+    "bytes": 8067,
+    "originalCompressedBytes": 1513,
+    "sha256": "cea115b5e14e88291a6aeafe0aeefc08f48c1b69137a40783e565bbdde92dfe5",
+    "why": "native map file"
+  },
+  {
+    "name": "war3mapUnits.doo",
+    "key": "war3mapunits.doo",
+    "cache": "3b394ef62279dc377805a4e181174cf36404b2d9",
+    "bytes": 8341,
+    "originalCompressedBytes": 1474,
+    "sha256": "493031c9c10466c47e0712752d418351901233cb2cdbf40c4a09389325d1fee5",
+    "why": "native map file"
+  },
+  {
+    "name": "Yellow_Star.blp",
+    "key": "yellow_star.blp",
+    "cache": "338e68ed61a27a9ac8710db3233cbc3e1ced4a4a",
+    "bytes": 2098330,
+    "originalCompressedBytes": 760540,
+    "sha256": "588659c5932235c421b7fbe6a30a3894c72e2c361baf30b01672840aac031ec6",
+    "why": "metadata asset-optimizations.json"
+  }
+]

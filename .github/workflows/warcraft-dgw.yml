@@ -1,0 +1,79 @@
+name: Validate and publish DGW Gods and Empires — Full and Lite
+on:
+  push:
+    branches: [warcraft-dgw-expansion]
+    paths:
+      - 'warcraft-maps/dgw/**'
+      - '.github/workflows/warcraft-dgw.yml'
+permissions:
+  contents: write
+jobs:
+  recover:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.100'
+      - name: Build independent MPQ decoder and classic JASS checker
+        run: |
+          python -m pip install mpyq==0.2.5 lupa==2.8
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq bison flex
+          git clone --depth 1 --branch v9.25 https://github.com/ladislav-zezula/StormLib.git /tmp/storm-source
+          test "$(git -C /tmp/storm-source rev-parse HEAD)" = "28c9b4be3f23c6b3a5ff55cacac7dbe5b9cdc4fc"
+          cmake -S /tmp/storm-source -B /tmp/storm-build -DBUILD_SHARED_LIBS=ON -DSTORM_USE_BUNDLED_LIBRARIES=ON -DSTORM_SKIP_INSTALL=ON -DCMAKE_BUILD_TYPE=Release
+          cmake --build /tmp/storm-build --parallel 2
+          git clone https://github.com/lep/pjass.git /tmp/pjass
+          git -C /tmp/pjass checkout 654c3cf7731eb472518e6915e9d7672a72652165
+          make -C /tmp/pjass -j2
+          mkdir -p /tmp/classic-jass
+          curl -fsSL https://raw.githubusercontent.com/tdauth/wc3lib/4b221577921c20ab5fac410f0c1d555f64beeb56/src/jass/test/common.j -o /tmp/classic-jass/common.j
+          curl -fsSL https://raw.githubusercontent.com/tdauth/wc3lib/4b221577921c20ab5fac410f0c1d555f64beeb56/src/jass/test/Blizzard.j -o /tmp/classic-jass/Blizzard.j
+      - name: Reopen both published candidates and verify exact object data
+        run: |
+          root=warcraft-maps/dgw
+          dotnet run --project "$root/tools/Check" -- "$root" /tmp/dgw-lite | tee "$root/release/metadata-lite.txt"
+          dotnet run --project "$root/tools/Check" -- "$root" /tmp/dgw-full verification-full.json | tee "$root/release/metadata-full.txt"
+          python "$root/tools/verify_map.py" /tmp/storm-build/libstorm.so "$root" | tee "$root/release/native-lite.txt"
+          python "$root/tools/verify_map.py" /tmp/storm-build/libstorm.so "$root" verification-full.json | tee "$root/release/native-full.txt"
+          cmp /tmp/dgw-lite/runtime.j /tmp/dgw-full/runtime.j
+          /tmp/pjass/pjass /tmp/classic-jass/common.j /tmp/classic-jass/Blizzard.j /tmp/dgw-lite/editor-generated.j | tee "$root/release/pjass-classic.txt"
+          cp /tmp/dgw-lite/metadata-check.json "$root/release/metadata-check.json"
+      - name: Execute the actual expansion logic against controlled native mocks
+        run: |
+          root=warcraft-maps/dgw
+          dotnet run --project "$root/tools/Transpile" -- "$root" /tmp/classic-jass /tmp/dgw-runtime.lua
+          python "$root/tools/test_runtime.py" "$root" /tmp/dgw-runtime.lua | tee "$root/release/runtime-scenarios.txt"
+      - name: Prepare separate Full and Lite archives
+        run: |
+          python - <<'PYZIP'
+          from pathlib import Path
+          import zipfile,hashlib,shutil,json
+          root=Path('warcraft-maps/dgw');out=root/'release'
+          shutil.copy2(root/'README-RU.txt',out/'README-RU.txt')
+          for reportname in ['verification-full.json','verification.json']:
+              report=json.loads((out/reportname).read_text());file=out/report['file']
+              (out/(file.name+'.sha256')).write_text(hashlib.sha256(file.read_bytes()).hexdigest()+'  '+file.name+'\n')
+              with zipfile.ZipFile(file.with_suffix('.zip'),'w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
+                  for p in [file,out/reportname,out/(file.name+'.sha256'),out/'README-RU.txt']:
+                      z.write(p,p.name)
+                  for p in sorted(out.glob('*.txt')):
+                      if p.name!='README-RU.txt':z.write(p,p.name)
+                  for p in sorted((root/'source').iterdir()):z.write(p,'source/'+p.name)
+          PYZIP
+      - name: Publish playable map files and validation reports
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "dgw-gods-ffa-${GITHUB_SHA::8}" warcraft-maps/dgw/release/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'DGW: Боги и Империи — 16 рас, Full + Lite для Warcraft 1.26' --notes-file warcraft-maps/dgw/README-RU.txt

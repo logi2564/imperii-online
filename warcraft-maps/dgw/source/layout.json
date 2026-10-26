@@ -1,0 +1,105 @@
+{
+  "starts": [
+    {
+      "player": 0,
+      "x": 8192,
+      "y": 0,
+      "buildableFraction": 1.0
+    },
+    {
+      "player": 1,
+      "x": 7168,
+      "y": 4096,
+      "buildableFraction": 1.0
+    },
+    {
+      "player": 2,
+      "x": 4096,
+      "y": 7168,
+      "buildableFraction": 1.0
+    },
+    {
+      "player": 3,
+      "x": 0,
+      "y": 8192,
+      "buildableFraction": 1.0
+    },
+    {
+      "player": 4,
+      "x": -4096,
+      "y": 7168,
+      "buildableFraction": 1.0
+    },
+    {
+      "player": 5,
+      "x": -7168,
+      "y": 4096,
+      "buildableFraction": 1.0
+    },
+    {
+      "player": 6,
+      "x": -8192,
+      "y": 0,
+      "buildableFraction": 1.0
+    },
+    {
+      "player": 7,
+      "x": -7168,
+      "y": -4096,
+      "buildableFraction": 1.0
+    },
+    {
+      "player": 8,
+      "x": -4096,
+      "y": -7168,
+      "buildableFraction": 1.0
+    },
+    {
+      "player": 9,
+      "x": 0,
+      "y": -7936,
+      "buildableFraction": 1.0
+    },
+    {
+      "player": 10,
+      "x": 4096,
+      "y": -7168,
+      "buildableFraction": 1.0
+    },
+    {
+      "player": 11,
+      "x": 7168,
+      "y": -4096,
+      "buildableFraction": 1.0
+    }
+  ],
+  "shrines": [
+    {
+      "x": 0,
+      "y": 0,
+      "buildableFraction": 1.0
+    },
+    {
+      "x": 4096,
+      "y": 0,
+      "buildableFraction": 1.0
+    },
+    {
+      "x": -4096,
+      "y": 0,
+      "buildableFraction": 1.0
+    },
+    {
+      "x": 0,
+      "y": 4096,
+      "buildableFraction": 1.0
+    },
+    {
+      "x": 0,
+      "y": -4096,
+      "buildableFraction": 1.0
+    }
+  ],
+  "minimumStartDistance": 4167.378072601525,
+  "pathingSource": "Original DGW war3map.wpm; 32 world units per cell; flags 0x02 and 0x08 rejected; 896x896 clearing coverage >=92%"
+}

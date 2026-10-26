@@ -1,0 +1,65 @@
+[
+  {
+    "name": "BlackDragon.blp",
+    "cache": "2d4fdb9fa33877f2cb697e3a5a49d01e84d9747d",
+    "originalSha256": "80dafc8fd4c33efb5a8d9a829a7c14a5d6591e5561e4a1ef7c84e96e0a9a2bd3",
+    "sha256": "4453031e916c0860bb22fc7e751ad66d7e57e70286fe2b12c68dfbfa3923259a",
+    "originalBytes": 2098330,
+    "bytes": 350705,
+    "compressedBytes": 185909
+  },
+  {
+    "name": "c_drggreen_bod.blp",
+    "cache": "0889f846a592b7986e4f6f04c07a93618878862e",
+    "originalSha256": "6fc142738da4d7965a5e3837e6268a2bddcbee167006dcc8fe5a30575e6dbe9b",
+    "sha256": "78637cbc098e894f2b2034fcd160bfd97ab60583041983a18c1d746f43946ac7",
+    "originalBytes": 2098330,
+    "bytes": 350705,
+    "compressedBytes": 223125
+  },
+  {
+    "name": "c_drggreen_hed.blp",
+    "cache": "4bfdec3e9bcb63005b632c0970e0f24f5c71f1d4",
+    "originalSha256": "fc7aae82d16430c72006f521b44a0b9431ae210f8bba9f90f50cff364a9b2495",
+    "sha256": "8571d7ac7ae1d947cc1607999705e162e555d1d82ed091ac8ab4b4d698c2f282",
+    "originalBytes": 2098330,
+    "bytes": 350705,
+    "compressedBytes": 184340
+  },
+  {
+    "name": "c_drggreen_wing.blp",
+    "cache": "f570f357795a604bef09e351e50c6ca6fdfb3c8e",
+    "originalSha256": "4eb3b3c9cc51135de8a887fc7f50af627dde61334914423eaa56803bd3ca9bf1",
+    "sha256": "e7d59b66a4ec077c9c92f3d59e4faa09201b0d5b1d7dfbe3d068da601d935e7e",
+    "originalBytes": 2098330,
+    "bytes": 350705,
+    "compressedBytes": 132318
+  },
+  {
+    "name": "Clouds8x8.blp",
+    "cache": "736612000169b3d449c95ab5a7ac8ccbd171133d",
+    "originalSha256": "c0dd452c305fc4f4c3c7c6d56f97e4bb8a32ca294dc6086ccd41c37b50a65735",
+    "sha256": "8617a3a4a72c6ee462177e4bf959561d1153a15772ba2c3abdb0c7e3224ce7a4",
+    "originalBytes": 1399280,
+    "bytes": 88561,
+    "compressedBytes": 39300
+  },
+  {
+    "name": "war3mapImported\\sound01.mp3",
+    "cache": "22ae77416e8d09bccec32dfebdae48468c437252",
+    "originalSha256": "b44374263b07b76cb254109551191ea48926d23273cce03eb07de095b22ee2cb",
+    "sha256": "607f9ea4eb4c80db2fa4e8dabfe0ca0fcfd4ef5fffab41ea5158b706e64a297a",
+    "originalBytes": 3634154,
+    "bytes": 727083,
+    "compressedBytes": 718769
+  },
+  {
+    "name": "Yellow_Star.blp",
+    "cache": "338e68ed61a27a9ac8710db3233cbc3e1ced4a4a",
+    "originalSha256": "588659c5932235c421b7fbe6a30a3894c72e2c361baf30b01672840aac031ec6",
+    "sha256": "12737eb5d5faeb9e03f142d85b12a36e776af032a09f37f2643e09e8677f93bc",
+    "originalBytes": 2098330,
+    "bytes": 88561,
+    "compressedBytes": 49043
+  }
+]

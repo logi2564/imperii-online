@@ -1,0 +1,65 @@
+name: Validate and publish editable 23 Races 3.2D for NewGen 1.26
+on:
+  push:
+    branches: [warcraft-23races-recovery]
+    paths:
+      - 'warcraft-maps/23races/**'
+      - '.github/workflows/warcraft-23races.yml'
+permissions:
+  contents: write
+jobs:
+  recover:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.100'
+      - name: Build independent MPQ decoder and classic JASS checker
+        run: |
+          python -m pip install mpyq==0.2.5
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq bison flex
+          git clone --depth 1 --branch v9.25 https://github.com/ladislav-zezula/StormLib.git /tmp/storm-source
+          test "$(git -C /tmp/storm-source rev-parse HEAD)" = "28c9b4be3f23c6b3a5ff55cacac7dbe5b9cdc4fc"
+          cmake -S /tmp/storm-source -B /tmp/storm-build -DBUILD_SHARED_LIBS=ON -DSTORM_USE_BUNDLED_LIBRARIES=ON -DSTORM_SKIP_INSTALL=ON -DCMAKE_BUILD_TYPE=Release
+          cmake --build /tmp/storm-build --parallel 2
+          git clone https://github.com/lep/pjass.git /tmp/pjass
+          git -C /tmp/pjass checkout 654c3cf7731eb472518e6915e9d7672a72652165
+          make -C /tmp/pjass -j2
+          mkdir -p /tmp/classic-jass
+          curl -fsSL https://raw.githubusercontent.com/tdauth/wc3lib/4b221577921c20ab5fac410f0c1d555f64beeb56/src/jass/test/common.j -o /tmp/classic-jass/common.j
+          curl -fsSL https://raw.githubusercontent.com/tdauth/wc3lib/4b221577921c20ab5fac410f0c1d555f64beeb56/src/jass/test/Blizzard.j -o /tmp/classic-jass/Blizzard.j
+      - name: Verify every preserved asset and strict classic level info
+        run: python warcraft-maps/23races/tools/verify_map.py /tmp/storm-build/libstorm.so warcraft-maps/23races | tee warcraft-maps/23races/release/native-verification.txt
+      - name: Reopen the actual W3X and compile the editor-generated script
+        run: |
+          dotnet run --project warcraft-maps/23races/tools/MapCheck -- warcraft-maps/23races/release/23-Races-3.2D-Editable-NewGen-1.26.w3x /tmp/map-check | tee warcraft-maps/23races/release/metadata-verification.txt
+          /tmp/pjass/pjass /tmp/classic-jass/common.j /tmp/classic-jass/Blizzard.j /tmp/map-check/original-gameplay.j | tee warcraft-maps/23races/release/pjass-original.txt
+          /tmp/pjass/pjass /tmp/classic-jass/common.j /tmp/classic-jass/Blizzard.j /tmp/map-check/editor-generated.j | tee warcraft-maps/23races/release/pjass-editor-resave.txt
+      - name: Prepare direct W3X and ZIP downloads
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import shutil,hashlib,zipfile
+          root=Path('warcraft-maps/23races');out=root/'release'
+          shutil.copy2(root/'README-RU.txt',out/'README-RU.txt')
+          file=out/'23-Races-3.2D-Editable-NewGen-1.26.w3x'
+          (out/(file.name+'.sha256')).write_text(hashlib.sha256(file.read_bytes()).hexdigest()+'  '+file.name+'\n')
+          with zipfile.ZipFile(out/'23-Races-3.2D-Editable-NewGen-1.26.zip','w',zipfile.ZIP_DEFLATED,compresslevel=6)as z:
+              for p in sorted(out.iterdir()):
+                  if p.suffix!='.zip':z.write(p,p.name)
+              for p in sorted((root/'source').iterdir()):z.write(p,'source/'+p.name)
+          PY
+      - name: Publish recovered map with explicit validation limits
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "23races-32d-editable-${GITHUB_SHA::8}" warcraft-maps/23races/release/* --target "$GITHUB_SHA" --prerelease --latest=false --title '23 Расы 3.2D — восстановленная копия для NewGen 1.26 (JASS)' --notes-file warcraft-maps/23races/README-RU.txt

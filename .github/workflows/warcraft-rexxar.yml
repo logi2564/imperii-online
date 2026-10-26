@@ -1,4 +1,4 @@
-name: Build and test Rexxar campaign source exporter
+name: Build and test Rexxar four-slot patcher
 on:
   push:
     branches: [warcraft-rexxar-coop]
@@ -11,7 +11,7 @@ concurrency:
 permissions:
   contents: write
 jobs:
-  export-tool:
+  four-slots:
     runs-on: windows-2022
     timeout-minutes: 15
     defaults:
@@ -24,32 +24,50 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.100'
-      - name: Build the source and exercise MPQ export rules
+      - name: Test source export and four-slot map edits
         run: |
           $project = 'warcraft-campaigns/rexxar-coop/tools/ExportRexxar'
           dotnet run --project $project -- --self-test --no-pause
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $env:REXXAR_TEST_ARTIFACTS = Join-Path $env:RUNNER_TEMP 'rexxar-fixtures'
+          dotnet run --project 'warcraft-campaigns/rexxar-coop/tools/FourSlots' -- --self-test --no-pause
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet run --project 'warcraft-campaigns/rexxar-coop/tools/VerifySlots' -- $env:REXXAR_TEST_ARTIFACTS
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Publish and run the exact Windows executable
         run: |
-          $project = 'warcraft-campaigns/rexxar-coop/tools/ExportRexxar'
+          $project = 'warcraft-campaigns/rexxar-coop/tools/FourSlots'
           $out = 'warcraft-campaigns/rexxar-coop/release'
           dotnet publish $project -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -p:DebugSymbols=false -o $out
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          & "$out/Export-Rexxar-Maps.exe" --self-test --no-pause | Tee-Object -FilePath "$out/Windows-exe-check.txt"
+          $env:REXXAR_TEST_ARTIFACTS = Join-Path $env:RUNNER_TEMP 'rexxar-exe-fixtures'
+          & "$out/Rexxar-4-Slots.exe" --self-test --no-pause | Tee-Object -FilePath "$out/Windows-exe-check.txt"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet run --project 'warcraft-campaigns/rexxar-coop/tools/VerifySlots' -- $env:REXXAR_TEST_ARTIFACTS | Tee-Object -FilePath "$out/Independent-map-check.txt"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $source = Join-Path $env:REXXAR_TEST_ARTIFACTS 'slot-source.w3x'
+          $result = Join-Path $env:RUNNER_TEMP 'rexxar-cli-output'
+          $before = (Get-FileHash $source -Algorithm SHA256).Hash
+          & "$out/Rexxar-4-Slots.exe" --map $source --out $result --no-pause
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $report = Get-Content (Join-Path $result 'Four-slots-report.json') -Raw | ConvertFrom-Json
+          if ($report.mapsPatched -ne 1 -or $report.fullCoopImplemented -ne $false -or $report.maps[0].players.Count -ne 4) { throw 'Bad end-to-end CLI report' }
+          if ($before -ne (Get-FileHash $source -Algorithm SHA256).Hash) { throw 'Source map modified' }
+          if (!(Test-Path (Join-Path $result 'Rexxar-4-Slots/slot-source-4Slots.w3x'))) { throw 'Output map missing' }
+          'PASS: exact Windows EXE, command-line map processing, four reported players, new output map and unchanged source SHA-256.' | Add-Content "$out/Windows-exe-check.txt"
       - name: Prepare a download and checksum
         run: |
           $root = 'warcraft-campaigns/rexxar-coop'
           $out = "$root/release"
-          Copy-Item "$root/README-RU.txt" "$out/README-RU.txt"
-          $hash = (Get-FileHash "$out/Export-Rexxar-Maps.exe" -Algorithm SHA256).Hash.ToLowerInvariant()
-          "$hash  Export-Rexxar-Maps.exe" | Set-Content "$out/Export-Rexxar-Maps.exe.sha256" -Encoding utf8
-          Compress-Archive -Path "$out/Export-Rexxar-Maps.exe", "$out/README-RU.txt", "$out/Windows-exe-check.txt", "$out/Export-Rexxar-Maps.exe.sha256" -DestinationPath "$out/Export-Rexxar-Maps.zip"
-      - name: Publish the source-export helper with explicit project status
+          Copy-Item "$root/FOUR-SLOTS-RU.txt" "$out/ЧИТАЙ.txt"
+          $hash = (Get-FileHash "$out/Rexxar-4-Slots.exe" -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  Rexxar-4-Slots.exe" | Set-Content "$out/Rexxar-4-Slots.exe.sha256" -Encoding utf8
+          Compress-Archive -Path "$out/Rexxar-4-Slots.exe", "$out/ЧИТАЙ.txt", "$out/Windows-exe-check.txt", "$out/Independent-map-check.txt", "$out/Rexxar-4-Slots.exe.sha256" -DestinationPath "$out/Rexxar-4-Slots.zip"
+      - name: Publish four-slot tool with explicit scope
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          $tag = 'rexxar-source-export-' + $env:GITHUB_SHA.Substring(0, 8)
-          gh release create $tag 'warcraft-campaigns/rexxar-coop/release/Export-Rexxar-Maps.exe' 'warcraft-campaigns/rexxar-coop/release/Export-Rexxar-Maps.zip' 'warcraft-campaigns/rexxar-coop/release/Export-Rexxar-Maps.exe.sha256' 'warcraft-campaigns/rexxar-coop/release/Windows-exe-check.txt' --target $env:GITHUB_SHA --prerelease --latest=false --title 'Рексар — выгрузка исходных миссий для подготовки кооператива' --notes-file 'warcraft-campaigns/rexxar-coop/README-RU.txt'
+          $tag = 'rexxar-four-slots-' + $env:GITHUB_SHA.Substring(0, 8)
+          gh release create $tag 'warcraft-campaigns/rexxar-coop/release/Rexxar-4-Slots.exe' 'warcraft-campaigns/rexxar-coop/release/Rexxar-4-Slots.zip' 'warcraft-campaigns/rexxar-coop/release/Rexxar-4-Slots.exe.sha256' 'warcraft-campaigns/rexxar-coop/release/Windows-exe-check.txt' 'warcraft-campaigns/rexxar-coop/release/Independent-map-check.txt' --target $env:GITHUB_SHA --prerelease --latest=false --title 'Рексар — четыре слота в лобби; сюжетный кооператив ещё не готов' --notes-file 'warcraft-campaigns/rexxar-coop/FOUR-SLOTS-RU.txt'
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

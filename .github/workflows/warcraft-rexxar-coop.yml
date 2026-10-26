@@ -80,11 +80,13 @@ jobs:
         with:
           name: rexxar-save-fixtures
           path: save-fixtures
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.100'
       - name: Compile small .NET Framework helper and test the exact Windows EXE
         run: |
           New-Item -ItemType Directory -Force helper-out | Out-Null
-          $compiler = Join-Path $env:WINDIR 'Microsoft.NET/Framework64/v4.0.30319/csc.exe'
-          & $compiler /nologo /codepage:65001 /target:winexe /platform:anycpu /optimize+ /reference:System.Windows.Forms.dll /reference:System.Drawing.dll /out:helper-out/RexxarCoop-Saves.exe warcraft-campaigns/rexxar-coop/coop/SaveHelper.cs
+          dotnet build warcraft-campaigns/rexxar-coop/coop/SaveHelper/SaveHelper.csproj -c Release -o helper-out --nologo 2>&1 | Tee-Object -FilePath helper-out/Compiler-check.txt
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $exe = (Resolve-Path 'helper-out/RexxarCoop-Saves.exe').Path
           $fixtures = (Resolve-Path 'save-fixtures').Path
@@ -92,6 +94,15 @@ jobs:
           $process = Start-Process -FilePath $exe -ArgumentList @('--self-test', $fixtures, $proof) -Wait -PassThru
           if ($process.ExitCode -ne 0) { Get-Content $proof; exit $process.ExitCode }
           Get-Content $proof
+      - name: Preserve exact compiler and parser diagnostics
+        if: always()
+        run: |
+          Get-ChildItem helper-out -Filter '*check.txt' -ErrorAction SilentlyContinue | ForEach-Object {
+            "### $($_.Name)" | Add-Content $env:GITHUB_STEP_SUMMARY
+            '```text' | Add-Content $env:GITHUB_STEP_SUMMARY
+            Get-Content $_.FullName | Add-Content $env:GITHUB_STEP_SUMMARY
+            '```' | Add-Content $env:GITHUB_STEP_SUMMARY
+          }
       - uses: actions/upload-artifact@v4
         with:
           name: rexxar-windows-helper

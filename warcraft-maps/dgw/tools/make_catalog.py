@@ -68,7 +68,7 @@ for n,row in enumerate(rows,1):
  for divine in [False,True]:
   title=god if divine else name+' — Чемпион';fields=common(title,''+{'Hpal':'HeroPaladin','Ofar':'HeroFarSeer','Ulic':'Lich','Emoo':'HeroMoonPriestess','Hmkg':'HeroMountainKing','Hblm':'HeroBloodElf','Nngs':'SeaWitch','Oshd':'ShadowHunter','Otch':'HeroTaurenChieftain','Ntin':'HeroTinker','Ucrl':'HeroCryptLord','Nplh':'PitLord','Udre':'HeroDreadLord','Npbm':'PandarenBrewmaster'}[hero])
   fields.update(umdl=model(hero),uabi='AInv'+(','+f['spell']if divine else''),uhab=skills,usca=1.25 if divine else 1.0,ustr=45 if divine else 22,uagi=28 if divine else 16,uint=40 if divine else 20,ustp=3.0,uagp=2.0,uinp=3.0,uhpm=1800 if divine else 650,umpm=650 if divine else 300,umpr=2.5 if divine else 1.0,uhpr=3.0 if divine else 1.0,udef=6 if divine else 3,ua1b=65 if divine else 23,ua1d=1,ua1s=6,umvs=300,ugol=800 if divine else 250,ulum=350 if divine else 60,ufoo=8 if divine else 5,ufma=0,ubld=60 if divine else 30,ureq='',urqa='',upro=god if divine else'Чемпион '+name,upgr='',utub=title+'|n'+(spell+' (Z). '+trait if divine else'Четыре способности героя. Для возвращения после гибели используй алтарь.'))
-  fields.update(umvt='fly'if n==15 and divine else'foot',ufyh=175.0 if n==15 and divine else 0.0,ufyf=0.0)
+  fields.update(umvt='fly'if n==15 and divine else'foot',umvh=175.0 if n==15 and divine else 0.0,umvf=0.0)
   if n==13:fields['umdl']='war3mapImported\\HeroPitLord1.mdl'
   if n==15:fields['umdl']='BlackDragon.mdl'
   unit(hero,f['avatar']if divine else f['champion'],fields)

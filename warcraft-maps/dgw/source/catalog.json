@@ -4305,6 +4305,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -4486,6 +4501,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -7015,6 +7045,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -7196,6 +7241,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -9725,6 +9785,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -9906,6 +9981,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -12435,6 +12525,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -12616,6 +12721,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -15145,6 +15265,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -15326,6 +15461,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -17855,6 +18005,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -18036,6 +18201,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -20565,6 +20745,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -20746,6 +20941,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -23275,6 +23485,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -23456,6 +23681,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -25985,6 +26225,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -26166,6 +26421,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -28695,6 +28965,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -28876,6 +29161,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -31405,6 +31705,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -31586,6 +31901,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -34115,6 +34445,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -34296,6 +34641,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -36825,6 +37185,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -37006,6 +37381,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -39535,6 +39925,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -39716,6 +40121,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -42245,6 +42665,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -42426,6 +42861,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "fly"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 175.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -44955,6 +45405,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -45136,6 +45601,21 @@
           "id": "upgr",
           "type": 3,
           "value": ""
+        },
+        {
+          "id": "umvt",
+          "type": 3,
+          "value": "foot"
+        },
+        {
+          "id": "umvh",
+          "type": 2,
+          "value": 0.0
+        },
+        {
+          "id": "umvf",
+          "type": 2,
+          "value": 0.0
         }
       ]
     },
@@ -45292,6 +45772,9 @@
     "uinp": "unreal",
     "uhpr": "unreal",
     "upro": "stringList",
+    "umvt": "moveType",
+    "umvh": "unreal",
+    "umvf": "unreal",
     "uaen": "attackBits"
   },
   "rules": {

@@ -1,11 +1,11 @@
 {
   "file": "DGW-Gods-FFA-16Races-WC3-1.26.w3x",
-  "bytes": 6983379,
-  "sha256": "92a7c67408544eabfdb2fa5da96ff7e8628ddf9d2fdc328e679eb2163660d7f4",
+  "bytes": 6983600,
+  "sha256": "e024f92745f67af6a1b7c2d31fdb19180580b2ae2859c5ee7f54b13be3ab1aeb",
   "variant": "lite",
   "requiresLargeMapPatch": false,
   "classic8MiBLimit": true,
-  "bytesBelowLimit": 1405229,
+  "bytesBelowLimit": 1405008,
   "originalBytes": 58550061,
   "originalSha256": "3e80d739787474a8e20c00951e218bf3a288c28872cc6b2f7d8afc2cb8235283",
   "factions": 16,
@@ -421,8 +421,8 @@
     },
     {
       "name": "war3map.w3u",
-      "bytes": 242768,
-      "sha256": "6473ed0d9e6adbbcd67c4de08c49b1d06b303d0e3d3baa9fd9f14ce6dc991f29",
+      "bytes": 244335,
+      "sha256": "5eebd21ff3a7088a75fdd7092b24777b12a6e2b1d75f404b20e59bb3d80cbdc5",
       "source": "metadata"
     },
     {

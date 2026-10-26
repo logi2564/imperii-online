@@ -1,0 +1,123 @@
+name: Build Rexxar cooperative missions and Windows save helper
+on:
+  push:
+    branches: [warcraft-rexxar-coop]
+    paths:
+      - 'warcraft-campaigns/rexxar-coop/**'
+      - '.github/workflows/warcraft-rexxar-coop.yml'
+concurrency:
+  group: rexxar-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: write
+jobs:
+  missions:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: warcraft-campaigns/rexxar-coop
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.100'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install offline build and behavior-test dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y libstorm-dev
+          python -m pip install lupa==2.8
+          git clone https://github.com/lep/pjass.git "$RUNNER_TEMP/pjass"
+          git -C "$RUNNER_TEMP/pjass" checkout 654c3cf7731eb472518e6915e9d7672a72652165
+          make -C "$RUNNER_TEMP/pjass"
+      - name: Build all seventeen actual mission maps
+        run: |
+          set -euo pipefail
+          python coop/build.py --out build-out | tee Build-check.txt
+          dotnet run --project coop/Tools -c Release -- verify build-out | tee Independent-map-check.txt
+          python coop/tests/test_maps.py build-out | tee Archive-and-classic-check.txt
+      - name: Validate complete JASS scripts and execute save/load scenarios
+        run: |
+          set -euo pipefail
+          for source in build-out/scripts/*.j; do
+            "$RUNNER_TEMP/pjass/pjass" coop/tests/reference/common.j coop/tests/reference/Blizzard.j "$source"
+          done > Jass-syntax-check.txt
+          dotnet run --project coop/Tools -c Release -- transpile build-out/scripts/OrcX01.j coop/tests/reference build-out/runtime.lua
+          dotnet run --project coop/Tools -c Release -- transpile build-out/scripts/OrcX02.j coop/tests/reference build-out/runtime-act2.lua
+          dotnet run --project coop/Tools -c Release -- transpile build-out/scripts/OrcX02_02.j coop/tests/reference build-out/runtime-act2-side.lua
+          python coop/tests/test_runtime.py build-out/runtime.lua --next build-out/runtime-act2.lua --third build-out/runtime-act2-side.lua | tee Runtime-check.txt
+      - name: Stage maps and verification reports
+        run: |
+          mkdir -p mission-artifact/Maps
+          cp build-out/Maps/*.w3x mission-artifact/Maps/
+          cp build-out/Build-report.json mission-artifact/
+          cp ./*-check.txt mission-artifact/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rexxar-missions
+          path: warcraft-campaigns/rexxar-coop/mission-artifact
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rexxar-save-fixtures
+          path: warcraft-campaigns/rexxar-coop/build-out/save-fixtures
+  windows-helper:
+    needs: missions
+    runs-on: windows-2022
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: rexxar-save-fixtures
+          path: save-fixtures
+      - name: Compile small .NET Framework helper and test the exact Windows EXE
+        run: |
+          New-Item -ItemType Directory -Force helper-out | Out-Null
+          $compiler = Join-Path $env:WINDIR 'Microsoft.NET/Framework64/v4.0.30319/csc.exe'
+          & $compiler /nologo /codepage:65001 /target:winexe /platform:anycpu /optimize+ /reference:System.Windows.Forms.dll /reference:System.Drawing.dll /out:helper-out/RexxarCoop-Saves.exe warcraft-campaigns/rexxar-coop/coop/SaveHelper.cs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $exe = (Resolve-Path 'helper-out/RexxarCoop-Saves.exe').Path
+          $fixtures = (Resolve-Path 'save-fixtures').Path
+          $proof = Join-Path (Resolve-Path 'helper-out').Path 'Windows-helper-check.txt'
+          $process = Start-Process -FilePath $exe -ArgumentList @('--self-test', $fixtures, $proof) -Wait -PassThru
+          if ($process.ExitCode -ne 0) { Get-Content $proof; exit $process.ExitCode }
+          Get-Content $proof
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rexxar-windows-helper
+          path: helper-out
+  publish:
+    needs: [missions, windows-helper]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: rexxar-missions
+          path: mission-artifact
+      - uses: actions/download-artifact@v4
+        with:
+          name: rexxar-windows-helper
+          path: helper-out
+      - name: Package native maps and save helper
+        run: python3 warcraft-campaigns/rexxar-coop/coop/package.py mission-artifact helper-out release
+      - name: Publish RC1 with native-game test limitations visible
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          tag="rexxar-coop-rc1-${GITHUB_SHA:0:8}"
+          gh release create "$tag" release/Rexxar-Coop-RC1.zip release/Rexxar-Coop-RC1.zip.sha256 helper-out/RexxarCoop-Saves.exe mission-artifact/Build-report.json mission-artifact/Runtime-check.txt helper-out/Windows-helper-check.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Рексар: 17 миссий и четыре героя — тестовая сборка RC1' --notes-file warcraft-campaigns/rexxar-coop/coop/README-RU.txt

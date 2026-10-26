@@ -2,3 +2,5 @@
 **/obj/
 __pycache__/
 release/
+build-out/
+mission-artifact/

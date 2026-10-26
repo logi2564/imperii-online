@@ -1,0 +1,3 @@
+`common.j` and `Blizzard.j` come from War3Net's public **1.32.9 test references**. They are syntax-check/transpiler declarations, not files shipped to or loaded by Warcraft.
+
+`classic-api-names.json` records the native/BJ names present in wc3lib's older classic references. The generated runtime is restricted to those names; no `Blz*`/Reforged API is used. The old wc3lib test `Blizzard.j` declares `GetDyingDestructable` as `widget` with a TODO, which falsely rejects two unchanged functions in the supplied original `OrcX02_09`. Therefore syntax checking uses the correctly typed public reference, alongside the separate classic API audit. These checks do not substitute for running Warcraft III 1.26.

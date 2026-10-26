@@ -8,12 +8,14 @@ internal sealed record Team(int Flags,int Members,byte[] Name);
 internal sealed class ClassicInfo{
     public byte[] Prefix=null!,Tail=null!;
     public int FlagsOffset;
+    public int RecommendationStart,RecommendationEnd;
     public List<Slot> Players=new();
     public List<Team> Forces=new();
     public static ClassicInfo Read(byte[] bytes){
         using var stream=new MemoryStream(bytes,false);using var r=new BinaryReader(stream);
         var v=r.ReadInt32();if(v!=18&&v!=25)throw new InvalidDataException("Поддерживаются классические карты W3I 18/25 (Warcraft 1.26).");
-        r.ReadInt32();r.ReadInt32();for(int i=0;i<4;i++)CString(r);
+        r.ReadInt32();r.ReadInt32();for(int i=0;i<3;i++)CString(r);
+        int recommendationStart=(int)stream.Position;CString(r);int recommendationEnd=(int)stream.Position;
         Skip(r,32+16+8);int flagsOffset=(int)stream.Position;Skip(r,5);
         r.ReadInt32();if(v==25)CString(r);
         for(int i=0;i<3;i++)CString(r);
@@ -21,7 +23,7 @@ internal sealed class ClassicInfo{
         for(int i=0;i<3;i++)CString(r);
         if(v==25){Skip(r,20+4);CString(r);Skip(r,5);}
         int start=(int)stream.Position;
-        var info=new ClassicInfo{Prefix=bytes[..start],FlagsOffset=flagsOffset};
+        var info=new ClassicInfo{Prefix=bytes[..start],FlagsOffset=flagsOffset,RecommendationStart=recommendationStart,RecommendationEnd=recommendationEnd};
         int count=Count(r,12);for(int i=0;i<count;i++)info.Players.Add(new(r.ReadInt32(),r.ReadInt32(),r.ReadInt32(),r.ReadInt32(),CString(r),r.ReadSingle(),r.ReadSingle(),r.ReadInt32(),r.ReadInt32()));
         count=Count(r,12);for(int i=0;i<count;i++)info.Forces.Add(new(r.ReadInt32(),r.ReadInt32(),CString(r)));
         info.Tail=bytes[(int)stream.Position..];
@@ -51,7 +53,7 @@ internal sealed class ClassicInfo{
     }
     public byte[] Write(){
         using var stream=new MemoryStream();using var w=new BinaryWriter(stream);
-        w.Write(Prefix);w.Write(Players.Count);
+        w.Write(Prefix.AsSpan(0,RecommendationStart));w.Write(Encoding.ASCII.GetBytes("4 players\0"));w.Write(Prefix.AsSpan(RecommendationEnd));w.Write(Players.Count);
         foreach(var p in Players){w.Write(p.Id);w.Write(p.Controller);w.Write(p.Race);w.Write(p.Flags);CString(w,p.Name);w.Write(p.X);w.Write(p.Y);w.Write(p.Low);w.Write(p.High);}
         w.Write(Forces.Count);foreach(var f in Forces){w.Write(f.Flags);w.Write(f.Members);CString(w,f.Name);}w.Write(Tail);return stream.ToArray();
     }

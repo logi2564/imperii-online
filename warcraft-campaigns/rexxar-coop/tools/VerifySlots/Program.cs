@@ -6,6 +6,7 @@ foreach(string path in Directory.GetFiles(args[0],"slot-fixture-*.w3i")){
     var info=reader.ReadMapInfo();
     if(stream.Position!=stream.Length)throw new InvalidDataException("W3I trailing bytes: "+path);
     if(info.Players.Count(p=>p.Controller==PlayerController.User)!=4)throw new InvalidDataException("Not four users");
+    if(info.RecommendedPlayers!="4 players")throw new InvalidDataException("Preview still recommends a single player");
     if(info.Players.Single(p=>p.Id==5).Controller!=PlayerController.Computer)throw new InvalidDataException("NPC slot changed");
     if((int)info.Forces.Single(f=>(f.Players&1)!=0).Players!=15)throw new InvalidDataException("Wrong party force");
     if(info.UpgradeData.Count!=0||info.TechData.Count!=0||info.PlayableMapAreaWidth!=64||info.PlayableMapAreaHeight!=64)throw new InvalidDataException("Unrelated map data changed");

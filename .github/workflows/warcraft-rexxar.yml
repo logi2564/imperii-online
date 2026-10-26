@@ -55,6 +55,15 @@ jobs:
           if ($before -ne (Get-FileHash $source -Algorithm SHA256).Hash) { throw 'Source map modified' }
           if (!(Test-Path (Join-Path $result 'Rexxar-4-Slots/slot-source-4Slots.w3x'))) { throw 'Output map missing' }
           'PASS: exact Windows EXE, command-line map processing, four reported players, new output map and unchanged source SHA-256.' | Add-Content "$out/Windows-exe-check.txt"
+          $game = Join-Path $env:REXXAR_TEST_ARTIFACTS 'game'
+          $campaignResult = Join-Path $env:RUNNER_TEMP 'rexxar-game-output'
+          $archiveBefore = (Get-FileHash (Join-Path $game 'War3x.mpq') -Algorithm SHA256).Hash
+          & "$out/Rexxar-4-Slots.exe" --game $game --out $campaignResult --no-pause
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $campaignReport = Get-Content (Join-Path $campaignResult 'Four-slots-report.json') -Raw | ConvertFrom-Json
+          if ($campaignReport.mapsPatched -ne 17 -or $campaignReport.mapsFound -ne 17) { throw 'Full extraction-to-patching fixture path failed' }
+          if ($archiveBefore -ne (Get-FileHash (Join-Path $game 'War3x.mpq') -Algorithm SHA256).Hash) { throw 'Source game archive modified' }
+          'PASS: exact EXE exported 17 synthetic campaign missions and created all 17 four-slot maps, leaving the game archive unchanged.' | Add-Content "$out/Windows-exe-check.txt"
       - name: Prepare a download and checksum
         run: |
           $root = 'warcraft-campaigns/rexxar-coop'

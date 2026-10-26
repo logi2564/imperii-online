@@ -11,7 +11,8 @@ internal static class SlotTests{
             Need(patched.Players.SequenceEqual(new[]{0,1,2,3}),"wrong slots");Need(current.Players.Count(p=>p.Controller==1)==4,"not four users");
             var npc=current.Players.Single(p=>p.Id==5);var oldNpc=old.Players.Single(p=>p.Id==5);Need(npc with{Name=oldNpc.Name}==oldNpc&&npc.Name.SequenceEqual(oldNpc.Name),"NPC changed");
             Need(old.Tail.SequenceEqual(current.Tail),"tech/upgrade/random tables changed");
-            byte[] prefix=old.Prefix.ToArray();BitConverter.GetBytes((BitConverter.ToInt32(prefix,old.FlagsOffset)|0x60)&~4).CopyTo(prefix,old.FlagsOffset);Need(prefix.SequenceEqual(current.Prefix),"terrain/loading/camera settings changed");
+            byte[] prefix=old.Prefix.ToArray();BitConverter.GetBytes((BitConverter.ToInt32(prefix,old.FlagsOffset)|0x60)&~4).CopyTo(prefix,old.FlagsOffset);
+            prefix=prefix[..old.RecommendationStart].Concat(Encoding.ASCII.GetBytes("4 players\0")).Concat(prefix[old.RecommendationEnd..]).ToArray();Need(prefix.SequenceEqual(current.Prefix),"terrain/loading/camera settings changed");
             Need(current.Forces.Single(f=>(f.Members&1)!=0).Members==15,"party force missing");Need(current.Forces.Single(f=>(f.Members&(1<<5))!=0).Members==(1<<5),"NPC force changed");
             foreach(string asset in new[]{@"war3mapImported\hidden.mdx","war3map.w3u","war3map.w3e"})Need(SlotPatcher.Read(before,asset).SequenceEqual(SlotPatcher.Read(after,asset)),"asset changed: "+asset);
             Need(!after.FileExists("(attributes)"),"stale checksum file retained");
@@ -24,7 +25,12 @@ internal static class SlotTests{
             Reject(()=>SlotPatcher.Patch(patched.Data),"duplicate patch accepted");
             string? folder=Environment.GetEnvironmentVariable("REXXAR_TEST_ARTIFACTS");if(!string.IsNullOrEmpty(folder)){
                 Directory.CreateDirectory(folder);File.WriteAllBytes(Path.Combine(folder,$"slot-fixture-{version}-{nested}.w3i"),SlotPatcher.Read(after,"war3map.w3i"));
-                if(version==25&&!nested){File.WriteAllBytes(Path.Combine(folder,"slot-source.w3x"),map);File.WriteAllBytes(Path.Combine(folder,"slot-fixture.w3x"),patched.Data);File.WriteAllBytes(Path.Combine(folder,"slot-fixture.j"),SlotPatcher.Read(after,scriptName));}
+                if(version==25&&!nested){
+                    File.WriteAllBytes(Path.Combine(folder,"slot-source.w3x"),map);File.WriteAllBytes(Path.Combine(folder,"slot-fixture.w3x"),patched.Data);File.WriteAllBytes(Path.Combine(folder,"slot-fixture.j"),SlotPatcher.Read(after,scriptName));
+                    var game=Path.Combine(folder,"game");Directory.CreateDirectory(game);var b=new MpqArchiveBuilder();
+                    foreach(var mission in RexxarExport.Exporter.Missions)b.AddFile(MpqFile.New(new MemoryStream(map),@"Maps\FrozenThrone\Campaign\"+mission.Name));
+                    b.SaveTo(Path.Combine(game,"War3x.mpq"));
+                }
             }
         }
         var info=ClassicInfo.Read(Info(25));info.Players.AddRange(Enumerable.Range(1,11).Where(id=>id!=5).Select(id=>new Slot(id,2,2,1,Encoding.ASCII.GetBytes("NPC"),0,0,0,0)));Reject(()=>info.AddFourSlots(""),"occupied NPC slots overwritten");

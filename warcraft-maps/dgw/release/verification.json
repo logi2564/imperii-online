@@ -1,11 +1,11 @@
 {
   "file": "DGW-Gods-FFA-16Races-WC3-1.26.w3x",
-  "bytes": 6983510,
-  "sha256": "009b89db1cae583636b30e91446b5ec5d62913189a9ca5403f68bc67dd98a4a9",
+  "bytes": 6983379,
+  "sha256": "92a7c67408544eabfdb2fa5da96ff7e8628ddf9d2fdc328e679eb2163660d7f4",
   "variant": "lite",
   "requiresLargeMapPatch": false,
   "classic8MiBLimit": true,
-  "bytesBelowLimit": 1405098,
+  "bytesBelowLimit": 1405229,
   "originalBytes": 58550061,
   "originalSha256": "3e80d739787474a8e20c00951e218bf3a288c28872cc6b2f7d8afc2cb8235283",
   "factions": 16,
@@ -337,8 +337,8 @@
     },
     {
       "name": "war3map.j",
-      "bytes": 115239,
-      "sha256": "07363fb76c8cc03902132172c5194596380d894c787d7db749da59e2bfbe4412",
+      "bytes": 115151,
+      "sha256": "17e81fb5db3eb6835b89d26b3fd06775961e740f0574eba73c24acfd65fe5b9c",
       "source": "metadata"
     },
     {
@@ -427,8 +427,8 @@
     },
     {
       "name": "war3map.wct",
-      "bytes": 213910,
-      "sha256": "03d6ab90928b1461939d130561e813407d2a8380100b3eb208d9fe7f870fa730",
+      "bytes": 213822,
+      "sha256": "a5301566ff2a3be30fea49318bcd339fca49e2556cc13b1b17cc2ac6b985ae2d",
       "source": "metadata"
     },
     {

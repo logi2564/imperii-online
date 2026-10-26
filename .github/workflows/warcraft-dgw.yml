@@ -5,6 +5,9 @@ on:
     paths:
       - 'warcraft-maps/dgw/**'
       - '.github/workflows/warcraft-dgw.yml'
+concurrency:
+  group: dgw-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: write
 jobs:

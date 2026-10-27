@@ -51,6 +51,10 @@ for name in MAPS:
                 assert struct.unpack('<i',values[('arlv',0)])[0]==(6 if slot==3 else 1)
                 orders.append(values[('Ncl6',1)])
             assert len(set(orders))==4,(name,role,'Channel order collision')
+            for menu_id in [b'R5Sk',b'R5Ta']:
+                values={(mod[0],mod[2]):mod[4] for mod in lookup[menu_id]['mods']}
+                assert values[('Ncl6',1)] not in orders
+                assert struct.unpack('<i',values[('aher',0)])[0]==0
         script=storm.read(b,'war3map.j').decode();assert script.count('call RC_Bootstrap()')==1
         # pjass does NOT enforce classic Warcraft's UTF-8 byte literal limit.
         tokens=re.findall(r'//[^\r\n]*|"(?:[^"\\]|\\.)*"',script)
@@ -79,5 +83,7 @@ assert ''.join(literal_parts)==('Текст\\"\\\\'*180)
 runtime='\n'.join(p.read_text() for p in (ROOT/'runtime').glob('*.j'));called=set(re.findall(r'\b([A-Za-z_]\w*)\s*\(',mask(runtime)));missing={n for n in called if not n.startswith(('RC_','RK_')) and n not in classic and n not in {'and','or','not','if','elseif','return'}}
 assert not missing,('Not in classic API reference',missing)
 from kits import abilities
+from talents import TREES
+assert sum(len(pair) for tree in TREES for pair in tree)==40
 icons=[next(mod[4] for mod in obj['mods'] if mod[0]=='aart') for obj in abilities()[:16]];assert len(set(icons))==16
 print(f'PASS: all 17 actual maps: classic object metadata types, unique IDs, four roles, retained quest functions, strict literal sizes, classic API, and {untouched} byte-identical terrain/import entries; sixteen distinct skill icons.')

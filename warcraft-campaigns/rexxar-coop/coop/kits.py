@@ -32,6 +32,12 @@ def abilities():
                 desc=description.format(a=35+25*level,b=90+50*level,c=12+9*level,d=100+80*level,e=10+8*level,f=18+17*level,g=3+2*level,h=180+60*level,p=75+50*level,q=4*level)
                 mods += [field('atp1',3,f'{name} ({key}) — ранг {level}',level),field('aub1',3,desc+f'|nМана: {mana}. Перезарядка: {cooldown} сек.',level),field('amcs',0,mana,level),field('acdn',2,float(cooldown),level),field('aran',2,700.,level),field('atar',3,'air,ground,friend,enemy,organic,neutral',level),field('Ncl1',2,0.,level),field('Ncl2',0,target,level),field('Ncl3',0,1,level),field('Ncl4',2,0.,level),field('Ncl5',0,0,level),field('Ncl6',3,['channel','farsight','drunkenhaze','healingward'][slot],level)]
             out.append(dict(old=b'ANcl',new=skill_id(role,slot).encode(),mods=mods))
+    for raw,name,icon,key,x,order in [('R5Sk','Изучить навыки','BTNTomeOfRetraining','K',2,'berserk'),('R5Ta','Таланты героя','BTNStatUp','T',1,'roar')]:
+        helptext='Открывает обучение пяти навыкам за свободные очки героя.' if raw=='R5Sk' else 'Один из двух талантов на уровнях 4, 8, 12, 16 и 20. Выбор сохраняется между миссиями.'
+        out.append(dict(old=b'ANcl',new=raw.encode(),mods=[field('aher',0,0),field('alev',0,1),field('anam',3,name),field('aart',3,'ReplaceableTextures\\CommandButtons\\'+icon+'.blp'),field('ahky',3,key),field('abpx',0,x),field('abpy',0,1),field('atp1',3,name+' ('+key+')',1),field('aub1',3,helptext,1),field('amcs',0,0,1),field('acdn',2,0.,1),field('Ncl1',2,0.,1),field('Ncl2',0,0,1),field('Ncl3',0,1,1),field('Ncl4',2,0.,1),field('Ncl5',0,0,1),field('Ncl6',3,order,1),field('acat',3,''),field('aeat',3,''),field('atat',3,'')]))
+    out.append(dict(old=b'AItg',new=b'R5Pd',mods=[field('Iatt',0,8,1),field('aite',0,1),field('aart',3,'')]))
+    out.append(dict(old=b'AId1',new=b'R5Ar',mods=[field('Idef',0,4,1),field('aite',0,1),field('aart',3,'')]))
+    out.append(dict(old=b'AHtb',new=b'RSt2',mods=[field('Htb1',2,0.,1),field('amcs',0,0,1),field('adur',2,1.25,1),field('ahdu',2,.5,1),field('aran',2,9999.,1),field('atar',3,'air,ground,enemy,organic',1),field('amat',3,'')]))
     # Max-life bonuses are integers in classic AbilityMetaData (Ilif, NOT IIf1).
     for n in range(16):out.append(dict(old=b'AIlf',new=f'RH{n:02}'.encode(),mods=[field('Ilif',0,25*(2**n),1),field('anam',3,'Co-op HP bit'),field('aite',0,1),field('aart',3,'')]))
     for rank in range(1,6):out.append(dict(old=b'AId1',new=f'RD0{rank}'.encode(),mods=[field('Idef',0,3+2*rank,1),field('aite',0,1),field('aart',3,'')]))

@@ -7,7 +7,7 @@ from formats import read_info
 from lobby_probe import retitle
 out=Path(sys.argv[1]);root=Path(__file__).resolve().parent;fixtures=root/'fixtures';storm=Storm()
 # Compare the exact accepted lobby, disregarding only the identifying title.
-archive=storm.open(out/'Maps/RX4-OrcX01.w3x')
+archive=storm.open(out/'Maps/RX5-OrcX01.w3x')
 try:info=storm.read(archive,'war3map.w3i');script=storm.read(archive,'war3map.j').decode()
 finally:storm.close(archive)
 assert retitle(info,'SHARED')==retitle((fixtures/'accepted-C.w3i').read_bytes(),'SHARED')

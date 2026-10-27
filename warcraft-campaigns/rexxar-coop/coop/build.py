@@ -4,13 +4,13 @@ import argparse,copy,hashlib,json,os,re,shutil,struct,subprocess,tempfile,zipfil
 from pathlib import Path
 from formats import Reader,coop_info,field,i,read_info,read_objects,s,write_objects
 from storm import Storm
-import kits
+import kits,talents
 
 ROOT=Path(__file__).resolve().parent
 MAPS=['OrcX01']+[f'OrcX01_{n:02}' for n in range(2,6)]+['OrcX02']+[f'OrcX02_{n:02}' for n in range(2,11)]+['OrcX03a','OrcX03b']
 ROLES=[0,3,4,5]
-FILE_PREFIX='RX4-'
-DISPLAY_PREFIX='REXXAR IV - '
+FILE_PREFIX='RX5-'
+DISPLAY_PREFIX='REXXAR V - '
 KINDS={'item':('war3map.w3t',False),'ability':('war3map.w3a',True),'unit':('war3map.w3u',False),'buff':('war3map.w3h',False)}
 EXTRA=['war3map.j','war3map.w3i','war3map.wts','war3mapMisc.txt','war3mapUnits.doo']
 
@@ -257,7 +257,9 @@ def build(destination):
                 tables[1].extend(kits.abilities())
                 attribute=next((o for o in tables[0] if o['old']==b'Aamk'),None)
                 if attribute is None:attribute=dict(old=b'Aamk',new=b'\0'*4,mods=[]);tables[0].append(attribute)
-                attribute['mods']=[mod for mod in attribute['mods'] if mod[0] not in {'arpx','arpy','abpx','abpy'}]+[field('arpx',0,0),field('arpy',0,1),field('abpx',0,0),field('abpy',0,1)]
+                attribute['mods']=[mod for mod in attribute['mods'] if mod[0] not in {'arpx','arpy','abpx','abpy','alev','arlv','alsk','Ihid','Istr','Iagi','Iint','atp1','aub1'}]+[field('arpx',0,0),field('arpy',0,1),field('abpx',0,0),field('abpy',0,1),field('alev',0,10),field('arlv',0,1),field('alsk',0,2)]
+                for rank in range(1,11):
+                    attribute['mods'] += [field('Istr',0,3*rank,rank),field('Iagi',0,3*rank,rank),field('Iint',0,3*rank,rank),field('Ihid',0,1,rank),field('atp1',3,'Характеристики — ранг '+str(rank),rank),field('aub1',3,'Постоянно повышает силу, ловкость и интеллект на 3 за каждый изученный ранг.',rank)]
             if kind=='unit':
                 kits.apply_heroes(tables);tables[1].extend(kits.unit_helpers())
             metadata=json.loads((ROOT/'metadata-types.json').read_text())['types']
@@ -289,7 +291,7 @@ def build(destination):
         (destination/'scripts'/(name+'.j')).write_text(script)
         reports.append(dict(map=name,bytes=target.stat().st_size,sha256=hashlib.sha256(target.read_bytes()).hexdigest(),sourceSha256=hashlib.sha256(m['path'].read_bytes()).hexdigest(),roles=ROLES,npcRemap=remap))
         print(name,'four roles',ROLES,'NPC remap',remap)
-    report=dict(status='experimental-needs-real-game-test',nativeWarcraftTested=False,liveIrinaBotTested=False,filePrefix=FILE_PREFIX,maps=reports,questFields=schema,portableObjects={k:len(v) for k,v in catalog.output.items()},compactItems=len(catalog.compact),nextMapRequiresNewLobby=True,saveFormat='Z3',uncompressedSaveFormat='C2',legacySaveFormat='RC1')
+    report=dict(status='experimental-needs-real-game-test',nativeWarcraftTested=False,liveIrinaBotTested=False,filePrefix=FILE_PREFIX,maps=reports,questFields=schema,portableObjects={k:len(v) for k,v in catalog.output.items()},compactItems=len(catalog.compact),nextMapRequiresNewLobby=True,saveFormat='Z4',uncompressedSaveFormat='C3',talentChoices=40,legacySaveFormat='RC1')
     (destination/'Build-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
     return report
 
@@ -312,7 +314,7 @@ def transform(script,m,schema,catalog,players,remap,runtime,forces):
         for match in re.finditer(pattern,mask(script)):replacements.append((match.start(),match.end(),'RC_IsPartyPlayer('+script[match.start(group):match.end(group)]+')'))
     for a,b,value in sorted(replacements,reverse=True):script=script[:a]+value+script[b:]
     mapped={'GetGameDifficulty':'RC_GetDifficulty','GetForceOfPlayer':'RC_GetForce','IsUnitOwnedByPlayer':'RC_UnitOwned','TriggerRegisterPlayerUnitEvent':'RC_RegisterUnitEvent','TriggerRegisterPlayerEventEndCinematic':'RC_RegisterSkip','CinematicModeBJ':'RC_Cinematic','CameraSetupApplyForPlayer':'RC_CameraSetup','GetUnitsOfPlayerAll':'RC_UnitsOfPlayer','InitGameCacheBJ':'RC_InitCache','ReloadGameCachesFromDisk':'RC_ReloadCache','SaveGameCacheBJ':'RC_SaveCache','RestoreUnitLocFacingAngleBJ':'RC_RestoreHero','StartCampaignAI':'RC_StartAI','ChangeLevel':'RC_ChangeLevel','SetNextLevelBJ':'RC_SetNextLevel','CustomVictoryBJ':'RC_Victory','CustomDefeatBJ':'RC_Defeat','SetPlayerStateBJ':'RC_Resource','AdjustPlayerStateBJ':'RC_AdjustResource'}
-    mapped.update({'SelectHeroSkill':'RC_Learn','UnitHasItemOfTypeBJ':'RC_HasQuestItem','GetItemOfTypeFromUnitBJ':'RC_QuestItem'})
+    mapped.update({'SelectHeroSkill':'RC_Learn','SetPlayerHandicapXPBJ':'RC_XPHandicapPercent','SetPlayerHandicapXP':'RC_XPHandicap','SuspendHeroXPBJ':'RC_SuspendExperienceBJ','SuspendHeroXP':'RC_SuspendExperience','UnitHasItemOfTypeBJ':'RC_HasQuestItem','GetItemOfTypeFromUnitBJ':'RC_QuestItem'})
     script=calls(script,mapped)
     if 'function Trig_Transition_Actions ' in script:
         base=0 if m['index']<5 else 5
@@ -347,6 +349,7 @@ def transform(script,m,schema,catalog,players,remap,runtime,forces):
     if script.count('call RC_Bootstrap()')!=1:raise ValueError('Main initialization not gated')
     global_text=globals_text(m,len(schema))
     code=runtime.replace('// @@GLOBALS@@','').replace('// @@ITEMS@@',catalog.hooks(m['name'])).replace('// @@HOOKS@@',hooks(m,schema)).replace('// @@INIT@@',initialization(m))
+    code=code.replace('// @@PROGRESS_BASE@@',(ROOT/'runtime/progress-base.j').read_text()).replace('// @@PROGRESS_MENUS@@',(ROOT/'runtime/progress-menus.j').read_text()).replace('// @@EXPERIENCE@@',(ROOT/'runtime/experience.j').read_text())
     code=code.replace('// @@SKILLS@@',(ROOT/'runtime/skills.j').read_text()).replace('// @@BALANCE@@',(ROOT/'runtime/balance.j').read_text())
     code=code.replace('// @@CHECKPOINT@@',(ROOT/'runtime/checkpoint.j').read_text())
     script=script.replace('endglobals',global_text+'\nendglobals\n'+code,1)
@@ -355,7 +358,7 @@ def transform(script,m,schema,catalog,players,remap,runtime,forces):
 def globals_text(m,story_count):
     text='''
     string RC_alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_"
-    string RC_filePrefix = "RX4-"
+    string RC_filePrefix = "RX5-"
     boolean RC_codeOK = true
     boolean RC_started = false
     boolean RC_partyLoaded = false
@@ -422,14 +425,14 @@ def globals_text(m,story_count):
     quest RC_helpQuest = null
     dialog RC_menu = null
     button array RC_difficultyButton
-    real RC_xpRate = 0.30
+    real RC_xpRate = 1.0
     real RC_revivalX = 0.0
     real RC_revivalY = 0.0
 '''
     return text + (ROOT/'runtime/kit-globals.j').read_text()
 
 def initialization(m):
-    index=m['index'];lines=[f'    set RC_map = {index}',f'    set RC_sourceMap = {index}',f'    set RC_nextMap = {index}',f'    set RC_storyCount = {m["storyCount"]}',f'    set RC_defaultLevel = {2 if index<5 else 8 if index<15 else 12}',f'    set RC_xpRate = {0.30 if index<5 else 0.25 if index<15 else 0.45}','    set RC_session = GetRandomInt(1, 4095)','    set RC_flags[0] = 1']
+    index=m['index'];lines=[f'    set RC_map = {index}',f'    set RC_sourceMap = {index}',f'    set RC_nextMap = {index}',f'    set RC_storyCount = {m["storyCount"]}',f'    set RC_defaultLevel = {2 if index<5 else 8 if index<15 else 12}','    set RC_xpRate = 1.0','    set RC_session = GetRandomInt(1, 4095)','    set RC_flags[0] = 1']
     for n,name in enumerate(MAPS):lines += [f'    set RC_mapName[{n}] = "{name}"',f'    set RC_act[{n}] = {1 if n<5 else 2 if n<15 else 3}',f'    set RC_zone[{n}] = {n+1 if n<5 else n-4 if n<15 else 0}']
     heroes=[('Orex','Рексар — повелитель стаи',['Arsg','Arsq','ANsb','Arsp','Aamk']),('Orkn','Рокхан — духолов',['ANhw','ANhx','Arsw','AOls','Aamk']),('Nsjs','Чэнь — мастер огня',['ANcf','Acdh','Acdb','Acef','Aamk']),('Ocb2','Кэрн — оплот предков',['AOs2','AOw2','AOr2','AOr3','Aamk'])]
     for role,(type,name,skills) in enumerate(heroes):
@@ -437,6 +440,8 @@ def initialization(m):
         for skill,id in enumerate(skills):
             lines.append(f"    set RC_skill[{role*5+skill}] = '{kits.skill_id(role,skill) if skill<4 else id}'")
             if skill<4:lines.append(f"    set RC_oldSkill[{role*4+skill}] = '{id}'")
+            title=kits.SPECS[role][skill][0] if skill<4 else 'Характеристики'
+            lines.append(f'    set RC_skillName[{role*5+skill}] = "{title}"')
     for bit in range(16):lines.append(f"    set RC_hpBit[{bit}] = 'RH{bit:02}'")
     for rank in range(1,6):lines.append(f"    set RC_armorId[{rank}] = 'RD0{rank}'")
     for n,text in enumerate(['Лёгкая','Обычная','Тяжёлая']):lines.append(f'    set RC_difficultyName[{n}] = "{text}"')
@@ -447,8 +452,9 @@ def initialization(m):
         width=1 if typ=='boolean' else 12 if name=='udg_BonusSkillPointsGiven' else 4
         bits.append(width);lines.append(f'    set RC_storyBits[{n}] = {width}')
     chars=(sum(bits)+5)//6
-    lines += [f'    set RC_storyChars = {chars}',f'    set RC_checkpointLength = {14+chars+48+12+3}',f'    set RC_itemCount = {m["itemCount"]}']
+    lines += [f'    set RC_storyChars = {chars}',f'    set RC_checkpointLength = {14+chars+48+2+12+3}',f'    set RC_itemCount = {m["itemCount"]}']
     for n in range(4):lines += [f'    set RC_checkpointCode[{n}] = ""',f'    set RC_checkpointPart[{n}] = ""']
+    lines.append(talents.initialization())
     return '\n'.join(lines)
 
 if __name__=='__main__':

@@ -1,3 +1,26 @@
+# Rexxar cooperative campaign — V
+
+Current files: `RX5-*.w3x`, packaged by `package_v.py`. Player instructions:
+[Russian README](README-V-RU.txt).
+
+V provides explicit K skill learning (native point pool, no automatic purchases),
+five two-way talent tiers per hero at levels 4/8/12/16/20, role-based choices
+persisted in Z4/C3 checkpoints (Z3/C2 still loads), and direct shared kill XP:
+each nearby living hero receives `24 + 8 * victim level`, plus 40 for enemy
+heroes; structures grant `12 + 4 * level`. Summons/illusions/friendly deaths,
+cutscenes and distant/dead heroes do not gain XP. Native automatic XP is
+suspended on the four heroes to prevent double rewards; campaign XP-handicap
+and suspension calls are wrapped. Local text tags display the actual award.
+
+`test_progress.py` exercises learning, concurrent player dialogs, all 40 talent
+choices, real kill reward/level progression, cross-map talent persistence,
+legacy-code compatibility and invalid-state rejection on generated/transpiled
+JASS. All 17 scripts require `pjass +shadow` and retain the native-confirmed C
+lobby metadata/config, except identifying title/description. These are automatic
+logic/data checks; this build has not been played in native Warcraft or IrinaBot.
+
+---
+
 # Rexxar cooperative campaign — IV
 
 The current builder emits all seventeen `RX4-*.w3x` missions. See

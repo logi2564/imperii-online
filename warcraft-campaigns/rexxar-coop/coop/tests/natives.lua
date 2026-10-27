@@ -86,7 +86,7 @@ function CreateUnit(p,id,x,y,f)
 end
 function GetHeroXP(u) return u.xp end
 function GetHeroLevel(u) return u.level end
-function SetHeroXP(u,xp,fx) u.xp=xp;u.level=1 while 50*(u.level+1)*(u.level+2)-100<=xp do u.level=u.level+1 end end
+function SetHeroXP(u,xp,fx) local old=u.level;u.xp=xp;u.level=1 while u.level<20 and 50*(u.level+1)*(u.level+2)-100<=xp do u.level=u.level+1 end u.points=math.max(0,u.points+u.level-old) end
 function SetHeroLevel(u,n,fx) u.level=n;u.xp=n==1 and 0 or 50*n*(n+1)-100;u.points=n end
 function GetHeroStr(u,b) return u.str end
 function GetHeroAgi(u,b) return u.agi end
@@ -209,3 +209,18 @@ function UnitDamageTarget(c,u,amount,...)
  WORLD.events=old
  return true
 end
+EVENT_PLAYER_UNIT_DEATH='death'
+function GetUnitLevel(u) return u.level end
+function GetKillingUnit() return WORLD.events.killer end
+function IsUnitIllusion(u) return u.illusion or false end
+function DialogClear(d) d.buttons={} end
+function GetClickedDialog() return WORLD.events.panel end
+function CreateTextTag() WORLD.tags=WORLD.tags or {};local t={};table.insert(WORLD.tags,t);return t end
+function SetTextTagText(t,s,size) t.text=s end
+function SetTextTagPosUnit(t,u,h) t.unit=u end
+function SetTextTagColor(...) end
+function SetTextTagVelocity(...) end
+function SetTextTagPermanent(...) end
+function SetTextTagLifespan(...) end
+function SetTextTagFadepoint(...) end
+function SetTextTagVisibility(t,v) t.visible=v end

@@ -34,7 +34,7 @@ def run(first,second):
     g.RC_Transition(destination.RC_map,2)
     assert g.RC_saveOK and g.RC_transitionPending and g.WORLD.paused
     codes=[g.RC_checkpointCode[n] for n in range(4)]
-    assert all(c.startswith('Z3') and len(g.RC_ExpandCode(c))==102 and len('-load '+c)<=127 for c in codes)
+    assert all(c.startswith('Z4') and len(g.RC_ExpandCode(c))==104 and len('-load '+c)<=127 for c in codes)
     assert len({g.RC_ExpandCode(c)[3:39] for c in codes})==1
     assert all(c in g.RC_codeQuest[n].description for n,c in enumerate(codes))
     assert all('-load '+c in g.RC_saveQuest.description for c in codes)
@@ -98,7 +98,7 @@ def run(first,second):
     selected.RC_SetNextLevel('Maps\\FrozenThrone\\Campaign\\OrcX03a.w3x')
     assert selected.RC_nextMap==15 and not selected.RC_transitionPending and selected.RC_checkpointCode[0]==''
     selected.RC_Victory(0,False,False);assert selected.RC_nextMap==15 and selected.RC_saveOK
-    print('PASS: Z3 compressed completion checkpoints, C2-compatible; automatic output at transition; stable/repeatable in-game codes; four-code cross-map XP/stats/skills/full inventories/charges/resources/stash/companion loot; classic chat size; role/map/checkpoint/corruption/unknown-item/missing-code rejection; reset and failed-save recovery; complete packed story range.')
+    print('PASS: Z4 compressed completion checkpoints, C3 with talents and legacy C2-compatible; automatic output at transition; stable/repeatable in-game codes; four-code cross-map XP/stats/skills/full inventories/charges/resources/stash/companion loot; classic chat size; role/map/checkpoint/corruption/unknown-item/missing-code rejection; reset and failed-save recovery; complete packed story range.')
 
 def collision(first,second):
     _,g=setup(first);begin(g)
@@ -107,7 +107,7 @@ def collision(first,second):
     for n in range(4):chat(h,PLAYERS[n],'-load '+g.RC_checkpointCode[n])
     begin(h)
     for n in range(4):assert h.GetItemTypeId(h.UnitItemInSlot(h.RC_hero[n],0))==h.RC_ItemToLocal(g.RC_ItemToPortable(g.FourCC('I003')))!=h.FourCC('I003')
-    print('PASS: Z3 codes preserve the real I003 identity collision across generated act-II maps.')
+    print('PASS: Z4 codes preserve the real I003 identity collision across generated act-II maps.')
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('first');parser.add_argument('second');parser.add_argument('third');args=parser.parse_args()

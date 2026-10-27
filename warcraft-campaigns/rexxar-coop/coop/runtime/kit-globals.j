@@ -29,3 +29,13 @@
     real array RK_limit
     real array RK_value
     integer array RK_phase
+    integer array RC_talents
+    integer array RC_talentLevel
+    integer array RC_talentAnnounced
+    string array RC_talentName
+    string array RC_talentText
+    string array RC_skillName
+    dialog array RC_progressPanel
+    button array RC_progressButton
+    integer array RC_progressMode
+    integer array RC_progressTier

@@ -1,4 +1,4 @@
-// C2: one chat-sized checkpoint per hero. Shared story is repeated in every
+// C3/Z4: one chat-sized checkpoint per hero, including five talent picks. Shared story is repeated in every
 // code; the twelve stash/companion slots are split into four three-slot parts.
 // All four codes must match before starting, including for absent roles.
 function RC_ItemCompact takes integer raw returns integer
@@ -93,12 +93,15 @@ function RC_ReadSmallStory takes string text returns boolean
     return RC_codeOK and RC_bitValue == 0 and RC_bitPosition == RC_storyChars
 endfunction
 
-// Z3 is a lossless run-length envelope around C2. A dot followed by one
+// Z3/C2 and Z4/C3 use the same lossless run-length envelope. A dot followed by one
 // alphabet digit encodes 3..63 zeroes; malformed envelopes never reach state.
 function RC_CompactCode takes string text returns string
     local string out = "Z3"
     local integer pos = 2
     local integer count
+    if SubString(text, 0, 2) == "C3" then
+        set out = "Z4"
+    endif
     loop
         exitwhen pos >= StringLength(text)
         set count = 0
@@ -122,7 +125,11 @@ function RC_ExpandCode takes string text returns string
     local string c
     local integer pos = 2
     local integer count
-    if SubString(text, 0, 2) != "Z3" then
+    local integer maximum = RC_checkpointLength - 2
+    if SubString(text, 0, 2) == "Z4" then
+        set out = "C3"
+        set maximum = RC_checkpointLength
+    elseif SubString(text, 0, 2) != "Z3" then
         return text
     endif
     loop
@@ -133,7 +140,7 @@ function RC_ExpandCode takes string text returns string
                 return ""
             endif
             set count = RC_Digit(SubString(text, pos + 1, pos + 2))
-            if count < 3 or StringLength(out) + count > RC_checkpointLength then
+            if count < 3 or StringLength(out) + count > maximum then
                 return ""
             endif
             loop
@@ -149,7 +156,7 @@ function RC_ExpandCode takes string text returns string
             set out = out + c
             set pos = pos + 1
         endif
-        if StringLength(out) > RC_checkpointLength then
+        if StringLength(out) > maximum then
             return ""
         endif
     endloop
@@ -160,13 +167,17 @@ function RC_MakeCheckpoint takes integer role, string hero, string story, string
     local integer n = 0
     local integer pos
     local integer flags = RC_flags[0] + RC_flags[1] * 2 + RC_flags[2] * 4 + RC_flags[3] * 8
-    local string text = "C2" + RC_Pack(role, 1) + RC_Pack(RC_session, 2) + RC_Pack(RC_checkpoint, 3) + RC_Pack(RC_map, 1) + RC_Pack(RC_nextMap, 1) + RC_Pack(RC_nextArea, 2) + RC_Pack(RC_difficulty, 1) + RC_Pack(flags, 1) + story + SubString(hero, 6, 30)
+    local string text = "C3" + RC_Pack(role, 1) + RC_Pack(RC_session, 2) + RC_Pack(RC_checkpoint, 3) + RC_Pack(RC_map, 1) + RC_Pack(RC_nextMap, 1) + RC_Pack(RC_nextArea, 2) + RC_Pack(RC_difficulty, 1) + RC_Pack(flags, 1) + story + SubString(hero, 6, 30)
     loop
         exitwhen n == 6
         set pos = 30 + n * 8
         set text = text + RC_Pack(RC_ItemCompact(RC_Number(SubString(hero, pos, pos + 6))), 2) + SubString(hero, pos + 6, pos + 8)
         set n = n + 1
     endloop
+    if RC_talents[role] < 0 or RC_talents[role] > 242 then
+        set RC_codeOK = false
+    endif
+    set text = text + RC_Pack(RC_talents[role], 2)
     set n = 0
     loop
         exitwhen n == 3
@@ -180,13 +191,19 @@ endfunction
 function RC_CheckpointValid takes string text returns boolean
     local integer check
     local integer actual
+    local integer expected = RC_checkpointLength
     set RC_codeOK = true
     set text = RC_ExpandCode(text)
-    if StringLength(text) != RC_checkpointLength or SubString(text, 0, 2) != "C2" then
+    if SubString(text, 0, 2) == "C2" then
+        set expected = expected - 2
+    elseif SubString(text, 0, 2) != "C3" then
         return false
     endif
-    set check = RC_Number(SubString(text, RC_checkpointLength - 3, RC_checkpointLength))
-    set actual = RC_Checksum(SubString(text, 0, RC_checkpointLength - 3))
+    if StringLength(text) != expected then
+        return false
+    endif
+    set check = RC_Number(SubString(text, expected - 3, expected))
+    set actual = RC_Checksum(SubString(text, 0, expected - 3))
     return RC_codeOK and check == actual
 endfunction
 
@@ -196,6 +213,7 @@ function RC_LoadCheckpoint takes string text, integer sender returns boolean
     local integer pos = 14 + RC_storyChars
     local integer id
     local integer flags
+    local integer talentValue = 0
     local string hero
     local string part = ""
     local string stash
@@ -229,6 +247,13 @@ function RC_LoadCheckpoint takes string text, integer sender returns boolean
         set pos = pos + 4
         set n = n + 1
     endloop
+    if SubString(text, 0, 2) == "C3" then
+        set talentValue = RC_Number(SubString(text, pos, pos + 2))
+        set pos = pos + 2
+        if talentValue > 242 then
+            return false
+        endif
+    endif
     set n = 0
     loop
         exitwhen n == 3
@@ -265,6 +290,7 @@ function RC_LoadCheckpoint takes string text, integer sender returns boolean
         set RC_story[n] = RC_tempStory[n]
         set n = n + 1
     endloop
+    set RC_talents[role] = talentValue
     set RC_loadedHero[role] = hero
     set RC_checkpointPart[role] = part
     set RC_checkpointCode[role] = RC_CompactCode(text)
@@ -313,6 +339,7 @@ function RC_ResetCheckpoint takes nothing returns nothing
     loop
         exitwhen n == 4
         set RC_loadedHero[n] = ""
+        set RC_talents[n] = 0
         set RC_checkpointCode[n] = ""
         set RC_checkpointPart[n] = ""
         set RC_flags[n] = 0

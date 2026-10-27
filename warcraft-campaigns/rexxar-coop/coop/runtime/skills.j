@@ -28,7 +28,11 @@ function RK_Debuff takes unit caster, unit target, boolean stun returns nothing
     set dummy = CreateUnit(GetOwningPlayer(caster), 'rD40', GetUnitX(target), GetUnitY(target), 0)
     call UnitAddType(dummy, UNIT_TYPE_SUMMONED)
     if stun then
-        call UnitAddAbility(dummy, 'RStn')
+        if (caster == RC_hero[2] and RC_HasTalent(2, 2, 1)) or (caster == RC_hero[3] and RC_HasTalent(3, 2, 2)) then
+            call UnitAddAbility(dummy, 'RSt2')
+        else
+            call UnitAddAbility(dummy, 'RStn')
+        endif
         call IssueTargetOrder(dummy, "thunderbolt", target)
     else
         call UnitAddAbility(dummy, 'RSlw')
@@ -88,6 +92,9 @@ function RK_End takes integer slot returns nothing
             call RK_Armor(u, RK_rank[slot], -1)
         endloop
     endif
+    if RK_kind[slot] == 14 then
+        call UnitRemoveAbility(RK_caster[slot], 'R5Ar')
+    endif
     call DestroyGroup(RK_hits[slot])
     call DestroyEffect(RK_visual[slot])
     call RemoveUnit(RK_marker[slot])
@@ -133,6 +140,9 @@ function RK_Pet takes unit caster, integer rawId, real x, real y, integer rank, 
     local unit pet = CreateUnit(GetOwningPlayer(caster), rawId, x, y, GetUnitFacing(caster))
     local integer health = (90 + 50 * rank) / 25
     local integer bit = 0
+    if RC_HasTalent(0, 0, 2) then
+        set health = health + 8
+    endif
     call UnitAddType(pet, UNIT_TYPE_SUMMONED)
     // Native companions have different base health; rank adds fixed bonus HP.
     loop
@@ -145,6 +155,9 @@ function RK_Pet takes unit caster, integer rawId, real x, real y, integer rank, 
     endloop
     call SetWidgetLife(pet, GetUnitState(pet, UNIT_STATE_MAX_LIFE))
     call UnitAddAbility(pet, 'RP00' + rank)
+    if RC_HasTalent(0, 2, 1) then
+        call UnitAddAbility(pet, 'R5Pd')
+    endif
     call UnitApplyTimedLife(pet, 'BTLF', seconds)
     if RK_Alive(RC_huntTarget) and RC_huntUntil > RC_skillTime then
         call IssueTargetOrder(pet, "attack", RC_huntTarget)
@@ -167,21 +180,28 @@ function RK_Pulse takes integer slot, integer step returns nothing
     local real dx
     local real dy
     local real distance
+    local real radius = 450
+    if kind == 6 then
+        set radius = radius + RC_TalentBonus(1, 0, 2, 150)
+    endif
     if kind == 3 then
         if not RK_Alive(target) then
             loop
                 exitwhen n == 4
                 if IsUnitInRangeXY(RC_hero[n], x, y, 700) then
-                    call RK_Heal(RC_hero[n], GetUnitState(RC_hero[n], UNIT_STATE_MAX_LIFE) * 0.12)
+                    call RK_Heal(RC_hero[n], GetUnitState(RC_hero[n], UNIT_STATE_MAX_LIFE) * (0.12 + RC_TalentBonus(0, 1, 2, 0.12)))
                 endif
                 set n = n + 1
             endloop
+            if RC_HasTalent(0, 3, 2) then
+                call RK_Area(caster, x, y, 300, 120.0 + 8.0 * GetHeroLevel(caster), false, 0, false)
+            endif
             set RK_age[slot] = RK_limit[slot]
         else
             set RK_x[slot] = GetUnitX(target)
             set RK_y[slot] = GetUnitY(target)
             if ModuloInteger(step, 10) == 0 then
-                call RK_Hit(caster, target, 12.0 + 9.0 * rank)
+                call RK_Hit(caster, target, (12.0 + 9.0 * rank) * (1.0 + RC_TalentBonus(0, 2, 2, 0.5)))
                 call RK_Debuff(caster, target, false)
             endif
         endif
@@ -189,7 +209,7 @@ function RK_Pulse takes integer slot, integer step returns nothing
         if not RK_Alive(target) or not IsUnitInRange(caster, target, 1100) then
             set RK_age[slot] = RK_limit[slot]
         elseif ModuloInteger(step, 10) == 0 then
-            call RK_Heal(target, 10.0 + 8.0 * rank)
+            call RK_Heal(target, (10.0 + 8.0 * rank) * (1.0 + RC_TalentBonus(1, 0, 1, 0.3)))
             call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Orc\\HealingWave\\HealingWaveTarget.mdl", target, "origin"))
         endif
     elseif kind == 6 or kind == 8 or kind == 16 then
@@ -201,12 +221,19 @@ function RK_Pulse takes integer slot, integer step returns nothing
                 loop
                     exitwhen n == 4
                     set u = RC_hero[n]
-                    if IsUnitInRangeXY(u, x, y, 450) then
+                    if IsUnitInRangeXY(u, x, y, radius) then
                         if kind == 6 then
-                            call RK_Heal(u, 12.0 + 9.0 * rank)
+                            call RK_Heal(u, 12.0 + 9.0 * rank + RC_TalentBonus(1, 2, 1, 15))
                             call UnitRemoveBuffs(u, false, true)
                         elseif kind == 8 then
-                            call RK_Heal(u, 18.0 + 17.0 * rank)
+                            set amount = 18.0 + 17.0 * rank
+                            if RC_HasTalent(1, 3, 2) and GetWidgetLife(u) < GetUnitState(u, UNIT_STATE_MAX_LIFE) * 0.35 then
+                                set amount = amount * 1.4
+                            endif
+                            call RK_Heal(u, amount)
+                        endif
+                        if kind == 16 and RC_HasTalent(3, 3, 2) then
+                            call RK_Heal(u, GetUnitState(u, UNIT_STATE_MAX_LIFE) * 0.015)
                         endif
                         if kind == 16 and not IsUnitInGroup(u, RK_hits[slot]) then
                             call GroupAddUnit(RK_hits[slot], u)
@@ -218,8 +245,10 @@ function RK_Pulse takes integer slot, integer step returns nothing
                     endif
                     set n = n + 1
                 endloop
-                if kind == 8 then
-                    call RK_Area(caster, x, y, 450, 18.0 + 17.0 * rank, false, 0, false)
+                if kind == 6 and RC_HasTalent(1, 3, 1) then
+                    call RK_Area(caster, x, y, radius, 20, false, 0, false)
+                elseif kind == 8 then
+                    call RK_Area(caster, x, y, 450, 18.0 + 17.0 * rank + RC_TalentBonus(1, 2, 2, 35), false, 0, false)
                 elseif kind == 16 and ModuloInteger(step, 20) == 0 then
                     call RK_Area(caster, x, y, 450, 100.0 + 80.0 * rank, true, 0, false)
                     call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Orc\\WarStomp\\WarStompCaster.mdl", x, y))
@@ -235,13 +264,17 @@ function RK_Pulse takes integer slot, integer step returns nothing
                 call SetUnitPosition(target, x, y)
                 call SetWidgetLife(target, RMaxBJ(GetWidgetLife(target), RK_value[slot]))
             endif
+            if RC_HasTalent(1, 1, 2) then
+                call SetUnitState(target, UNIT_STATE_MANA, RMinBJ(GetUnitState(target, UNIT_STATE_MAX_MANA), GetUnitState(target, UNIT_STATE_MANA) + GetUnitState(target, UNIT_STATE_MAX_MANA) * 0.25))
+            endif
             call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\MassTeleport\\MassTeleportTarget.mdl", x, y))
         endif
     elseif kind == 12 then
+        set radius = 380 + RC_TalentBonus(2, 4, 1, 120)
         if ModuloInteger(step, 10) == 0 then
-            call RK_Area(caster, x, y, 380, 18.0 + 17.0 * rank, false, 0.5, false)
+            call RK_Area(caster, x, y, radius, (18.0 + 17.0 * rank) * (1.0 + RC_TalentBonus(2, 3, 1, 0.25)), false, 0.5, false)
         endif
-        call GroupEnumUnitsInRange(RC_skillGroup, x, y, 380, null)
+        call GroupEnumUnitsInRange(RC_skillGroup, x, y, radius, null)
         loop
             set u = FirstOfGroup(RC_skillGroup)
             exitwhen u == null
@@ -257,6 +290,9 @@ function RK_Pulse takes integer slot, integer step returns nothing
         endloop
     elseif kind == 14 then
         if ModuloInteger(step, 10) == 0 then
+            if RC_HasTalent(3, 2, 1) then
+                call RK_Heal(caster, GetUnitState(caster, UNIT_STATE_MAX_LIFE) * 0.03)
+            endif
             call GroupEnumUnitsInRange(RC_skillGroup, GetUnitX(caster), GetUnitY(caster), 420, null)
             loop
                 set u = FirstOfGroup(RC_skillGroup)
@@ -268,9 +304,18 @@ function RK_Pulse takes integer slot, integer step returns nothing
             endloop
         endif
     elseif kind == 15 and RK_age[slot] + 0.001 >= RK_limit[slot] then
-        set amount = RMinBJ(180.0 + 60.0 * rank, 60.0 + 12.0 * rank + RK_value[slot] * 0.35)
+        set amount = RMinBJ(180.0 + 60.0 * rank, 60.0 + 12.0 * rank + RK_value[slot] * (0.35 + RC_TalentBonus(3, 1, 1, 0.15)))
         call RK_Heal(caster, amount)
-        call RK_Area(caster, GetUnitX(caster), GetUnitY(caster), 330, amount, true, 0, false)
+        call RK_Area(caster, GetUnitX(caster), GetUnitY(caster), 330 + RC_TalentBonus(3, 3, 1, 150), amount, true, 0, false)
+        if RC_HasTalent(3, 4, 2) then
+            loop
+                exitwhen n == 4
+                if RC_hero[n] != caster and IsUnitInRange(caster, RC_hero[n], 650) then
+                    call RK_Heal(RC_hero[n], amount * 0.5)
+                endif
+                set n = n + 1
+            endloop
+        endif
         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Orc\\WarStomp\\WarStompCaster.mdl", caster, "origin"))
     endif
     set caster = null
@@ -288,6 +333,13 @@ function RK_Move takes integer slot returns nothing
     local real dy = RK_dy[slot]
     local real amount = 35.0 + 25.0 * RK_rank[slot]
     local real distance
+    local real radius = 140
+    if kind == 1 then
+        set amount = amount * (1.0 + RC_TalentBonus(0, 0, 1, 0.25))
+    elseif kind == 13 then
+        set amount = amount * (1.0 + RC_TalentBonus(3, 0, 1, 0.25))
+        set radius = radius + RC_TalentBonus(3, 1, 2, 80)
+    endif
     if kind == 1 and RK_phase[slot] == 1 then
         set dx = GetUnitX(caster) - x
         set dy = GetUnitY(caster) - y
@@ -301,14 +353,15 @@ function RK_Move takes integer slot returns nothing
         set dy = dy / distance
     endif
     if kind == 11 then
+        set distance = RMinBJ(42, RMaxBJ(0, (RK_limit[slot] - RK_age[slot] + 0.1) * 420))
         // Sample each 21 units; do not dash through a thin pathing wall.
-        if IsTerrainPathable(x + dx * 21, y + dy * 21, PATHING_TYPE_WALKABILITY) or IsTerrainPathable(x + dx * 42, y + dy * 42, PATHING_TYPE_WALKABILITY) then
+        if IsTerrainPathable(x + dx * 21, y + dy * 21, PATHING_TYPE_WALKABILITY) or IsTerrainPathable(x + dx * distance, y + dy * distance, PATHING_TYPE_WALKABILITY) then
             set RK_age[slot] = RK_limit[slot]
             set caster = null
             return
         endif
-        set x = x + dx * 42
-        set y = y + dy * 42
+        set x = x + dx * distance
+        set y = y + dy * distance
         call SetUnitPosition(caster, x, y)
         set x = GetUnitX(caster)
         set y = GetUnitY(caster)
@@ -326,8 +379,8 @@ function RK_Move takes integer slot returns nothing
     set RK_y[slot] = y
     if kind == 10 then
         if RK_age[slot] + 0.001 >= RK_limit[slot] then
-            call RK_Area(caster, x, y, 280, 90.0 + 50.0 * RK_rank[slot], false, 0.6, false)
-            call GroupEnumUnitsInRange(RC_skillGroup, x, y, 280, null)
+            call RK_Area(caster, x, y, 280 + RC_TalentBonus(2, 1, 1, 100), 90.0 + 50.0 * RK_rank[slot], false, 0.6, false)
+            call GroupEnumUnitsInRange(RC_skillGroup, x, y, 280 + RC_TalentBonus(2, 1, 1, 100), null)
             loop
                 set u = FirstOfGroup(RC_skillGroup)
                 exitwhen u == null
@@ -335,11 +388,14 @@ function RK_Move takes integer slot returns nothing
                 if LoadReal(RC_table, GetHandleId(u), 301) > RC_skillTime then
                     call RK_Debuff(caster, u, true)
                 endif
+                if RC_HasTalent(2, 3, 2) and RK_Enemy(caster, u) then
+                    call SaveReal(RC_table, GetHandleId(u), 301, RMaxBJ(LoadReal(RC_table, GetHandleId(u), 301), RC_skillTime + 4))
+                endif
             endloop
             call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Other\\Incinerate\\FireLordDeathExplode.mdl", x, y))
         endif
     else
-        call GroupEnumUnitsInRange(RC_skillGroup, x, y, 140, null)
+        call GroupEnumUnitsInRange(RC_skillGroup, x, y, radius, null)
         loop
             set u = FirstOfGroup(RC_skillGroup)
             exitwhen u == null
@@ -352,6 +408,10 @@ function RK_Move takes integer slot returns nothing
                     call RK_Hit(caster, u, amount * 1.4)
                 else
                     call RK_Hit(caster, u, amount)
+                endif
+                if kind == 11 and RC_HasTalent(2, 2, 2) and RK_value[slot] < 2 then
+                    set RK_value[slot] = RK_value[slot] + 1
+                    call RK_Heal(caster, GetUnitState(caster, UNIT_STATE_MAX_LIFE) * 0.08)
                 endif
                 if kind == 13 then
                     call RK_Debuff(caster, u, true)
@@ -396,6 +456,36 @@ function RK_Tick takes nothing returns nothing
     endloop
 endfunction
 
+function RK_Launch takes unit caster, integer kind, integer rank, real x, real y, real spread returns nothing
+    local integer slot = RK_New(caster, kind, rank, GetUnitX(caster), GetUnitY(caster), 6)
+    local real dx = x - GetUnitX(caster)
+    local real dy = y - GetUnitY(caster)
+    local real distance = SquareRoot(dx * dx + dy * dy)
+    local real angle = Atan2(dy, dx) + spread
+    if slot == 0 then
+        return
+    endif
+    if distance < 1 then
+        set angle = GetUnitFacing(caster) * bj_DEGTORAD + spread
+    endif
+    set RK_dx[slot] = Cos(angle)
+    set RK_dy[slot] = Sin(angle)
+    if kind == 1 then
+        set RK_limit[slot] = 3
+        call RK_Marker(slot, "Abilities\\Weapons\\RexxarMissile\\RexxarMissile.mdl")
+    elseif kind == 10 then
+        set RK_limit[slot] = RMaxBJ(0.1, RMinBJ(700, distance) / 700)
+        call RK_Marker(slot, "Abilities\\Weapons\\BrewmasterMissile\\BrewmasterMissile.mdl")
+    elseif kind == 11 then
+        set RK_limit[slot] = RMaxBJ(0.1, RMinBJ(420 + RC_TalentBonus(2, 1, 2, 180), distance) / 420)
+        call PauseUnit(caster, true)
+        set RK_visual[slot] = AddSpecialEffectTarget("Abilities\\Spells\\Other\\ImmolationRed\\ImmolationRedTarget.mdl", caster, "origin")
+    else
+        set RK_limit[slot] = 0.9
+        call RK_Marker(slot, "Abilities\\Spells\\Orc\\Shockwave\\ShockwaveMissile.mdl")
+    endif
+endfunction
+
 function RC_Spell takes nothing returns nothing
     local unit caster = GetTriggerUnit()
     local unit target = GetSpellTargetUnit()
@@ -412,12 +502,24 @@ function RC_Spell takes nothing returns nothing
     local real dy
     local real distance
     local real angle
+    local real nearest = 600
+    local unit partner = null
     local unit u
     loop
         exitwhen role == 4 or RC_hero[role] == caster
         set role = role + 1
     endloop
     if role == 4 or rank == 0 or RC_transitionPending or RC_StoryCinematic() then
+        set caster = null
+        set target = null
+        return
+    endif
+    if abilityId == 'R5Sk' or abilityId == 'R5Ta' then
+        if abilityId == 'R5Sk' then
+            call RC_OpenProgress(role, 0, 0)
+        else
+            call RC_OpenProgress(role, 1, 0)
+        endif
         set caster = null
         set target = null
         return
@@ -449,11 +551,11 @@ function RC_Spell takes nothing returns nothing
         call RK_Pet(caster, 'nqb1', GetUnitX(caster) + 80, GetUnitY(caster), rank, 22)
     elseif kind == 4 then
         loop
-            exitwhen n == 3
-            call RK_Pet(caster, 'osw2', x + 90 * Cos(n * 2.094), y + 90 * Sin(n * 2.094), rank, 12)
+            exitwhen n == 3 + R2I(RC_TalentBonus(0, 4, 2, 2))
+            call RK_Pet(caster, 'osw2', x + 90 * Cos(n * 6.283185 / (3.0 + RC_TalentBonus(0, 4, 2, 2))), y + 90 * Sin(n * 6.283185 / (3.0 + RC_TalentBonus(0, 4, 2, 2))), rank, 12)
             set n = n + 1
         endloop
-        call RK_Area(caster, x, y, 280, 100.0 + 80.0 * rank, false, 0, true)
+        call RK_Area(caster, x, y, 280, 100.0 + 80.0 * rank, RC_HasTalent(0, 3, 1), 0, true)
         call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", x, y))
     elseif kind == 9 then
         set angle = Atan2(y - GetUnitY(caster), x - GetUnitX(caster))
@@ -465,12 +567,20 @@ function RC_Spell takes nothing returns nothing
             set dx = GetUnitX(u) - GetUnitX(caster)
             set dy = GetUnitY(u) - GetUnitY(caster)
             if RK_Enemy(caster, u) and (dx * Cos(angle) + dy * Sin(angle)) >= SquareRoot(dx * dx + dy * dy) * 0.65 then
-                call RK_Hit(caster, u, 35.0 + 25.0 * rank)
+                call RK_Hit(caster, u, (35.0 + 25.0 * rank) * (1.0 + RC_TalentBonus(2, 0, 2, 0.25)))
                 call RK_Debuff(caster, u, false)
-                call SaveReal(RC_table, GetHandleId(u), 301, RC_skillTime + 6)
+                call SaveReal(RC_table, GetHandleId(u), 301, RC_skillTime + 6 + RC_TalentBonus(2, 0, 1, 3))
             endif
         endloop
         call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\BreathOfFire\\BreathOfFireMissile.mdl", caster, "origin"))
+    elseif kind == 1 or kind == 10 or kind == 11 or kind == 13 then
+        call RK_Launch(caster, kind, rank, x, y, 0)
+        if (kind == 1 and RC_HasTalent(0, 4, 1)) or (kind == 13 and RC_HasTalent(3, 4, 1)) then
+            call RK_Launch(caster, kind, rank, x, y, 0.22)
+            call RK_Launch(caster, kind, rank, x, y, -0.22)
+        elseif kind == 10 and RC_HasTalent(2, 4, 2) then
+            call RK_Launch(caster, kind, rank, x, y, 0.08)
+        endif
     else
         if kind == 3 or kind == 5 or kind == 7 then
             set x = GetUnitX(target)
@@ -486,43 +596,18 @@ function RC_Spell takes nothing returns nothing
             return
         endif
         set RK_target[slot] = target
-        if kind == 1 or kind == 10 or kind == 11 or kind == 13 then
-            set dx = x - GetUnitX(caster)
-            set dy = y - GetUnitY(caster)
-            set distance = SquareRoot(dx * dx + dy * dy)
-            if distance < 1 then
-                set dx = Cos(GetUnitFacing(caster) * bj_DEGTORAD)
-                set dy = Sin(GetUnitFacing(caster) * bj_DEGTORAD)
-            else
-                set dx = dx / distance
-                set dy = dy / distance
-            endif
-            set RK_dx[slot] = dx
-            set RK_dy[slot] = dy
-            set RK_x[slot] = GetUnitX(caster)
-            set RK_y[slot] = GetUnitY(caster)
-            if kind == 1 then
-                set RK_limit[slot] = 3.0
-                call RK_Marker(slot, "Abilities\\Weapons\\RexxarMissile\\RexxarMissile.mdl")
-            elseif kind == 10 then
-                set RK_limit[slot] = RMaxBJ(0.1, RMinBJ(700, distance) / 700)
-                call RK_Marker(slot, "Abilities\\Weapons\\BrewmasterMissile\\BrewmasterMissile.mdl")
-            elseif kind == 11 then
-                set RK_limit[slot] = RMaxBJ(0.1, RMinBJ(420, distance) / 420)
-                call PauseUnit(caster, true)
-                set RK_visual[slot] = AddSpecialEffectTarget("Abilities\\Spells\\Other\\ImmolationRed\\ImmolationRedTarget.mdl", caster, "origin")
-            else
-                set RK_limit[slot] = 0.9
-                call RK_Marker(slot, "Abilities\\Spells\\Orc\\Shockwave\\ShockwaveMissile.mdl")
-            endif
-        elseif kind == 3 then
+        if kind == 3 then
             set RC_huntTarget = target
-            set RC_huntUntil = RC_skillTime + 6
+            set RK_limit[slot] = 6 + RC_TalentBonus(0, 1, 1, 3)
+            set RC_huntUntil = RC_skillTime + RK_limit[slot]
             call RK_Debuff(caster, target, false)
             set RK_visual[slot] = AddSpecialEffectTarget("Abilities\\Spells\\Other\\Aneu\\AneuTarget.mdl", target, "overhead")
         elseif kind == 5 then
             set RK_limit[slot] = 3
-            call RK_Heal(target, 35.0 + 25.0 * rank)
+            call RK_Heal(target, (35.0 + 25.0 * rank) * (1.0 + RC_TalentBonus(1, 0, 1, 0.3)))
+            if RC_HasTalent(1, 1, 1) then
+                call UnitRemoveBuffs(target, false, true)
+            endif
             set RK_visual[slot] = AddSpecialEffectTarget("Abilities\\Spells\\Orc\\SpiritLink\\SpiritLinkTarget.mdl", target, "chest")
         elseif kind == 6 then
             set RK_limit[slot] = 8
@@ -534,6 +619,27 @@ function RC_Spell takes nothing returns nothing
             set RK_limit[slot] = 7
             set RK_value[slot] = RMinBJ(GetWidgetLife(target), GetUnitState(target, UNIT_STATE_MAX_LIFE) * (0.35 + 0.07 * rank))
             set RK_visual[slot] = AddSpecialEffectTarget("Abilities\\Spells\\Orc\\SpiritLink\\SpiritLinkTarget.mdl", target, "origin")
+            if RC_HasTalent(1, 4, 1) then
+                loop
+                    exitwhen n == 4
+                    set u = RC_hero[n]
+                    if u != target and RK_Alive(u) and IsUnitInRange(u, target, nearest) then
+                        set dx = GetUnitX(u) - x
+                        set dy = GetUnitY(u) - y
+                        set nearest = SquareRoot(dx * dx + dy * dy)
+                        set partner = u
+                    endif
+                    set n = n + 1
+                endloop
+                if partner != null then
+                    set slot = RK_New(caster, 7, rank, GetUnitX(partner), GetUnitY(partner), 7)
+                    if slot != 0 then
+                        set RK_target[slot] = partner
+                        set RK_value[slot] = RMinBJ(GetWidgetLife(partner), GetUnitState(partner, UNIT_STATE_MAX_LIFE) * (0.35 + 0.07 * rank))
+                        set RK_visual[slot] = AddSpecialEffectTarget("Abilities\\Spells\\Orc\\SpiritLink\\SpiritLinkTarget.mdl", partner, "origin")
+                    endif
+                endif
+            endif
         elseif kind == 8 then
             set RK_limit[slot] = 8
             set RK_visual[slot] = AddSpecialEffect("Abilities\\Spells\\Other\\Monsoon\\MonsoonRain.mdl", x, y)
@@ -542,15 +648,19 @@ function RC_Spell takes nothing returns nothing
                 if not RK_Alive(RC_hero[n]) and IsUnitInRangeXY(RC_hero[n], x, y, 700) then
                     call ReviveHero(RC_hero[n], x, y, true)
                     call SetWidgetLife(RC_hero[n], GetUnitState(RC_hero[n], UNIT_STATE_MAX_LIFE) * 0.4)
-                    exitwhen true
+                    exitwhen not RC_HasTalent(1, 4, 2)
                 endif
                 set n = n + 1
             endloop
         elseif kind == 12 then
+            set RK_limit[slot] = 6 + RC_TalentBonus(2, 4, 1, 2)
             set RK_visual[slot] = AddSpecialEffect("Abilities\\Spells\\Human\\FlameStrike\\FlameStrike1.mdl", x, y)
         elseif kind == 14 then
             call GroupAddUnit(RK_hits[slot], caster)
             call RK_Armor(caster, rank, 1)
+            if RC_HasTalent(3, 0, 2) then
+                call UnitAddAbility(caster, 'R5Ar')
+            endif
             set RK_visual[slot] = AddSpecialEffectTarget("Abilities\\Spells\\Human\\Defend\\DefendCaster.mdl", caster, "origin")
         elseif kind == 15 then
             set RK_limit[slot] = 5
@@ -562,32 +672,37 @@ function RC_Spell takes nothing returns nothing
     endif
     set caster = null
     set target = null
+    set partner = null
     set u = null
 endfunction
 
-// Original cinematics sometimes teach stock skills to an NPC before adoption.
-// Keep that NPC functional; player-owned heroes always use the new skill slot.
+// Scripted stock-skill purchases must not spend the player's unassigned points.
+// NPC/cinematic actors keep stock spells until adoption strips that old kit.
 function RC_Learn takes unit hero, integer abilityId returns nothing
     local integer role = 0
-    local integer slot
+    local integer slot = 0
     local integer rank = GetUnitAbilityLevel(hero, abilityId) + 1
+    loop
+        exitwhen role == 4
+        if hero == RC_hero[role] then
+            return
+        endif
+        set role = role + 1
+    endloop
+    set role = 0
     loop
         exitwhen role == 4
         set slot = 0
         loop
             exitwhen slot == 4
-            if RC_oldSkill[role * 4 + slot] == abilityId and RC_IsPartyPlayer(GetOwningPlayer(hero)) then
-                call SelectHeroSkill(hero, RC_skill[role * 5 + slot])
+            if RC_oldSkill[role * 4 + slot] == abilityId and GetUnitTypeId(hero) == RC_heroType[role] then
+                call UnitAddAbility(hero, abilityId)
+                call SetUnitAbilityLevel(hero, abilityId, rank)
                 return
             endif
             set slot = slot + 1
         endloop
         set role = role + 1
     endloop
-    if not RC_IsPartyPlayer(GetOwningPlayer(hero)) then
-        call UnitAddAbility(hero, abilityId)
-        call SetUnitAbilityLevel(hero, abilityId, rank)
-    else
-        call SelectHeroSkill(hero, abilityId)
-    endif
+    call SelectHeroSkill(hero, abilityId)
 endfunction

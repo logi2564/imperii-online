@@ -189,6 +189,8 @@ function RC_ClearOldSkills takes unit hero, integer role returns nothing
     call UnitRemoveAbility(hero, 'RCA0' + role)
 endfunction
 
+// @@PROGRESS_BASE@@
+
 function RC_ApplyHero takes integer role, string payload returns nothing
     local unit hero = RC_hero[role]
     local integer n = 0
@@ -207,7 +209,7 @@ function RC_ApplyHero takes integer role, string payload returns nothing
                 call UnitAddAbility(hero, RC_skill[role * 5 + n])
             endif
             call SetUnitAbilityLevel(hero, RC_skill[role * 5 + n], level)
-        else
+        elseif GetUnitAbilityLevel(hero, RC_skill[role * 5 + n]) > 0 then
             call UnitRemoveAbility(hero, RC_skill[role * 5 + n])
         endif
         set n = n + 1
@@ -236,7 +238,7 @@ function RC_ApplyHero takes integer role, string payload returns nothing
     call SetHeroStr(hero, RC_Number(SubString(payload, 10, 12)), true)
     call SetHeroAgi(hero, RC_Number(SubString(payload, 12, 14)), true)
     call SetHeroInt(hero, RC_Number(SubString(payload, 14, 16)), true)
-    call SuspendHeroXP(hero, false)
+    call RC_InstallProgress(hero)
     set hero = null
     set it = null
 endfunction
@@ -267,12 +269,16 @@ function RC_Adopt takes integer role, unit hero returns nothing
         call SetUnitOwner(hero, RC_Owner(role), true)
     endif
     call RC_ClearOldSkills(hero, role)
-    call SuspendHeroXP(hero, false)
+    call RC_InstallProgress(hero)
     set old = null
     set it = null
 endfunction
 
 // @@HOOKS@@
+
+// @@PROGRESS_MENUS@@
+
+// @@EXPERIENCE@@
 
 // @@SKILLS@@
 
@@ -399,7 +405,7 @@ function RC_WriteSave takes integer role, string payload returns nothing
     if GetLocalPlayer() == RC_Owner(role) then
         call PreloadGenClear()
         call PreloadGenStart()
-        call Preload("Rexxar co-op IV. Enter this one command in the next mission, before -start:")
+        call Preload("Rexxar co-op V. Enter this one command in the next mission, before -start:")
         call Preload("-load " + payload)
         call Preload("Next map: " + RC_mapName[RC_nextMap])
         call PreloadGenEnd("Logs\\RexxarCoop-P" + I2S(role + 1) + ".txt")
@@ -618,6 +624,9 @@ function RC_Cinematic takes boolean enabled, force players returns nothing
             loop
                 exitwhen n == 4
                 call IssueImmediateOrder(RC_hero[n], "stop")
+                if RC_progressPanel[n] != null then
+                    call DialogDisplay(RC_Owner(n), RC_progressPanel[n], false)
+                endif
                 set n = n + 1
             endloop
         endif
@@ -938,6 +947,7 @@ function RC_Tick takes nothing returns nothing
                 endif
             endif
         endif
+        call RC_ProgressTick(n)
         set n = n + 1
     endloop
     if not RC_StoryCinematic() then
@@ -1000,7 +1010,7 @@ function RC_Ready takes nothing returns nothing
             call RC_ApplyHero(n, RC_loadedHero[n])
         endif
         if RC_Active(n) then
-            call RC_Tell(RC_Player(n), 30, "Твой герой: " + RC_heroName[n] + ". Навыки Q/W/E/R. Сохранение: -save; свой код: -code; запасные коды: F9.")
+            call RC_Tell(RC_Player(n), 30, "Твой герой: " + RC_heroName[n] + ". Обучение: кнопка K. Таланты: кнопка T (уровни 4/8/12/16/20). Сохранение: -save; свой код: -code; запасные коды: F9.")
         endif
         set n = n + 1
     endloop
@@ -1058,8 +1068,7 @@ function RC_Begin takes nothing returns nothing
         exitwhen n == 4
         set RC_hero[n] = CreateUnit(RC_Owner(n), RC_heroType[n], x + n * 90.0, y, 0.0)
         call SetHeroLevel(RC_hero[n], RC_defaultLevel, false)
-        call SelectHeroSkill(RC_hero[n], RC_skill[n * 5])
-        call SelectHeroSkill(RC_hero[n], RC_skill[n * 5 + 1])
+        call RC_InstallProgress(RC_hero[n])
         call RC_ClearOldSkills(RC_hero[n], n)
         if RC_loadedHero[n] != "" then
             call RC_ApplyHero(n, RC_loadedHero[n])
@@ -1098,7 +1107,11 @@ function RC_Chat takes nothing returns nothing
     local string payload
     local integer requested = -1
     local integer n
-    if text == "-code" and RC_started then
+    if (text == "-skills" or text == "-skill") and RC_started then
+        call RC_OpenProgress(role, 0, 0)
+    elseif (text == "-talents" or text == "-таланты") and RC_started then
+        call RC_OpenProgress(role, 1, 0)
+    elseif text == "-code" and RC_started then
         call RC_ShowCode(role)
     elseif text == "-codes" and RC_started and role == RC_host then
         set n = 0
@@ -1137,7 +1150,7 @@ function RC_Chat takes nothing returns nothing
     elseif SubString(text, 0, 6) == "-load " and not RC_started then
         set requested = role
         set payload = SubString(text, 6, StringLength(text))
-        if (SubString(payload, 0, 2) == "C2" or SubString(payload, 0, 2) == "Z3") then
+        if (SubString(payload, 0, 2) == "C2" or SubString(payload, 0, 2) == "Z3" or SubString(payload, 0, 2) == "C3" or SubString(payload, 0, 2) == "Z4") then
             if not RC_LoadCheckpoint(payload, role) then
                 call RC_Say("Код не принят. Проверь карту, номер героя и все символы; введи код из того же завершения миссии, что остальные.")
             endif
@@ -1210,6 +1223,8 @@ function RC_Menu takes nothing returns nothing
     call TriggerAddAction(chat, function RC_Chat)
     call TriggerAddAction(spells, function RC_Spell)
     // @@INIT@@
+    call RC_InitProgress()
+    call RC_InitExperience()
     if not RC_originalsGated then
         call RC_DisableOriginals()
         set RC_originalsGated = true
@@ -1234,7 +1249,7 @@ function RC_Menu takes nothing returns nothing
     endloop
     set RC_helpQuest = CreateQuest()
     call QuestSetTitle(RC_helpQuest, "Четверо героев — правила")
-    call QuestSetDescription(RC_helpQuest, "Навыки Q/W/E/R изучаются за очки героя. Рексар — возвращающийся топор и охота; Рокхан — тотем и якорь души; Чэнь — мокрые метки и огненные связки; Кэрн — броня и накопление урона для ответного удара.|nУ каждого свои вещи и навыки. Войска делятся, герой возрождается через 15 сек. Сюжетные спутники заменяют временных с переносом развития.|nВ конце миссии получи код. Повторить: -code, копия: F9. В следующей карте каждому -load КОД, затем ведущему -start.")
+    call QuestSetDescription(RC_helpQuest, "Кнопка K — изучение Q/W/E/R за очки героя. Кнопка T — пять рядов талантов с выбором на уровнях 4/8/12/16/20. Опыт за убийство: 24 + 8 за уровень врага каждому живому герою рядом (1600). Рексар — возвращающийся топор и охота; Рокхан — тотем и якорь души; Чэнь — мокрые метки и огненные связки; Кэрн — броня и накопление урона для ответного удара.|nУ каждого свои вещи и навыки. Войска делятся, герой возрождается через 15 сек. Сюжетные спутники заменяют временных с переносом развития.|nВ конце миссии получи код. Повторить: -code, копия: F9. В следующей карте каждому -load КОД, затем ведущему -start.")
     call QuestSetIconPath(RC_helpQuest, "ReplaceableTextures\\CommandButtons\\BTNBeastMaster.blp")
     call QuestSetRequired(RC_helpQuest, false)
     call QuestSetDiscovered(RC_helpQuest, true)

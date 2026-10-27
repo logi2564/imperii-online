@@ -54,6 +54,7 @@ jobs:
           python coop/tests/test_checkpoint.py build-out/runtime.lua build-out/runtime-act2.lua build-out/runtime-act2-side.lua | tee Checkpoint-check.txt
           python coop/tests/test_lobby.py build-out | tee Lobby-check.txt
           python coop/tests/test_kits.py build-out/runtime.lua | tee Skills-balance-save-check.txt
+          python coop/tests/test_progress.py build-out/runtime.lua build-out/runtime-act2.lua | tee Talents-XP-learning-check.txt
           PJASS="$RUNNER_TEMP/pjass/pjass" python coop/tests/test_entry_regression.py build-out | tee Entry-regression-check.txt
       - name: Stage maps and verification reports
         run: |
@@ -129,11 +130,11 @@ jobs:
           name: rexxar-windows-helper
           path: helper-out
       - name: Package seventeen new gameplay maps without stale baseline substitution
-        run: python3 warcraft-campaigns/rexxar-coop/coop/package_iv.py mission-artifact helper-out release
+        run: python3 warcraft-campaigns/rexxar-coop/coop/package_v.py mission-artifact helper-out release
       - name: Publish corrected campaign bundle with scoped native confirmation
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          tag="rexxar-coop-iv-${GITHUB_SHA:0:8}"
-          gh release create "$tag" release/Rexxar-Coop-IV.zip release/Rexxar-Coop-IV.zip.sha256 release/RX4-OrcX01.w3x release/IV-package.json release/Package-check.txt mission-artifact/Skills-balance-save-check.txt mission-artifact/Entry-regression-check.txt helper-out/Windows-helper-check.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Рексар IV: 16 навыков, короткие коды, баланс на четверых' --notes-file warcraft-campaigns/rexxar-coop/coop/README-IV-RU.txt
+          tag="rexxar-coop-v-${GITHUB_SHA:0:8}"
+          gh release create "$tag" release/Rexxar-Coop-V.zip release/Rexxar-Coop-V.zip.sha256 release/RX5-OrcX01.w3x release/V-package.json release/Package-check.txt mission-artifact/Skills-balance-save-check.txt mission-artifact/Talents-XP-learning-check.txt mission-artifact/Entry-regression-check.txt helper-out/Windows-helper-check.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Рексар V: обучение, нормальный опыт и 40 талантов на четверых' --notes-file warcraft-campaigns/rexxar-coop/coop/README-V-RU.txt

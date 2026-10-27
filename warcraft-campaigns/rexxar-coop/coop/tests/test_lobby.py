@@ -95,7 +95,7 @@ def problems(info,world):
 
 def run(out,dotnet):
     storm=Storm();folder=out/'lobby';folder.mkdir(exist_ok=True);profiles=[]
-    files=sorted((out/'Maps').glob('RX4-*.w3x'));assert len(files)==17
+    files=sorted((out/'Maps').glob('RX5-*.w3x'));assert len(files)==17
     for path in files:
         a=storm.open(path)
         try:info=host_info(storm.read(a,'war3map.w3i'));script=storm.read(a,'war3map.j').decode()

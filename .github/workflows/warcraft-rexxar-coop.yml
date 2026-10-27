@@ -45,7 +45,7 @@ jobs:
         run: |
           set -euo pipefail
           for source in build-out/scripts/*.j; do
-            "$RUNNER_TEMP/pjass/pjass" coop/tests/reference/common.j coop/tests/reference/Blizzard.j "$source"
+            "$RUNNER_TEMP/pjass/pjass" +shadow coop/tests/reference/common.j coop/tests/reference/Blizzard.j "$source"
           done > Jass-syntax-check.txt
           dotnet run --project coop/Tools -c Release -- transpile build-out/scripts/OrcX01.j coop/tests/reference build-out/runtime.lua
           dotnet run --project coop/Tools -c Release -- transpile build-out/scripts/OrcX02.j coop/tests/reference build-out/runtime-act2.lua
@@ -53,18 +53,15 @@ jobs:
           python coop/tests/test_runtime.py build-out/runtime.lua --next build-out/runtime-act2.lua --third build-out/runtime-act2-side.lua | tee Runtime-check.txt
           python coop/tests/test_checkpoint.py build-out/runtime.lua build-out/runtime-act2.lua build-out/runtime-act2-side.lua | tee Checkpoint-check.txt
           python coop/tests/test_lobby.py build-out | tee Lobby-check.txt
-          python coop/lobby_probe.py build build-out
-          for source in build-out/entrycheck/scripts/A.j build-out/entrycheck/scripts/B.j; do
-            "$RUNNER_TEMP/pjass/pjass" coop/tests/reference/common.j coop/tests/reference/Blizzard.j "$source"
-          done > Entry-syntax-check.txt
-          python coop/tests/test_entrycheck.py build-out
+          python coop/type_shadow_fix.py build build-out
+          PJASS="$RUNNER_TEMP/pjass/pjass" python coop/tests/test_type_shadow_fix.py build-out
       - name: Stage maps and verification reports
         run: |
           mkdir -p mission-artifact/Maps
           cp build-out/Maps/*.w3x mission-artifact/Maps/
           cp build-out/Build-report.json mission-artifact/
           cp build-out/Lobby-report.json mission-artifact/
-          cp -r build-out/entrycheck mission-artifact/
+          cp -r build-out/type-fix mission-artifact/
           cp ./*-check.txt mission-artifact/
       - uses: actions/upload-artifact@v4
         with:
@@ -132,12 +129,12 @@ jobs:
         with:
           name: rexxar-windows-helper
           path: helper-out
-      - name: Package only the controlled native entry comparison
-        run: python3 warcraft-campaigns/rexxar-coop/coop/lobby_probe.py package mission-artifact/entrycheck release
-      - name: Publish two diagnostic maps without claiming a native-tested fix
+      - name: Package the full first-mission type-name candidate
+        run: python3 warcraft-campaigns/rexxar-coop/coop/type_shadow_fix.py package mission-artifact/type-fix release
+      - name: Publish candidate C with strict shadow regression evidence
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          tag="rexxar-entry-check-${GITHUB_SHA:0:8}"
-          gh release create "$tag" release/Rexxar-Entry-Check.zip release/Rexxar-Entry-Check.zip.sha256 mission-artifact/entrycheck/A-Entry.w3x mission-artifact/entrycheck/B-Coop.w3x mission-artifact/entrycheck/Entry-check.json mission-artifact/entrycheck/Entry-check.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Рексар: два файла для проверки отказа входа' --notes-file mission-artifact/entrycheck/ЧИТАЙ.txt
+          tag="rexxar-coop-type-fix-${GITHUB_SHA:0:8}"
+          gh release create "$tag" release/Rexxar-Coop-Type-Fix.zip release/Rexxar-Coop-Type-Fix.zip.sha256 mission-artifact/type-fix/C-Coop-Fix.w3x mission-artifact/type-fix/Type-fix.json mission-artifact/type-fix/Type-fix-check.txt mission-artifact/type-fix/Strict-negative-check.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Рексар: конфликты имён в полном скрипте — карта C' --notes-file mission-artifact/type-fix/ЧИТАЙ.txt

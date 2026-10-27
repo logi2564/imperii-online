@@ -750,7 +750,7 @@ function RC_ChangeLevel takes string name, boolean scores returns nothing
     call RC_Say("Завершён этап. Прогресс сохранён. Следующая миссия: " + name)
 endfunction
 
-function RC_Victory takes player p, boolean dialog, boolean scores returns nothing
+function RC_Victory takes player p, boolean showDialog, boolean scores returns nothing
     if RC_transitionPending then
         return
     endif
@@ -900,11 +900,11 @@ endfunction
 
 function RC_Spell takes nothing returns nothing
     local unit caster = GetTriggerUnit()
-    local integer ability = GetSpellAbilityId()
+    local integer abilityId = GetSpellAbilityId()
     local integer n = 0
     local unit wolf
     local effect fx
-    if ability == 'RCA0' then
+    if abilityId == 'RCA0' then
         loop
             exitwhen n == 2
             set wolf = CreateUnit(GetOwningPlayer(caster), 'osw2', GetUnitX(caster) + 100.0 * (n * 2 - 1), GetUnitY(caster), GetUnitFacing(caster))
@@ -920,7 +920,7 @@ function RC_Spell takes nothing returns nothing
             endif
             set n = n + 1
         endloop
-    elseif ability == 'RCA1' then
+    elseif abilityId == 'RCA1' then
         loop
             exitwhen n == 4
             if IsUnitInRange(caster, RC_hero[n], 750.0) then
@@ -930,13 +930,13 @@ function RC_Spell takes nothing returns nothing
             endif
             set n = n + 1
         endloop
-    elseif ability == 'RCA2' then
+    elseif abilityId == 'RCA2' then
         set RC_flameX = GetSpellTargetX()
         set RC_flameY = GetSpellTargetY()
         set RC_flameTicks = 6
         set RC_flameCaster = caster
         call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\FlameStrike\\FlameStrikeTarget.mdl", RC_flameX, RC_flameY))
-    elseif ability == 'RCA3' then
+    elseif abilityId == 'RCA3' then
         call SetWidgetLife(caster, GetWidgetLife(caster) + GetUnitState(caster, UNIT_STATE_MAX_LIFE) * 0.15)
     endif
     set caster = null

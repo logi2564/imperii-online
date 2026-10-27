@@ -152,6 +152,12 @@ def node_effects(path):
     g=node(3,3,2);a=g.RC_hero[0];a.hp=200;cast(g,3,3,x=100);ticks(g,10);near(a.hp,215)
     g=node(3,4,1);a=enemy(g);cast(g,3,0);ticks(g,15);near(a.hp,745)
     g=node(3,4,2);a=g.RC_hero[0];a.hp=100;cast(g,3,2);ticks(g,50);near(a.hp,142)
+    # Anchor is specifically a death-return spell: it must outlive its caster.
+    g=choose(path,1,4,1);caster=g.RC_hero[1];cast(g,1,2,target=caster)
+    anchored=[g.RK_target[n] for n in range(1,65) if g.RK_kind[n]==7]
+    assert len(anchored)==2
+    for u in anchored:u.hp=0
+    ticks(g,70);assert all(u.hp>0 for u in anchored),'Caster death cancelled soul anchors'
     assert len(set(tested))==40
     print('PASS: all FORTY distinct talents exercised through spells, timers, damage/heal amounts, pets, range/duration changes, extra projectiles, double anchors, resurrection and temporary armour cleanup.')
 

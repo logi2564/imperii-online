@@ -437,7 +437,7 @@ function RK_Tick takes nothing returns nothing
     loop
         exitwhen slot > 64
         if RK_kind[slot] != 0 then
-            if RC_transitionPending or not RK_Alive(RK_caster[slot]) then
+            if RC_transitionPending or GetUnitTypeId(RK_caster[slot]) == 0 or (not RK_Alive(RK_caster[slot]) and RK_kind[slot] != 7) then
                 call RK_End(slot)
             else
                 set RK_age[slot] = RK_age[slot] + 0.1

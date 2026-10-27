@@ -2,14 +2,14 @@
 import hashlib,json,re,sys
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from build import MAPS,ROOT,KINDS,mask,signature_abilities,classic_strings
+from build import MAPS,ROOT,KINDS,mask,classic_strings,FILE_PREFIX
 from formats import read_info,read_objects
 from storm import Storm
 
 out=Path(sys.argv[1]);storm=Storm();metadata=json.loads((ROOT/'metadata-types.json').read_text())['types'];report=json.loads((out/'Build-report.json').read_text());untouched=0
 changed={name.lower() for name in ['war3map.j','war3map.w3i','war3mapUnits.doo','war3mapMisc.txt']+[v[0] for v in KINDS.values()]}
 for name in MAPS:
-    source=ROOT/'inputs'/(name+'.w3x');target=out/'Maps'/('RX3-'+name+'.w3x');a=storm.open(source);b=storm.open(target)
+    source=ROOT/'inputs'/(name+'.w3x');target=out/'Maps'/(FILE_PREFIX+name+'.w3x');a=storm.open(source);b=storm.open(target)
     try:
         info=read_info(storm.read(b,'war3map.w3i'));assert sorted(p['id'] for p in info['players'] if p['controller']==1)==[0,3,4,5]
         assert len(info['players'])<=12 and all(0<=p['id']<12 for p in info['players'])
@@ -33,11 +33,29 @@ for name in MAPS:
                     for mod in obj['mods']:
                         if mod[0] in metadata:assert mod[1]==metadata[mod[0]],(name,filename,mod[0],mod[1],metadata[mod[0]])
                 assert len(set(ids))==len(ids),(name,filename,'duplicate object IDs')
+        import kits
+        ability_tables=read_objects(storm.read(b,'war3map.w3a'),True)
+        lookup={o['new']:o for o in ability_tables[1]}
+        unit_tables=read_objects(storm.read(b,'war3map.w3u'),False)
+        for role,hero_id in enumerate(kits.HEROES):
+            hero=next(o for o in unit_tables[0] if o['old']==hero_id.encode())
+            assert next(m[4].decode() for m in hero['mods'] if m[0]=='uhab')==','.join([kits.skill_id(role,n) for n in range(4)]+['Aamk'])
+            orders=[]
+            for slot in range(4):
+                obj=lookup[kits.skill_id(role,slot).encode()]
+                assert obj['old']==b'ANcl'
+                values={(mod[0],mod[2]):mod[4] for mod in obj['mods']}
+                import struct
+                assert struct.unpack('<i',values[('aher',0)])[0]==1
+                assert struct.unpack('<i',values[('alev',0)])[0]==(3 if slot==3 else 5)
+                assert struct.unpack('<i',values[('arlv',0)])[0]==(6 if slot==3 else 1)
+                orders.append(values[('Ncl6',1)])
+            assert len(set(orders))==4,(name,role,'Channel order collision')
         script=storm.read(b,'war3map.j').decode();assert script.count('call RC_Bootstrap()')==1
         # pjass does NOT enforce classic Warcraft's UTF-8 byte literal limit.
         tokens=re.findall(r'//[^\r\n]*|"(?:[^"\\]|\\.)*"',script)
         assert all(len(t[1:-1].encode())<=1023 for t in tokens if t.startswith('"')),(name,'oversized classic literal')
-        for fname,body in re.findall(r'^function (RC_\w+) takes[^\n]*\n([\s\S]*?)^endfunction',script,re.M):
+        for fname,body in re.findall(r'^function ((?:RC_|RK_)\w+) takes[^\n]*\n([\s\S]*?)^endfunction',script,re.M):
             assert len(body.encode())<24576,(name,fname,'oversized injected function')
         main=re.search(r'^function main takes[\s\S]*?^endfunction',script,re.M)[0]
         assert 'call RC_Menu()' not in main and 'call RC_Bootstrap()' in main
@@ -58,8 +76,8 @@ assert short.endswith('// "comment stays literal"') and '" + "' in short
 assert all(len(t[1:-1].encode())<=1023 for t in re.findall(r'"(?:[^"\\]|\\.)*"',short))
 literal_parts=re.findall(r'"((?:[^"\\]|\\.)*)"',short.split(' //')[0])
 assert ''.join(literal_parts)==('Текст\\"\\\\'*180)
-runtime=(ROOT/'runtime/core.j').read_text()+(ROOT/'runtime/checkpoint.j').read_text();called=set(re.findall(r'\b([A-Za-z_]\w*)\s*\(',mask(runtime)));missing={n for n in called if not n.startswith('RC_') and n not in classic and n not in {'and','or','not','if','elseif','return'}}
+runtime='\n'.join(p.read_text() for p in (ROOT/'runtime').glob('*.j'));called=set(re.findall(r'\b([A-Za-z_]\w*)\s*\(',mask(runtime)));missing={n for n in called if not n.startswith(('RC_','RK_')) and n not in classic and n not in {'and','or','not','if','elseif','return'}}
 assert not missing,('Not in classic API reference',missing)
-icons=[next(mod[4] for mod in obj['mods'] if mod[0]=='aart') for obj in signature_abilities()];assert len(set(icons))==4
-print(f'PASS: all 17 actual maps have four roles, valid classic object field types, unique object IDs, retained quest functions, no single-player transition calls, unchanged input hashes and {untouched} byte-identical terrain/import/other entries. Runtime uses classic API names; four distinct signature icons.')
-print('PASS: all serialized JASS literals fit the classic 1023-byte limit; menu allocation/dialogs leave the map-loading main thread.')
+from kits import abilities
+icons=[next(mod[4] for mod in obj['mods'] if mod[0]=='aart') for obj in abilities()[:16]];assert len(set(icons))==16
+print(f'PASS: all 17 actual maps: classic object metadata types, unique IDs, four roles, retained quest functions, strict literal sizes, classic API, and {untouched} byte-identical terrain/import entries; sixteen distinct skill icons.')

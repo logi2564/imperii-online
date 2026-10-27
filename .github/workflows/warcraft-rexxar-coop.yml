@@ -53,15 +53,14 @@ jobs:
           python coop/tests/test_runtime.py build-out/runtime.lua --next build-out/runtime-act2.lua --third build-out/runtime-act2-side.lua | tee Runtime-check.txt
           python coop/tests/test_checkpoint.py build-out/runtime.lua build-out/runtime-act2.lua build-out/runtime-act2-side.lua | tee Checkpoint-check.txt
           python coop/tests/test_lobby.py build-out | tee Lobby-check.txt
-          python coop/type_shadow_fix.py build build-out
-          PJASS="$RUNNER_TEMP/pjass/pjass" python coop/tests/test_type_shadow_fix.py build-out
+          python coop/tests/test_kits.py build-out/runtime.lua | tee Skills-balance-save-check.txt
+          PJASS="$RUNNER_TEMP/pjass/pjass" python coop/tests/test_entry_regression.py build-out | tee Entry-regression-check.txt
       - name: Stage maps and verification reports
         run: |
           mkdir -p mission-artifact/Maps
           cp build-out/Maps/*.w3x mission-artifact/Maps/
           cp build-out/Build-report.json mission-artifact/
           cp build-out/Lobby-report.json mission-artifact/
-          cp -r build-out/type-fix mission-artifact/
           cp ./*-check.txt mission-artifact/
       - uses: actions/upload-artifact@v4
         with:
@@ -129,12 +128,12 @@ jobs:
         with:
           name: rexxar-windows-helper
           path: helper-out
-      - name: Package seventeen corrected maps and pin the accepted first mission
-        run: python3 warcraft-campaigns/rexxar-coop/coop/package_full_fix.py mission-artifact helper-out release
+      - name: Package seventeen new gameplay maps without stale baseline substitution
+        run: python3 warcraft-campaigns/rexxar-coop/coop/package_iv.py mission-artifact helper-out release
       - name: Publish corrected campaign bundle with scoped native confirmation
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          tag="rexxar-coop-fixed-${GITHUB_SHA:0:8}"
-          gh release create "$tag" release/Rexxar-Coop-Fixed.zip release/Rexxar-Coop-Fixed.zip.sha256 release/Accepted-First-Mission.w3x release/Fixed-package.json release/Package-check.txt mission-artifact/type-fix/Type-fix-check.txt helper-out/Windows-helper-check.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Рексар: 17 исправленных миссий — вход первой подтверждён на 1.26a' --notes-file warcraft-campaigns/rexxar-coop/coop/README-FIXED-RU.txt
+          tag="rexxar-coop-iv-${GITHUB_SHA:0:8}"
+          gh release create "$tag" release/Rexxar-Coop-IV.zip release/Rexxar-Coop-IV.zip.sha256 release/RX4-OrcX01.w3x release/IV-package.json release/Package-check.txt mission-artifact/Skills-balance-save-check.txt mission-artifact/Entry-regression-check.txt helper-out/Windows-helper-check.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Рексар IV: 16 навыков, короткие коды, баланс на четверых' --notes-file warcraft-campaigns/rexxar-coop/coop/README-IV-RU.txt

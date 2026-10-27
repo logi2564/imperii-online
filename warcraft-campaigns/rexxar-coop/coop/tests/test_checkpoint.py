@@ -34,25 +34,25 @@ def run(first,second):
     g.RC_Transition(destination.RC_map,2)
     assert g.RC_saveOK and g.RC_transitionPending and g.WORLD.paused
     codes=[g.RC_checkpointCode[n] for n in range(4)]
-    assert all(len(c)==102 and len('-load '+c)<=127 for c in codes)
-    assert len({c[3:39] for c in codes})==1
+    assert all(c.startswith('Z3') and len(g.RC_ExpandCode(c))==102 and len('-load '+c)<=127 for c in codes)
+    assert len({g.RC_ExpandCode(c)[3:39] for c in codes})==1
     assert all(c in g.RC_codeQuest[n].description for n,c in enumerate(codes))
     assert all('-load '+c in g.RC_saveQuest.description for c in codes)
     chat(g,0,'-save');g.RC_Transition(destination.RC_map,9)
     assert codes==[g.RC_checkpointCode[n] for n in range(4)],'Completion code changed while players copied it'
-    messages=len(g.WORLD.messages);chat(g,3,'-code');assert len(g.WORLD.messages)>messages and '-load '+codes[1] in g.WORLD.messages[len(g.WORLD.messages)]
+    g.WORLD.localPlayer=3;messages=len(g.WORLD.messages);chat(g,3,'-code');assert len(g.WORLD.messages)>messages and '-load '+codes[1] in g.WORLD.messages[len(g.WORLD.messages)]
     _,h=setup(second)
     # Corrupt code, someone else's role, wrong destination: no state mutation.
     chat(h,3,'-load '+codes[0]);assert not h.RC_checkpointLoaded
     chat(h,0,'-load '+codes[0][:-1]+'!');assert not h.RC_checkpointLoaded
     _,wrong=setup(first);chat(wrong,0,'-load '+codes[0]);assert not wrong.RC_checkpointLoaded
-    bad=codes[0][:63]+'__'+codes[0][65:-3];h.RC_codeOK=True;bad=h.RC_Seal(bad)
+    raw=g.RC_ExpandCode(codes[0]);bad=raw[:63]+'__'+raw[65:-3];h.RC_codeOK=True;bad=h.RC_Seal(bad)
     chat(h,0,'-load '+bad);assert not h.RC_checkpointLoaded,'Unknown item index partially committed'
     # The host can enter any role, but all four matching codes are required.
     chat(h,5,'-load '+codes[3]);chat(h,0,'-load '+codes[0]);h.RC_Begin()
     assert not h.RC_started and len(h.WORLD.units)==0
     assert h.RC_checkpointCode[0]==codes[0] and h.RC_checkpointCode[3]==codes[3]
-    different=codes[1][:5]+('002' if codes[1][5:8]!='002' else '003')+codes[1][8:-3];h.RC_codeOK=True;different=h.RC_Seal(different)
+    raw=g.RC_ExpandCode(codes[1]);different=raw[:5]+('002' if raw[5:8]!='002' else '003')+raw[8:-3];h.RC_codeOK=True;different=h.RC_Seal(different)
     chat(h,3,'-load '+different);assert h.RC_checkpointCode[1]==''
     chat(h,0,'-load '+codes[2]);chat(h,3,'-load '+codes[1]);assert h.RC_loadedStash!=''
     # Continuing preserves difficulty even when the initial menu is still open.
@@ -98,7 +98,7 @@ def run(first,second):
     selected.RC_SetNextLevel('Maps\\FrozenThrone\\Campaign\\OrcX03a.w3x')
     assert selected.RC_nextMap==15 and not selected.RC_transitionPending and selected.RC_checkpointCode[0]==''
     selected.RC_Victory(0,False,False);assert selected.RC_nextMap==15 and selected.RC_saveOK
-    print('PASS: C2 completion checkpoints: 102 characters per hero; automatic output at transition; stable/repeatable in-game codes; four-code cross-map XP/stats/skills/full inventories/charges/resources/stash/companion loot; classic chat size; role/map/checkpoint/corruption/unknown-item/missing-code rejection; reset and failed-save recovery; complete packed story range.')
+    print('PASS: Z3 compressed completion checkpoints, C2-compatible; automatic output at transition; stable/repeatable in-game codes; four-code cross-map XP/stats/skills/full inventories/charges/resources/stash/companion loot; classic chat size; role/map/checkpoint/corruption/unknown-item/missing-code rejection; reset and failed-save recovery; complete packed story range.')
 
 def collision(first,second):
     _,g=setup(first);begin(g)
@@ -107,7 +107,7 @@ def collision(first,second):
     for n in range(4):chat(h,PLAYERS[n],'-load '+g.RC_checkpointCode[n])
     begin(h)
     for n in range(4):assert h.GetItemTypeId(h.UnitItemInSlot(h.RC_hero[n],0))==h.RC_ItemToLocal(g.RC_ItemToPortable(g.FourCC('I003')))!=h.FourCC('I003')
-    print('PASS: C2 codes preserve the real I003 identity collision across generated act-II maps.')
+    print('PASS: Z3 codes preserve the real I003 identity collision across generated act-II maps.')
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('first');parser.add_argument('second');parser.add_argument('third');args=parser.parse_args()

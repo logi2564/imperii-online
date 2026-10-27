@@ -5,3 +5,9 @@ Negative lobby fixtures extracted from released RC2 OrcX01: https://github.com/l
 }
 
 RC3 first-map W3I/config are also retained from release rexxar-coop-rc3-799d2340. The prior structural checks accepted it, while explicit player-colour recording reveals that SetPlayerColor was omitted. This is a setup difference, not proof that it caused the user's native rejection.
+
+`accepted-C.w3i` and `accepted-C-config.j` come from the exact C file
+SHA256 `1f807fe9efd802fc26d1d51816de695797aa1a910e449a436b4b007aac7c40a3`.
+User confirmed lobby entry and then provided a gameplay screenshot on
+1.26.0.6401. IV must retain its lobby records/config except identifying
+name/description, while intentionally replacing the gameplay implementation.

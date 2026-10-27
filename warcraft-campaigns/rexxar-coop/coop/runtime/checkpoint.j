@@ -93,6 +93,69 @@ function RC_ReadSmallStory takes string text returns boolean
     return RC_codeOK and RC_bitValue == 0 and RC_bitPosition == RC_storyChars
 endfunction
 
+// Z3 is a lossless run-length envelope around C2. A dot followed by one
+// alphabet digit encodes 3..63 zeroes; malformed envelopes never reach state.
+function RC_CompactCode takes string text returns string
+    local string out = "Z3"
+    local integer pos = 2
+    local integer count
+    loop
+        exitwhen pos >= StringLength(text)
+        set count = 0
+        loop
+            exitwhen pos + count >= StringLength(text) or count == 63 or SubString(text, pos + count, pos + count + 1) != "0"
+            set count = count + 1
+        endloop
+        if count >= 3 then
+            set out = out + "." + SubString(RC_alphabet, count, count + 1)
+            set pos = pos + count
+        else
+            set out = out + SubString(text, pos, pos + 1)
+            set pos = pos + 1
+        endif
+    endloop
+    return out
+endfunction
+
+function RC_ExpandCode takes string text returns string
+    local string out = "C2"
+    local string c
+    local integer pos = 2
+    local integer count
+    if SubString(text, 0, 2) != "Z3" then
+        return text
+    endif
+    loop
+        exitwhen pos >= StringLength(text)
+        set c = SubString(text, pos, pos + 1)
+        if c == "." then
+            if pos + 1 >= StringLength(text) then
+                return ""
+            endif
+            set count = RC_Digit(SubString(text, pos + 1, pos + 2))
+            if count < 3 or StringLength(out) + count > RC_checkpointLength then
+                return ""
+            endif
+            loop
+                exitwhen count == 0
+                set out = out + "0"
+                set count = count - 1
+            endloop
+            set pos = pos + 2
+        else
+            if RC_Digit(c) < 0 then
+                return ""
+            endif
+            set out = out + c
+            set pos = pos + 1
+        endif
+        if StringLength(out) > RC_checkpointLength then
+            return ""
+        endif
+    endloop
+    return out
+endfunction
+
 function RC_MakeCheckpoint takes integer role, string hero, string story, string stash returns string
     local integer n = 0
     local integer pos
@@ -111,13 +174,14 @@ function RC_MakeCheckpoint takes integer role, string hero, string story, string
         set text = text + RC_Pack(RC_ItemCompact(RC_Number(SubString(stash, pos, pos + 6))), 2) + SubString(stash, pos + 6, pos + 8)
         set n = n + 1
     endloop
-    return RC_Seal(text)
+    return RC_CompactCode(RC_Seal(text))
 endfunction
 
 function RC_CheckpointValid takes string text returns boolean
     local integer check
     local integer actual
     set RC_codeOK = true
+    set text = RC_ExpandCode(text)
     if StringLength(text) != RC_checkpointLength or SubString(text, 0, 2) != "C2" then
         return false
     endif
@@ -136,6 +200,7 @@ function RC_LoadCheckpoint takes string text, integer sender returns boolean
     local string part = ""
     local string stash
     local string common
+    set text = RC_ExpandCode(text)
     if not RC_CheckpointValid(text) then
         return false
     endif
@@ -202,7 +267,7 @@ function RC_LoadCheckpoint takes string text, integer sender returns boolean
     endloop
     set RC_loadedHero[role] = hero
     set RC_checkpointPart[role] = part
-    set RC_checkpointCode[role] = text
+    set RC_checkpointCode[role] = RC_CompactCode(text)
     set stash = "S1" + RC_Pack(RC_session, 2) + RC_Pack(RC_sourceMap, 1)
     set n = 0
     loop
@@ -228,11 +293,10 @@ endfunction
 
 function RC_ShowCode takes integer role returns nothing
     if RC_checkpointCode[role] == "" then
-        call DisplayTimedTextToPlayer(RC_Owner(role), 0, 0, 25, "Код появится после прохождения миссии или перехода в другую область.")
+        call RC_Tell(RC_Owner(role), 25, "Код появится после завершения или команды -save.")
         return
     endif
-    call DisplayTimedTextToPlayer(RC_Owner(role), 0, 0, 120, "|cffffcc00Следующая карта: " + RC_filePrefix + RC_mapName[RC_nextMap] + ".w3x. В ней введи:|r")
-    call DisplayTimedTextToPlayer(RC_Owner(role), 0, 0, 120, "-load " + RC_checkpointCode[role])
+    call RC_Tell(RC_Owner(role), 120, "|cffffcc00" + RC_filePrefix + RC_mapName[RC_nextMap] + ".w3x|r → -load " + RC_checkpointCode[role])
 endfunction
 
 function RC_ResetCheckpoint takes nothing returns nothing

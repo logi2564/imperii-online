@@ -1,3 +1,24 @@
+# Rexxar cooperative campaign — IV
+
+The current builder emits all seventeen `RX4-*.w3x` missions. See
+[Russian player instructions](README-IV-RU.txt) for setup, sixteen learnable
+Q/W/E/R skills, party scaling, and lossless short Z3/C2 continuation codes.
+The first mission keeps the lobby records/config of the C map the user actually
+played on Warcraft III 1.26.0.6401; this is a new gameplay build, not a native
+playthrough certification. `package_iv.py` packages the exact generated files.
+
+`test_kits.py` executes all sixteen mechanics, timed cleanup, local code output,
+HP/damage scaling, and code compression against transpiled generated JASS.
+`test_entry_regression.py` compares native-confirmed C lobby fixtures and checks
+the strict parser's rejection of type-shadowing. Run `pjass +shadow` for **all**
+complete scripts; default pjass missed the old native-loading failure.
+
+The older entry below documents earlier iterations and their tooling. Historical
+`type_shadow_fix.py` / `package_full_fix.py` preserve the exact old C diagnostic;
+they must not be used to replace the first mission of the new gameplay package.
+
+---
+
 # Rexxar cooperative mission adaptation, RC3
 
 Inputs are the seventeen actual maps uploaded by the user, not synthetic replacement terrain. `build.py` preserves their terrain/import data and original quest functions, reserves player IDs 0/3/4/5, remaps conflicting NPC factions, and injects `runtime/core.j`. In the final mission the existing three Horde armies become the three additional human players' armies; their campaign AI is suppressed. In two crowded missions revival stones move to the engine's neutral-victim player 13, outside the twelve playable lobby slots. Editor unit placements receive the same owner remapping, after a byte-identical round-trip check.

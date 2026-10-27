@@ -163,3 +163,49 @@ function PreloadGenClear() WORLD.preloads={} end
 function PreloadGenStart() end
 function Preload(s) table.insert(WORLD.preloads,s) end
 function PreloadGenEnd(path) WORLD.files[path]=table.concat(WORLD.preloads,'\n') end
+-- Classic skill/balance behavior boundaries (effects/pathfinding still mocked).
+UNIT_TYPE_FLYING='flying';EVENT_UNIT_DAMAGED='damaged';PATHING_TYPE_WALKABILITY='walk'
+ATTACK_TYPE_CHAOS='chaos';DAMAGE_TYPE_UNIVERSAL='universal';DAMAGE_TYPE_MAGIC='magic'
+bj_DEGTORAD=math.pi/180
+function R2I(v) return math.modf(v) end
+function R2SW(v,w,p) return string.format('%.'..p..'f',v) end
+function RMinBJ(a,b) return math.min(a,b) end
+function RMaxBJ(a,b) return math.max(a,b) end
+function Cos(v) return math.cos(v) end
+function Sin(v) return math.sin(v) end
+function Atan2(y,x) return math.atan(y,x) end
+function SquareRoot(v) return math.sqrt(v) end
+function SaveReal(t,p,c,v) SaveInteger(t,p,c,v) end
+function LoadReal(t,p,c) return LoadInteger(t,p,c) end
+function GetSpellTargetUnit() return WORLD.events.target end
+function IsUnitInRangeXY(u,x,y,r) return (u.x-x)^2+(u.y-y)^2<=r*r end
+function SetUnitX(u,x) u.x=x end
+function SetUnitY(u,y) u.y=y end
+function SetUnitPosition(u,x,y) u.x=x;u.y=y end
+function IsTerrainPathable(x,y,t) return WORLD.wallX and x>=WORLD.wallX or false end
+function PauseUnit(u,v) u.paused=v end
+function IssueTargetOrder(u,s,t) u.order=s;u.target=t;return true end
+function IssuePointOrder(u,s,x,y) u.order=s;return true end
+function DestroyGroup(g) g.destroyed=true end
+function GroupClear(g) for n=#g,1,-1 do g[n]=nil end end
+function IsUnitInGroup(u,g) for _,v in ipairs(g) do if v==u then return true end end return false end
+function TriggerRegisterUnitEvent(t,u,e) u.damageTrigger=t end
+function GetEventDamage() return WORLD.events.damage or 0 end
+function GetEventDamageSource() return WORLD.events.source end
+local oldAdd,oldRemove=UnitAddAbility,UnitRemoveAbility
+local function hpBonus(id)
+ local n=id-FourCC('RH00')
+ -- RH00..RH09, RH10..RH15 use ASCII decimal, not linear rawcodes.
+ for bit=0,15 do if id==FourCC(string.format('RH%02d',bit)) then return 25*2^bit end end
+ return 0
+end
+function UnitAddAbility(u,id) local ok=oldAdd(u,id);if ok then u.maxhp=u.maxhp+hpBonus(id) end return ok end
+function UnitRemoveAbility(u,id) if u.abilities[id] then u.maxhp=u.maxhp-hpBonus(id) end return oldRemove(u,id) end
+function UnitDamageTarget(c,u,amount,...)
+ local old=WORLD.events
+ WORLD.events={unit=u,source=c,damage=amount}
+ if u.damageTrigger then for _,f in ipairs(u.damageTrigger.actions) do f() end end
+ u.hp=u.hp-amount
+ WORLD.events=old
+ return true
+end

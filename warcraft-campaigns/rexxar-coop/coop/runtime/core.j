@@ -39,6 +39,14 @@ function RC_Owner takes integer role returns player
     return RC_Player(RC_host)
 endfunction
 
+// Text natives are executed only on the recipient's client. No handles,
+// timers or gameplay state are created inside this local UI branch.
+function RC_Tell takes player recipient, real seconds, string text returns nothing
+    if GetLocalPlayer() == recipient then
+        call DisplayTimedTextToPlayer(recipient, 0, 0, seconds, text)
+    endif
+endfunction
+
 function RC_Say takes string text returns nothing
     call DisplayTimedTextToForce(RC_force, 25.0, text)
 endfunction
@@ -171,6 +179,16 @@ function RC_HeroCode takes integer role returns string
     return RC_Seal(payload)
 endfunction
 
+function RC_ClearOldSkills takes unit hero, integer role returns nothing
+    local integer n = 0
+    loop
+        exitwhen n == 4
+        call UnitRemoveAbility(hero, RC_oldSkill[role * 4 + n])
+        set n = n + 1
+    endloop
+    call UnitRemoveAbility(hero, 'RCA0' + role)
+endfunction
+
 function RC_ApplyHero takes integer role, string payload returns nothing
     local unit hero = RC_hero[role]
     local integer n = 0
@@ -179,6 +197,7 @@ function RC_ApplyHero takes integer role, string payload returns nothing
     local integer id
     local integer charges
     local item it
+    call RC_ClearOldSkills(hero, role)
     call SetHeroXP(hero, RC_Number(SubString(payload, 6, 10)), false)
     loop
         exitwhen n == 5
@@ -247,13 +266,15 @@ function RC_Adopt takes integer role, unit hero returns nothing
     if GetOwningPlayer(hero) != RC_Owner(role) then
         call SetUnitOwner(hero, RC_Owner(role), true)
     endif
-    call UnitAddAbility(hero, RC_signature[role])
+    call RC_ClearOldSkills(hero, role)
     call SuspendHeroXP(hero, false)
     set old = null
     set it = null
 endfunction
 
 // @@HOOKS@@
+
+// @@SKILLS@@
 
 function RC_ItemCarried takes item it returns boolean
     local integer role = 0
@@ -378,7 +399,7 @@ function RC_WriteSave takes integer role, string payload returns nothing
     if GetLocalPlayer() == RC_Owner(role) then
         call PreloadGenClear()
         call PreloadGenStart()
-        call Preload("Rexxar co-op RC3. Enter this one command in the next mission, before -start:")
+        call Preload("Rexxar co-op IV. Enter this one command in the next mission, before -start:")
         call Preload("-load " + payload)
         call Preload("Next map: " + RC_mapName[RC_nextMap])
         call PreloadGenEnd("Logs\\RexxarCoop-P" + I2S(role + 1) + ".txt")
@@ -410,7 +431,7 @@ function RC_SaveAll takes boolean verbose returns nothing
         exitwhen n == 4
         set RC_lastCode[n] = RC_HeroCode(n)
         set RC_checkpointPart[n] = RC_MakeCheckpoint(n, RC_lastCode[n], storyCode, stashCode)
-        if StringLength(RC_checkpointPart[n]) != RC_checkpointLength or StringLength(RC_checkpointPart[n]) + 6 > 127 then
+        if not RC_codeOK or not RC_CheckpointValid(RC_checkpointPart[n]) or StringLength(RC_checkpointPart[n]) + 6 > 127 then
             set RC_codeOK = false
         endif
         set n = n + 1
@@ -427,7 +448,7 @@ function RC_SaveAll takes boolean verbose returns nothing
         set description = description + "|nГерой " + I2S(n + 1) + ": -load " + RC_checkpointCode[n]
         call QuestSetDescription(RC_codeQuest[n], "Следующая карта: " + RC_filePrefix + RC_mapName[RC_nextMap] + ".w3x.|nВведи в её чат:|n-load " + RC_checkpointCode[n] + "|nЗатем дождись остальных. Начало: -start.|nВедущий может ввести коды отсутствующих игроков.")
         call RC_WriteSave(n, RC_checkpointCode[n])
-        if verbose then
+        if verbose and RC_Active(n) then
             call RC_ShowCode(n)
         endif
         set n = n + 1
@@ -857,29 +878,7 @@ function RC_Alliances takes nothing returns nothing
     endloop
 endfunction
 
-function RC_Balance takes nothing returns nothing
-    local integer id = 0
-    local real scale = 3.10
-    if RC_difficulty == 0 then
-        set scale = 2.15
-    elseif RC_difficulty == 2 then
-        set scale = 3.90
-    endif
-    loop
-        exitwhen id == 16
-        if not RC_IsPartyPlayer(Player(id)) and IsPlayerEnemy(Player(id), Player(0)) then
-            call SetPlayerHandicap(Player(id), GetPlayerHandicap(Player(id)) * scale)
-        endif
-        set id = id + 1
-    endloop
-    set id = 0
-    loop
-        exitwhen id == 4
-        call SetPlayerHandicapXP(RC_Player(id), RC_xpRate)
-        call SetPlayerState(RC_Player(id), PLAYER_STATE_RESOURCE_FOOD_CAP, 100)
-        set id = id + 1
-    endloop
-endfunction
+// @@BALANCE@@
 
 function RC_Distribute takes nothing returns nothing
     local unit u
@@ -896,52 +895,6 @@ function RC_Distribute takes nothing returns nothing
             call SetUnitOwner(u, RC_Owner(role), true)
         endif
     endloop
-endfunction
-
-function RC_Spell takes nothing returns nothing
-    local unit caster = GetTriggerUnit()
-    local integer abilityId = GetSpellAbilityId()
-    local integer n = 0
-    local unit wolf
-    local effect fx
-    if abilityId == 'RCA0' then
-        loop
-            exitwhen n == 2
-            set wolf = CreateUnit(GetOwningPlayer(caster), 'osw2', GetUnitX(caster) + 100.0 * (n * 2 - 1), GetUnitY(caster), GetUnitFacing(caster))
-            call UnitAddType(wolf, UNIT_TYPE_SUMMONED)
-            call UnitApplyTimedLife(wolf, 'BTLF', 20.0)
-            set n = n + 1
-        endloop
-        set n = 0
-        loop
-            exitwhen n == 4
-            if IsUnitInRange(caster, RC_hero[n], 750.0) then
-                call SetWidgetLife(RC_hero[n], GetWidgetLife(RC_hero[n]) + GetUnitState(RC_hero[n], UNIT_STATE_MAX_LIFE) * 0.12)
-            endif
-            set n = n + 1
-        endloop
-    elseif abilityId == 'RCA1' then
-        loop
-            exitwhen n == 4
-            if IsUnitInRange(caster, RC_hero[n], 750.0) then
-                call SetWidgetLife(RC_hero[n], GetWidgetLife(RC_hero[n]) + 90.0 + 4.0 * GetHeroLevel(caster))
-                call UnitRemoveBuffs(RC_hero[n], false, true)
-                call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Orc\\HealingWave\\HealingWaveTarget.mdl", RC_hero[n], "origin"))
-            endif
-            set n = n + 1
-        endloop
-    elseif abilityId == 'RCA2' then
-        set RC_flameX = GetSpellTargetX()
-        set RC_flameY = GetSpellTargetY()
-        set RC_flameTicks = 6
-        set RC_flameCaster = caster
-        call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Human\\FlameStrike\\FlameStrikeTarget.mdl", RC_flameX, RC_flameY))
-    elseif abilityId == 'RCA3' then
-        call SetWidgetLife(caster, GetWidgetLife(caster) + GetUnitState(caster, UNIT_STATE_MAX_LIFE) * 0.15)
-    endif
-    set caster = null
-    set wolf = null
-    set fx = null
 endfunction
 
 function RC_Tick takes nothing returns nothing
@@ -987,18 +940,6 @@ function RC_Tick takes nothing returns nothing
         endif
         set n = n + 1
     endloop
-    if RC_flameTicks > 0 then
-        call GroupEnumUnitsInRange(RC_flames, RC_flameX, RC_flameY, 300.0, null)
-        loop
-            set u = FirstOfGroup(RC_flames)
-            exitwhen u == null
-            call GroupRemoveUnit(RC_flames, u)
-            if IsUnitEnemy(u, GetOwningPlayer(RC_flameCaster)) and not IsUnitType(u, UNIT_TYPE_STRUCTURE) and GetWidgetLife(u) > 0.405 then
-                call UnitDamageTarget(RC_flameCaster, u, 12.0 + 2.0 * GetHeroLevel(RC_flameCaster), true, false, ATTACK_TYPE_MAGIC, DAMAGE_TYPE_FIRE, WEAPON_TYPE_WHOKNOWS)
-            endif
-        endloop
-        set RC_flameTicks = RC_flameTicks - 1
-    endif
     if not RC_StoryCinematic() then
         set n = 0
         loop
@@ -1058,10 +999,13 @@ function RC_Ready takes nothing returns nothing
         if RC_loadedHero[n] != "" then
             call RC_ApplyHero(n, RC_loadedHero[n])
         endif
-        call DisplayTimedTextToPlayer(RC_Owner(n), 0, 0, 30, "Твой герой: " + RC_heroName[n] + ". У каждого свой инвентарь и навыки. Дополнительная способность — Z. Сохранение: -save, помощь: F9.")
+        if RC_Active(n) then
+            call RC_Tell(RC_Player(n), 30, "Твой герой: " + RC_heroName[n] + ". Навыки Q/W/E/R. Сохранение: -save; свой код: -code; запасные коды: F9.")
+        endif
         set n = n + 1
     endloop
     call TimerStart(RC_tickTimer, 1.0, true, function RC_Tick)
+    call TimerStart(RC_skillTimer, 0.1, true, function RK_Tick)
 endfunction
 
 function RC_Begin takes nothing returns nothing
@@ -1116,7 +1060,7 @@ function RC_Begin takes nothing returns nothing
         call SetHeroLevel(RC_hero[n], RC_defaultLevel, false)
         call SelectHeroSkill(RC_hero[n], RC_skill[n * 5])
         call SelectHeroSkill(RC_hero[n], RC_skill[n * 5 + 1])
-        call UnitAddAbility(RC_hero[n], RC_signature[n])
+        call RC_ClearOldSkills(RC_hero[n], n)
         if RC_loadedHero[n] != "" then
             call RC_ApplyHero(n, RC_loadedHero[n])
         endif
@@ -1160,7 +1104,7 @@ function RC_Chat takes nothing returns nothing
         set n = 0
         loop
             exitwhen n == 4
-            call DisplayTimedTextToPlayer(p, 0, 0, 120, "Герой " + I2S(n + 1) + ": -load " + RC_checkpointCode[n])
+            call RC_Tell(p, 120, "Герой " + I2S(n + 1) + ": -load " + RC_checkpointCode[n])
             set n = n + 1
         endloop
     elseif text == "-reset" and not RC_started and role == RC_host then
@@ -1193,7 +1137,7 @@ function RC_Chat takes nothing returns nothing
     elseif SubString(text, 0, 6) == "-load " and not RC_started then
         set requested = role
         set payload = SubString(text, 6, StringLength(text))
-        if SubString(payload, 0, 2) == "C2" then
+        if (SubString(payload, 0, 2) == "C2" or SubString(payload, 0, 2) == "Z3") then
             if not RC_LoadCheckpoint(payload, role) then
                 call RC_Say("Код не принят. Проверь карту, номер героя и все символы; введи код из того же завершения миссии, что остальные.")
             endif
@@ -1243,7 +1187,13 @@ function RC_Menu takes nothing returns nothing
     set n = 0
     set RC_scratch = CreateGroup()
     set RC_army = CreateGroup()
-    set RC_flames = CreateGroup()
+    set RC_skillGroup = CreateGroup()
+    set RC_balanceGroup = CreateGroup()
+    set RC_damageUnits = CreateGroup()
+    set RC_damageTrigger = CreateTrigger()
+    call TriggerAddAction(RC_damageTrigger, function RC_Damaged)
+    set RC_skillTimer = CreateTimer()
+    set RC_balanceTimer = CreateTimer()
     set RC_tickTimer = CreateTimer()
     if RC_menuClock == null then
         set RC_menuClock = CreateTimer()
@@ -1284,7 +1234,7 @@ function RC_Menu takes nothing returns nothing
     endloop
     set RC_helpQuest = CreateQuest()
     call QuestSetTitle(RC_helpQuest, "Четверо героев — правила")
-    call QuestSetDescription(RC_helpQuest, "Рексар — звери, два волка и лечение; Рокхан — исцеление и очищение; Чэнь — шесть волн огня; Кэрн — оглушение и лечение. Способность — Z.|nУ каждого свои вещи и навыки. Войска делятся, герой возрождается через 15 сек. Сюжетные спутники заменяют временных с переносом развития.|nВ конце миссии получи код. Повторить: -code, копия: F9. В следующей карте каждому -load КОД, затем ведущему -start.")
+    call QuestSetDescription(RC_helpQuest, "Навыки Q/W/E/R изучаются за очки героя. Рексар — возвращающийся топор и охота; Рокхан — тотем и якорь души; Чэнь — мокрые метки и огненные связки; Кэрн — броня и накопление урона для ответного удара.|nУ каждого свои вещи и навыки. Войска делятся, герой возрождается через 15 сек. Сюжетные спутники заменяют временных с переносом развития.|nВ конце миссии получи код. Повторить: -code, копия: F9. В следующей карте каждому -load КОД, затем ведущему -start.")
     call QuestSetIconPath(RC_helpQuest, "ReplaceableTextures\\CommandButtons\\BTNBeastMaster.blp")
     call QuestSetRequired(RC_helpQuest, false)
     call QuestSetDiscovered(RC_helpQuest, true)

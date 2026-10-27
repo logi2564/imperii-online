@@ -101,6 +101,8 @@ function RC_CompactCode takes string text returns string
     local integer count
     if SubString(text, 0, 2) == "C3" then
         set out = "Z4"
+    elseif SubString(text, 0, 2) == "C4" then
+        set out = "Z5"
     endif
     loop
         exitwhen pos >= StringLength(text)
@@ -126,7 +128,10 @@ function RC_ExpandCode takes string text returns string
     local integer pos = 2
     local integer count
     local integer maximum = RC_checkpointLength - 2
-    if SubString(text, 0, 2) == "Z4" then
+    if SubString(text, 0, 2) == "Z5" then
+        set out = "C4"
+        set maximum = 142
+    elseif SubString(text, 0, 2) == "Z4" then
         set out = "C3"
         set maximum = RC_checkpointLength
     elseif SubString(text, 0, 2) != "Z3" then
@@ -192,9 +197,21 @@ function RC_CheckpointValid takes string text returns boolean
     local integer check
     local integer actual
     local integer expected = RC_checkpointLength
+    local integer bits
+    local integer inlineMode
     set RC_codeOK = true
     set text = RC_ExpandCode(text)
-    if SubString(text, 0, 2) == "C2" then
+    if SubString(text, 0, 2) == "C4" then
+        set bits = RC_Number(SubString(text, 14, 15))
+        set inlineMode = RC_Number(SubString(text, 15, 16))
+        if bits < 1 or bits > 15 or inlineMode > 1 or not RC_InMask(RC_Number(SubString(text, 2, 3)), bits) then
+            return false
+        endif
+        set expected = 94
+        if inlineMode == 1 then
+            set expected = expected + (12 / RC_MaskCount(bits)) * 4
+        endif
+    elseif SubString(text, 0, 2) == "C2" then
         set expected = expected - 2
     elseif SubString(text, 0, 2) != "C3" then
         return false
@@ -207,6 +224,8 @@ function RC_CheckpointValid takes string text returns boolean
     return RC_codeOK and check == actual
 endfunction
 
+// @@PARTY_CHECKPOINT@@
+
 function RC_LoadCheckpoint takes string text, integer sender returns boolean
     local integer role
     local integer n = 0
@@ -214,6 +233,10 @@ function RC_LoadCheckpoint takes string text, integer sender returns boolean
     local integer id
     local integer flags
     local integer talentValue = 0
+    local integer bits = 15
+    local integer inlineMode = 1
+    local integer storyStart = 14
+    local integer slots = 3
     local string hero
     local string part = ""
     local string stash
@@ -222,6 +245,16 @@ function RC_LoadCheckpoint takes string text, integer sender returns boolean
     if not RC_CheckpointValid(text) then
         return false
     endif
+    if SubString(text, 0, 2) == "C4" then
+        set bits = RC_Number(SubString(text, 14, 15))
+        set inlineMode = RC_Number(SubString(text, 15, 16))
+        set storyStart = 16
+        set slots = 0
+        if inlineMode == 1 then
+            set slots = 12 / RC_MaskCount(bits)
+        endif
+    endif
+    set pos = storyStart + RC_storyChars
     set role = RC_Number(SubString(text, 2, 3))
     if role > 3 or (sender != RC_host and sender != role) then
         return false
@@ -230,12 +263,12 @@ function RC_LoadCheckpoint takes string text, integer sender returns boolean
         call RC_Say("Этот код предназначен для другой карты или версии. Откройте указанную при завершении миссию.")
         return false
     endif
-    set common = SubString(text, 3, 14 + RC_storyChars)
+    set common = SubString(text, 3, storyStart + RC_storyChars)
     if RC_loadedGroup != "" and RC_loadedGroup != common then
         call RC_Say("Коды из разных завершений миссии смешаны. Введите четыре кода одного прохождения. Ведущий может очистить выбор: -reset.")
         return false
     endif
-    if not RC_ReadSmallStory(SubString(text, 14, 14 + RC_storyChars)) then
+    if not RC_ReadSmallStory(SubString(text, storyStart, storyStart + RC_storyChars)) then
         return false
     endif
     set hero = "H1" + SubString(text, 2, 5) + SubString(text, 8, 9) + SubString(text, pos, pos + 24)
@@ -247,7 +280,7 @@ function RC_LoadCheckpoint takes string text, integer sender returns boolean
         set pos = pos + 4
         set n = n + 1
     endloop
-    if SubString(text, 0, 2) == "C3" then
+    if SubString(text, 0, 2) == "C3" or SubString(text, 0, 2) == "C4" then
         set talentValue = RC_Number(SubString(text, pos, pos + 2))
         set pos = pos + 2
         if talentValue > 242 then
@@ -256,7 +289,7 @@ function RC_LoadCheckpoint takes string text, integer sender returns boolean
     endif
     set n = 0
     loop
-        exitwhen n == 3
+        exitwhen n == slots
         set id = RC_ItemExpand(RC_Number(SubString(text, pos, pos + 2)))
         set part = part + RC_Pack(id, 6) + SubString(text, pos + 2, pos + 4)
         set pos = pos + 4
@@ -268,6 +301,9 @@ function RC_LoadCheckpoint takes string text, integer sender returns boolean
     endif
     // Only commit after every field/checksum/catalog index has been validated.
     set RC_loadedGroup = common
+    set RC_savedMask = bits
+    set RC_savedInline = inlineMode
+    set RC_stashRequired = true
     set RC_checkpointLoaded = true
     set RC_partyLoaded = true
     set RC_session = RC_Number(SubString(text, 3, 5))
@@ -298,13 +334,22 @@ function RC_LoadCheckpoint takes string text, integer sender returns boolean
     set n = 0
     loop
         exitwhen n == 4
-        if RC_checkpointPart[n] == "" then
-            call RC_Say("Код героя " + I2S(role + 1) + " принят. Нужны коды всех четырёх героев; после них ведущий вводит -start.")
-            return true
+        if RC_InMask(n, RC_savedMask) then
+            if RC_checkpointCode[n] == "" then
+                call RC_Say("Код героя " + I2S(role + 1) + " принят. Нужны остальные коды состава этого сохранения.")
+                return true
+            endif
+            set stash = stash + RC_checkpointPart[n]
         endif
-        set stash = stash + RC_checkpointPart[n]
         set n = n + 1
     endloop
+    if inlineMode == 0 then
+        if RC_pendingStash != "" then
+            call RC_AcceptStash(RC_pendingStash)
+        endif
+        call RC_Say("Коды героев приняты. Для заполненного тайника нужен -stash КОД из того же сохранения, затем -start.")
+        return true
+    endif
     set RC_loadedStash = RC_Seal(stash)
     set n = 0
     loop
@@ -313,7 +358,7 @@ function RC_LoadCheckpoint takes string text, integer sender returns boolean
         set RC_extraCharges[n] = RC_Number(SubString(stash, 59 + n * 8, 61 + n * 8))
         set n = n + 1
     endloop
-    call RC_Say("|cff55ff88Все четыре кода приняты: герои, сюжет и тайник. Ведущий вводит -start.|r")
+    call RC_Say("|cff55ff88Все коды сохранённого состава приняты: герои, сюжет и тайник. Ведущий вводит -start.|r")
     return true
 endfunction
 
@@ -323,10 +368,17 @@ function RC_ShowCode takes integer role returns nothing
         return
     endif
     call RC_Tell(RC_Owner(role), 120, "|cffffcc00" + RC_filePrefix + RC_mapName[RC_nextMap] + ".w3x|r → -load " + RC_checkpointCode[role])
+    if role == RC_host and RC_externalStash != "" then
+        call RC_Tell(RC_Owner(role), 120, "Дополнительно для тайника: -stash " + RC_externalStash)
+    endif
 endfunction
 
 function RC_ResetCheckpoint takes nothing returns nothing
     local integer n = 0
+    set RC_savedMask = 15
+    set RC_savedInline = 1
+    set RC_pendingStash = ""
+    set RC_externalStash = ""
     set RC_loadedGroup = ""
     set RC_checkpointLoaded = false
     set RC_partyLoaded = false

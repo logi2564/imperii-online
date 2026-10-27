@@ -5,7 +5,7 @@ function FourCC(s) local v=0 for n=1,4 do v=v*256+s:byte(n) end return v end
 function Player(n) return n end
 WORLD={players={},units={},events={},messages={},files={},ai={},drops={},time=0,localPlayer=0,hashIgnoresCase=true}
 for n=0,15 do WORLD.players[n]={controller='computer',state='playing',gold=0,wood=0,hp=1,xp=1,alliances={}} end
-for _,n in ipairs({0,3,4,5}) do WORLD.players[n].controller='user' end
+for _,n in ipairs({0,1,2,3}) do WORLD.players[n].controller='user' end
 MAP_CONTROL_USER='user';PLAYER_SLOT_STATE_PLAYING='playing'
 PLAYER_STATE_RESOURCE_GOLD='gold';PLAYER_STATE_RESOURCE_LUMBER='wood';PLAYER_STATE_RESOURCE_FOOD_CAP='food'
 MAP_DIFFICULTY_EASY=0;MAP_DIFFICULTY_NORMAL=1;MAP_DIFFICULTY_HARD=2
@@ -224,3 +224,17 @@ function SetTextTagPermanent(...) end
 function SetTextTagLifespan(...) end
 function SetTextTagFadepoint(...) end
 function SetTextTagVisibility(t,v) t.visible=v end
+function I2R(v) return v end
+function ShowUnit(u,v) if u then u.visible=v end end
+function SetUnitInvulnerable(u,v) if u then u.invulnerable=v end end
+function SetUnitPathing(u,v) if u then u.pathing=v end end
+function GetLocationX(p) return p.x end
+function GetLocationY(p) return p.y end
+function AngleBetweenPoints(a,b) return math.atan(b.y-a.y,b.x-a.x)*180/math.pi end
+function GroupAddGroup(source,destination) for _,u in ipairs(source) do if not IsUnitInGroup(u,destination) then table.insert(destination,u) end end end
+function GroupAddUnit(g,u) if u and not IsUnitInGroup(u,g) then table.insert(g,u) end end
+function CreateNUnitsAtLoc(count,id,p,point,facing)
+ local g=CreateGroup()
+ for n=1,count do bj_lastCreatedUnit=CreateUnit(p,id,point.x,point.y,facing);GroupAddUnit(g,bj_lastCreatedUnit) end
+ bj_lastCreatedGroup=g;return g
+end

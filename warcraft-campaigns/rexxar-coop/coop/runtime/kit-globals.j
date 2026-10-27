@@ -39,3 +39,16 @@
     button array RC_progressButton
     integer array RC_progressMode
     integer array RC_progressTier
+    unit array RC_storyActor
+    group RC_hiddenActors = null
+    group RC_pendingArmy = null
+    integer RC_liveMask = 15
+    integer RC_savedMask = 15
+    integer RC_savedInline = 1
+    string RC_externalStash = ""
+    string RC_pendingStash = ""
+    boolean RC_cinematicMode = false
+    boolean RC_ready = false
+    boolean array RC_archivedItemsDropped
+    boolean RC_armyInitialized = false
+    group RC_hiddenLoot = null

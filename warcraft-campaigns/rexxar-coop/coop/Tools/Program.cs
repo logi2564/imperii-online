@@ -29,7 +29,7 @@ if(args[0]=="owners"){
     int count=0;
     foreach(var path in Directory.GetFiles(Path.Combine(args[1],"Maps"),"*.w3x")){
         var map=Map.Open(path,MapFiles.Info|MapFiles.Environment|MapFiles.Units|MapFiles.ItemObjectData|MapFiles.AbilityObjectData|MapFiles.UnitObjectData);var users=map.Info!.Players.Where(p=>p.Controller==PlayerController.User).Select(p=>p.Id).Order().ToArray();
-        if(!users.SequenceEqual(new[]{0,3,4,5}))throw new InvalidDataException("Wrong player slots: "+path);
+        if(!users.SequenceEqual(new[]{0,1,2,3}))throw new InvalidDataException("Wrong player slots: "+path);
         if((int)map.Info.FormatVersion!=25)throw new InvalidDataException("Not classic W3I");
         if(map.Units is null||map.Environment is null||map.ItemObjectData is null||map.AbilityObjectData is null)throw new InvalidDataException("Missing mission data");
         if(map.ItemObjectData.NewItems.Count<300)throw new InvalidDataException("Portable item catalog absent");

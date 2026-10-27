@@ -3,10 +3,7 @@
 // @@GLOBALS@@
 
 function RC_Player takes integer role returns player
-    if role == 0 then
-        return Player(0)
-    endif
-    return Player(role + 2)
+    return Player(role)
 endfunction
 
 function RC_Role takes player p returns integer
@@ -15,11 +12,8 @@ function RC_Role takes player p returns integer
         return -1
     endif
     set id = GetPlayerId(p)
-    if id == 0 then
-        return 0
-    endif
-    if id >= 3 and id <= 5 then
-        return id - 2
+    if id >= 0 and id < 4 then
+        return id
     endif
     return -1
 endfunction
@@ -33,10 +27,7 @@ function RC_Active takes integer role returns boolean
 endfunction
 
 function RC_Owner takes integer role returns player
-    if RC_Active(role) then
-        return RC_Player(role)
-    endif
-    return RC_Player(RC_host)
+    return RC_Player(role)
 endfunction
 
 // Text natives are executed only on the recipient's client. No handles,
@@ -132,7 +123,7 @@ function RC_Valid takes string text, integer length, string kind returns boolean
     local integer check
     local integer actual
     set RC_codeOK = true
-    if StringLength(text) != length or SubString(text, 0, 2) != kind + "1" then
+    if StringLength(text) != length or (SubString(text, 0, 2) != kind + "1" and not (kind == "S" and length == 108 and SubString(text, 0, 2) == "S2")) then
         return false
     endif
     set check = RC_Number(SubString(text, length - 3, length))
@@ -141,6 +132,8 @@ function RC_Valid takes string text, integer length, string kind returns boolean
 endfunction
 
 // @@ITEMS@@
+
+// @@PARTY@@
 
 function RC_ClearInventory takes unit hero returns nothing
     local integer n = 0
@@ -248,6 +241,11 @@ function RC_Adopt takes integer role, unit hero returns nothing
     local string payload
     local integer n = 0
     local item it
+    if not RC_Active(role) then
+        call RC_AbsentActor(role, hero)
+        set old = null
+        return
+    endif
     if hero != old then
         set RC_codeOK = true
         set payload = RC_HeroCode(role)
@@ -285,12 +283,15 @@ endfunction
 function RC_ItemCarried takes item it returns boolean
     local integer role = 0
     local integer slot
+    if it == null then
+        return false
+    endif
     loop
         exitwhen role == 4
         set slot = 0
         loop
             exitwhen slot == 6
-            if UnitItemInSlot(RC_hero[role], slot) == it then
+            if RC_hero[role] != null and UnitItemInSlot(RC_hero[role], slot) == it then
                 return true
             endif
             set slot = slot + 1
@@ -405,8 +406,11 @@ function RC_WriteSave takes integer role, string payload returns nothing
     if GetLocalPlayer() == RC_Owner(role) then
         call PreloadGenClear()
         call PreloadGenStart()
-        call Preload("Rexxar co-op V. Enter this one command in the next mission, before -start:")
+        call Preload("Rexxar co-op VI. Enter this one command in the next mission, before -start:")
         call Preload("-load " + payload)
+        if role == RC_host and RC_externalStash != "" then
+            call Preload("-stash " + RC_externalStash)
+        endif
         call Preload("Next map: " + RC_mapName[RC_nextMap])
         call PreloadGenEnd("Logs\\RexxarCoop-P" + I2S(role + 1) + ".txt")
     endif
@@ -414,53 +418,89 @@ endfunction
 
 function RC_SaveAll takes boolean verbose returns nothing
     local integer n = 0
-    local string partyCode
     local string stashCode
     local string storyCode
-    local string description = "Следующая карта: " + RC_filePrefix + RC_mapName[RC_nextMap] + ".w3x.|nКаждый вводит -load СВОЙ_КОД до -start. В кодах уже есть сюжет и тайник.|n"
+    local string description = "Следующая карта: " + RC_filePrefix + RC_mapName[RC_nextMap] + ".w3x.|nКоды нужны только для состава сохранения.|n"
+    local boolean overflow = false
     set RC_saveOK = false
+    call RC_ObserveStoryHeroes()
     loop
         exitwhen n == 4
-        if RC_hero[n] == null or GetUnitTypeId(RC_hero[n]) == 0 then
-            call RC_Say("Сохранение отложено: герой сейчас меняется в сцене. Предыдущий файл не перезаписан.")
+        if RC_Active(n) and (RC_hero[n] == null or GetUnitTypeId(RC_hero[n]) == 0) then
+            call RC_Say("Сохранение отложено: герой меняется в сцене. Предыдущие файлы сохранены.")
             return
         endif
         set n = n + 1
     endloop
-    set n = 0
     set RC_codeOK = true
     set stashCode = RC_StashCode()
-    set partyCode = RC_PartyCode()
     set storyCode = RC_SmallStory()
+    set RC_savedMask = RC_CurrentMask()
+    set RC_savedInline = 1
+    set RC_externalStash = ""
     set RC_checkpoint = ModuloInteger(RC_checkpoint + 1, 262144)
+    set n = 0
     loop
         exitwhen n == 4
-        set RC_lastCode[n] = RC_HeroCode(n)
-        set RC_checkpointPart[n] = RC_MakeCheckpoint(n, RC_lastCode[n], storyCode, stashCode)
-        if not RC_codeOK or not RC_CheckpointValid(RC_checkpointPart[n]) or StringLength(RC_checkpointPart[n]) + 6 > 127 then
-            set RC_codeOK = false
+        if RC_Active(n) then
+            set RC_lastCode[n] = RC_HeroCode(n)
+            set RC_checkpointPart[n] = RC_PartyCheckpoint(n, RC_lastCode[n], storyCode, stashCode)
+            if StringLength(RC_checkpointPart[n]) + 6 > 127 then
+                set overflow = true
+            endif
+        endif
+        set n = n + 1
+    endloop
+    if overflow and RC_codeOK then
+        set RC_savedInline = 0
+        set RC_externalStash = RC_ExternalStash(stashCode)
+        set n = 0
+        loop
+            exitwhen n == 4
+            if RC_Active(n) then
+                set RC_checkpointPart[n] = RC_PartyCheckpoint(n, RC_lastCode[n], storyCode, stashCode)
+            endif
+            set n = n + 1
+        endloop
+    endif
+    set n = 0
+    loop
+        exitwhen n == 4
+        if RC_Active(n) then
+            if not RC_codeOK or not RC_CheckpointValid(RC_checkpointPart[n]) or StringLength(RC_checkpointPart[n]) + 6 > 127 then
+                set RC_codeOK = false
+            endif
         endif
         set n = n + 1
     endloop
     if not RC_codeOK then
-        call RC_Say("|cffff4444Сохранение не записано: одно из значений вышло за пределы формата. Предыдущие файлы сохранены.|r")
+        call RC_Say("Сохранение не записано: значение вышло за пределы формата. Предыдущие файлы сохранены.")
         return
     endif
     set n = 0
     loop
         exitwhen n == 4
-        set RC_checkpointCode[n] = RC_checkpointPart[n]
-        set RC_checkpointPart[n] = ""
-        set description = description + "|nГерой " + I2S(n + 1) + ": -load " + RC_checkpointCode[n]
-        call QuestSetDescription(RC_codeQuest[n], "Следующая карта: " + RC_filePrefix + RC_mapName[RC_nextMap] + ".w3x.|nВведи в её чат:|n-load " + RC_checkpointCode[n] + "|nЗатем дождись остальных. Начало: -start.|nВедущий может ввести коды отсутствующих игроков.")
-        call RC_WriteSave(n, RC_checkpointCode[n])
-        if verbose and RC_Active(n) then
-            call RC_ShowCode(n)
+        call QuestSetDiscovered(RC_codeQuest[n], RC_Active(n))
+        if RC_Active(n) then
+            set RC_checkpointCode[n] = RC_checkpointPart[n]
+            set RC_checkpointPart[n] = ""
+            set description = description + "|nГерой " + I2S(n + 1) + ": -load " + RC_checkpointCode[n]
+            call QuestSetDescription(RC_codeQuest[n], "Следующая карта: " + RC_filePrefix + RC_mapName[RC_nextMap] + ".w3x.|n-load " + RC_checkpointCode[n] + "|nПосле кодов состава сохранения: -start.")
+            call RC_WriteSave(n, RC_checkpointCode[n])
+            if verbose then
+                call RC_ShowCode(n)
+            endif
+        else
+            set RC_checkpointCode[n] = ""
+            set RC_checkpointPart[n] = ""
         endif
         set n = n + 1
     endloop
+    if RC_externalStash != "" then
+        set description = description + "|nОбщий тайник: -stash " + RC_externalStash
+    endif
     if verbose then
-        call RC_Say("Коды продолжения готовы! Каждый получил один код. Повторить: -code. Все четыре кода: F9 → Сохранение отряда.")
+        call RC_Say("Коды готовы. Свой код: -code. Резервная копия: F9 → Сохранение отряда.")
     endif
     call QuestSetDescription(RC_saveQuest, description)
     set RC_loadedStash = stashCode
@@ -542,6 +582,9 @@ function RC_PartyHero takes unit u returns boolean
     if u == null then
         return false
     endif
+    if LoadBoolean(RC_table, GetHandleId(u), 700) and RC_TypeRole(u) >= 0 then
+        return true
+    endif
     loop
         exitwhen n == 4
         if RC_hero[n] == u then
@@ -557,12 +600,19 @@ function RC_QuestItem takes unit u, integer id returns item
     local integer slot
     local item it
     if RC_PartyHero(u) then
+        set it = GetItemOfTypeFromUnitBJ(u, id)
+        if it != null then
+            return it
+        endif
         loop
             exitwhen role == 4
             set slot = 0
             loop
                 exitwhen slot == 6
-                set it = UnitItemInSlot(RC_hero[role], slot)
+                set it = null
+                if RC_hero[role] != null then
+                    set it = UnitItemInSlot(RC_hero[role], slot)
+                endif
                 if GetItemTypeId(it) == id then
                     return it
                 endif
@@ -619,11 +669,17 @@ endfunction
 
 function RC_Cinematic takes boolean enabled, force players returns nothing
     local integer n = 0
+    set RC_cinematicMode = enabled
+    if not enabled then
+        call RC_HideStoryActors()
+    endif
     if IsPlayerInForce(Player(0), players) then
         if enabled then
             loop
                 exitwhen n == 4
-                call IssueImmediateOrder(RC_hero[n], "stop")
+                if RC_hero[n] != null then
+                    call IssueImmediateOrder(RC_hero[n], "stop")
+                endif
                 if RC_progressPanel[n] != null then
                     call DialogDisplay(RC_Owner(n), RC_progressPanel[n], false)
                 endif
@@ -699,7 +755,15 @@ function RC_RestoreHero takes string key, string mission, gamecache cache, playe
         set role = 3
     endif
     if role >= 0 then
-        set bj_lastLoadedUnit = RC_hero[role]
+        if RC_Active(role) then
+            set bj_lastLoadedUnit = RC_hero[role]
+        else
+            if RC_storyActor[role] == null or GetUnitTypeId(RC_storyActor[role]) == 0 then
+                set RC_storyActor[role] = CreateUnit(Player(15), RC_heroType[role], GetLocationX(point), GetLocationY(point), facing)
+            endif
+            set bj_lastLoadedUnit = RC_storyActor[role]
+            call RC_SuppressUnit(bj_lastLoadedUnit)
+        endif
         call SetUnitPositionLoc(bj_lastLoadedUnit, point)
         call SetUnitFacing(bj_lastLoadedUnit, facing)
         return bj_lastLoadedUnit
@@ -781,6 +845,9 @@ function RC_ChangeLevel takes string name, boolean scores returns nothing
 endfunction
 
 function RC_Victory takes player p, boolean showDialog, boolean scores returns nothing
+    if RC_IsPartyPlayer(p) and not RC_Active(RC_Role(p)) then
+        return
+    endif
     if RC_transitionPending then
         return
     endif
@@ -828,6 +895,9 @@ function RC_SetNextLevel takes string name returns nothing
 endfunction
 
 function RC_Defeat takes player p, string message returns nothing
+    if RC_IsPartyPlayer(p) and not RC_Active(RC_Role(p)) then
+        return
+    endif
     call RC_Say("|cffff5555Поражение отряда: |r" + message + "|nСоздайте карту заново и загрузите последние коды из Logs. Предыдущее автосохранение не перезаписано.")
     call PauseAllUnitsBJ(true)
     call RC_DisableOriginals()
@@ -878,8 +948,8 @@ function RC_Alliances takes nothing returns nothing
                 call RC_SetAlliance(RC_Player(a), RC_Player(b), ALLIANCE_SHARED_VISION, true)
                 call RC_SetAlliance(RC_Player(a), RC_Player(b), ALLIANCE_SHARED_XP, true)
                 call RC_SetAlliance(RC_Player(a), RC_Player(b), ALLIANCE_SHARED_SPELLS, true)
-                call RC_SetAlliance(RC_Player(a), RC_Player(b), ALLIANCE_SHARED_CONTROL, not RC_Active(a))
-                call RC_SetAlliance(RC_Player(a), RC_Player(b), ALLIANCE_SHARED_ADVANCED_CONTROL, not RC_Active(a))
+                call RC_SetAlliance(RC_Player(a), RC_Player(b), ALLIANCE_SHARED_CONTROL, false)
+                call RC_SetAlliance(RC_Player(a), RC_Player(b), ALLIANCE_SHARED_ADVANCED_CONTROL, false)
             endif
             set b = b + 1
         endloop
@@ -891,19 +961,30 @@ endfunction
 
 function RC_Distribute takes nothing returns nothing
     local unit u
-    local integer role
-    call GroupEnumUnitsOfPlayer(RC_army, Player(0), null)
+    local group deferred = CreateGroup()
+    if RC_MaskCount(RC_CurrentMask()) == 0 then
+        call DestroyGroup(deferred)
+        set deferred = null
+        return
+    endif
     loop
-        set u = FirstOfGroup(RC_army)
+        set u = FirstOfGroup(RC_pendingArmy)
         exitwhen u == null
-        call GroupRemoveUnit(RC_army, u)
-        if not IsUnitType(u, UNIT_TYPE_HERO) and not IsUnitType(u, UNIT_TYPE_STRUCTURE) and not IsUnitType(u, UNIT_TYPE_SUMMONED) and not IsUnitPaused(u) and not LoadBoolean(RC_table, GetHandleId(u), 1) then
-            set role = ModuloInteger(RC_armyCounter, 4)
-            set RC_armyCounter = RC_armyCounter + 1
-            call SaveBoolean(RC_table, GetHandleId(u), 1, true)
-            call SetUnitOwner(u, RC_Owner(role), true)
+        call GroupRemoveUnit(RC_pendingArmy, u)
+        if GetUnitTypeId(u) != 0 and GetWidgetLife(u) > 0.405 and RC_IsPartyPlayer(GetOwningPlayer(u)) and not IsUnitType(u, UNIT_TYPE_HERO) and not IsUnitType(u, UNIT_TYPE_STRUCTURE) and not IsUnitType(u, UNIT_TYPE_SUMMONED) and not LoadBoolean(RC_table, GetHandleId(u), 1) then
+            if IsUnitPaused(u) then
+                call GroupAddUnit(deferred, u)
+            else
+                call SetUnitOwner(u, RC_ArmyOwner(RC_armyCounter), true)
+                set RC_armyCounter = RC_armyCounter + 1
+                call SaveBoolean(RC_table, GetHandleId(u), 1, true)
+            endif
         endif
     endloop
+    call GroupAddGroup(deferred, RC_pendingArmy)
+    call DestroyGroup(deferred)
+    set deferred = null
+    set u = null
 endfunction
 
 function RC_Tick takes nothing returns nothing
@@ -922,12 +1003,34 @@ function RC_Tick takes nothing returns nothing
             set n = n + 1
         endloop
     endif
+    if not RC_Active(0) then
+        if RC_hero[0] != null then
+            call RC_AbsentActor(0, RC_hero[0])
+        endif
+        set RC_transitionPending = true
+        call RC_DisableOriginals()
+        call PauseAllUnitsBJ(true)
+        call PauseTimer(RC_tickTimer)
+        call PauseTimer(RC_skillTimer)
+        call PauseTimer(RC_balanceTimer)
+        call RC_Say("Красный игрок вышел. Для сюжета нужен Рексар: пересоздайте лобби с красным игроком и последними кодами. Файлы сохранения не перезаписаны.")
+        return
+    endif
     call RC_Alliances()
     call RC_ObserveStoryHeroes()
+    if RC_liveMask != RC_CurrentMask() then
+        set RC_liveMask = RC_CurrentMask()
+        call RC_InitialArmy()
+        call RC_Balance()
+    endif
     call RC_ApplyStash()
     set n = 0
     loop
         exitwhen n == 4
+        if RC_hero[n] != null and not RC_Active(n) then
+            call RC_AbsentActor(n, RC_hero[n])
+        endif
+        if RC_hero[n] != null then
         if GetOwningPlayer(RC_hero[n]) != RC_Owner(n) then
             call SetUnitOwner(RC_hero[n], RC_Owner(n), true)
         endif
@@ -948,9 +1051,11 @@ function RC_Tick takes nothing returns nothing
             endif
         endif
         call RC_ProgressTick(n)
+        endif
         set n = n + 1
     endloop
     if not RC_StoryCinematic() then
+        call RC_DrainHiddenItems()
         set n = 0
         loop
             exitwhen n == 6
@@ -967,12 +1072,65 @@ function RC_Tick takes nothing returns nothing
     endif
 endfunction
 
+function RC_DropArchivedItems takes integer role returns nothing
+    local integer n = 0
+    local integer raw
+    local integer pos
+    local item it
+    local string payload = RC_loadedHero[role]
+    if RC_Active(role) or payload == "" or RC_archivedItemsDropped[role] then
+        return
+    endif
+    set RC_archivedItemsDropped[role] = true
+    loop
+        exitwhen n == 6
+        set pos = 30 + n * 8
+        set raw = RC_ItemToLocal(RC_Number(SubString(payload, pos, pos + 6)))
+        if raw != 0 then
+            set it = CreateItem(raw, GetUnitX(RC_hero[RC_host]) + n * 40, GetUnitY(RC_hero[RC_host]) + 100 + role * 55)
+            call SetItemCharges(it, RC_Number(SubString(payload, pos + 6, pos + 8)))
+        endif
+        set n = n + 1
+    endloop
+    set it = null
+endfunction
+
+function RC_ArchivedBank takes nothing returns nothing
+    local integer role = 0
+    local integer gold = 0
+    local integer wood = 0
+    local integer count = RC_MaskCount(RC_CurrentMask())
+    loop
+        exitwhen role == 4
+        if not RC_Active(role) and RC_loadedHero[role] != "" then
+            set gold = gold + RC_Number(SubString(RC_loadedHero[role], 22, 26))
+            set wood = wood + RC_Number(SubString(RC_loadedHero[role], 26, 30))
+        endif
+        set role = role + 1
+    endloop
+    set role = 0
+    loop
+        exitwhen role == 4
+        if RC_Active(role) then
+            call SetPlayerState(RC_Player(role), PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(RC_Player(role), PLAYER_STATE_RESOURCE_GOLD) + gold / count)
+            call SetPlayerState(RC_Player(role), PLAYER_STATE_RESOURCE_LUMBER, GetPlayerState(RC_Player(role), PLAYER_STATE_RESOURCE_LUMBER) + wood / count)
+        endif
+        set role = role + 1
+    endloop
+    call SetPlayerState(RC_Player(RC_host), PLAYER_STATE_RESOURCE_GOLD, GetPlayerState(RC_Player(RC_host), PLAYER_STATE_RESOURCE_GOLD) + ModuloInteger(gold, count))
+    call SetPlayerState(RC_Player(RC_host), PLAYER_STATE_RESOURCE_LUMBER, GetPlayerState(RC_Player(RC_host), PLAYER_STATE_RESOURCE_LUMBER) + ModuloInteger(wood, count))
+endfunction
+
 function RC_Ready takes nothing returns nothing
     local integer n = 0
     local integer count = 0
     local integer gold = GetPlayerState(Player(0), PLAYER_STATE_RESOURCE_GOLD)
     local integer wood = GetPlayerState(Player(0), PLAYER_STATE_RESOURCE_LUMBER)
     local boolean fresh = not RC_partyLoaded
+    if RC_ready then
+        return
+    endif
+    set RC_ready = true
     loop
         exitwhen n == 4
         if RC_loadedHero[n] != "" then
@@ -1006,14 +1164,18 @@ function RC_Ready takes nothing returns nothing
     call RC_Balance()
     loop
         exitwhen n == 4
-        if RC_loadedHero[n] != "" then
+        if RC_Active(n) and RC_loadedHero[n] != "" then
             call RC_ApplyHero(n, RC_loadedHero[n])
         endif
+        call RC_DropArchivedItems(n)
         if RC_Active(n) then
             call RC_Tell(RC_Player(n), 30, "Твой герой: " + RC_heroName[n] + ". Обучение: кнопка K. Таланты: кнопка T (уровни 4/8/12/16/20). Сохранение: -save; свой код: -code; запасные коды: F9.")
         endif
         set n = n + 1
     endloop
+    call RC_ArchivedBank()
+    call RC_InitialArmy()
+    call RC_Distribute()
     call TimerStart(RC_tickTimer, 1.0, true, function RC_Tick)
     call TimerStart(RC_skillTimer, 0.1, true, function RK_Tick)
 endfunction
@@ -1025,10 +1187,15 @@ function RC_Begin takes nothing returns nothing
     if RC_started then
         return
     endif
+    if not RC_Active(0) then
+        call RC_Say("Для сюжета нужен красный игрок (Рексар). Остальные три места можно закрыть.")
+        return
+    endif
+    set RC_liveMask = RC_CurrentMask()
     if RC_checkpointLoaded then
         loop
             exitwhen n == 4
-            if RC_checkpointCode[n] == "" then
+            if RC_InMask(n, RC_savedMask) and RC_checkpointCode[n] == "" then
                 call RC_Say("Для продолжения не хватает кода героя " + I2S(n + 1) + ". Каждый вводит -load СВОЙ_КОД; код отсутствующего игрока может ввести ведущий.")
                 return
             endif
@@ -1046,7 +1213,7 @@ function RC_Begin takes nothing returns nothing
     endif
     loop
         exitwhen n == 4
-        if RC_partyLoaded and RC_Active(n) and RC_loadedHero[n] == "" then
+        if RC_partyLoaded and RC_Active(n) and RC_InMask(n, RC_savedMask) and RC_loadedHero[n] == "" then
             call RC_Say("Для продолжения нужен код героя " + I2S(n + 1) + ". Введите -load или -load" + I2S(n + 1) + " КОД до старта.")
             return
         endif
@@ -1066,15 +1233,18 @@ function RC_Begin takes nothing returns nothing
     set n = 0
     loop
         exitwhen n == 4
+        if RC_Active(n) then
         set RC_hero[n] = CreateUnit(RC_Owner(n), RC_heroType[n], x + n * 90.0, y, 0.0)
         call SetHeroLevel(RC_hero[n], RC_defaultLevel, false)
         call RC_InstallProgress(RC_hero[n])
         call RC_ClearOldSkills(RC_hero[n], n)
-        if RC_loadedHero[n] != "" then
+        if RC_Active(n) and RC_loadedHero[n] != "" then
             call RC_ApplyHero(n, RC_loadedHero[n])
+        endif
         endif
         set n = n + 1
     endloop
+    call RC_InitialArmy()
     call RC_EnableOriginals()
     call SetGameDifficulty(RC_GetDifficulty())
     call ExecuteFunc("RunInitializationTriggers")
@@ -1132,25 +1302,16 @@ function RC_Chat takes nothing returns nothing
         else
             call RC_Say("Неверный код отряда: длина, версия или контрольная сумма.")
         endif
-    elseif SubString(text, 0, 7) == "-stash " and not RC_started and not RC_checkpointLoaded and p == RC_Player(RC_host) then
-        set payload = SubString(text, 7, StringLength(text))
-        if RC_Valid(payload, 104, "S") then
-            set RC_loadedStash = payload
-            set n = 0
-            loop
-                exitwhen n == 6
-                set RC_extraItem[n] = RC_Number(SubString(payload, 53 + n * 8, 59 + n * 8))
-                set RC_extraCharges[n] = RC_Number(SubString(payload, 59 + n * 8, 61 + n * 8))
-                set n = n + 1
-            endloop
-            call RC_Say("Общий тайник загружен.")
+    elseif SubString(text, 0, 7) == "-stash " and not RC_started and p == RC_Player(RC_host) then
+        if RC_AcceptStash(SubString(text, 7, StringLength(text))) then
+            call RC_Say("Код тайника принят. После кодов сохранённого состава ведущий вводит -start.")
         else
-            call RC_Say("Код тайника не принят.")
+            call RC_Say("Код тайника не принят: проверь версию и завершение миссии.")
         endif
     elseif SubString(text, 0, 6) == "-load " and not RC_started then
         set requested = role
         set payload = SubString(text, 6, StringLength(text))
-        if (SubString(payload, 0, 2) == "C2" or SubString(payload, 0, 2) == "Z3" or SubString(payload, 0, 2) == "C3" or SubString(payload, 0, 2) == "Z4") then
+        if (SubString(payload, 0, 2) == "C2" or SubString(payload, 0, 2) == "Z3" or SubString(payload, 0, 2) == "C3" or SubString(payload, 0, 2) == "Z4" or SubString(payload, 0, 2) == "C4" or SubString(payload, 0, 2) == "Z5") then
             if not RC_LoadCheckpoint(payload, role) then
                 call RC_Say("Код не принят. Проверь карту, номер героя и все символы; введи код из того же завершения миссии, что остальные.")
             endif
@@ -1200,6 +1361,9 @@ function RC_Menu takes nothing returns nothing
     set n = 0
     set RC_scratch = CreateGroup()
     set RC_army = CreateGroup()
+    set RC_hiddenActors = CreateGroup()
+    set RC_hiddenLoot = CreateGroup()
+    set RC_pendingArmy = CreateGroup()
     set RC_skillGroup = CreateGroup()
     set RC_balanceGroup = CreateGroup()
     set RC_damageUnits = CreateGroup()
@@ -1233,7 +1397,7 @@ function RC_Menu takes nothing returns nothing
     call RC_InitialAlliances()
     set RC_saveQuest = CreateQuest()
     call QuestSetTitle(RC_saveQuest, "Сохранение отряда")
-    call QuestSetDescription(RC_saveQuest, "После завершения миссии или перехода каждый получит ОДИН код. В следующей карте каждый вводит -load СВОЙ_КОД, затем ведущий -start. Сюжет и тайник уже включены. Здесь появится резервная копия всех четырёх кодов.")
+    call QuestSetDescription(RC_saveQuest, "После завершения миссии или перехода каждый получит ОДИН код. В следующей карте каждый вводит -load СВОЙ_КОД, затем ведущий -start. Сюжет и тайник уже включены. Здесь появятся коды героев, участвовавших в сохранении.")
     call QuestSetIconPath(RC_saveQuest, "ReplaceableTextures\\CommandButtons\\BTNScroll.blp")
     call QuestSetRequired(RC_saveQuest, false)
     call QuestSetDiscovered(RC_saveQuest, true)
@@ -1244,17 +1408,17 @@ function RC_Menu takes nothing returns nothing
         call QuestSetTitle(RC_codeQuest[n], "Код продолжения: герой " + I2S(n + 1))
         call QuestSetDescription(RC_codeQuest[n], "Код будет выдан после прохождения миссии или перехода в другую область. Отдельные команды для сюжета и тайника не нужны.")
         call QuestSetRequired(RC_codeQuest[n], false)
-        call QuestSetDiscovered(RC_codeQuest[n], true)
+        call QuestSetDiscovered(RC_codeQuest[n], RC_Active(n))
         set n = n + 1
     endloop
     set RC_helpQuest = CreateQuest()
-    call QuestSetTitle(RC_helpQuest, "Четверо героев — правила")
-    call QuestSetDescription(RC_helpQuest, "Кнопка K — изучение Q/W/E/R за очки героя. Кнопка T — пять рядов талантов с выбором на уровнях 4/8/12/16/20. Опыт за убийство: 24 + 8 за уровень врага каждому живому герою рядом (1600). Рексар — возвращающийся топор и охота; Рокхан — тотем и якорь души; Чэнь — мокрые метки и огненные связки; Кэрн — броня и накопление урона для ответного удара.|nУ каждого свои вещи и навыки. Войска делятся, герой возрождается через 15 сек. Сюжетные спутники заменяют временных с переносом развития.|nВ конце миссии получи код. Повторить: -code, копия: F9. В следующей карте каждому -load КОД, затем ведущему -start.")
+    call QuestSetTitle(RC_helpQuest, "Герои и правила")
+    call QuestSetDescription(RC_helpQuest, "Кнопка K — изучение Q/W/E/R за очки героя. Кнопка T — пять рядов талантов с выбором на уровнях 4/8/12/16/20. Опыт за убийство: 24 + 8 за уровень врага каждому живому герою рядом (1600). Рексар — возвращающийся топор и охота; Рокхан — тотем и якорь души; Чэнь — мокрые метки и огненные связки; Кэрн — броня и накопление урона для ответного удара.|nУ каждого свои вещи и навыки. Квестовые войска делятся между присутствующими. Герой возрождается через 15 сек. Сюжетные спутники заменяют временных с переносом развития.|nВ конце миссии получи код. Повторить: -code, копия: F9. В следующей карте каждому -load КОД, затем ведущему -start.")
     call QuestSetIconPath(RC_helpQuest, "ReplaceableTextures\\CommandButtons\\BTNBeastMaster.blp")
     call QuestSetRequired(RC_helpQuest, false)
     call QuestSetDiscovered(RC_helpQuest, true)
     set RC_menu = DialogCreate()
-    call DialogSetMessage(RC_menu, "Рексар: отряд из четырёх|nВыбери сложность. Сохранения вводятся в чат до -start.")
+    call DialogSetMessage(RC_menu, "Рексар: от 1 до 4 игроков|nВыбери сложность. Сохранения вводятся в чат до -start.")
     set RC_difficultyButton[0] = DialogAddButton(RC_menu, "Лёгкая", 0)
     set RC_difficultyButton[1] = DialogAddButton(RC_menu, "Обычная", 0)
     set RC_difficultyButton[2] = DialogAddButton(RC_menu, "Тяжёлая", 0)

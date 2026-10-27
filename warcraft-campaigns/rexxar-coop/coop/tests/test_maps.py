@@ -11,7 +11,7 @@ changed={name.lower() for name in ['war3map.j','war3map.w3i','war3mapUnits.doo',
 for name in MAPS:
     source=ROOT/'inputs'/(name+'.w3x');target=out/'Maps'/(FILE_PREFIX+name+'.w3x');a=storm.open(source);b=storm.open(target)
     try:
-        info=read_info(storm.read(b,'war3map.w3i'));assert sorted(p['id'] for p in info['players'] if p['controller']==1)==[0,3,4,5]
+        info=read_info(storm.read(b,'war3map.w3i'));assert sorted(p['id'] for p in info['players'] if p['controller']==1)==[0,1,2,3]
         assert len(info['players'])<=12 and all(0<=p['id']<12 for p in info['players'])
         assert [p['id'] for p in info['players']]==sorted(p['id'] for p in info['players'])
         assert all(0<=p['low']<4096 and 0<=p['high']<4096 for p in info['players'])
@@ -55,6 +55,7 @@ for name in MAPS:
                 values={(mod[0],mod[2]):mod[4] for mod in lookup[menu_id]['mods']}
                 assert values[('Ncl6',1)] not in orders
                 assert struct.unpack('<i',values[('aher',0)])[0]==0
+        misc=storm.read(b,'war3mapMisc.txt');assert re.search(rb'(?mi)^MaxHeroLevel=20\s*$',misc),(name,'hero level cap not twenty')
         script=storm.read(b,'war3map.j').decode();assert script.count('call RC_Bootstrap()')==1
         # pjass does NOT enforce classic Warcraft's UTF-8 byte literal limit.
         tokens=re.findall(r'//[^\r\n]*|"(?:[^"\\]|\\.)*"',script)

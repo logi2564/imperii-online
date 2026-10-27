@@ -47,7 +47,7 @@ function RC_OpenProgress takes integer role, integer mode, integer tier returns 
     local integer rank
     local string text
     local dialog panel = RC_progressPanel[role]
-    if not RC_started or RC_transitionPending or role < 0 or role > 3 or RC_StoryCinematic() then
+    if not RC_started or RC_transitionPending or role < 0 or role > 3 or RC_hero[role] == null or RC_StoryCinematic() then
         set panel = null
         return
     endif

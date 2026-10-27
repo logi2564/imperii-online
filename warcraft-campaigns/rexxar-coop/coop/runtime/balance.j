@@ -1,7 +1,7 @@
-// Four heroes always exist, even when absent players' heroes belong to host.
+// Enemy scaling follows the occupied human slots; no absent hero is spawned.
 // Max life is changed on actual units; no >100% player handicap is assumed.
 function RC_EnemyUnit takes unit u returns boolean
-    return RK_Alive(u) and not RC_IsPartyPlayer(GetOwningPlayer(u)) and IsUnitEnemy(u, RC_Player(0)) and GetUnitAbilityLevel(u, 'Aloc') == 0
+    return RK_Alive(u) and not LoadBoolean(RC_table, GetHandleId(u), 700) and not RC_IsPartyPlayer(GetOwningPlayer(u)) and IsUnitEnemy(u, RC_Player(0)) and GetUnitAbilityLevel(u, 'Aloc') == 0
 endfunction
 
 function RC_ScaleLife takes unit u returns nothing
@@ -103,7 +103,7 @@ function RC_BalanceScan takes nothing returns nothing
         endif
         if u != null then
             call GroupRemoveUnit(RC_balanceGroup, u)
-            if GetUnitAbilityLevel(u, 'Aloc') == 0 and RK_Alive(u) then
+            if GetUnitAbilityLevel(u, 'Aloc') == 0 and RK_Alive(u) and not LoadBoolean(RC_table, GetHandleId(u), 700) then
                 if not IsUnitType(u, UNIT_TYPE_SUMMONED) then
                     call RC_ScaleLife(u)
                 endif
@@ -120,31 +120,35 @@ endfunction
 
 function RC_Balance takes nothing returns nothing
     local integer role = 0
+    local integer count = RC_MaskCount(RC_CurrentMask())
+    local real extra = I2R(count - 1)
+    if count < 1 then
+        return
+    endif
     if RC_difficulty == 0 then
-        set RC_enemyLife = 2.5
+        set RC_enemyLife = 1.0 + extra * 0.5
         set RC_enemyDamage = 1.0
     elseif RC_difficulty == 1 then
-        set RC_enemyLife = 4.5
-        set RC_enemyDamage = 1.5
+        set RC_enemyLife = 1.0 + extra * (3.5 / 3.0)
+        set RC_enemyDamage = 1.0 + extra / 6.0
     else
-        set RC_enemyLife = 6.5
-        set RC_enemyDamage = 2.0
+        set RC_enemyLife = 1.5 + extra * (5.0 / 3.0)
+        set RC_enemyDamage = 1.25 + extra * 0.25
     endif
     if RC_map == 16 then
-        // Final map already has four Horde armies rather than four lone heroes.
-        set RC_enemyLife = 1.4 + RC_difficulty * 0.7
-        set RC_enemyDamage = 1.0 + RC_difficulty * 0.3
+        set RC_enemyLife = 1.0 + (0.4 + RC_difficulty * 0.7) * I2R(count) / 4.0
+        set RC_enemyDamage = 1.0 + RC_difficulty * 0.3 * I2R(count) / 4.0
     endif
     loop
         exitwhen role == 4
         call SetPlayerHandicapXP(RC_Player(role), RC_xpRate)
         call SetPlayerState(RC_Player(role), PLAYER_STATE_RESOURCE_FOOD_CAP, 100)
-        if not IsUnitInGroup(RC_hero[role], RC_damageUnits) then
+        if RC_Active(role) and RC_hero[role] != null and not IsUnitInGroup(RC_hero[role], RC_damageUnits) then
             call GroupAddUnit(RC_damageUnits, RC_hero[role])
             call TriggerRegisterUnitEvent(RC_damageTrigger, RC_hero[role], EVENT_UNIT_DAMAGED)
         endif
         set role = role + 1
     endloop
     call TimerStart(RC_balanceTimer, 0.25, true, function RC_BalanceScan)
-    call RC_Say("Баланс на четырёх героев: " + RC_difficultyName[RC_difficulty] + ". Здоровье врагов ×" + R2SW(RC_enemyLife, 1, 1) + ", урон ×" + R2SW(RC_enemyDamage, 1, 1) + ". Опыт и общие награды делятся.")
+    call RC_Say("Героев в отряде: " + I2S(count) + ". Сложность: " + RC_difficultyName[RC_difficulty] + ". Здоровье врагов ×" + R2SW(RC_enemyLife, 1, 1) + ", урон ×" + R2SW(RC_enemyDamage, 1, 1) + ". Каждый герой получает свою полную награду опыта.")
 endfunction

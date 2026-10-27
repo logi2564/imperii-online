@@ -55,6 +55,7 @@ jobs:
           python coop/tests/test_lobby.py build-out | tee Lobby-check.txt
           python coop/tests/test_kits.py build-out/runtime.lua | tee Skills-balance-save-check.txt
           python coop/tests/test_progress.py build-out/runtime.lua build-out/runtime-act2.lua | tee Talents-XP-learning-check.txt
+          python coop/tests/test_party.py build-out/runtime.lua build-out/runtime-act2.lua | tee Party-roster-check.txt
           PJASS="$RUNNER_TEMP/pjass/pjass" python coop/tests/test_entry_regression.py build-out | tee Entry-regression-check.txt
       - name: Stage maps and verification reports
         run: |
@@ -130,11 +131,11 @@ jobs:
           name: rexxar-windows-helper
           path: helper-out
       - name: Package seventeen new gameplay maps without stale baseline substitution
-        run: python3 warcraft-campaigns/rexxar-coop/coop/package_v.py mission-artifact helper-out release
+        run: python3 warcraft-campaigns/rexxar-coop/coop/package_vi.py mission-artifact helper-out release
       - name: Publish corrected campaign bundle with scoped native confirmation
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          tag="rexxar-coop-v-${GITHUB_SHA:0:8}"
-          gh release create "$tag" release/Rexxar-Coop-V.zip release/Rexxar-Coop-V.zip.sha256 release/RX5-OrcX01.w3x release/V-package.json release/Package-check.txt mission-artifact/Skills-balance-save-check.txt mission-artifact/Talents-XP-learning-check.txt mission-artifact/Entry-regression-check.txt helper-out/Windows-helper-check.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Рексар V: обучение, нормальный опыт и 40 талантов на четверых' --notes-file warcraft-campaigns/rexxar-coop/coop/README-V-RU.txt
+          tag="rexxar-coop-vi-${GITHUB_SHA:0:8}"
+          gh release create "$tag" release/Rexxar-Coop-VI.zip release/Rexxar-Coop-VI.zip.sha256 release/RX6-OrcX01.w3x release/VI-package.json release/Package-check.txt mission-artifact/Skills-balance-save-check.txt mission-artifact/Talents-XP-learning-check.txt mission-artifact/Party-roster-check.txt mission-artifact/Entry-regression-check.txt helper-out/Windows-helper-check.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Рексар VI: 1–4 игрока, только свои герои и войска, уровень 20' --notes-file warcraft-campaigns/rexxar-coop/coop/README-VI-RU.txt

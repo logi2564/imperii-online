@@ -95,9 +95,9 @@ def experience(path):
     assert hero.level>=4 and hero.points>old_points and g.RC_GiveTalent(0,0,1),'Kills did not unlock real levels/points/talents'
     # Full four-hero XP remains even when one player controls all four.
     h=fresh(path)
-    for player in (3,4,5):h.WORLD.players[player].controller='computer'
+    for player in (1,2,3):h.WORLD.players[player].controller='computer'
     u=enemy(h);u.hp=0;h.WORLD.events.unit=u;h.WORLD.events.killer=h.RC_hero[0];h.RC_KillExperience()
-    assert len({h.RC_hero[n].xp for n in range(4)})==1
+    assert h.RC_hero[0].xp==232 and all(h.RC_hero[n].xp==200 for n in range(1,4)), 'Closed slots gained XP'
     print('PASS: actual kill XP +32 (level-1) and +64 (level-5) to EACH nearby living hero, no shared-XP/player handicap penalty, actual level/skill/talent unlocks; dead/far heroes, summons, illusions, allies, unknown killer and cinematics excluded; local floating feedback.')
 
 def node_effects(path):
@@ -169,7 +169,7 @@ def persistence(first,second):
         for tier in range(5):assert g.RC_GiveTalent(role,tier,1+(role+tier)%2)
         masks.append(g.RC_talents[role])
     g.RC_Transition(5,1);codes=[g.RC_checkpointCode[n] for n in range(4)]
-    assert all(c.startswith('Z4') and len('-load '+c)<=127 for c in codes)
+    assert all(c.startswith('Z5') and len('-load '+c)<=127 for c in codes)
     _,h=setup(second)
     for c in codes:chat(h,0,'-load '+c)
     begin(h);assert [h.RC_talents[n] for n in range(4)]==masks
@@ -180,14 +180,14 @@ def persistence(first,second):
     _,old=setup(second)
     for code in codes:
         raw=g.RC_ExpandCode(code);old.RC_codeOK=True
-        legacy=old.RC_Seal('C2'+raw[2:87]+raw[89:-3])
+        legacy=old.RC_Seal('C2'+raw[2:14]+raw[16:89]+raw[91:-3])
         assert len(legacy)==102
         chat(old,0,'-load '+old.RC_CompactCode(legacy))
     begin(old);assert old.RC_started and all(old.RC_talents[n]==0 for n in range(4))
     _,invalid=setup(second);raw=g.RC_ExpandCode(codes[0]);invalid.RC_codeOK=True
-    bad=invalid.RC_Seal(raw[:87]+'__'+raw[89:-3]);chat(invalid,0,'-load '+invalid.RC_CompactCode(bad))
+    bad=invalid.RC_Seal(raw[:89]+'__'+raw[91:-3]);chat(invalid,0,'-load '+invalid.RC_CompactCode(bad))
     assert not invalid.RC_checkpointLoaded,'Invalid base-3 talent state committed'
-    print('PASS: all hero talent choices survive new Z4/C3 codes, map transition and narrative actor handover; real Z3/C2 payloads remain loadable with unspent talents; invalid talent masks rejected atomically.')
+    print('PASS: all hero talent choices survive new Z5/C4 codes, map transition and narrative actor handover; real Z3/C2 payloads remain loadable with unspent talents; invalid talent masks rejected atomically.')
 
 if __name__=='__main__':
     learning(sys.argv[1]);dialogs(sys.argv[1]);experience(sys.argv[1]);node_effects(sys.argv[1]);persistence(sys.argv[1],sys.argv[2])

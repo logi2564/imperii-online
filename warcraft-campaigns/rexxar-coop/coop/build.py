@@ -8,9 +8,9 @@ import kits,talents
 
 ROOT=Path(__file__).resolve().parent
 MAPS=['OrcX01']+[f'OrcX01_{n:02}' for n in range(2,6)]+['OrcX02']+[f'OrcX02_{n:02}' for n in range(2,11)]+['OrcX03a','OrcX03b']
-ROLES=[0,3,4,5]
-FILE_PREFIX='RX5-'
-DISPLAY_PREFIX='REXXAR V - '
+ROLES=[0,1,2,3]
+FILE_PREFIX='RX6-'
+DISPLAY_PREFIX='REXXAR VI - '
 KINDS={'item':('war3map.w3t',False),'ability':('war3map.w3a',True),'unit':('war3map.w3u',False),'buff':('war3map.w3h',False)}
 EXTRA=['war3map.j','war3map.w3i','war3map.wts','war3mapMisc.txt','war3mapUnits.doo']
 
@@ -51,7 +51,7 @@ def classic_strings(script):
     return re.sub(pattern,shorten,script)
 
 def player_remap(script,name):
-    if name=='OrcX03b':return {} # Three existing Horde armies become the three friends' armies.
+    if name=='OrcX03b':return {1:4,2:5,3:1,4:2,5:3} # Enemies -> 4/5; three Horde armies -> blue/teal/purple.
     used=set(map(int,re.findall(r'\bPlayer\(\s*(\d+)\s*\)',mask(script))))
     targets=[n for n in range(1,12) if n not in ROLES and n not in used]
     moved={}
@@ -291,7 +291,7 @@ def build(destination):
         (destination/'scripts'/(name+'.j')).write_text(script)
         reports.append(dict(map=name,bytes=target.stat().st_size,sha256=hashlib.sha256(target.read_bytes()).hexdigest(),sourceSha256=hashlib.sha256(m['path'].read_bytes()).hexdigest(),roles=ROLES,npcRemap=remap))
         print(name,'four roles',ROLES,'NPC remap',remap)
-    report=dict(status='experimental-needs-real-game-test',nativeWarcraftTested=False,liveIrinaBotTested=False,filePrefix=FILE_PREFIX,maps=reports,questFields=schema,portableObjects={k:len(v) for k,v in catalog.output.items()},compactItems=len(catalog.compact),nextMapRequiresNewLobby=True,saveFormat='Z4',uncompressedSaveFormat='C3',talentChoices=40,legacySaveFormat='RC1')
+    report=dict(status='experimental-needs-real-game-test',nativeWarcraftTested=False,liveIrinaBotTested=False,filePrefix=FILE_PREFIX,maps=reports,questFields=schema,portableObjects={k:len(v) for k,v in catalog.output.items()},compactItems=len(catalog.compact),nextMapRequiresNewLobby=True,saveFormat='Z5',uncompressedSaveFormat='C4',talentChoices=40,minPlayers=1,maxPlayers=4,heroLevelCap=20,legacySaveFormat='RC1')
     (destination/'Build-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
     return report
 
@@ -307,6 +307,13 @@ def transform(script,m,schema,catalog,players,remap,runtime,forces):
             body=re.sub(r'(?m)^    // Save Stash Contents In A Hero\n[\s\S]*?(?=^    // Save Cache)', '    // Stash persists through the RC payload, without moving its live items.\n',body)
             body=re.sub(r'(?m)^    // Stash\n[\s\S]*?(?=^    // Misc)', '    // Shared stash is restored directly by the RC runtime.\n',body)
         script=script[:match.start()]+body+script[match.end():]
+    # Preserve recruitment/story flags in saves, while positive party checks
+    # (formations, transitions, defeat, cinematics) only require present roles.
+    presence=[]
+    for match in re.finditer(r'\b(udg_(Rexxar|Rokhan|Chen|Cairne)InParty)\s*==\s*true\b',mask(script)):
+        role=['Rexxar','Rokhan','Chen','Cairne'].index(match[2])
+        presence.append((match.start(),match.end(),f'(RC_Active({role}) and {match[1]})'))
+    for a,b,value in reversed(presence):script=script[:a]+value+script[b:]
     # Broaden owner-based quest tests without changing the actual owner handles.
     owner=r'(GetOwningPlayer\s*\((?:[^()]|\([^()]*\))*\))'
     replacements=[]
@@ -314,7 +321,7 @@ def transform(script,m,schema,catalog,players,remap,runtime,forces):
         for match in re.finditer(pattern,mask(script)):replacements.append((match.start(),match.end(),'RC_IsPartyPlayer('+script[match.start(group):match.end(group)]+')'))
     for a,b,value in sorted(replacements,reverse=True):script=script[:a]+value+script[b:]
     mapped={'GetGameDifficulty':'RC_GetDifficulty','GetForceOfPlayer':'RC_GetForce','IsUnitOwnedByPlayer':'RC_UnitOwned','TriggerRegisterPlayerUnitEvent':'RC_RegisterUnitEvent','TriggerRegisterPlayerEventEndCinematic':'RC_RegisterSkip','CinematicModeBJ':'RC_Cinematic','CameraSetupApplyForPlayer':'RC_CameraSetup','GetUnitsOfPlayerAll':'RC_UnitsOfPlayer','InitGameCacheBJ':'RC_InitCache','ReloadGameCachesFromDisk':'RC_ReloadCache','SaveGameCacheBJ':'RC_SaveCache','RestoreUnitLocFacingAngleBJ':'RC_RestoreHero','StartCampaignAI':'RC_StartAI','ChangeLevel':'RC_ChangeLevel','SetNextLevelBJ':'RC_SetNextLevel','CustomVictoryBJ':'RC_Victory','CustomDefeatBJ':'RC_Defeat','SetPlayerStateBJ':'RC_Resource','AdjustPlayerStateBJ':'RC_AdjustResource'}
-    mapped.update({'SelectHeroSkill':'RC_Learn','SetPlayerHandicapXPBJ':'RC_XPHandicapPercent','SetPlayerHandicapXP':'RC_XPHandicap','SuspendHeroXPBJ':'RC_SuspendExperienceBJ','SuspendHeroXP':'RC_SuspendExperience','UnitHasItemOfTypeBJ':'RC_HasQuestItem','GetItemOfTypeFromUnitBJ':'RC_QuestItem'})
+    mapped.update({'CreateUnit':'RC_SourceCreate','CreateNUnitsAtLoc':'RC_SourceCreateAtLoc','CreateNUnitsAtLocFacingLocBJ':'RC_SourceCreateFacing','GetOwningPlayer':'RC_StoryOwner','SetUnitOwner':'RC_SourceOwner','ShowUnit':'RC_SourceShow','ShowUnitShow':'RC_SourceShowOn','ShowUnitHide':'RC_SourceShowOff','GroupAddUnit':'RC_SourceGroupAdd','GroupAddUnitSimple':'RC_SourceGroupSimple','GroupAddGroup':'RC_SourceGroupMerge','SelectHeroSkill':'RC_Learn','SetPlayerHandicapXPBJ':'RC_XPHandicapPercent','SetPlayerHandicapXP':'RC_XPHandicap','SuspendHeroXPBJ':'RC_SuspendExperienceBJ','SuspendHeroXP':'RC_SuspendExperience','UnitHasItemOfTypeBJ':'RC_HasQuestItem','GetItemOfTypeFromUnitBJ':'RC_QuestItem'})
     script=calls(script,mapped)
     if 'function Trig_Transition_Actions ' in script:
         base=0 if m['index']<5 else 5
@@ -327,7 +334,7 @@ def transform(script,m,schema,catalog,players,remap,runtime,forces):
         if count!=1:raise ValueError('Hub initialization shape changed')
     # Replace config completely; NPC player 13 (revival stones) is never placed in
     # the twelve-slot lobby. Its gameplay player handle remains unchanged.
-    config=['    call SetMapName("'+DISPLAY_PREFIX+m['name']+'")','    call SetMapDescription("Четыре героя, отдельные войска, три сложности и коды после миссии Z3. Продолжение: каждому -load КОД до -start.")',f'    call SetPlayers({len(players)})',f'    call SetTeams({len(players)})','    call SetGamePlacement(MAP_PLACEMENT_USE_MAP_SETTINGS)']
+    config=['    call SetMapName("'+DISPLAY_PREFIX+m['name']+'")','    call SetMapDescription("От 1 до 4 героев по занятым слотам, уровень до 20, таланты и коды Z5. Продолжение: каждому -load КОД до -start.")',f'    call SetPlayers({len(players)})',f'    call SetTeams({len(players)})','    call SetGamePlacement(MAP_PLACEMENT_USE_MAP_SETTINGS)']
     controllers={0:'MAP_CONTROL_NONE',1:'MAP_CONTROL_USER',2:'MAP_CONTROL_COMPUTER',3:'MAP_CONTROL_NEUTRAL',4:'MAP_CONTROL_RESCUABLE'}
     races={1:'RACE_PREF_HUMAN',2:'RACE_PREF_ORC',3:'RACE_PREF_UNDEAD',4:'RACE_PREF_NIGHTELF'}
     teams={p['id']:n for n,force in enumerate(forces) for p in players if force['members']&(1<<p['id'])}
@@ -349,16 +356,17 @@ def transform(script,m,schema,catalog,players,remap,runtime,forces):
     if script.count('call RC_Bootstrap()')!=1:raise ValueError('Main initialization not gated')
     global_text=globals_text(m,len(schema))
     code=runtime.replace('// @@GLOBALS@@','').replace('// @@ITEMS@@',catalog.hooks(m['name'])).replace('// @@HOOKS@@',hooks(m,schema)).replace('// @@INIT@@',initialization(m))
+    code=code.replace('// @@PARTY@@',(ROOT/'runtime/party.j').read_text())
     code=code.replace('// @@PROGRESS_BASE@@',(ROOT/'runtime/progress-base.j').read_text()).replace('// @@PROGRESS_MENUS@@',(ROOT/'runtime/progress-menus.j').read_text()).replace('// @@EXPERIENCE@@',(ROOT/'runtime/experience.j').read_text())
     code=code.replace('// @@SKILLS@@',(ROOT/'runtime/skills.j').read_text()).replace('// @@BALANCE@@',(ROOT/'runtime/balance.j').read_text())
-    code=code.replace('// @@CHECKPOINT@@',(ROOT/'runtime/checkpoint.j').read_text())
+    code=code.replace('// @@CHECKPOINT@@',(ROOT/'runtime/checkpoint.j').read_text()).replace('// @@PARTY_CHECKPOINT@@',(ROOT/'runtime/checkpoint-party.j').read_text())
     script=script.replace('endglobals',global_text+'\nendglobals\n'+code,1)
     return classic_strings(script)
 
 def globals_text(m,story_count):
     text='''
     string RC_alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_"
-    string RC_filePrefix = "RX5-"
+    string RC_filePrefix = "RX6-"
     boolean RC_codeOK = true
     boolean RC_started = false
     boolean RC_partyLoaded = false

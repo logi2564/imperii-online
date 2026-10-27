@@ -5,7 +5,7 @@ function RK_Alive takes unit u returns boolean
 endfunction
 
 function RK_Enemy takes unit caster, unit u returns boolean
-    return RK_Alive(u) and IsUnitEnemy(u, GetOwningPlayer(caster)) and GetUnitAbilityLevel(u, 'Aloc') == 0
+    return RK_Alive(u) and not LoadBoolean(RC_table, GetHandleId(u), 700) and IsUnitEnemy(u, GetOwningPlayer(caster)) and GetUnitAbilityLevel(u, 'Aloc') == 0
 endfunction
 
 function RK_Heal takes unit u, real amount returns nothing
@@ -188,7 +188,7 @@ function RK_Pulse takes integer slot, integer step returns nothing
         if not RK_Alive(target) then
             loop
                 exitwhen n == 4
-                if IsUnitInRangeXY(RC_hero[n], x, y, 700) then
+                if RC_hero[n] != null and IsUnitInRangeXY(RC_hero[n], x, y, 700) then
                     call RK_Heal(RC_hero[n], GetUnitState(RC_hero[n], UNIT_STATE_MAX_LIFE) * (0.12 + RC_TalentBonus(0, 1, 2, 0.12)))
                 endif
                 set n = n + 1
@@ -221,7 +221,7 @@ function RK_Pulse takes integer slot, integer step returns nothing
                 loop
                     exitwhen n == 4
                     set u = RC_hero[n]
-                    if IsUnitInRangeXY(u, x, y, radius) then
+                    if u != null and IsUnitInRangeXY(u, x, y, radius) then
                         if kind == 6 then
                             call RK_Heal(u, 12.0 + 9.0 * rank + RC_TalentBonus(1, 2, 1, 15))
                             call UnitRemoveBuffs(u, false, true)
@@ -310,7 +310,7 @@ function RK_Pulse takes integer slot, integer step returns nothing
         if RC_HasTalent(3, 4, 2) then
             loop
                 exitwhen n == 4
-                if RC_hero[n] != caster and IsUnitInRange(caster, RC_hero[n], 650) then
+                if RC_hero[n] != null and RC_hero[n] != caster and IsUnitInRange(caster, RC_hero[n], 650) then
                     call RK_Heal(RC_hero[n], amount * 0.5)
                 endif
                 set n = n + 1
@@ -437,7 +437,7 @@ function RK_Tick takes nothing returns nothing
     loop
         exitwhen slot > 64
         if RK_kind[slot] != 0 then
-            if RC_transitionPending or GetUnitTypeId(RK_caster[slot]) == 0 or (not RK_Alive(RK_caster[slot]) and RK_kind[slot] != 7) then
+            if RC_transitionPending or not RC_IsPartyPlayer(GetOwningPlayer(RK_caster[slot])) or GetUnitTypeId(RK_caster[slot]) == 0 or (not RK_Alive(RK_caster[slot]) and RK_kind[slot] != 7) then
                 call RK_End(slot)
             else
                 set RK_age[slot] = RK_age[slot] + 0.1
@@ -645,7 +645,7 @@ function RC_Spell takes nothing returns nothing
             set RK_visual[slot] = AddSpecialEffect("Abilities\\Spells\\Other\\Monsoon\\MonsoonRain.mdl", x, y)
             loop
                 exitwhen n == 4
-                if not RK_Alive(RC_hero[n]) and IsUnitInRangeXY(RC_hero[n], x, y, 700) then
+                if RC_hero[n] != null and not RK_Alive(RC_hero[n]) and IsUnitInRangeXY(RC_hero[n], x, y, 700) then
                     call ReviveHero(RC_hero[n], x, y, true)
                     call SetWidgetLife(RC_hero[n], GetUnitState(RC_hero[n], UNIT_STATE_MAX_LIFE) * 0.4)
                     exitwhen not RC_HasTalent(1, 4, 2)

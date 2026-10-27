@@ -41,7 +41,7 @@ function RC_KillExperience takes nothing returns nothing
         set killer = null
         return
     endif
-    if not RC_IsPartyPlayer(GetOwningPlayer(killer)) or not IsUnitEnemy(dead, GetOwningPlayer(killer)) or IsUnitType(dead, UNIT_TYPE_SUMMONED) or IsUnitIllusion(dead) or GetUnitAbilityLevel(dead, 'Aloc') > 0 then
+    if not RC_IsPartyPlayer(GetOwningPlayer(killer)) or not RC_Active(RC_Role(GetOwningPlayer(killer))) or not IsUnitEnemy(dead, GetOwningPlayer(killer)) or IsUnitType(dead, UNIT_TYPE_SUMMONED) or IsUnitIllusion(dead) or GetUnitAbilityLevel(dead, 'Aloc') > 0 then
         set dead = null
         set killer = null
         return
@@ -54,7 +54,7 @@ function RC_KillExperience takes nothing returns nothing
     endif
     loop
         exitwhen role == 4
-        if RC_hero[role] != null and GetWidgetLife(RC_hero[role]) > 0.405 and IsUnitInRange(dead, RC_hero[role], 1600) and GetHeroLevel(RC_hero[role]) < 20 then
+        if RC_Active(role) and RC_hero[role] != null and GetWidgetLife(RC_hero[role]) > 0.405 and IsUnitInRange(dead, RC_hero[role], 1600) and GetHeroLevel(RC_hero[role]) < 20 then
             // SetHeroXP bypasses the native automatic-XP suspension and still
             // awards native level/skill points. No player-count/level penalty.
             call SetHeroXP(RC_hero[role], GetHeroXP(RC_hero[role]) + award, true)

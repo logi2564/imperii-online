@@ -81,24 +81,24 @@ def balance(path):
         hero=g.RC_hero[3];hero.hp=1000;cast(g,3,2);g.UnitDamageTarget(reinforcement,hero,100,False,False,None,None,None)
         assert max(g.RK_value[n] for n in range(1,65))==[100,150,200][difficulty]
     g=fresh(path)
-    for p in (3,4,5):g.WORLD.players[p].controller='computer'
+    for p in (1,2,3):g.WORLD.players[p].controller='computer'
     g.RC_difficulty=2;g.RC_Balance();a=enemy(g)
     for _ in range(4):g.RC_BalanceScan()
-    assert a.maxhp==6500,'Solo control of four heroes bypasses party scaling'
-    print('PASS: direct enemy max HP 2.5/4.5/6.5x, damage 1/1.5/2x; no compound rescaling/recursion; current life fraction, new spawns, rescue reversal, four-hero solo case, and counter include scaled damage.')
+    assert a.maxhp==1500,'Solo enemy scaling still assumes four heroes'
+    print('PASS: direct enemy max HP 2.5/4.5/6.5x, damage 1/1.5/2x; no compound rescaling/recursion; current life fraction, new spawns, rescue reversal, single-player scaling, and counter include scaled damage.')
 
 def saves(path):
     lengths=[]
-    for local in (0,3,4,5):
+    for local in (0,1,2,3):
         g=fresh(path);g.WORLD.localPlayer=local;before=len(g.WORLD.messages);g.RC_SaveAll(True)
         messages=[t for n,t in g.WORLD.messages.items() if n>before and '-load ' in t]
         assert len(messages)==1 and g.RC_checkpointCode[g.RC_Role(local)] in messages[0],messages
         lengths.append(len(g.RC_checkpointCode[g.RC_Role(local)]))
     g=fresh(path)
-    for p in (3,4,5):g.WORLD.players[p].controller='computer'
+    for p in (1,2,3):g.WORLD.players[p].controller='computer'
     before=len(g.WORLD.messages);g.RC_SaveAll(True)
     assert len([t for n,t in g.WORLD.messages.items() if n>before and '-load ' in t])==1
-    assert all(g.RC_checkpointCode[n] in g.RC_saveQuest.description for n in range(4))
+    assert g.RC_checkpointCode[0] in g.RC_saveQuest.description and all(g.RC_checkpointCode[n]=='' for n in range(1,4))
     assert max(lengths)<50,lengths
     rng=random.Random(4)
     for _ in range(300):
@@ -108,6 +108,6 @@ def saves(path):
     for bad in ('Z3.', 'Z3.2','Z3._._','Z3!!!!','Z3.'+'0'*100):assert not g.RC_CheckpointValid(bad)
     g.RC_SaveAll(False);raw=g.RC_ExpandCode(g.RC_checkpointCode[0]);_,target=setup(path)
     assert target.RC_LoadCheckpoint(raw,0),'Uncompressed C2 backward compatibility lost'
-    print('PASS: exactly ONE local code line on all four clients and solo host; absent-role backup in F9; early code lengths '+str(lengths)+' versus 102; 300 lossless random-envelope round trips; malformed/oversized envelopes refused; C2 backwards compatible.')
+    print('PASS: exactly ONE local code line on all four clients and solo host; participant-only backup in F9; early code lengths '+str(lengths)+' versus 102; 300 lossless random-envelope round trips; malformed/oversized envelopes refused; C2 backwards compatible.')
 
 if __name__=='__main__':skills(sys.argv[1]);balance(sys.argv[1]);saves(sys.argv[1])

@@ -95,14 +95,14 @@ def problems(info,world):
 
 def run(out,dotnet):
     storm=Storm();folder=out/'lobby';folder.mkdir(exist_ok=True);profiles=[]
-    files=sorted((out/'Maps').glob('RX5-*.w3x'));assert len(files)==17
+    files=sorted((out/'Maps').glob('RX6-*.w3x'));assert len(files)==17
     for path in files:
         a=storm.open(path)
         try:info=host_info(storm.read(a,'war3map.w3i'));script=storm.read(a,'war3map.j').decode()
         finally:storm.close(a)
         world=execute_config(script,folder/(path.stem+'.lua'),dotnet)
         errors=problems(info,world);assert not errors,(path.name,errors)
-        assert [p['id'] for p in info['slots'] if p['controller']==1]==[0,3,4,5]
+        assert [p['id'] for p in info['slots'] if p['controller']==1]==[0,1,2,3]
         assert world.name==info['title']
         data=path.read_bytes();b=Binary(data[8:]);assert b.text()==info['title'];assert b.u32()==info['flags'] and b.u32()==4
         assert len('Maps\\Download\\81743_'+path.name)<53 and path.stat().st_size<8*1024*1024
@@ -113,7 +113,7 @@ def run(out,dotnet):
                     if p==q or not f['mask']&(1<<q['id']):continue
                     for bit,key in [(1,'passive'),(8,'vision'),(16,'control'),(32,'advanced')]:
                         if f['flags']&bit:assert world.alliances[str(p['id'])+':'+str(q['id'])+':'+key]
-        profiles.append(dict(file=path.name,humans=[0,3,4,5],hostNetworkSlots=[p['id'] for p in info['slots']],npcControllers={p['id']:p['controller'] for p in info['players'] if p['id'] not in [0,3,4,5]},teams={p['id']:world.players[p['id']].team for p in info['players']}))
+        profiles.append(dict(file=path.name,humans=[0,1,2,3],hostNetworkSlots=[p['id'] for p in info['slots']],npcControllers={p['id']:p['controller'] for p in info['players'] if p['id'] not in [0,1,2,3]},teams={p['id']:world.players[p['id']].team for p in info['players']}))
     # Real RC2 metadata/config, retained specifically to prove the cross-check
     # detects the previously released defect rather than round-tripping itself.
     fixtures=ROOT/'tests/fixtures'

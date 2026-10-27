@@ -1,3 +1,34 @@
+# Rexxar cooperative campaign — VI
+
+Current output: seventeen `RX6-*.w3x` missions, `package_vi.py`, and
+[Russian player instructions](README-VI-RU.txt).
+
+VI creates only occupied human roles: red/blue/teal/purple (`0,1,2,3`). Red
+Rexxar is required by the original campaign story. Other roles can be closed;
+there is no fallback hero given to host. Quest/starting reinforcements are shared
+only among humans. Player-trained units remain owned. Inactive narrative actors
+are hidden, neutral and inert outside cinematics, excluded from source party
+groups; recruitment story state remains saved independently. NPC colours and
+final-map Horde armies are explicitly remapped to avoid human-slot collisions.
+
+Z5/C4 checkpoints contain the participant mask and only require codes of the
+saved party. Full twelve-slot stash/companion data is split among present roles;
+a worst-case dense solo save emits an additional snapshot-bound S2 stash command
+so every command still fits the classic chat limit. C2/C3 and Z3/Z4 remain
+loadable; old four-part stash saves still need all four source codes. Missing
+roles' loaded items are dropped once at camp and their bank is shared. New joiners
+start at the act's base level. `test_party.py` covers all eight red-led masks,
+quest group/condition isolation, reinforcement/resource fairness, ownership,
+legacy migration, departures, sparse/full saves and every command length. It
+writes actual JASS fixtures for Windows EXE tests for party sizes 1/2/3/4 plus
+full solo inventory/stash. Existing skill/talent/XP and data checks remain.
+
+All seventeen map constants explicitly set `MaxHeroLevel=20`. The lobby colour
+schema changed deliberately; native 1.26/IrinaBot acceptance of VI has not been
+verified in this cloud environment. Use `pjass +shadow` on every complete script.
+
+---
+
 # Rexxar cooperative campaign — V
 
 Current files: `RX5-*.w3x`, packaged by `package_v.py`. Player instructions:

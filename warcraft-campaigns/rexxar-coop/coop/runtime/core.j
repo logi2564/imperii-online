@@ -370,18 +370,16 @@ function RC_PartyCode takes nothing returns string
     return RC_Seal(payload)
 endfunction
 
-function RC_WriteSave takes integer role, string heroCode, string partyCode, string stashCode returns nothing
+// @@CHECKPOINT@@
+
+function RC_WriteSave takes integer role, string payload returns nothing
     // Only file/visual natives occur in this local branch. No unit, item,
     // resource, random-number or handle state is changed locally.
     if GetLocalPlayer() == RC_Owner(role) then
         call PreloadGenClear()
         call PreloadGenStart()
-        call Preload("Rexxar co-op RC1. Copy these chat commands before starting the next mission:")
-        call Preload("-load" + I2S(role + 1) + " " + heroCode)
-        call Preload("-party " + partyCode)
-        if stashCode != "" then
-            call Preload("-stash " + stashCode)
-        endif
+        call Preload("Rexxar co-op RC2. Enter this one command in the next mission, before -start:")
+        call Preload("-load " + payload)
         call Preload("Next map: " + RC_mapName[RC_nextMap])
         call PreloadGenEnd("Logs\\RexxarCoop-P" + I2S(role + 1) + ".txt")
     endif
@@ -391,7 +389,9 @@ function RC_SaveAll takes boolean verbose returns nothing
     local integer n = 0
     local string partyCode
     local string stashCode
-    local string description = "Сохраняются уровни, характеристики, навыки, 6 слотов вещей с зарядами, ресурсы и сюжетные флаги.|nФайлы: Warcraft III/Logs/RexxarCoop-P1…P4.txt.|n"
+    local string storyCode
+    local string description = "Следующая карта: RC-" + RC_mapName[RC_nextMap] + ".w3x.|nКаждый вводит -load СВОЙ_КОД до -start. В кодах уже есть сюжет и тайник.|n"
+    set RC_saveOK = false
     loop
         exitwhen n == 4
         if RC_hero[n] == null or GetUnitTypeId(RC_hero[n]) == 0 then
@@ -404,32 +404,40 @@ function RC_SaveAll takes boolean verbose returns nothing
     set RC_codeOK = true
     set stashCode = RC_StashCode()
     set partyCode = RC_PartyCode()
+    set storyCode = RC_SmallStory()
+    set RC_checkpoint = ModuloInteger(RC_checkpoint + 1, 262144)
     loop
         exitwhen n == 4
         set RC_lastCode[n] = RC_HeroCode(n)
-        set description = description + "|nГерой " + I2S(n + 1) + ": -load" + I2S(n + 1) + " " + RC_lastCode[n]
+        set RC_checkpointPart[n] = RC_MakeCheckpoint(n, RC_lastCode[n], storyCode, stashCode)
+        if StringLength(RC_checkpointPart[n]) != RC_checkpointLength or StringLength(RC_checkpointPart[n]) + 6 > 127 then
+            set RC_codeOK = false
+        endif
         set n = n + 1
     endloop
     if not RC_codeOK then
         call RC_Say("|cffff4444Сохранение не записано: одно из значений вышло за пределы формата. Предыдущие файлы сохранены.|r")
         return
     endif
-    set description = description + "|n|nВедущему: -party " + partyCode + "|n-stash " + stashCode
-    call QuestSetDescription(RC_saveQuest, description)
     set n = 0
     loop
         exitwhen n == 4
-        call RC_WriteSave(n, RC_lastCode[n], partyCode, stashCode)
+        set RC_checkpointCode[n] = RC_checkpointPart[n]
+        set RC_checkpointPart[n] = ""
+        set description = description + "|nГерой " + I2S(n + 1) + ": -load " + RC_checkpointCode[n]
+        call QuestSetDescription(RC_codeQuest[n], "Следующая карта: RC-" + RC_mapName[RC_nextMap] + ".w3x.|nВведи в её чат:|n-load " + RC_checkpointCode[n] + "|nЗатем дождись остальных. Начало: -start.|nВедущий может ввести коды отсутствующих игроков.")
+        call RC_WriteSave(n, RC_checkpointCode[n])
         if verbose then
-            call DisplayTimedTextToPlayer(RC_Owner(n), 0, 0, 60, "-load" + I2S(n + 1) + " " + RC_lastCode[n])
+            call RC_ShowCode(n)
         endif
         set n = n + 1
     endloop
     if verbose then
-        call DisplayTimedTextToPlayer(RC_Player(RC_host), 0, 0, 60, "-party " + partyCode)
-        call RC_Say("Сохранение готово: файлы в Logs и копия кодов в F9 → Сохранение отряда.")
+        call RC_Say("Коды продолжения готовы! Каждый получил один код. Повторить: -code. Все четыре кода: F9 → Сохранение отряда.")
     endif
+    call QuestSetDescription(RC_saveQuest, description)
     set RC_loadedStash = stashCode
+    set RC_saveOK = true
 endfunction
 
 function RC_LoadParty takes string payload returns boolean
@@ -710,11 +718,17 @@ function RC_AdjustResource takes integer delta, player p, playerstate state retu
 endfunction
 
 function RC_Transition takes integer target, integer area returns nothing
+    if RC_transitionPending then
+        return
+    endif
     set RC_nextMap = target
     set RC_nextArea = area
     call RC_CollectExtraLoot()
     call RC_SaveAll(true)
-    call RC_Say("|cffffcc00Следующая карта: RC-" + RC_mapName[target] + ".w3x|r|nВедущий создаёт её через Локальную сеть. До старта загрузите -party и четыре -load-кода. Переход не запускает одиночную игру.")
+    if not RC_saveOK then
+        return
+    endif
+    call RC_Say("|cffffcc00Миссия завершена / переход в область: RC-" + RC_mapName[target] + ".w3x|r|nКоды выданы. Создайте эту карту по сети: каждому -load СВОЙ_КОД, ведущему затем -start.")
     call RC_Cinematic(false, RC_force)
     call CinematicFadeBJ(bj_CINEFADETYPE_FADEIN, 0.5, "ReplaceableTextures\\CameraMasks\\White_mask.tga", 0, 0, 0, 0)
     set RC_transitionPending = true
@@ -737,8 +751,30 @@ function RC_ChangeLevel takes string name, boolean scores returns nothing
 endfunction
 
 function RC_Victory takes player p, boolean dialog, boolean scores returns nothing
+    if RC_transitionPending then
+        return
+    endif
+    // Act I's original Next_Level_Run has no SetNextLevel call at all: the
+    // single-player campaign screen used to select Act II. Resolve that edge
+    // explicitly so completion codes are accepted by the next act.
+    if RC_nextMap == RC_map then
+        if RC_act[RC_map] == 1 then
+            set RC_nextMap = 5
+        elseif RC_act[RC_map] == 2 then
+            set RC_nextMap = 15
+        elseif RC_map == 15 then
+            set RC_nextMap = 16
+        endif
+    endif
+    if RC_nextMap != RC_map then
+        call RC_Transition(RC_nextMap, 0)
+        return
+    endif
     call RC_SaveAll(true)
-    call RC_Say("|cff55ff88Победа отряда!|r Прогресс записан. Выходите после копирования кодов из Logs или F9.")
+    if not RC_saveOK then
+        return
+    endif
+    call RC_Say("|cff55ff88Победа отряда!|r Код каждого героя показан в игре. Повторить: -code; резервная копия — F9.")
     call RC_Cinematic(false, RC_force)
     call CinematicFadeBJ(bj_CINEFADETYPE_FADEIN, 0.5, "ReplaceableTextures\\CameraMasks\\White_mask.tga", 0, 0, 0, 0)
     set RC_transitionPending = true
@@ -747,7 +783,18 @@ function RC_Victory takes player p, boolean dialog, boolean scores returns nothi
 endfunction
 
 function RC_SetNextLevel takes string name returns nothing
-    call RC_ChangeLevel(name, false)
+    local integer n = 0
+    // SetNextLevel only selects a destination. Victory later emits ONE stable
+    // checkpoint; it must not issue a second, different code immediately after.
+    loop
+        exitwhen n == 17
+        if StringCase(name, false) == StringCase(RC_mapName[n], false) or StringCase(name, false) == StringCase("Maps\\FrozenThrone\\Campaign\\" + RC_mapName[n] + ".w3x", false) or StringCase(name, false) == StringCase(RC_mapName[n] + ".w3x", false) then
+            set RC_nextMap = n
+            set RC_nextArea = 0
+            return
+        endif
+        set n = n + 1
+    endloop
 endfunction
 
 function RC_Defeat takes player p, string message returns nothing
@@ -967,9 +1014,6 @@ function RC_Tick takes nothing returns nothing
     if ModuloInteger(RC_seconds, 5) == 0 and not RC_StoryCinematic() then
         call RC_Distribute()
     endif
-    if ModuloInteger(RC_seconds, 180) == 0 and not RC_StoryCinematic() then
-        call RC_SaveAll(false)
-    endif
 endfunction
 
 function RC_Ready takes nothing returns nothing
@@ -1018,7 +1062,6 @@ function RC_Ready takes nothing returns nothing
         set n = n + 1
     endloop
     call TimerStart(RC_tickTimer, 1.0, true, function RC_Tick)
-    call RC_SaveAll(false)
 endfunction
 
 function RC_Begin takes nothing returns nothing
@@ -1027,6 +1070,17 @@ function RC_Begin takes nothing returns nothing
     local real y = GetStartLocationY(GetPlayerStartLocation(Player(0)))
     if RC_started then
         return
+    endif
+    if RC_checkpointLoaded then
+        loop
+            exitwhen n == 4
+            if RC_checkpointCode[n] == "" then
+                call RC_Say("Для продолжения не хватает кода героя " + I2S(n + 1) + ". Каждый вводит -load СВОЙ_КОД; код отсутствующего игрока может ввести ведущий.")
+                return
+            endif
+            set n = n + 1
+        endloop
+        set n = 0
     endif
     if RC_partyLoaded and RC_stashRequired and RC_loadedStash == "" then
         call RC_Say("В этом сохранении есть вещи в тайнике. Ведущему нужно ввести -stash КОД; начало отменено, чтобы не потерять вещи.")
@@ -1080,8 +1134,10 @@ function RC_MenuChoice takes nothing returns nothing
     loop
         exitwhen n == 3
         if clicked == RC_difficultyButton[n] then
-            set RC_difficulty = n
-            call RC_Say("Сложность: " + RC_difficultyName[n] + ". Для начала ведущий вводит -start. Продолжение: -party КОД и каждому -load КОД.")
+            if not RC_partyLoaded then
+                set RC_difficulty = n
+            endif
+            call RC_Say("Сложность: " + RC_difficultyName[RC_difficulty] + ". Начало: -start. Продолжение: каждый вводит -load СВОЙ_КОД из конца предыдущей миссии.")
             set clicked = null
             return
         endif
@@ -1098,17 +1154,28 @@ function RC_Chat takes nothing returns nothing
     local string payload
     local integer requested = -1
     local integer n
-    if text == "-save" and RC_started then
+    if text == "-code" and RC_started then
+        call RC_ShowCode(role)
+    elseif text == "-codes" and RC_started and role == RC_host then
+        set n = 0
+        loop
+            exitwhen n == 4
+            call DisplayTimedTextToPlayer(p, 0, 0, 120, "Герой " + I2S(n + 1) + ": -load " + RC_checkpointCode[n])
+            set n = n + 1
+        endloop
+    elseif text == "-reset" and not RC_started and role == RC_host then
+        call RC_ResetCheckpoint()
+    elseif text == "-save" and RC_started and not RC_transitionPending then
         call RC_SaveAll(true)
     elseif text == "-start" and p == RC_Player(RC_host) then
         call RC_Begin()
-    elseif SubString(text, 0, 7) == "-party " and not RC_started and p == RC_Player(RC_host) then
+    elseif SubString(text, 0, 7) == "-party " and not RC_started and not RC_checkpointLoaded and p == RC_Player(RC_host) then
         if RC_LoadParty(SubString(text, 7, StringLength(text))) then
             call RC_Say("Прогресс отряда принят. Сложность: " + RC_difficultyName[RC_difficulty] + ". Загрузите героев и введите -start.")
         else
             call RC_Say("Неверный код отряда: длина, версия или контрольная сумма.")
         endif
-    elseif SubString(text, 0, 7) == "-stash " and not RC_started and p == RC_Player(RC_host) then
+    elseif SubString(text, 0, 7) == "-stash " and not RC_started and not RC_checkpointLoaded and p == RC_Player(RC_host) then
         set payload = SubString(text, 7, StringLength(text))
         if RC_Valid(payload, 104, "S") then
             set RC_loadedStash = payload
@@ -1126,6 +1193,12 @@ function RC_Chat takes nothing returns nothing
     elseif SubString(text, 0, 6) == "-load " and not RC_started then
         set requested = role
         set payload = SubString(text, 6, StringLength(text))
+        if SubString(payload, 0, 2) == "C2" then
+            if not RC_LoadCheckpoint(payload, role) then
+                call RC_Say("Код не принят. Проверь карту, номер героя и все символы; введи код из того же завершения миссии, что остальные.")
+            endif
+            return
+        endif
     elseif SubString(text, 0, 5) == "-load" and SubString(text, 6, 7) == " " and not RC_started then
         set requested = S2I(SubString(text, 5, 6)) - 1
         set payload = SubString(text, 7, StringLength(text))
@@ -1133,7 +1206,7 @@ function RC_Chat takes nothing returns nothing
             set requested = -1
         endif
     endif
-    if requested >= 0 and requested < 4 then
+    if requested >= 0 and requested < 4 and not RC_checkpointLoaded then
         if RC_Valid(payload, 81, "H") and RC_Number(SubString(payload, 2, 3)) == requested then
             set RC_loadedHero[requested] = payload
             call RC_Say("Герой " + I2S(requested + 1) + " загружен: " + RC_heroName[requested] + ".")
@@ -1172,8 +1245,10 @@ function RC_Menu takes nothing returns nothing
     set RC_army = CreateGroup()
     set RC_flames = CreateGroup()
     set RC_tickTimer = CreateTimer()
-    set RC_menuClock = CreateTimer()
-    call TimerStart(RC_menuClock, 86400.0, false, null)
+    if RC_menuClock == null then
+        set RC_menuClock = CreateTimer()
+        call TimerStart(RC_menuClock, 86400.0, false, null)
+    endif
     set RC_force = CreateForce()
     loop
         exitwhen n == 4
@@ -1185,17 +1260,30 @@ function RC_Menu takes nothing returns nothing
     call TriggerAddAction(chat, function RC_Chat)
     call TriggerAddAction(spells, function RC_Spell)
     // @@INIT@@
-    call RC_DisableOriginals()
+    if not RC_originalsGated then
+        call RC_DisableOriginals()
+        set RC_originalsGated = true
+    endif
     call PauseAllUnitsBJ(true)
     set RC_saveQuest = CreateQuest()
     call QuestSetTitle(RC_saveQuest, "Сохранение отряда")
-    call QuestSetDescription(RC_saveQuest, "Коды появятся после старта. -save записывает прогресс в Logs/RexxarCoop-P1…P4.txt. Кнопки в RexxarCoop-Saves.exe копируют команды в буфер. Следующая карта создаётся через Локальную сеть; перед -start ведущий вводит -party КОД и -stash КОД для тайника, каждый игрок — -load КОД.")
+    call QuestSetDescription(RC_saveQuest, "После завершения миссии или перехода каждый получит ОДИН код. В следующей карте каждый вводит -load СВОЙ_КОД, затем ведущий -start. Сюжет и тайник уже включены. Здесь появится резервная копия всех четырёх кодов.")
     call QuestSetIconPath(RC_saveQuest, "ReplaceableTextures\\CommandButtons\\BTNScroll.blp")
     call QuestSetRequired(RC_saveQuest, false)
     call QuestSetDiscovered(RC_saveQuest, true)
+    set n = 0
+    loop
+        exitwhen n == 4
+        set RC_codeQuest[n] = CreateQuest()
+        call QuestSetTitle(RC_codeQuest[n], "Код продолжения: герой " + I2S(n + 1))
+        call QuestSetDescription(RC_codeQuest[n], "Код будет выдан после прохождения миссии или перехода в другую область. Отдельные команды для сюжета и тайника не нужны.")
+        call QuestSetRequired(RC_codeQuest[n], false)
+        call QuestSetDiscovered(RC_codeQuest[n], true)
+        set n = n + 1
+    endloop
     set RC_helpQuest = CreateQuest()
     call QuestSetTitle(RC_helpQuest, "Четверо героев — правила")
-    call QuestSetDescription(RC_helpQuest, "Рексар: звери и Клич стаи, два волка и лечение отряда.|nРокхан: исцеление, превращение, змеи; Узы духов лечат и очищают.|nЧэнь: огонь, хмель и уклонение; Пылающий круг бьёт шестью волнами.|nКэрн: ударная волна, аура и возрождение; Оплот предков оглушает и лечит.|nДополнительная способность каждого — Z. Войска распределяются по отряду, в финале друзья управляют тремя базами Орды. Возрождение героя через 15 сек. Инвентарь и навыки раздельные, зрение общее.|nОригинальные сюжетные персонажи присоединяются по ходу истории; до этого друзья играют героями той же роли. Сюжетный герой заменит временного с сохранением его развития.|nСложность выбирает ведущий до старта. Автосохранение раз в 3 минуты, ручное — -save. Перенос между картами через коды; бесшовного сетевого ChangeLevel в 1.26 нет.")
+    call QuestSetDescription(RC_helpQuest, "Рексар: звери и Клич стаи, два волка и лечение отряда.|nРокхан: исцеление, превращение, змеи; Узы духов лечат и очищают.|nЧэнь: огонь, хмель и уклонение; Пылающий круг бьёт шестью волнами.|nКэрн: ударная волна, аура и возрождение; Оплот предков оглушает и лечит.|nДополнительная способность каждого — Z. Войска распределяются по отряду, в финале друзья управляют тремя базами Орды. Возрождение героя через 15 сек. Инвентарь и навыки раздельные, зрение общее.|nОригинальные сюжетные персонажи присоединяются по ходу истории; до этого друзья играют героями той же роли. Сюжетный герой заменит временного с сохранением его развития.|nСложность выбирает ведущий до старта. В конце миссии каждый получает один код: в следующей карте введи -load СВОЙ_КОД. Повторить код — -code; ручная запись — -save. Следующую карту ведущий создаёт новым сетевым лобби.")
     call QuestSetIconPath(RC_helpQuest, "ReplaceableTextures\\CommandButtons\\BTNBeastMaster.blp")
     call QuestSetRequired(RC_helpQuest, false)
     call QuestSetDiscovered(RC_helpQuest, true)
@@ -1208,8 +1296,18 @@ function RC_Menu takes nothing returns nothing
     call TriggerRegisterDialogEvent(choices, RC_menu)
     call TriggerAddAction(choices, function RC_MenuChoice)
     call DialogDisplay(RC_Player(RC_host), RC_menu, true)
-    call RC_Say("Ведущий выбирает сложность и вводит -start. Продолжение: ведущий -party КОД, каждый -load КОД. Четыре героя сохраняются отдельно.")
+    call RC_Say("Новая игра: выбрать сложность, затем -start. Продолжение: каждый вводит -load СВОЙ_КОД из конца предыдущей миссии; затем ведущий -start.")
     set chat = null
     set choices = null
     set spells = null
+endfunction
+
+function RC_Bootstrap takes nothing returns nothing
+    // Gate original timers immediately, but defer runtime allocation and dialog
+    // display until the engine has left the map-loading/main JASS thread.
+    call RC_DisableOriginals()
+    set RC_originalsGated = true
+    set RC_menuClock = CreateTimer()
+    call TimerStart(RC_menuClock, 86400.0, false, null)
+    call TimerStart(CreateTimer(), 0.10, false, function RC_Menu)
 endfunction

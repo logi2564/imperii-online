@@ -53,7 +53,7 @@ function IsTriggerEnabled(t) return t and t.enabled or false end
 function DisableTrigger(t) if t then t.enabled=false end end
 function EnableTrigger(t) if t then t.enabled=true end end
 function CreateTimer() return {} end
-function TimerStart(t,d,repeated,action) t.duration=d;t.action=action;t.started=WORLD.time end
+function TimerStart(t,d,repeated,action) t.duration=d;t.action=action;t.started=WORLD.time;WORLD.lastTimer=t end
 function TimerGetElapsed(t) return WORLD.time-(t.started or 0) end
 function PauseTimer(t) t.paused=true end
 function PauseAllUnitsBJ(v) WORLD.paused=v end

@@ -9,7 +9,10 @@ def setup(source):
     # The engine/mission initialization is not simulated. Keep a small boundary
     # stub so the actual RC menu/start/save code can run against known units.
     lua.execute('function RunInitializationTriggers() udg_Rexxar=RC_hero[0];udg_RexxarInParty=true;SetPlayerState(0,PLAYER_STATE_RESOURCE_GOLD,1000) end')
-    g.RC_Menu();return lua,g
+    g.RC_Bootstrap()
+    assert g.RC_originalsGated and g.RC_force is None and g.WORLD.lastTimer.duration==0.10
+    g.WORLD.time=0.10;g.WORLD.lastTimer.action()
+    return lua,g
 
 def begin(g):g.RC_Begin();g.RC_Ready()
 def chat(g,player,text):g.WORLD.events.player=player;g.WORLD.events.chat=text;g.RC_Chat()
@@ -50,7 +53,10 @@ def run(source):
     checks.append('four heroes round-trip XP/level/base stats/skill points/five skills/six inventory positions/charges/resources and quest flags')
     # Shared storage is a separate short command, avoiding chat-length overflow.
     g.udg_Stash=g.CreateUnit(14,g.FourCC('h003'),0,0,0);g.UnitAddItemToSlotById(g.udg_Stash,g.FourCC('shea'),4);g.SetItemCharges(g.UnitItemInSlot(g.udg_Stash,4),7);g.RC_ObserveStoryHeroes()
-    for p in [0,3,4,5]:g.WORLD.localPlayer=p;g.RC_SaveAll(False)
+    g.RC_SaveAll(False)
+    # Four simulated local clients observe ONE synchronized checkpoint, rather
+    # than generating four different completion sequence numbers.
+    for role,p in enumerate([0,3,4,5]):g.WORLD.localPlayer=p;g.RC_WriteSave(role,g.RC_checkpointCode[role])
     stash=g.RC_loadedStash;assert len(stash)==104 and g.RC_stashRequired;party_stash=g.RC_PartyCode()
     _,stored=setup(source);assert stored.RC_LoadParty(party_stash)
     for n,c in enumerate(codes):chat(stored,[0,3,4,5][n],'-load '+c)
@@ -75,7 +81,7 @@ def run(source):
     bad.RC_Begin();assert not bad.RC_started and len(bad.WORLD.units)==0
     checks.append('corrupted/foreign-role/unauthorized/invalid-semantic codes refused; missing hero blocks continuation')
     # No save file replacement when values exceed the explicitly supported range.
-    oldfile=h.WORLD.files['Logs\\RexxarCoop-P1.txt'];h.RC_hero[0].str=5000;h.RC_SaveAll(True)
+    h.RC_SaveAll(False);oldfile=h.WORLD.files['Logs\\RexxarCoop-P1.txt'];h.RC_hero[0].str=5000;h.RC_SaveAll(True)
     assert h.WORLD.files['Logs\\RexxarCoop-P1.txt']==oldfile;h.RC_hero[0].str=snapshots[0][2]
     checks.append('out-of-range state refuses save without truncating or replacing prior files')
     # Story actor replacement retains developed temporary hero, with no surviving duplicate.

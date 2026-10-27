@@ -2,7 +2,7 @@
 import hashlib,json,re,sys
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from build import MAPS,ROOT,KINDS,mask,signature_abilities
+from build import MAPS,ROOT,KINDS,mask,signature_abilities,classic_strings
 from formats import read_info,read_objects
 from storm import Storm
 
@@ -27,7 +27,12 @@ for name in MAPS:
                     for mod in obj['mods']:
                         if mod[0] in metadata:assert mod[1]==metadata[mod[0]],(name,filename,mod[0],mod[1],metadata[mod[0]])
                 assert len(set(ids))==len(ids),(name,filename,'duplicate object IDs')
-        script=storm.read(b,'war3map.j').decode();assert script.count('call RC_Menu()')==1
+        script=storm.read(b,'war3map.j').decode();assert script.count('call RC_Bootstrap()')==1
+        # pjass does NOT enforce classic Warcraft's UTF-8 byte literal limit.
+        tokens=re.findall(r'//[^\r\n]*|"(?:[^"\\]|\\.)*"',script)
+        assert all(len(t[1:-1].encode())<=1023 for t in tokens if t.startswith('"')),(name,'oversized classic literal')
+        main=re.search(r'^function main takes[\s\S]*?^endfunction',script,re.M)[0]
+        assert 'call RC_Menu()' not in main and 'call RC_Bootstrap()' in main
         assert 'call RunInitializationTriggers(  )' not in script
         assert not re.search(r'call\s+(?:SaveAndLoadGameBJ|SaveAndChangeLevelBJ)\s*\(',mask(script)),name
         # The original and patched script both retain their quest trigger functions.
@@ -37,7 +42,16 @@ for name in MAPS:
     finally:storm.close(a);storm.close(b)
     row=next(x for x in report['maps'] if x['map']==name);assert row['sourceSha256']==hashlib.sha256(source.read_bytes()).hexdigest()
 classic=set(json.loads((ROOT/'tests/reference/classic-api-names.json').read_text()))
-runtime=(ROOT/'runtime/core.j').read_text();called=set(re.findall(r'\b([A-Za-z_]\w*)\s*\(',mask(runtime)));missing={n for n in called if not n.startswith('RC_') and n not in classic and n not in {'and','or','not','if','elseif','return'}}
+# Preserve Unicode and escaped quotes/backslashes while splitting by serialized
+# bytes. This is the loading regression that the generic syntax parser missed.
+sample='call SomeNative("'+('Текст\\"\\\\'*180)+'") // "comment stays literal"'
+short=classic_strings(sample)
+assert short.endswith('// "comment stays literal"') and '" + "' in short
+assert all(len(t[1:-1].encode())<=1023 for t in re.findall(r'"(?:[^"\\]|\\.)*"',short))
+literal_parts=re.findall(r'"((?:[^"\\]|\\.)*)"',short.split(' //')[0])
+assert ''.join(literal_parts)==('Текст\\"\\\\'*180)
+runtime=(ROOT/'runtime/core.j').read_text()+(ROOT/'runtime/checkpoint.j').read_text();called=set(re.findall(r'\b([A-Za-z_]\w*)\s*\(',mask(runtime)));missing={n for n in called if not n.startswith('RC_') and n not in classic and n not in {'and','or','not','if','elseif','return'}}
 assert not missing,('Not in classic API reference',missing)
 icons=[next(mod[4] for mod in obj['mods'] if mod[0]=='aart') for obj in signature_abilities()];assert len(set(icons))==4
 print(f'PASS: all 17 actual maps have four roles, valid classic object field types, unique object IDs, retained quest functions, no single-player transition calls, unchanged input hashes and {untouched} byte-identical terrain/import/other entries. Runtime uses classic API names; four distinct signature icons.')
+print('PASS: all serialized JASS literals fit the classic 1023-byte limit; menu allocation/dialogs leave the map-loading main thread.')

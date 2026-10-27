@@ -28,6 +28,25 @@ def calls(text,mapping):
     for a,b,v in reversed(changes):text=text[:a]+v+text[b:]
     return text
 
+def classic_strings(script):
+    """The classic JASS loader has a 1023-byte literal limit (UTF-8 bytes).
+
+    pjass accepts longer strings, so syntax checks alone missed the 1415-byte
+    Russian help literal in RC1. Split at character/escape boundaries and audit
+    the serialized bytes independently in test_maps.py.
+    """
+    pattern=r'//[^\r\n]*|"(?:[^"\\]|\\.)*"'
+    def shorten(match):
+        token=match[0]
+        if token.startswith('//') or len(token[1:-1].encode())<=900:return token
+        parts=[];part=''
+        for char in re.findall(r'\\.|[^\\]',token[1:-1],re.S):
+            if len((part+char).encode())>480:parts.append('"'+part+'"');part=''
+            part+=char
+        parts.append('"'+part+'"')
+        return '('+' + '.join(parts)+')'
+    return re.sub(pattern,shorten,script)
+
 def player_remap(script,name):
     if name=='OrcX03b':return {} # Three existing Horde armies become the three friends' armies.
     used=set(map(int,re.findall(r'\bPlayer\(\s*(\d+)\s*\)',mask(script))))
@@ -115,12 +134,17 @@ class Catalog:
     def build(self):
         for name,m in self.maps.items():
             self.local[name]={raw:self.clone(name,'item',raw) for raw in sorted(m['lookup']['item'])}
+        standards=json.loads((ROOT/'classic-items.json').read_text())['items']
+        self.compact=[b'\0'*4]+sorted(set(x.encode() for x in standards)|{x['new'] for x in self.output['item']})
+        if len(self.compact)>4096:raise ValueError('Compact item catalog exhausted')
         return self
     def hooks(self,name):
         forward=self.local[name];reverse={v:k for k,v in forward.items()}
         lines=['function RC_InitItems takes nothing returns nothing']
         for column,table in enumerate([forward,reverse]):
             for source,target in sorted(table.items()):lines.append(f"    call SaveInteger(RC_items, '{source.decode()}', {column}, '{target.decode()}')")
+        for index,raw in enumerate(self.compact[1:],1):
+            lines += [f"    call SaveInteger(RC_items, '{raw.decode()}', 2, {index})",f"    call SaveInteger(RC_items, {index}, 3, '{raw.decode()}')"]
         lines.append('endfunction')
         for column,fn in enumerate(['RC_ItemToPortable','RC_ItemToLocal']):lines += [f'function {fn} takes integer id returns integer',f'    local integer translated = LoadInteger(RC_items, id, {column})','    if translated != 0 then','        return translated','    endif','    return id','endfunction']
         return '\n'.join(lines)
@@ -201,6 +225,7 @@ def build(destination):
     (destination/'scripts').mkdir(exist_ok=True);(destination/'Maps').mkdir(exist_ok=True)
     for name,m in maps.items():
         m['storyCount']=len(schema)
+        m['schema']=schema;m['itemCount']=len(catalog.compact)
         original=m['script'];remap=player_remap(original,name);script=apply_player_remap(original,remap)
         info,players=coop_info(m['data']['war3map.w3i'],remap,ROLES)
         script=transform(script,m,schema,catalog,players,remap,runtime)
@@ -233,7 +258,7 @@ def build(destination):
         (destination/'scripts'/(name+'.j')).write_text(script)
         reports.append(dict(map=name,bytes=target.stat().st_size,sha256=hashlib.sha256(target.read_bytes()).hexdigest(),sourceSha256=hashlib.sha256(m['path'].read_bytes()).hexdigest(),roles=ROLES,npcRemap=remap))
         print(name,'four roles',ROLES,'NPC remap',remap)
-    report=dict(status='experimental-needs-real-game-test',nativeWarcraftTested=False,maps=reports,questFields=schema,portableObjects={k:len(v) for k,v in catalog.output.items()},nextMapRequiresNewLobby=True,saveFormat='RC1')
+    report=dict(status='experimental-needs-real-game-test',nativeWarcraftTested=False,maps=reports,questFields=schema,portableObjects={k:len(v) for k,v in catalog.output.items()},compactItems=len(catalog.compact),nextMapRequiresNewLobby=True,saveFormat='C2',legacySaveFormat='RC1')
     (destination/'Build-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
     return report
 
@@ -269,7 +294,7 @@ def transform(script,m,schema,catalog,players,remap,runtime):
         if count!=1:raise ValueError('Hub initialization shape changed')
     # Replace config completely; NPC player 13 (revival stones) is never placed in
     # the twelve-slot lobby. Its gameplay player handle remains unchanged.
-    config=['    call SetMapName("'+m['name']+' — отряд из 4")','    call SetMapDescription("Четыре героя, отдельные войска, три сложности и перенос прогресса RC1. Продолжение: -party и -load до -start.")',f'    call SetPlayers({len(players)})','    call SetTeams(12)','    call SetGamePlacement(MAP_PLACEMENT_USE_MAP_SETTINGS)']
+    config=['    call SetMapName("'+m['name']+' — отряд из 4")','    call SetMapDescription("Четыре героя, отдельные войска, три сложности и коды после миссии C2. Продолжение: каждому -load КОД до -start.")',f'    call SetPlayers({len(players)})','    call SetTeams(12)','    call SetGamePlacement(MAP_PLACEMENT_USE_MAP_SETTINGS)']
     controllers={0:'MAP_CONTROL_NONE',1:'MAP_CONTROL_USER',2:'MAP_CONTROL_COMPUTER',3:'MAP_CONTROL_NEUTRAL',4:'MAP_CONTROL_RESCUABLE'}
     for pos,p in enumerate(players):
         id=p['id'];team=0 if id in ROLES else id+1
@@ -280,12 +305,13 @@ def transform(script,m,schema,catalog,players,remap,runtime):
         for b in ROLES:
             if a!=b:config += [f'    call SetPlayerAlliance(Player({a}), Player({b}), ALLIANCE_PASSIVE, true)',f'    call SetPlayerAlliance(Player({a}), Player({b}), ALLIANCE_SHARED_VISION, true)']
     script=function(script,'config','\n'.join(config))
-    script=script.replace('    call RunInitializationTriggers(  )','    call RC_Menu()')
-    if script.count('call RC_Menu()')!=1:raise ValueError('Main initialization not gated')
+    script=script.replace('    call RunInitializationTriggers(  )','    call RC_Bootstrap()')
+    if script.count('call RC_Bootstrap()')!=1:raise ValueError('Main initialization not gated')
     global_text=globals_text(m,len(schema))
     code=runtime.replace('// @@GLOBALS@@','').replace('// @@ITEMS@@',catalog.hooks(m['name'])).replace('// @@HOOKS@@',hooks(m,schema)).replace('// @@INIT@@',initialization(m))
+    code=code.replace('// @@CHECKPOINT@@',(ROOT/'runtime/checkpoint.j').read_text())
     script=script.replace('endglobals',global_text+'\nendglobals\n'+code,1)
-    return script
+    return classic_strings(script)
 
 def globals_text(m,story_count):
     text='''
@@ -295,6 +321,23 @@ def globals_text(m,story_count):
     boolean RC_partyLoaded = false
     boolean RC_transitionPending = false
     boolean RC_stashRequired = false
+    boolean RC_originalsGated = false
+    boolean RC_saveOK = false
+    boolean RC_checkpointLoaded = false
+    integer RC_checkpoint = 0
+    integer RC_storyChars = 0
+    integer RC_checkpointLength = 0
+    integer RC_itemCount = 0
+    integer array RC_storyBits
+    integer array RC_tempStory
+    integer RC_bitValue = 0
+    integer RC_bitPower = 1
+    integer RC_bitPosition = 0
+    string RC_bitText = ""
+    string RC_loadedGroup = ""
+    string array RC_checkpointCode
+    string array RC_checkpointPart
+    quest array RC_codeQuest
     boolean array RC_originalEnabled
     integer RC_host = 0
     integer RC_session = 1
@@ -359,6 +402,15 @@ def initialization(m):
         lines += [f"    set RC_heroType[{role}] = '{type}'",f'    set RC_heroName[{role}] = "{name}"',f"    set RC_signature[{role}] = 'RCA{role}'",f'    set RC_loadedHero[{role}] = ""']
         for skill,id in enumerate(skills):lines.append(f"    set RC_skill[{role*5+skill}] = '{id}'")
     for n,text in enumerate(['Лёгкая','Обычная','Тяжёлая']):lines.append(f'    set RC_difficultyName[{n}] = "{text}"')
+    # All source quest stages are 0..9; booleans need one bit. The cumulative
+    # bonus-skill counter retains RC1's full 0..4095 range.
+    bits=[]
+    for n,(name,typ) in enumerate(m['schema']):
+        width=1 if typ=='boolean' else 12 if name=='udg_BonusSkillPointsGiven' else 4
+        bits.append(width);lines.append(f'    set RC_storyBits[{n}] = {width}')
+    chars=(sum(bits)+5)//6
+    lines += [f'    set RC_storyChars = {chars}',f'    set RC_checkpointLength = {14+chars+48+12+3}',f'    set RC_itemCount = {m["itemCount"]}']
+    for n in range(4):lines += [f'    set RC_checkpointCode[{n}] = ""',f'    set RC_checkpointPart[{n}] = ""']
     return '\n'.join(lines)
 
 if __name__=='__main__':

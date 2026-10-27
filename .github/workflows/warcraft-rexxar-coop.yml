@@ -51,6 +51,7 @@ jobs:
           dotnet run --project coop/Tools -c Release -- transpile build-out/scripts/OrcX02.j coop/tests/reference build-out/runtime-act2.lua
           dotnet run --project coop/Tools -c Release -- transpile build-out/scripts/OrcX02_02.j coop/tests/reference build-out/runtime-act2-side.lua
           python coop/tests/test_runtime.py build-out/runtime.lua --next build-out/runtime-act2.lua --third build-out/runtime-act2-side.lua | tee Runtime-check.txt
+          python coop/tests/test_checkpoint.py build-out/runtime.lua build-out/runtime-act2.lua build-out/runtime-act2-side.lua | tee Checkpoint-check.txt
       - name: Stage maps and verification reports
         run: |
           mkdir -p mission-artifact/Maps
@@ -125,10 +126,10 @@ jobs:
           path: helper-out
       - name: Package native maps and save helper
         run: python3 warcraft-campaigns/rexxar-coop/coop/package.py mission-artifact helper-out release
-      - name: Publish RC1 with native-game test limitations visible
+      - name: Publish RC2 with completion codes and native-game test limitations visible
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          tag="rexxar-coop-rc1-${GITHUB_SHA:0:8}"
-          gh release create "$tag" release/Rexxar-Coop-RC1.zip release/Rexxar-Coop-RC1.zip.sha256 helper-out/RexxarCoop-Saves.exe mission-artifact/Build-report.json mission-artifact/Runtime-check.txt helper-out/Windows-helper-check.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Рексар: 17 миссий и четыре героя — тестовая сборка RC1' --notes-file warcraft-campaigns/rexxar-coop/coop/README-RU.txt
+          tag="rexxar-coop-rc2-${GITHUB_SHA:0:8}"
+          gh release create "$tag" release/Rexxar-Coop-RC2.zip release/Rexxar-Coop-RC2.zip.sha256 helper-out/RexxarCoop-Saves.exe mission-artifact/Build-report.json mission-artifact/Runtime-check.txt mission-artifact/Checkpoint-check.txt helper-out/Windows-helper-check.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Рексар RC2: код после миссии и исправления загрузки — тестовая сборка' --notes-file warcraft-campaigns/rexxar-coop/coop/README-RU.txt

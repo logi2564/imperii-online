@@ -129,12 +129,12 @@ jobs:
         with:
           name: rexxar-windows-helper
           path: helper-out
-      - name: Package the full first-mission type-name candidate
-        run: python3 warcraft-campaigns/rexxar-coop/coop/type_shadow_fix.py package mission-artifact/type-fix release
-      - name: Publish candidate C with strict shadow regression evidence
+      - name: Package seventeen corrected maps and pin the accepted first mission
+        run: python3 warcraft-campaigns/rexxar-coop/coop/package_full_fix.py mission-artifact helper-out release
+      - name: Publish corrected campaign bundle with scoped native confirmation
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          tag="rexxar-coop-type-fix-${GITHUB_SHA:0:8}"
-          gh release create "$tag" release/Rexxar-Coop-Type-Fix.zip release/Rexxar-Coop-Type-Fix.zip.sha256 mission-artifact/type-fix/C-Coop-Fix.w3x mission-artifact/type-fix/Type-fix.json mission-artifact/type-fix/Type-fix-check.txt mission-artifact/type-fix/Strict-negative-check.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Рексар: конфликты имён в полном скрипте — карта C' --notes-file mission-artifact/type-fix/ЧИТАЙ.txt
+          tag="rexxar-coop-fixed-${GITHUB_SHA:0:8}"
+          gh release create "$tag" release/Rexxar-Coop-Fixed.zip release/Rexxar-Coop-Fixed.zip.sha256 release/Accepted-First-Mission.w3x release/Fixed-package.json release/Package-check.txt mission-artifact/type-fix/Type-fix-check.txt helper-out/Windows-helper-check.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Рексар: 17 исправленных миссий — вход первой подтверждён на 1.26a' --notes-file warcraft-campaigns/rexxar-coop/coop/README-FIXED-RU.txt

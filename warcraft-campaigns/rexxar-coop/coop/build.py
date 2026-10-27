@@ -9,6 +9,7 @@ ROOT=Path(__file__).resolve().parent
 MAPS=['OrcX01']+[f'OrcX01_{n:02}' for n in range(2,6)]+['OrcX02']+[f'OrcX02_{n:02}' for n in range(2,11)]+['OrcX03a','OrcX03b']
 ROLES=[0,3,4,5]
 FILE_PREFIX='RX3-'
+DISPLAY_PREFIX='REXXAR FIX - '
 KINDS={'item':('war3map.w3t',False),'ability':('war3map.w3a',True),'unit':('war3map.w3u',False),'buff':('war3map.w3h',False)}
 EXTRA=['war3map.j','war3map.w3i','war3map.wts','war3mapMisc.txt','war3mapUnits.doo']
 
@@ -256,7 +257,7 @@ def build(destination):
         m['storyCount']=len(schema)
         m['schema']=schema;m['itemCount']=len(catalog.compact)
         original=m['script'];remap=player_remap(original,name);script=apply_player_remap(original,remap)
-        title='Рексар C3: '+name
+        title=DISPLAY_PREFIX+name
         info,players=coop_info(m['data']['war3map.w3i'],remap,ROLES,title)
         script=transform(script,m,schema,catalog,players,remap,runtime,read_info(info)['forces'])
         edits={'war3map.j':script.encode(),'war3map.w3i':info,'war3mapUnits.doo':(destination/'placements'/(name+'.doo')).read_bytes()}
@@ -328,7 +329,7 @@ def transform(script,m,schema,catalog,players,remap,runtime,forces):
         if count!=1:raise ValueError('Hub initialization shape changed')
     # Replace config completely; NPC player 13 (revival stones) is never placed in
     # the twelve-slot lobby. Its gameplay player handle remains unchanged.
-    config=['    call SetMapName("Рексар C3: '+m['name']+'")','    call SetMapDescription("Четыре героя, отдельные войска, три сложности и коды после миссии C2. Продолжение: каждому -load КОД до -start.")',f'    call SetPlayers({len(players)})',f'    call SetTeams({len(players)})','    call SetGamePlacement(MAP_PLACEMENT_USE_MAP_SETTINGS)']
+    config=['    call SetMapName("'+DISPLAY_PREFIX+m['name']+'")','    call SetMapDescription("Четыре героя, отдельные войска, три сложности и коды после миссии C2. Продолжение: каждому -load КОД до -start.")',f'    call SetPlayers({len(players)})',f'    call SetTeams({len(players)})','    call SetGamePlacement(MAP_PLACEMENT_USE_MAP_SETTINGS)']
     controllers={0:'MAP_CONTROL_NONE',1:'MAP_CONTROL_USER',2:'MAP_CONTROL_COMPUTER',3:'MAP_CONTROL_NEUTRAL',4:'MAP_CONTROL_RESCUABLE'}
     races={1:'RACE_PREF_HUMAN',2:'RACE_PREF_ORC',3:'RACE_PREF_UNDEAD',4:'RACE_PREF_NIGHTELF'}
     teams={p['id']:n for n,force in enumerate(forces) for p in players if force['members']&(1<<p['id'])}

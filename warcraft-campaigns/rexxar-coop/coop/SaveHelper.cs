@@ -66,7 +66,7 @@ internal static class SaveHelper {
         readonly Label status=new Label();readonly ListBox commands=new ListBox();
         readonly Dictionary<string,string> loaded=new Dictionary<string,string>();
         public SaveWindow(){
-            Text="Коды продолжения Рексара — RC2";ClientSize=new Size(650,355);Font=new Font("Segoe UI",10);StartPosition=FormStartPosition.CenterScreen;
+            Text="Коды продолжения Рексара — RC3";ClientSize=new Size(650,355);Font=new Font("Segoe UI",10);StartPosition=FormStartPosition.CenterScreen;
             var description=new Label{Left=16,Top=12,Width=620,Height=62,Text="В конце миссии игра сама выдаёт каждому один код.\nВ следующей карте введи -load СВОЙ_КОД, затем ведущий — -start.\nЭта программа только помогает скопировать код; играть можно без неё."};Controls.Add(description);
             commands.SetBounds(16,84,618,145);commands.DisplayMember="Key";Controls.Add(commands);
             var copy=new Button{Text="Скопировать выбранную команду",Left=16,Top=240,Width=310,Height=36};copy.Click+=(s,e)=>Copy();Controls.Add(copy);

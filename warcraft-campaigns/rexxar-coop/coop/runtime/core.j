@@ -378,7 +378,7 @@ function RC_WriteSave takes integer role, string payload returns nothing
     if GetLocalPlayer() == RC_Owner(role) then
         call PreloadGenClear()
         call PreloadGenStart()
-        call Preload("Rexxar co-op RC2. Enter this one command in the next mission, before -start:")
+        call Preload("Rexxar co-op RC3. Enter this one command in the next mission, before -start:")
         call Preload("-load " + payload)
         call Preload("Next map: " + RC_mapName[RC_nextMap])
         call PreloadGenEnd("Logs\\RexxarCoop-P" + I2S(role + 1) + ".txt")
@@ -390,7 +390,7 @@ function RC_SaveAll takes boolean verbose returns nothing
     local string partyCode
     local string stashCode
     local string storyCode
-    local string description = "Следующая карта: RC-" + RC_mapName[RC_nextMap] + ".w3x.|nКаждый вводит -load СВОЙ_КОД до -start. В кодах уже есть сюжет и тайник.|n"
+    local string description = "Следующая карта: " + RC_filePrefix + RC_mapName[RC_nextMap] + ".w3x.|nКаждый вводит -load СВОЙ_КОД до -start. В кодах уже есть сюжет и тайник.|n"
     set RC_saveOK = false
     loop
         exitwhen n == 4
@@ -425,7 +425,7 @@ function RC_SaveAll takes boolean verbose returns nothing
         set RC_checkpointCode[n] = RC_checkpointPart[n]
         set RC_checkpointPart[n] = ""
         set description = description + "|nГерой " + I2S(n + 1) + ": -load " + RC_checkpointCode[n]
-        call QuestSetDescription(RC_codeQuest[n], "Следующая карта: RC-" + RC_mapName[RC_nextMap] + ".w3x.|nВведи в её чат:|n-load " + RC_checkpointCode[n] + "|nЗатем дождись остальных. Начало: -start.|nВедущий может ввести коды отсутствующих игроков.")
+        call QuestSetDescription(RC_codeQuest[n], "Следующая карта: " + RC_filePrefix + RC_mapName[RC_nextMap] + ".w3x.|nВведи в её чат:|n-load " + RC_checkpointCode[n] + "|nЗатем дождись остальных. Начало: -start.|nВедущий может ввести коды отсутствующих игроков.")
         call RC_WriteSave(n, RC_checkpointCode[n])
         if verbose then
             call RC_ShowCode(n)
@@ -728,7 +728,7 @@ function RC_Transition takes integer target, integer area returns nothing
     if not RC_saveOK then
         return
     endif
-    call RC_Say("|cffffcc00Миссия завершена / переход в область: RC-" + RC_mapName[target] + ".w3x|r|nКоды выданы. Создайте эту карту по сети: каждому -load СВОЙ_КОД, ведущему затем -start.")
+    call RC_Say("|cffffcc00Миссия завершена / переход в область: " + RC_filePrefix + RC_mapName[target] + ".w3x|r|nКоды выданы. Создайте эту карту по сети: каждому -load СВОЙ_КОД, ведущему затем -start.")
     call RC_Cinematic(false, RC_force)
     call CinematicFadeBJ(bj_CINEFADETYPE_FADEIN, 0.5, "ReplaceableTextures\\CameraMasks\\White_mask.tga", 0, 0, 0, 0)
     set RC_transitionPending = true

@@ -9,10 +9,16 @@ from storm import Storm
 out=Path(sys.argv[1]);storm=Storm();metadata=json.loads((ROOT/'metadata-types.json').read_text())['types'];report=json.loads((out/'Build-report.json').read_text());untouched=0
 changed={name.lower() for name in ['war3map.j','war3map.w3i','war3mapUnits.doo','war3mapMisc.txt']+[v[0] for v in KINDS.values()]}
 for name in MAPS:
-    source=ROOT/'inputs'/(name+'.w3x');target=out/'Maps'/('RC-'+name+'.w3x');a=storm.open(source);b=storm.open(target)
+    source=ROOT/'inputs'/(name+'.w3x');target=out/'Maps'/('RX3-'+name+'.w3x');a=storm.open(source);b=storm.open(target)
     try:
         info=read_info(storm.read(b,'war3map.w3i'));assert sorted(p['id'] for p in info['players'] if p['controller']==1)==[0,3,4,5]
         assert len(info['players'])<=12 and all(0<=p['id']<12 for p in info['players'])
+        assert [p['id'] for p in info['players']]==sorted(p['id'] for p in info['players'])
+        assert all(0<=p['low']<4096 and 0<=p['high']<4096 for p in info['players'])
+        members=0
+        for force in info['forces']:
+            assert not members&force['members'];members|=force['members']
+        assert members==sum(1<<p['id'] for p in info['players'])
         listing=(storm.read(a,'(listfile)') or b'').decode('utf8',errors='replace').splitlines()
         known=set(listing+['war3map.w3e','war3map.wpm','war3map.shd','war3map.mmp','war3map.w3r','war3map.w3c','war3map.w3s','war3map.w3b','war3map.w3d','war3map.w3q'])
         for entry in known:
@@ -31,6 +37,8 @@ for name in MAPS:
         # pjass does NOT enforce classic Warcraft's UTF-8 byte literal limit.
         tokens=re.findall(r'//[^\r\n]*|"(?:[^"\\]|\\.)*"',script)
         assert all(len(t[1:-1].encode())<=1023 for t in tokens if t.startswith('"')),(name,'oversized classic literal')
+        for fname,body in re.findall(r'^function (RC_\w+) takes[^\n]*\n([\s\S]*?)^endfunction',script,re.M):
+            assert len(body.encode())<24576,(name,fname,'oversized injected function')
         main=re.search(r'^function main takes[\s\S]*?^endfunction',script,re.M)[0]
         assert 'call RC_Menu()' not in main and 'call RC_Bootstrap()' in main
         assert 'call RunInitializationTriggers(  )' not in script

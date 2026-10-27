@@ -231,7 +231,7 @@ function RC_ShowCode takes integer role returns nothing
         call DisplayTimedTextToPlayer(RC_Owner(role), 0, 0, 25, "Код появится после прохождения миссии или перехода в другую область.")
         return
     endif
-    call DisplayTimedTextToPlayer(RC_Owner(role), 0, 0, 120, "|cffffcc00Следующая карта: RC-" + RC_mapName[RC_nextMap] + ".w3x. В ней введи:|r")
+    call DisplayTimedTextToPlayer(RC_Owner(role), 0, 0, 120, "|cffffcc00Следующая карта: " + RC_filePrefix + RC_mapName[RC_nextMap] + ".w3x. В ней введи:|r")
     call DisplayTimedTextToPlayer(RC_Owner(role), 0, 0, 120, "-load " + RC_checkpointCode[role])
 endfunction
 

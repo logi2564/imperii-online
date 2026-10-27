@@ -123,7 +123,7 @@ def run(source):
     state=[stats(h,n) for n in range(4)];h.WORLD.localPlayer=4;h.RC_SaveAll(False)
     assert [stats(h,n) for n in range(4)]==state and h.WORLD.files['Logs\\RexxarCoop-P3.txt'] is not None
     h.RC_Transition(1,2);assert h.RC_nextMap==1 and h.RC_nextArea==2
-    assert any('RC-OrcX01_02.w3x' in text for _,text in h.WORLD.messages.items())
+    assert any('RX3-OrcX01_02.w3x' in text for _,text in h.WORLD.messages.items())
     checks.append('per-client file output leaves gameplay unchanged; transition records correct destination/area and emits save codes')
     print('PASS:',len(checks),'actual-JASS co-op behavior groups. Native graphics/pathfinding/real networking are not simulated.')
     for check in checks:print('  '+check)

@@ -1,4 +1,4 @@
-# Rexxar cooperative mission adaptation, RC2
+# Rexxar cooperative mission adaptation, RC3
 
 Inputs are the seventeen actual maps uploaded by the user, not synthetic replacement terrain. `build.py` preserves their terrain/import data and original quest functions, reserves player IDs 0/3/4/5, remaps conflicting NPC factions, and injects `runtime/core.j`. In the final mission the existing three Horde armies become the three additional human players' armies; their campaign AI is suppressed. In two crowded missions revival stones move to the engine's neutral-victim player 13, outside the twelve playable lobby slots. Editor unit placements receive the same owner remapping, after a byte-identical round-trip check.
 
@@ -16,7 +16,7 @@ dotnet run --project coop/Tools -c Release -- verify build-out
 python coop/tests/test_maps.py build-out
 ```
 
-The workflow transpiles actual generated mission JASS through War3Net and executes save/load, cross-act/alias, role/difficulty, stash, army, spell, leave/revive and corruption tests against controlled natives. It checks syntax for all 17 complete scripts and audits the runtime against classic API names. Neither the native mocks nor the modern syntax declarations establish real game/network compatibility.
+The workflow transpiles actual generated mission JASS through War3Net and executes save/load, cross-act/alias, role/difficulty, stash, army, spell, leave/revive and corruption tests against controlled natives. It checks syntax for all 17 complete scripts and audits the runtime against classic API names. Neither the native mocks nor the classic syntax declarations establish real game/network compatibility.
 
 `SaveHelper.cs` builds a small .NET Framework 4 Windows Forms executable. It reads only known save text files, validates checksums and role fields, filters stale files by party/session/map, and copies commands on a user click. It never executes save/JASS text. The Windows workflow tests the exact executable's parser against files produced by the actual-JASS tests; it does not claim the Forms UI or Warcraft itself was exercised.
 
@@ -29,3 +29,13 @@ RC1 contained a 1415-byte Russian help literal: pjass did not reject it, but the
 Codes are issued automatically on transition/victory, displayed personally and in per-role F9 quests, repeatable with `-code`, and optionally written to the existing known text paths. Start/periodic code generation was removed. A duplicate victory or manual-save request after completion cannot change issued codes; save failure leaves gameplay available and prior files intact. Act I's implicit campaign-screen edge now explicitly targets Act II; `SetNextLevel` selects a destination without prematurely saving. The helper is optional and copies the new single command; it filters different completion snapshots.
 
 `tests/test_checkpoint.py` executes generated JASS for completion output/stability, four-code cross-map inventories/stash/loot/progression, packed-story ranges, destination/role/mixed-checkpoint/corruption/catalog/missing-code rejection, difficulty retention, reset, duplicate victories and failed-save recovery. These are native-mock tests, not real engine/network tests.
+
+## RC3 lobby validation
+
+The user confirmed that RC2 returns to multiplayer after downloading through IrinaBot AND does not open a local lobby. IrinaBot map81743 and its public API endpoints are blocked by the environment (HTTP403), so that actual hosted file/config and a native client handshake could not be inspected. Native Warcraft and live IrinaBot remain untested; RC3 is not claimed to eliminate the reported rejection.
+
+RC2's W3I force memberships and its executed config disagreed on NPC teams/races; remapped/appended player records were unsorted, force masks included absent colours/overlap, and fixed-position records retained campaign priority garbage. RC3 sorts records, clears unused priorities, preserves the effective last-force assignment while bounding/disjoining membership to actual records, sets all controllers/races/starts, and derives config teams/alliances from W3I. Neutral NPC controllers are preserved, not converted to AI/human slots. Team capacity follows classic generated config's player-count bound. HM3W/W3I/config titles agree. Short distinct RX3- filenames and C3 titles distinguish files from old cached uploads. The first mission is published as a bare w3x in addition to the full ZIP.
+
+Large injected item/trigger initializer functions now use bounded helper blocks. Full JASS validation/transpilation uses actual classic1.24.4 declarations (see tests/reference/README.md), rather than modern test declarations. All RC2 scripts also pass these classic declarations, so this change is not presented as proof of their rejection's cause.
+
+`tests/test_lobby.py` independently parses W3I using the GHost++ classic v25 layout and slot policy, transpiles and EXECUTES each real config with recording natives, and compares controllers, races, teams, starts, forces and headers. The real released RC2 first-map metadata/config are retained as a negative fixture: the check catches their mismatches. These are protocol/metadata cross-checks, not a native Warcraft lobby or a live IrinaBot test. No patch-specific bot CRC/SHA1 configuration is invented using test script declarations.

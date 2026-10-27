@@ -18,7 +18,7 @@ def s(v):return v.encode('utf8')+b'\0' if isinstance(v,str) else v+b'\0'
 def read_info(data):
     r=Reader(data);version=r.i()
     if version!=25:raise ValueError('Expected original TFT W3I 25')
-    r.read(8);r.s();r.s();r.s();recommendation=r.p;r.s();after_recommendation=r.p
+    r.read(8);title=(r.p,None);r.s();title=(title[0],r.p);r.s();r.s();recommendation=r.p;r.s();after_recommendation=r.p
     r.read(56);flags=r.p;r.read(5);r.i();r.s()
     for _ in range(3):r.s()
     r.i();r.s()
@@ -29,10 +29,11 @@ def read_info(data):
         players.append(dict(id=r.i(),controller=r.i(),race=r.i(),flags=r.i(),name=r.s(),x=r.f(),y=r.f(),low=r.i(),high=r.i()))
     forces=[]
     for _ in range(r.i()):forces.append(dict(flags=r.i(),members=r.i(),name=r.s()))
-    return dict(prefix=data[:start],tail=data[r.p:],flags_offset=flags,recommendation=(recommendation,after_recommendation),players=players,forces=forces)
+    return dict(prefix=data[:start],tail=data[r.p:],flags_offset=flags,title=title,recommendation=(recommendation,after_recommendation),players=players,forces=forces)
 
-def coop_info(data,remap,roles):
+def coop_info(data,remap,roles,title=None):
     info=read_info(data);host=copy.deepcopy(next(p for p in info['players'] if p['id']==0));players=[]
+    source_ids={p['id'] for p in info['players']}
     for p in info['players']:
         p=copy.deepcopy(p);p['id']=remap.get(p['id'],p['id'])
         if p['id']<12:players.append(p)
@@ -41,17 +42,37 @@ def coop_info(data,remap,roles):
         if p is None:p=copy.deepcopy(host);p['id']=id;players.append(p)
         p.update(controller=1,race=2,flags=1,name=['Рексар — охотник','Рокхан — духолов','Чэнь — мастер огня','Кэрн — оплот'][role].encode(),x=host['x'],y=host['y'],low=0,high=sum(1<<x for x in roles if x!=id))
     if len(players)>12 or len({p['id'] for p in players})!=len(players):raise ValueError('Invalid player remapping')
+    # World Editor normally emits records in colour order. Host bots construct
+    # network slot order from these records, so never append the humans after
+    # unsorted remapped NPC records (the RC1/RC2 output did this).
+    players.sort(key=lambda p:p['id'])
+    present=sum(1<<p['id'] for p in players)
+    for p in players:
+        p['low']=0;p['high']=sum(1<<x for x in roles if x!=p['id']) if p['id'] in roles else 0
     info['players']=players;party=sum(1<<x for x in roles);forces=[]
     for force in info['forces']:
         members=0
-        for id in range(12):
+        for id in source_ids:
             if force['members']&(1<<id):
                 mapped=remap.get(id,id)
                 if mapped<12 and mapped not in roles:members|=1<<mapped
+        members&=present
         if members:forces.append(dict(flags=force['flags'],members=members,name=force['name']))
+    # GHost assigns a repeated colour to the LAST force containing it. Preserve
+    # that effective assignment while removing overlap/absent-colour masks.
+    claimed=party
+    for force in reversed(forces):
+        force['members']&=~claimed;claimed|=force['members']
+    forces=[force for force in forces if force['members']]
+    for p in players:
+        if not claimed&(1<<p['id']):
+            forces.append(dict(flags=0,members=1<<p['id'],name=b'NPC'));claimed|=1<<p['id']
     forces.insert(0,dict(flags=1|2|8,members=party,name='Четверо героев Орды'.encode()))
     prefix=bytearray(info['prefix']);struct.pack_into('<i',prefix,info['flags_offset'],(struct.unpack_from('<i',prefix,info['flags_offset'])[0]|0x60)&~4)
-    a,b=info['recommendation'];out=bytes(prefix[:a])+s('4 игрока / кооператив')+bytes(prefix[b:])+i(len(players))
+    a,b=info['recommendation'];prefix=bytes(prefix[:a])+s('4 игрока / кооператив')+bytes(prefix[b:])
+    if title is not None:
+        a,b=info['title'];prefix=prefix[:a]+s(title)+prefix[b:]
+    out=prefix+i(len(players))
     for p in players:out+=b''.join(i(p[k]) for k in ['id','controller','race','flags'])+s(p['name'])+struct.pack('<ffii',p['x'],p['y'],p['low'],p['high'])
     out+=i(len(forces))
     for f in forces:out+=i(f['flags'])+i(f['members'])+s(f['name'])

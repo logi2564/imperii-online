@@ -8,6 +8,7 @@ from storm import Storm
 ROOT=Path(__file__).resolve().parent
 MAPS=['OrcX01']+[f'OrcX01_{n:02}' for n in range(2,6)]+['OrcX02']+[f'OrcX02_{n:02}' for n in range(2,11)]+['OrcX03a','OrcX03b']
 ROLES=[0,3,4,5]
+FILE_PREFIX='RX3-'
 KINDS={'item':('war3map.w3t',False),'ability':('war3map.w3a',True),'unit':('war3map.w3u',False),'buff':('war3map.w3h',False)}
 EXTRA=['war3map.j','war3map.w3i','war3map.wts','war3mapMisc.txt','war3mapUnits.doo']
 
@@ -140,12 +141,16 @@ class Catalog:
         return self
     def hooks(self,name):
         forward=self.local[name];reverse={v:k for k,v in forward.items()}
-        lines=['function RC_InitItems takes nothing returns nothing']
+        writes=[]
         for column,table in enumerate([forward,reverse]):
-            for source,target in sorted(table.items()):lines.append(f"    call SaveInteger(RC_items, '{source.decode()}', {column}, '{target.decode()}')")
+            for source,target in sorted(table.items()):writes.append(f"    call SaveInteger(RC_items, '{source.decode()}', {column}, '{target.decode()}')")
         for index,raw in enumerate(self.compact[1:],1):
-            lines += [f"    call SaveInteger(RC_items, '{raw.decode()}', 2, {index})",f"    call SaveInteger(RC_items, {index}, 3, '{raw.decode()}')"]
-        lines.append('endfunction')
+            writes += [f"    call SaveInteger(RC_items, '{raw.decode()}', 2, {index})",f"    call SaveInteger(RC_items, {index}, 3, '{raw.decode()}')"]
+        lines=[];chunks=[]
+        for n,start in enumerate(range(0,len(writes),128)):
+            name=f'RC_ItemsInit{n}';chunks.append(name)
+            lines += [f'function {name} takes nothing returns nothing']+writes[start:start+128]+['endfunction']
+        lines += ['function RC_InitItems takes nothing returns nothing']+[f'    call {name}()' for name in chunks]+['endfunction']
         for column,fn in enumerate(['RC_ItemToPortable','RC_ItemToLocal']):lines += [f'function {fn} takes integer id returns integer',f'    local integer translated = LoadInteger(RC_items, id, {column})','    if translated != 0 then','        return translated','    endif','    return id','endfunction']
         return '\n'.join(lines)
 
@@ -194,10 +199,15 @@ def hooks(m,schema):
         out[-1]=out[-1].replace('endfunction','    if udg_Stash != null then\n        set RC_stash = udg_Stash\n    endif\nendfunction')
     original_triggers=list(dict.fromkeys(re.findall(r'^\s*trigger\s+(gg_trg_\w+)\s*=',globals,re.M)))
     for enabled in [False,True]:
-        lines=[f'function RC_{"Enable" if enabled else "Disable"}Originals takes nothing returns nothing']
+        basename=f'RC_{"Enable" if enabled else "Disable"}Originals';batches=[]
         for n,t in enumerate(original_triggers):
-            if enabled:lines += [f'    if RC_originalEnabled[{n}] then',f'        call EnableTrigger({t})','    endif']
-            else:lines += [f'    set RC_originalEnabled[{n}] = IsTriggerEnabled({t})',f'    call DisableTrigger({t})']
+            if enabled:batches.append([f'    if RC_originalEnabled[{n}] then',f'        call EnableTrigger({t})','    endif'])
+            else:batches.append([f'    set RC_originalEnabled[{n}] = IsTriggerEnabled({t})',f'    call DisableTrigger({t})'])
+        chunks=[]
+        for n,start in enumerate(range(0,len(batches),128)):
+            name=basename+str(n);chunks.append(name)
+            out.append('\n'.join([f'function {name} takes nothing returns nothing']+[line for batch in batches[start:start+128] for line in batch]+['endfunction']))
+        lines=[f'function {basename} takes nothing returns nothing']+[f'    call {name}()' for name in chunks]
         if enabled:
             for t,seconds in re.findall(r'TriggerRegisterTimerEventSingle\(\s*(gg_trg_\w+),\s*([\d.]+)\s*\)',m['script']):
                 if t in original_triggers:lines += [f'    if RC_originalEnabled[{original_triggers.index(t)}] and TimerGetElapsed(RC_menuClock) >= {seconds} then',f'        call TriggerRegisterTimerEventSingle({t}, {seconds})','    endif']
@@ -227,8 +237,9 @@ def build(destination):
         m['storyCount']=len(schema)
         m['schema']=schema;m['itemCount']=len(catalog.compact)
         original=m['script'];remap=player_remap(original,name);script=apply_player_remap(original,remap)
-        info,players=coop_info(m['data']['war3map.w3i'],remap,ROLES)
-        script=transform(script,m,schema,catalog,players,remap,runtime)
+        title='Рексар C3: '+name
+        info,players=coop_info(m['data']['war3map.w3i'],remap,ROLES,title)
+        script=transform(script,m,schema,catalog,players,remap,runtime,read_info(info)['forces'])
         edits={'war3map.j':script.encode(),'war3map.w3i':info,'war3mapUnits.doo':(destination/'placements'/(name+'.doo')).read_bytes()}
         for kind,(filename,leveled) in KINDS.items():
             tables=copy.deepcopy(m[kind]);tables[1].extend(catalog.output[kind])
@@ -244,10 +255,14 @@ def build(destination):
         elif re.search(r'(?mi)^\[Misc\][^\S\r\n]*\r?$',misc):misc=re.sub(r'(?mi)^(\[Misc\][^\S\r\n]*\r?\n)',r'\1MaxHeroLevel=20\r\n',misc,count=1)
         else:misc += '\r\n[Misc]\r\nMaxHeroLevel=20\r\n'
         edits['war3mapMisc.txt']=misc.encode()
-        target=destination/'Maps'/('RC-'+name+'.w3x');shutil.copyfile(m['path'],target)
+        target=destination/'Maps'/(FILE_PREFIX+name+'.w3x');shutil.copyfile(m['path'],target)
         with tempfile.TemporaryDirectory(prefix='rc-build-') as temp:storm.replace(target,edits,temp)
         blob=bytearray(target.read_bytes())
-        if blob[:4]==b'HM3W':end=blob.index(0,8);struct.pack_into('<i',blob,end+5,4);target.write_bytes(blob)
+        if blob[:4]!=b'HM3W' or blob[512:516]!=b'MPQ\x1a':raise ValueError('Expected classic map header')
+        parsed_info=read_info(info)
+        header=bytes(blob[:8])+s(title)+struct.pack('<ii',struct.unpack_from('<i',parsed_info['prefix'],parsed_info['flags_offset'])[0],4)
+        if len(header)>512:raise ValueError('Map title too long')
+        blob[:512]=header+bytes(512-len(header));target.write_bytes(blob)
         verify=storm.open(target)
         try:
             if storm.read(verify,'war3map.j')!=edits['war3map.j']:raise ValueError('JASS verification failed')
@@ -258,11 +273,11 @@ def build(destination):
         (destination/'scripts'/(name+'.j')).write_text(script)
         reports.append(dict(map=name,bytes=target.stat().st_size,sha256=hashlib.sha256(target.read_bytes()).hexdigest(),sourceSha256=hashlib.sha256(m['path'].read_bytes()).hexdigest(),roles=ROLES,npcRemap=remap))
         print(name,'four roles',ROLES,'NPC remap',remap)
-    report=dict(status='experimental-needs-real-game-test',nativeWarcraftTested=False,maps=reports,questFields=schema,portableObjects={k:len(v) for k,v in catalog.output.items()},compactItems=len(catalog.compact),nextMapRequiresNewLobby=True,saveFormat='C2',legacySaveFormat='RC1')
+    report=dict(status='experimental-needs-real-game-test',nativeWarcraftTested=False,liveIrinaBotTested=False,filePrefix=FILE_PREFIX,maps=reports,questFields=schema,portableObjects={k:len(v) for k,v in catalog.output.items()},compactItems=len(catalog.compact),nextMapRequiresNewLobby=True,saveFormat='C2',legacySaveFormat='RC1')
     (destination/'Build-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
     return report
 
-def transform(script,m,schema,catalog,players,remap,runtime):
+def transform(script,m,schema,catalog,players,remap,runtime,forces):
     # The original stash is a building. A temporary blade master only shuttles
     # its items through the single-player cache, then is removed. Keep the real
     # container intact and load our stash payload directly into it instead.
@@ -294,16 +309,23 @@ def transform(script,m,schema,catalog,players,remap,runtime):
         if count!=1:raise ValueError('Hub initialization shape changed')
     # Replace config completely; NPC player 13 (revival stones) is never placed in
     # the twelve-slot lobby. Its gameplay player handle remains unchanged.
-    config=['    call SetMapName("'+m['name']+' — отряд из 4")','    call SetMapDescription("Четыре героя, отдельные войска, три сложности и коды после миссии C2. Продолжение: каждому -load КОД до -start.")',f'    call SetPlayers({len(players)})','    call SetTeams(12)','    call SetGamePlacement(MAP_PLACEMENT_USE_MAP_SETTINGS)']
+    config=['    call SetMapName("Рексар C3: '+m['name']+'")','    call SetMapDescription("Четыре героя, отдельные войска, три сложности и коды после миссии C2. Продолжение: каждому -load КОД до -start.")',f'    call SetPlayers({len(players)})',f'    call SetTeams({len(players)})','    call SetGamePlacement(MAP_PLACEMENT_USE_MAP_SETTINGS)']
     controllers={0:'MAP_CONTROL_NONE',1:'MAP_CONTROL_USER',2:'MAP_CONTROL_COMPUTER',3:'MAP_CONTROL_NEUTRAL',4:'MAP_CONTROL_RESCUABLE'}
+    races={1:'RACE_PREF_HUMAN',2:'RACE_PREF_ORC',3:'RACE_PREF_UNDEAD',4:'RACE_PREF_NIGHTELF'}
+    teams={p['id']:n for n,force in enumerate(forces) for p in players if force['members']&(1<<p['id'])}
     for pos,p in enumerate(players):
-        id=p['id'];team=0 if id in ROLES else id+1
-        if team>11:team=11
+        id=p['id'];team=teams[id]
         config += [f'    call DefineStartLocation({pos}, {float(p["x"])}, {float(p["y"])})',f'    call SetPlayerStartLocation(Player({id}), {pos})',f'    call ForcePlayerStartLocation(Player({id}), {pos})',f'    call SetPlayerController(Player({id}), {controllers[p["controller"]]})',f'    call SetPlayerTeam(Player({id}), {team})']
-        if id in ROLES:config += [f'    call SetPlayerRacePreference(Player({id}), RACE_PREF_ORC)',f'    call SetPlayerRaceSelectable(Player({id}), false)',f'    call SetPlayerSlotAvailable(Player({id}), MAP_CONTROL_USER)']
-    for a in ROLES:
-        for b in ROLES:
-            if a!=b:config += [f'    call SetPlayerAlliance(Player({a}), Player({b}), ALLIANCE_PASSIVE, true)',f'    call SetPlayerAlliance(Player({a}), Player({b}), ALLIANCE_SHARED_VISION, true)']
+        config += [f'    call SetPlayerRacePreference(Player({id}), {races.get(p["race"],"RACE_PREF_RANDOM")})',f'    call SetPlayerRaceSelectable(Player({id}), false)']
+        if id in ROLES:config += [f'    call SetPlayerSlotAvailable(Player({id}), MAP_CONTROL_USER)']
+    for n,force in enumerate(forces):
+        members=[p['id'] for p in players if force['members']&(1<<p['id'])]
+        for a in members:
+            if force['flags']&2:config.append(f'    call SetPlayerState(Player({a}), PLAYER_STATE_ALLIED_VICTORY, 1)')
+            for b in members:
+                if a==b:continue
+                for flag,native in [(1,'ALLIANCE_PASSIVE'),(8,'ALLIANCE_SHARED_VISION'),(16,'ALLIANCE_SHARED_CONTROL'),(32,'ALLIANCE_SHARED_ADVANCED_CONTROL')]:
+                    if force['flags']&flag:config.append(f'    call SetPlayerAlliance(Player({a}), Player({b}), {native}, true)')
     script=function(script,'config','\n'.join(config))
     script=script.replace('    call RunInitializationTriggers(  )','    call RC_Bootstrap()')
     if script.count('call RC_Bootstrap()')!=1:raise ValueError('Main initialization not gated')
@@ -316,6 +338,7 @@ def transform(script,m,schema,catalog,players,remap,runtime):
 def globals_text(m,story_count):
     text='''
     string RC_alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_"
+    string RC_filePrefix = "RX3-"
     boolean RC_codeOK = true
     boolean RC_started = false
     boolean RC_partyLoaded = false

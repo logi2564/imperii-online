@@ -1,6 +1,6 @@
 # Rexxar four-player campaign — actual mission adaptation
 
-The user has now provided all seventeen original missions. The current implementation is [the experimental RC2 adaptation](coop/README.md), with actual four-player maps, heroes, signature skills, difficulty and portable character/story/stash save codes. The workflow builds those maps and a small Windows clipboard helper. Real Warcraft III 1.26 gameplay has **not** been tested; the output is not described as a verified complete playthrough.
+The user has now provided all seventeen original missions. The current implementation is [the experimental RC3 adaptation](coop/README.md), with actual four-player maps, heroes, signature skills, difficulty and portable character/story/stash save codes. The workflow builds those maps and a small Windows clipboard helper. Real Warcraft III 1.26 gameplay has **not** been tested; the output is not described as a verified complete playthrough.
 
 The source-export and slot-only tools below are historical preparation steps.
 

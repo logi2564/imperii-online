@@ -1,0 +1,99 @@
+{
+  "version": "IV",
+  "status": "new-gameplay-awaiting-native-party-test",
+  "nativeWarcraftExecutedInCloud": false,
+  "baselineCEntryConfirmedByUser": true,
+  "baselineLobbyPreserved": true,
+  "allMissionLobbiesTested": false,
+  "wholeCampaignPlaythroughTested": false,
+  "liveIrinaBotTested": false,
+  "skills": 16,
+  "saveFormat": "Z3 (C2 compatible)",
+  "maps": [
+    {
+      "file": "RX4-OrcX01.w3x",
+      "bytes": 1317799,
+      "sha256": "97ef92fa49580658b93c34650a55d1412df518d5a1e6bd9871f316f1bb67ea72"
+    },
+    {
+      "file": "RX4-OrcX01_02.w3x",
+      "bytes": 460208,
+      "sha256": "658772b797335d7a291aba0460184c3d0c73896107da23e997ec569443f5ac40"
+    },
+    {
+      "file": "RX4-OrcX01_03.w3x",
+      "bytes": 377353,
+      "sha256": "d92a95bf409e4236d02b219c3732b8c68473e2f4491557f81925fba72f735d9d"
+    },
+    {
+      "file": "RX4-OrcX01_04.w3x",
+      "bytes": 638485,
+      "sha256": "12b527c8509ed8fadf87d0f99af520db54d24ffb33570faf7669cce3bd26c6c7"
+    },
+    {
+      "file": "RX4-OrcX01_05.w3x",
+      "bytes": 497605,
+      "sha256": "a0185f4a0b897b3121997d0d4c4d19a05d223b62e8d71c06c49e11039d4040c5"
+    },
+    {
+      "file": "RX4-OrcX02.w3x",
+      "bytes": 751245,
+      "sha256": "ef2c86c960b4a392df13469a7f254aa02aeb761665dfb9a45f610534606af307"
+    },
+    {
+      "file": "RX4-OrcX02_02.w3x",
+      "bytes": 620981,
+      "sha256": "5b0ebe9b0cb618d7eb8cf9ad6dbea6107c0f82b24c92af0c8200f4641df57047"
+    },
+    {
+      "file": "RX4-OrcX02_03.w3x",
+      "bytes": 524380,
+      "sha256": "b20bc8f2cccdbc78b52d8b0f5c90627ae6489958c65efda7eb95e4e0d4ef9c55"
+    },
+    {
+      "file": "RX4-OrcX02_04.w3x",
+      "bytes": 567782,
+      "sha256": "10c961410d18d87cbfd14a499fe60c1350df0521325a1ef775aad1d74d803030"
+    },
+    {
+      "file": "RX4-OrcX02_05.w3x",
+      "bytes": 548129,
+      "sha256": "248d724a0acb6ba882ee8d612061a5f2094aad56f6523612c6c7216b8e5e094f"
+    },
+    {
+      "file": "RX4-OrcX02_06.w3x",
+      "bytes": 479563,
+      "sha256": "c96ca1bbbc8e207fe231826b04e75c03c14884a7d1802a637c9b01eb0822034d"
+    },
+    {
+      "file": "RX4-OrcX02_07.w3x",
+      "bytes": 317288,
+      "sha256": "5085f046dffad1e7f7d445b35cc5c084516f82bf523e48544ad10a00e8fed140"
+    },
+    {
+      "file": "RX4-OrcX02_08.w3x",
+      "bytes": 328871,
+      "sha256": "3d86b3045c5cd96d849c1449e046e9b07b0ddfba7b378060ed880aae6f6226f9"
+    },
+    {
+      "file": "RX4-OrcX02_09.w3x",
+      "bytes": 410531,
+      "sha256": "02fe6b19ce073563ffd17764ba0e5f8747b00042620257091f19df741512f22c"
+    },
+    {
+      "file": "RX4-OrcX02_10.w3x",
+      "bytes": 345269,
+      "sha256": "7325a67886eecc18137f776f63242dc3eacda101e23f5bcf26a2064e9fe53a81"
+    },
+    {
+      "file": "RX4-OrcX03a.w3x",
+      "bytes": 334363,
+      "sha256": "baa56e3f71361a664fc2a5882829bce30f035dcb4c33fdb71712beb4e60ae8b4"
+    },
+    {
+      "file": "RX4-OrcX03b.w3x",
+      "bytes": 474260,
+      "sha256": "01fe741726ea741a7179b561f8582fe1a4e1e4c60988bf2030f3d2f27d83ee52"
+    }
+  ]
+}

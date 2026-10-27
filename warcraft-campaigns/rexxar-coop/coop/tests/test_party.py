@@ -111,7 +111,8 @@ def saves(first,second):
     raw=g.RC_externalStash;h.RC_codeOK=True;bad=h.RC_Seal(raw[:5]+'___'+raw[8:-3])
     chat(h,0,'-stash '+bad);assert h.RC_loadedStash==''
     chat(h,0,'-stash '+raw);begin(h);assert h.RC_started and h.RC_extraCharges[5]==4095
-    _,pending=setup(second,players=[0]);chat(pending,0,'-stash '+raw);chat(pending,0,'-load '+g.RC_checkpointCode[0]);begin(pending)
+    _,pending=setup(second,players=[0]);chat(pending,0,'-stash '+raw);pending.RC_Begin();assert not pending.RC_started
+    chat(pending,0,'-load '+g.RC_checkpointCode[0]);begin(pending)
     assert pending.RC_started and pending.RC_extraCharges[5]==4095
     print('PASS: all 8 party masks round-trip XP/stats/skills/items and all 12 stash/companion slots; only participant codes required; 1/2/3/4-player Windows fixtures written; dense solo uses matching S2 backup, rejects wrong snapshot, supports either load order, every command <=127.')
 

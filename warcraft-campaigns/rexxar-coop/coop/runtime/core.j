@@ -1192,6 +1192,10 @@ function RC_Begin takes nothing returns nothing
         return
     endif
     set RC_liveMask = RC_CurrentMask()
+    if RC_pendingStash != "" and not RC_checkpointLoaded then
+        call RC_Say("Тайник ожидает код героя: введи -load КОД. Для новой игры сначала -reset.")
+        return
+    endif
     if RC_checkpointLoaded then
         loop
             exitwhen n == 4

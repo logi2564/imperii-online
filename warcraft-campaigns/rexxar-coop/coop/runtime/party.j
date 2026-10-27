@@ -145,6 +145,17 @@ function RC_AbsentActor takes integer role, unit u returns nothing
     call RC_SuppressUnit(u)
 endfunction
 
+// Some original quests award items directly to a companion global even when
+// that companion was not restored. Keep a neutral target for those writes;
+// RC_DrainHiddenItems delivers its loot to the actual party, not a null unit.
+function RC_EnsureAbsent takes integer role returns unit
+    if RC_storyActor[role] == null or GetUnitTypeId(RC_storyActor[role]) == 0 then
+        set RC_storyActor[role] = CreateUnit(Player(15), RC_heroType[role], GetUnitX(RC_hero[RC_host]), GetUnitY(RC_hero[RC_host]), 0)
+        call RC_SuppressUnit(RC_storyActor[role])
+    endif
+    return RC_storyActor[role]
+endfunction
+
 function RC_StoryOwner takes unit u returns player
     local integer original
     if RC_started and u != null then

@@ -25,7 +25,7 @@ def roster(path):
         g=create(path,mask);active=roles(mask)
         assert g.RC_CurrentMask()==mask
         assert [n for n in range(4) if g.RC_hero[n] is not None]==active
-        assert len(g.WORLD.units)==len(active),'Unoccupied slot spawned a playable hero'
+        assert len([u for u in g.WORLD.units.values() if u.owner in range(4)])==len(active),'Unoccupied slot spawned a playable hero'
         assert all(g.RC_hero[n].owner==n for n in active)
         assert g.RC_hero[0].points==2
         g.udg_RokhanInParty=True
@@ -142,7 +142,9 @@ def null_skills(first):
     g=create(first,3);cast(g,1,1,x=100);ticks(g,10);cast(g,1,3,x=100);ticks(g,10)
     g=create(first,9);g.SetHeroLevel(g.RC_hero[3],20,False);g.RC_GiveTalent(3,4,2);cast(g,3,2);ticks(g,50)
     g=create(first,7);cast(g,2,0);cast(g,2,1);ticks(g,10)
-    g=create(first,1);npc=g.RC_SourceCreate(0,g.RC_heroType[1],100,200,0)
+    g=create(first,1);npc=g.udg_Rokhan
+    assert npc is not None and npc.owner==15 and not npc.visible and npc.paused and npc.invulnerable
+    assert g.RC_hero[1] is None,'Quest fallback spawned a playable companion'
     g.UnitAddItemToSlotById(npc,g.FourCC('wneu'),2);it=g.UnitItemInSlot(npc,2);g.SetItemCharges(it,3)
     assert g.RC_QuestItem(npc,g.FourCC('wneu')).id==it.id
     g.RC_Tick();assert g.UnitItemInSlot(npc,2) is None and it.hero is None and it.charges==3

@@ -203,7 +203,8 @@ def hooks(m,schema):
     out.extend('\n'.join(lines+['endfunction']) for lines in [collect,apply,seed])
     observed=['function RC_ObserveStoryHeroes takes nothing returns nothing']
     for index,name in enumerate(['Rexxar','Rokhan','Chen','Cairne']):
-        if f'udg_{name}' in declared:observed += [f'    if udg_{name} != null and GetUnitTypeId(udg_{name}) != 0 and RC_IsPartyPlayer(GetOwningPlayer(udg_{name})) then',f'        call RC_Adopt({index}, udg_{name})','    endif']
+        if f'udg_{name}' in declared:
+            observed += [f'    if not RC_Active({index}) and (udg_{name} == null or GetUnitTypeId(udg_{name}) == 0) then',f'        set udg_{name} = RC_EnsureAbsent({index})','    endif',f'    if udg_{name} != null and GetUnitTypeId(udg_{name}) != 0 and RC_IsPartyPlayer(GetOwningPlayer(udg_{name})) then',f'        call RC_Adopt({index}, udg_{name})','    endif']
     out.append('\n'.join(observed+['endfunction']))
     if 'udg_Stash' in declared:
         out[-1]=out[-1].replace('endfunction','    if udg_Stash != null then\n        set RC_stash = udg_Stash\n    endif\nendfunction')

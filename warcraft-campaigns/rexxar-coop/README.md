@@ -1,5 +1,8 @@
 # Rexxar four-player campaign — actual mission adaptation
 
+**Current blocker:** the user confirmed RC3 still rejects entry both in local multiplayer and through IrinaBot. It is not a working native-verified campaign. The current workflow publishes a controlled A/B entry comparison (`coop/lobby_probe.py`), pending results from the user's actual Warcraft client.
+
+
 The user has now provided all seventeen original missions. The current implementation is [the experimental RC3 adaptation](coop/README.md), with actual four-player maps, heroes, signature skills, difficulty and portable character/story/stash save codes. The workflow builds those maps and a small Windows clipboard helper. Real Warcraft III 1.26 gameplay has **not** been tested; the output is not described as a verified complete playthrough.
 
 The source-export and slot-only tools below are historical preparation steps.

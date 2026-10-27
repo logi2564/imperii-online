@@ -53,6 +53,8 @@ function SetGamePlacement(n) WORLD.placement=n end
 function DefineStartLocation(n,x,y) WORLD.starts[n]={x=x,y=y} end
 function SetPlayerStartLocation(p,n) WORLD.players[p].start=n end
 function ForcePlayerStartLocation(p,n) WORLD.players[p].forced=n end
+function ConvertPlayerColor(n) return n end
+function SetPlayerColor(p,n) WORLD.players[p].colour=n end
 function SetPlayerController(p,n) WORLD.players[p].controller=n end
 function SetPlayerTeam(p,n) WORLD.players[p].team=n end
 function SetPlayerRacePreference(p,n) WORLD.players[p].race=n end
@@ -83,6 +85,7 @@ def problems(info,world):
     if masks!=present:errors.append('force membership does not cover the lobby')
     for p in players:
         actual=world.players[p['id']]
+        if actual.colour!=p['id']:errors.append('colour not explicitly configured: '+str(p['id']))
         if actual.controller!=p['controller']:errors.append('controller differs: '+str(p['id']))
         if actual.team!=teams.get(p['id']):errors.append('host/config team differs: '+str(p['id']))
         if actual.race!=p['race'] and p['race'] in (1,2,3,4):errors.append('race differs: '+str(p['id']))
@@ -117,7 +120,10 @@ def run(out,dotnet):
     old=host_info((fixtures/'rc2-OrcX01.w3i').read_bytes());old_world=execute_config((fixtures/'rc2-OrcX01-config.j').read_text(),folder/'old-rc2.lua',dotnet)
     errors=problems(old,old_world)
     assert 'unsorted player records' in errors and any(x.startswith('host/config team differs:') for x in errors),errors
-    (out/'Lobby-report.json').write_text(json.dumps(dict(nativeWarcraftTested=False,liveIrinaBotTested=False,reference='uakfdotb/ghostpp ghost/map.cpp classic v25 slot/force layout',rc2RegressionErrors=errors,maps=profiles),indent=2))
+    prior=host_info((fixtures/'rc3-OrcX01.w3i').read_bytes());prior_world=execute_config((fixtures/'rc3-OrcX01-config.j').read_text(),folder/'old-rc3.lua',dotnet)
+    prior_errors=problems(prior,prior_world)
+    assert prior_errors and all(x.startswith('colour not explicitly configured:') for x in prior_errors),prior_errors
+    (out/'Lobby-report.json').write_text(json.dumps(dict(nativeWarcraftTested=False,liveIrinaBotTested=False,reference='uakfdotb/ghostpp ghost/map.cpp classic v25 slot/force layout',rc2RegressionErrors=errors,rc3MissingColourAssignments=prior_errors,maps=profiles),indent=2))
     print('PASS: 17 host-bot lobby profiles match EXECUTED JASS config: sorted colours, exact controllers/races/teams/starts, four human slots, bounded/disjoint force masks, matching HM3W/W3I/config titles and short bot download paths. Real released RC2 fixture is correctly rejected for unsorted records and mismatched host/config teams. Native Warcraft and live IrinaBot were NOT run.')
 
 if __name__=='__main__':

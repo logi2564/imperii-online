@@ -334,7 +334,7 @@ def transform(script,m,schema,catalog,players,remap,runtime,forces):
     teams={p['id']:n for n,force in enumerate(forces) for p in players if force['members']&(1<<p['id'])}
     for pos,p in enumerate(players):
         id=p['id'];team=teams[id]
-        config += [f'    call DefineStartLocation({pos}, {float(p["x"])}, {float(p["y"])})',f'    call SetPlayerStartLocation(Player({id}), {pos})',f'    call ForcePlayerStartLocation(Player({id}), {pos})',f'    call SetPlayerController(Player({id}), {controllers[p["controller"]]})',f'    call SetPlayerTeam(Player({id}), {team})']
+        config += [f'    call DefineStartLocation({pos}, {float(p["x"])}, {float(p["y"])})',f'    call SetPlayerStartLocation(Player({id}), {pos})',f'    call ForcePlayerStartLocation(Player({id}), {pos})',f'    call SetPlayerColor(Player({id}), ConvertPlayerColor({id}))',f'    call SetPlayerController(Player({id}), {controllers[p["controller"]]})',f'    call SetPlayerTeam(Player({id}), {team})']
         config += [f'    call SetPlayerRacePreference(Player({id}), {races.get(p["race"],"RACE_PREF_RANDOM")})',f'    call SetPlayerRaceSelectable(Player({id}), false)']
         if id in ROLES:config += [f'    call SetPlayerSlotAvailable(Player({id}), MAP_CONTROL_USER)']
     for n,force in enumerate(forces):

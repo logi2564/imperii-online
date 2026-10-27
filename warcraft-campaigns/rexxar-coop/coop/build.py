@@ -173,6 +173,25 @@ def state_schema(maps):
 
 def hooks(m,schema):
     globals=m['script'].split('endglobals')[0];declared=set(re.findall(r'\budg_\w+',globals));out=[]
+    # Keep source campaign diplomacy in gameplay, without changing lobby teams.
+    # In particular, splitting the humans into their own force must not turn
+    # original friendly vendors/revival stones into hostile factions.
+    source=read_info(m['data']['war3map.w3i']);remap=player_remap(m['script'],m['name']);relations=set()
+    for force in source['forces']:
+        members=[remap.get(p['id'],p['id']) for p in source['players'] if force['members']&(1<<p['id'])]
+        for a in members:
+            for b in members:
+                if a==b or a in ROLES and b in ROLES:continue
+                if a in ROLES[1:] or b in ROLES[1:]:continue
+                for left in (ROLES if a==0 else [a]):
+                    for right in (ROLES if b==0 else [b]):
+                        for flag,native in [(1,'ALLIANCE_PASSIVE'),(8,'ALLIANCE_SHARED_VISION'),(16,'ALLIANCE_SHARED_CONTROL'),(32,'ALLIANCE_SHARED_ADVANCED_CONTROL')]:
+                            if force['flags']&flag:relations.add((left,right,native))
+    writes=[f'    call SetPlayerAlliance(Player({a}), Player({b}), {native}, true)' for a,b,native in sorted(relations)]
+    chunks=[]
+    for n,start in enumerate(range(0,len(writes),128)):
+        fn=f'RC_InitialAlliance{n}';chunks.append(fn);out.append('\n'.join([f'function {fn} takes nothing returns nothing']+writes[start:start+128]+['endfunction']))
+    out.append('\n'.join(['function RC_InitialAlliances takes nothing returns nothing']+[f'    call {fn}()' for fn in chunks]+['endfunction']))
     collect=['function RC_CollectStory takes nothing returns nothing'];apply=['function RC_ApplyStory takes nothing returns nothing'];seed=['function RC_SeedStory takes nothing returns nothing']
     for index,(name,typ) in enumerate(schema):
         if name in declared:

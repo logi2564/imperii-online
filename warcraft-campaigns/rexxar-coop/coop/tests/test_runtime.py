@@ -30,6 +30,9 @@ def run(source):
     for n,c in enumerate(g.RC_alphabet):assert g.RC_Digit(c)==n
     checks.append('menu defers all heroes; codec works with case-sensitive and insensitive hashes')
     begin(g);assert g.RC_started and len(g.WORLD.units)==4
+    for player in [0,3,4,5]:
+        assert g.GetPlayerAlliance(player,8,g.ALLIANCE_PASSIVE) and g.GetPlayerAlliance(8,player,g.ALLIANCE_PASSIVE)
+        assert not g.GetPlayerAlliance(player,10,g.ALLIANCE_PASSIVE)
     assert [g.WORLD.players[p].gold for p in [0,3,4,5]]==[250,250,250,250]
     assert [g.RC_hero[n].owner for n in range(4)]==[0,3,4,5]
     assert len({g.RC_hero[n].id for n in range(4)})==4
@@ -106,7 +109,8 @@ def run(source):
     for n in range(4):h.RC_hero[n].x=0;h.RC_hero[n].y=0;h.RC_hero[n].hp=400
     h.WORLD.events.unit=h.RC_hero[1];h.WORLD.events.spell=h.FourCC('RCA1');h.RC_Spell();assert all(h.RC_hero[n].hp>400 and h.RC_hero[n].cleansed for n in range(4))
     count=len(h.WORLD.units);h.WORLD.events.unit=h.RC_hero[0];h.WORLD.events.spell=h.FourCC('RCA0');h.RC_Spell();assert len(h.WORLD.units)==count+2
-    enemy=h.CreateUnit(7,h.FourCC('hfoo'),0,0,0);h.WORLD.events.unit=h.RC_hero[2];h.WORLD.events.spell=h.FourCC('RCA2');h.WORLD.events.x=0;h.WORLD.events.y=0;h.RC_Spell()
+    # Player10 is the source act-I enemy; player7 belongs to its friendly force.
+    enemy=h.CreateUnit(10,h.FourCC('hfoo'),0,0,0);h.WORLD.events.unit=h.RC_hero[2];h.WORLD.events.spell=h.FourCC('RCA2');h.WORLD.events.x=0;h.WORLD.events.y=0;h.RC_Spell()
     hp=enemy.hp
     for _ in range(6):h.RC_Tick()
     assert enemy.hp<hp and h.RC_flameTicks==0

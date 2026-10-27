@@ -1265,6 +1265,7 @@ function RC_Menu takes nothing returns nothing
         set RC_originalsGated = true
     endif
     call PauseAllUnitsBJ(true)
+    call RC_InitialAlliances()
     set RC_saveQuest = CreateQuest()
     call QuestSetTitle(RC_saveQuest, "Сохранение отряда")
     call QuestSetDescription(RC_saveQuest, "После завершения миссии или перехода каждый получит ОДИН код. В следующей карте каждый вводит -load СВОЙ_КОД, затем ведущий -start. Сюжет и тайник уже включены. Здесь появится резервная копия всех четырёх кодов.")

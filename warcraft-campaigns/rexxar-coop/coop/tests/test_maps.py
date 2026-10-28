@@ -50,6 +50,7 @@ for name in MAPS:
                 learn={(mod[0],mod[2]):mod[4] for mod in lookup[kits.learn_id(role,slot).encode()]['mods']}
                 assert struct.unpack('<i',learn[('aher',0)])[0]==1
                 assert struct.unpack('<i',learn[('Ncl3',1)])[0]==0
+                assert learn[('ahky',0)]==b'' and learn[('arhk',0)]==values[('arhk',0)]
                 assert struct.unpack('<i',values[('Ncl3',1)])[0]==1
                 learn_orders.append(learn[('Ncl6',1)])
                 assert struct.unpack('<i',values[('alev',0)])[0]==(3 if slot==3 else 5)

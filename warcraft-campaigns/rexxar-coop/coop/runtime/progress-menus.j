@@ -41,6 +41,7 @@ function RC_NativeLearn takes nothing returns nothing
     local integer role = 0
     local integer skill = 0
     local integer rank = GetLearnedSkillLevel()
+    local integer current
     loop
         exitwhen role == 4 or RC_hero[role] == hero
         set role = role + 1
@@ -54,11 +55,20 @@ function RC_NativeLearn takes nothing returns nothing
         set skill = skill + 1
     endloop
     if skill < 4 then
+        set current = GetUnitAbilityLevel(hero, RC_skill[role * 5 + skill])
+        // A restored/K-learned cast can be ahead of a stale native learn entry.
+        // Resynchronize it without downgrading the skill or charging twice.
+        if rank <= current then
+            call SetUnitAbilityLevel(hero, id, current)
+            call UnitModifySkillPoints(hero, 1)
+            set hero = null
+            return
+        endif
         if not RC_SetSkillRank(role, skill, rank) then
-            if RC_skillRanks[role * 5 + skill] == 0 then
+            if current == 0 then
                 call UnitRemoveAbility(hero, id)
             else
-                call SetUnitAbilityLevel(hero, id, RC_skillRanks[role * 5 + skill])
+                call SetUnitAbilityLevel(hero, id, current)
             endif
             call UnitModifySkillPoints(hero, 1)
             call RC_Tell(RC_Owner(role), 15, "Навык не установился; очко возвращено. Открой K или -skills.")

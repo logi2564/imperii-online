@@ -43,6 +43,13 @@ def registered_events(path):
     assert g.GetUnitAbilityLevel(u,g.RC_skill[1])==1 and u.points==points-1
     chat(g,0,'-learn garbage');assert u.points==points-1
     chat(g,0,'-progress');assert any('REXXAR VI FIX' in text for _,text in g.WORLD.messages.items())
+    g.SetHeroLevel(u,8,False);assert g.RC_LearnRank(0,0)
+    g.UnitRemoveAbility(u,g.RC_learnSkill[0]);points=u.points
+    g.SelectHeroSkill(u,g.RC_learnSkill[0])
+    assert u.points==points and g.GetUnitAbilityLevel(u,g.RC_skill[0])==2
+    assert g.GetUnitAbilityLevel(u,g.RC_learnSkill[0])==2
+    g.SelectHeroSkill(u,g.RC_learnSkill[0])
+    assert u.points==points-1 and g.GetUnitAbilityLevel(u,g.RC_skill[0])==3
     print('PASS: all 16 skills learn through registered native HERO_SKILL events at every rank; Q effects for all four heroes and K route through SPELL_EFFECT; permanent cast buttons; native/K installation failures do not lose points.')
 
 def experience_and_replacement(path):

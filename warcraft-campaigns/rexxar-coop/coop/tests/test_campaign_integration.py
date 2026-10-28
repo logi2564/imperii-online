@@ -129,8 +129,30 @@ def imports_during_arrival():
     print('PASS original Import_All executes during pending arrival: cached source, entry area and live mission progress are decoded without the outgoing-door cooldown blocking them.')
 
 
+def voice_wait_during_travel():
+    for travelling in (False,True):
+        _,g=campaign((0,1))
+        counts={'reset':0,'remove':0}
+        g.SetSpeechVolumeGroupsBJ=lambda:None
+        g.TransmissionFromUnitWithNameBJ=lambda *args:None
+        def reset(): counts['reset']+=1
+        def remove(trigger): counts['remove']+=1
+        def wait(sound,seconds):
+            if travelling:
+                g.RC_map=1
+                g.UZ_generation[0]+=1
+        g.VolumeGroupResetBJ=reset
+        g.QueuedTriggerRemoveBJ=remove
+        g.WaitForSoundBJ=wait
+        g.Z00_Trig_HarpyThreat_CaravanFound_Q_Actions()
+        expected=0 if travelling else 1
+        assert counts=={'reset':expected,'remove':expected},(travelling,counts)
+    print('PASS original caravan voice callback: normal completion cleans up; resuming a voice wait after travel cannot reset the new scene audio or touch its queue.')
+
+
 original_player_setup()
 original_cave_conditions()
 manual_save_quests()
 original_drekthar_spawn()
 imports_during_arrival()
+voice_wait_during_travel()

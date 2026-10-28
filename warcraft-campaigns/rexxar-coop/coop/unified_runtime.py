@@ -94,13 +94,13 @@ def build_zones(maps,terrains,catalog,schema):
             # skips mission imports and the correct arrival point entirely.
             if name.endswith('_Actions') and re.search(r'\bset '+prefix+r'udg_TransitionTarget\s*=',code):
                 code=add_after_locals(code,'    if not RC_started or RC_transitionPending or TimerGetElapsed(RC_menuClock)<UZ_portalReadyAt then\n        return\n    endif')
-            if re.search(r'\b(?:TriggerSleepAction|PolledWait|TriggerWaitForSound|TransmissionFromUnitWithNameBJ|TransmissionFromUnitBJ)\s*\(',code):
+            if re.search(r'\b(?:TriggerSleepAction|PolledWait|TriggerWaitForSound|WaitForSoundBJ|TransmissionFromUnitWithNameBJ|TransmissionFromUnitBJ)\s*\(',code):
                 ret=re.search(r'\breturns (\w+)',code)[1]
                 code=code.replace('\n','\n    local integer UZ_stamp=UZ_generation['+str(z)+']\n',1)
                 end_return='' if ret=='nothing' else (' false' if ret=='boolean' else ' 0' if ret in ['integer','real'] else ' null')
                 # Generated source calls are line-based. Return guards follow
                 # every blocking native/BJ; stale scenes cannot move the party.
-                code=re.sub(r'(?m)^(\s*call (?:TriggerSleepAction|PolledWait|TriggerWaitForSound|TransmissionFromUnitWithNameBJ|TransmissionFromUnitBJ)\([^\n]*\))',lambda q:q[0]+f'\n    if RC_map!={z} or UZ_generation[{z}]!=UZ_stamp then\n        return{end_return}\n    endif',code)
+                code=re.sub(r'(?m)^(\s*call (?:TriggerSleepAction|PolledWait|TriggerWaitForSound|WaitForSoundBJ|TransmissionFromUnitWithNameBJ|TransmissionFromUnitBJ)\([^\n]*\))',lambda q:q[0]+f'\n    if RC_map!={z} or UZ_generation[{z}]!=UZ_stamp then\n        return{end_return}\n    endif',code)
                 guard_count+=1
             outputs.append(code)
         # Reuse the released original story field/flag and diplomacy hooks;

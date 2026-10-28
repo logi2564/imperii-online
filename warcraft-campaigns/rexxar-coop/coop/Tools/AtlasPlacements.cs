@@ -16,7 +16,9 @@ internal static class AtlasPlacements {
         foreach(var zone in plan.RootElement.EnumerateObject()) {
             var z=zone.Value;
             var map=Map.Open(Path.Combine(inputs,zone.Name+".w3x"),MapFiles.Info|MapFiles.Units|MapFiles.Doodads);
-            int Replace(int id){string raw=Encoding.ASCII.GetString(BitConverter.GetBytes(id));return z.GetProperty("rawMap").TryGetProperty(raw,out var v)?Raw(v.GetString()!):id;}
+            int Replace(int id,string? kind=null){string raw=Encoding.ASCII.GetString(BitConverter.GetBytes(id));
+                if(kind is not null&&z.GetProperty("kindMaps").TryGetProperty(kind,out var table)&&table.TryGetProperty(raw,out var specific))return Raw(specific.GetString()!);
+                return z.GetProperty("rawMap").TryGetProperty(raw,out var v)?Raw(v.GetString()!):id;}
             float dx=z.GetProperty("dx").GetSingle(),dy=z.GetProperty("dy").GetSingle();
             int left=z.GetProperty("cropLeft").GetInt32(),bottom=z.GetProperty("cropBottom").GetInt32(),width=z.GetProperty("cropWidth").GetInt32(),height=z.GetProperty("cropHeight").GetInt32();
             float minX=z.GetProperty("sourceX").GetSingle()+left*128,minY=z.GetProperty("sourceY").GetSingle()+bottom*128;
@@ -32,8 +34,8 @@ internal static class AtlasPlacements {
                 foreach(var set in table.UnitSets)for(int n=0;n<set.UnitIds.Length;n++)set.UnitIds[n]=Replace(set.UnitIds[n]);
                 info.RandomUnitTables.Add(table);
             }
-            void Widget(WidgetData w) {
-                w.TypeId=Replace(w.TypeId);w.SkinId=w.TypeId;w.Position+=new Vector3(dx,dy,0);
+            void Widget(WidgetData w,string kind) {
+                w.TypeId=Replace(w.TypeId,kind);w.SkinId=w.TypeId;w.Position+=new Vector3(dx,dy,0);
                 if(itemTables.TryGetValue(w.MapItemTableId,out int itemTable))w.MapItemTableId=itemTable;
                 foreach(var set in w.ItemTableSets)foreach(var item in set.Items)item.ItemId=Replace(item.ItemId);
             }
@@ -41,7 +43,7 @@ internal static class AtlasPlacements {
                 doodads??=new MapDoodads(map.Doodads.FormatVersion,map.Doodads.SubVersion,false){SpecialDoodadVersion=map.Doodads.SpecialDoodadVersion};
                 foreach(var d in map.Doodads.Doodads) {
                     if(!Inside(d.Position.X,d.Position.Y)){clipped++;continue;}
-                    Widget(d);d.CreationNumber=doodads.Doodads.Count;doodads.Doodads.Add(d);
+                    Widget(d,"doodad");d.CreationNumber=doodads.Doodads.Count;doodads.Doodads.Add(d);
                 }
                 foreach(var d in map.Doodads.SpecialDoodads) {
                     if(d.Position.X<left||d.Position.Y<bottom||d.Position.X>left+width||d.Position.Y>bottom+height){clipped++;continue;}
@@ -51,13 +53,18 @@ internal static class AtlasPlacements {
             if(map.Units is not null) {
                 units??=new MapUnits(map.Units.FormatVersion,map.Units.SubVersion,false);
                 foreach(var u in map.Units.Units) {
+                    if(u.TypeId==Raw("sloc"))continue; // One lobby, not seventeen sets of editor start markers.
                     if(!Inside(u.Position.X,u.Position.Y))throw new InvalidDataException("Playable unit clipped: "+zone.Name+" "+u.TypeId);
-                    Widget(u);u.CreationNumber=units.Units.Count;
+                    Widget(u,"unit");u.CreationNumber=units.Units.Count;
                     if(z.GetProperty("owners").TryGetProperty(u.OwnerId.ToString(),out var owner))u.OwnerId=owner.GetInt32();
                     units.Units.Add(u);
                 }
             }
         }
+        foreach(var p in info.Players.Where(p=>p.Id<4))units!.Units.Add(new UnitData {
+            TypeId=Raw("sloc"),SkinId=Raw("sloc"),OwnerId=p.Id,
+            Position=new Vector3(p.StartPosition,0),Scale=Vector3.One,CreationNumber=units.Units.Count
+        });
         using var doodadStream=File.Create(Path.Combine(output,"war3map.doo"));
         using var doodadWriter=new BinaryWriter(doodadStream);doodadWriter.Write(doodads!);
         using var unitStream=File.Create(Path.Combine(output,"war3mapUnits.doo"));

@@ -9,6 +9,12 @@ using War3Net.IO.Mpq;
 
 if(args[0]=="atlas-placements"){
     AtlasPlacements.Run(args[1],args[2],args[3],args[4]);
+}else if(args[0]=="atlas-verify"){
+    var map=Map.Open(args[1],MapFiles.Info|MapFiles.Environment|MapFiles.Units|MapFiles.Doodads|MapFiles.ItemObjectData|MapFiles.AbilityObjectData|MapFiles.UnitObjectData|MapFiles.BuffObjectData|MapFiles.UpgradeObjectData|MapFiles.DoodadObjectData|MapFiles.DestructableObjectData);
+    if((int)map.Info!.FormatVersion!=25||!map.Info.Players.Where(p=>p.Controller==PlayerController.User).Select(p=>p.Id).SequenceEqual(new[]{0,1,2,3}))throw new InvalidDataException("Not four classic human slots");
+    if(map.Units!.Units.Count!=3373||map.Doodads!.Doodads.Count!=50224)throw new InvalidDataException("Lost atlas placements");
+    if(map.ItemObjectData!.NewItems.Count<318||map.AbilityObjectData!.NewAbilities.Count<140||map.UnitObjectData!.NewUnits.Count<600||map.DoodadObjectData is null||map.DestructableObjectData is null||map.UpgradeObjectData is null)throw new InvalidDataException("Missing merged object data");
+    Console.WriteLine("PASS independent War3Net reader: classic W3I 25, red/blue/teal/purple humans, 3373 placements, 50224 decorations and all seven merged object tables.");
 }else if(args[0]=="owners"){
     using var json=JsonDocument.Parse(File.ReadAllText(args[2]));Directory.CreateDirectory(args[3]);
     foreach(var item in json.RootElement.EnumerateObject()){

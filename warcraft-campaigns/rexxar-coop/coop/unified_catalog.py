@@ -4,7 +4,7 @@ from build import Catalog,KINDS
 from formats import read_objects
 from kits import HEROES
 
-EXTRA_KINDS={'upgrade':('war3map.w3q',True),'destructable':('war3map.w3b',False),'doodad':('war3map.w3d',True)}
+EXTRA_KINDS={'upgrade':('war3map.w3q',True),'destructable':('war3map.w3b',False),'doodad':('war3map.w3d','doodad')}
 ALL_KINDS={**KINDS,**EXTRA_KINDS}
 
 class UnifiedCatalog(Catalog):
@@ -17,15 +17,20 @@ class UnifiedCatalog(Catalog):
             for kind,(filename,leveled) in EXTRA_KINDS.items():
                 tables=read_objects(m['data'].get(filename),leveled);m[kind]=tables
                 m['lookup'][kind]={o['old'] if table==0 else o['new']:o for table,objects in enumerate(tables) for o in objects if o['mods']}
-        self.raw_maps={}
+        self.raw_maps={};self.kind_maps={}
         for name,m in maps.items():
-            mapping={}
+            mapping={};kinds={}
             for kind in ALL_KINDS:
+                kinds[kind]={}
                 for raw in sorted(m['lookup'][kind]):
                     new=self.clone(name,kind,raw)
-                    if raw in mapping and mapping[raw]!=new:raise ValueError('Ambiguous rawcode '+name+' '+raw.decode())
-                    mapping[raw]=new
+                    kinds[kind][raw]=new
+                    # Object namespaces can legally overlap (e.g. buff B000
+                    # and decorative doodad B000). Script tokens prefer game
+                    # objects; placement files use their explicit kind below.
+                    mapping.setdefault(raw,new)
             self.raw_maps[name]=mapping
+            self.kind_maps[name]=kinds
 
     def dependencies(self,m,mod):
         if mod[1]!=3 or mod[0] in {'unam','upro','utip','utub','ides','anam','atp1','aub1','arut','aret','urqa'}:return []

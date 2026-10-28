@@ -1,6 +1,10 @@
 """Lossless classic W3I/object editing; no changes to terrain or imports."""
 import copy
 import struct
+import json
+from pathlib import Path
+
+ABILITY_POINTERS=json.loads(Path(__file__).with_name('ability-pointers.json').read_text())
 
 class Reader:
     def __init__(self,data):self.data=data;self.p=0
@@ -80,6 +84,11 @@ def coop_info(data,remap,roles,title=None):
 
 def read_objects(data,leveled=False):
     if data is None:return [[],[]]
+    if leveled=='doodad':
+        # Act I contains legacy simple W3D records; later acts have the two
+        # variation/data-pointer integers. Normalize both to classic v2 output.
+        try:return read_objects(data,True)
+        except (ValueError,UnicodeError,IndexError,struct.error):return read_objects(data,False)
     r=Reader(data)
     if r.i() not in (1,2):raise ValueError('Expected classic object format 1/2')
     tables=[]
@@ -88,7 +97,8 @@ def read_objects(data,leveled=False):
         for _ in range(r.i()):
             obj={'old':r.read(4),'new':r.read(4),'mods':[]}
             for _ in range(r.i()):
-                field=r.read(4).decode('ascii');typ=r.i();level,ptr=(r.i(),r.i()) if leveled else (0,0)
+                field=r.read(4).decode('ascii');typ=r.i()
+                level,ptr=(r.i(),r.i()) if leveled else (0,0)
                 value=r.s() if typ==3 else r.read(4)
                 end=r.read(4);obj['mods'].append([field,typ,level,ptr,value,end])
             objects.append(obj)
@@ -103,9 +113,10 @@ def write_objects(tables,leveled=False):
         for obj in table:
             out+=obj['old']+obj['new']+i(len(obj['mods']))
             for field,typ,level,ptr,value,end in obj['mods']:
-                out+=field.encode()+i(typ)+(i(level)+i(ptr) if leveled else b'')+(s(value) if typ==3 else value)+end
+                extra=i(level)+i(ptr) if leveled else b''
+                out+=field.encode()+i(typ)+extra+(s(value) if typ==3 else value)+end
     return out
 
 def field(name,typ,value,level=0):
     value=str(value).encode() if typ==3 else (i(value) if typ==0 else struct.pack('<f',value))
-    return [name,typ,level,0,value,b'\0'*4]
+    return [name,typ,level,ABILITY_POINTERS.get(name,0) if level else 0,value,b'\0'*4]

@@ -1,61 +1,51 @@
-# Paused: unified multiplayer Rexxar campaign
+# Rexxar VII: experimental single-map campaign
 
-User explicitly paused this work on 2026-10-28 to prioritize a race-selection
-screen for 23 Races. Do not publish this as a playable map. Latest released
-VI FIX remains b2524631, with rehosting between its 17 maps.
+Resumed at the user's request on 2026-10-28. The generator now emits an actual
+classic W3X, not preparation files. Runtime/native-client limits are recorded
+in `README-VII-RU.txt` and the generated `Build-report.json`.
 
-Branch: `warcraft-rexxar-unified`. Local work directory:
-`/workspace/warcraft-map-work/rexxar/unified-build`. Inputs are the same 17
-original maps in `coop/inputs`; prepared individual generated scripts are in
-`/workspace/warcraft-map-work/rexxar/vi-fix-build/scripts`.
+Build:
 
-Implemented foundation:
+```sh
+dotnet build coop/Tools -c Release
+python coop/unified_build.py --out build-out
+pjass +shadow coop/tests/reference/common.j coop/tests/reference/Blizzard.j build-out/Rexxar-VII.j
+dotnet coop/Tools/bin/Release/net10.0/Tools.dll atlas-verify build-out/Maps/Rexxar-VII-Coop-1.26.w3x
+dotnet coop/Tools/bin/Release/net10.0/Tools.dll transpile build-out/Rexxar-VII.j coop/tests/reference build-out/Rexxar-VII.lua
+python coop/tests/test_unified.py build-out/Rexxar-VII.lua
+python coop/tests/test_unified_archive.py build-out
+```
 
-- `unified_terrain.py`: all 17 playable regions + 2 original border cells on
-  each edge fit 480x480, within an outer 8-cell margin. Deterministic max-rects
-  packing. Original height, cliff, water and pathing grids copied. Ground
-  materials reduced from 62 to 16 (classic four-bit limit); 14 cliff materials.
-  Standalone terrain merge executed successfully. All 3,646 source preplaced
-  units were checked against each cropped region +2 cells: none outside.
-- `unified_script.py`: token-based source namespacing, exact TRIGSTR resolution,
-  rawcode rewriting, absolute-coordinate relocation, and source/runtime split.
-- `unified_catalog.py`: starts with the existing portable catalog to preserve
-  RIxx item identities, then plans disjoint IDs for per-map object variants.
-- `Tools/AtlasPlacements.cs`: merged units/doodads/random tables and coordinate
-  shifts; .NET project compiles, but the actual merge has NOT been executed yet.
-- `unified_build.py`: preparation orchestrator; not a complete map builder.
+All 17 supplied locations, original heights/cliffs/water/pathing, placed
+objects, namespaced original quest/cinematic scripts and shared cooperative
+runtime are merged into one 480-square atlas. Classic terrain has 16 shared
+ground textures; this changes some ground appearance from the originals.
+There are 3373 merged unit/start markers and 50224 decorations. Sixteen custom
+skills, forty talents, classic native learning, explicit kill XP and the
+existing Z6 compact progression format remain. Classic AbilityMetaData data
+pointers now apply to every generated ability field, including hidden HP bits.
 
-Current failure: preparation stops while reading additional object tables in
-`UnifiedCatalog.__init__`: `read_objects(..., leveled=True)` is not correct for
-at least one w3d/w3q table. Identify the subtype and use its actual binary
-layout (or War3Net) before proceeding. No unified W3X has been produced.
+Heroes are indexed by character, with a bidirectional character/color map.
+The native command card selects unique heroes, host difficulty/chapter and
+per-player readiness. Only actual occupied human slots get playable heroes.
 
-Remaining design, not implemented:
+Locations initialize lazily. Direct/event timers, trigger enable states,
+quests, floor items and NPC owner/pause/visibility/invulnerability are retained
+while a zone is inactive. Heroes and owned troops travel as physical handles;
+doors do not serialize/recreate heroes. Source unit cache operations retain
+handles, avoiding campaign RestoreUnit. Sleeping source actions have an epoch
+guard, and original periodic portal actions no longer disable themselves then
+sleep across a map change. Single-player disk-save checks/copies/profile
+unlocks cannot branch the multiplayer simulation.
 
-- One shared cooperative runtime, original globals/functions prefixed Z00_..
-  Z16_, and dynamic hook dispatch by active RC_map. No 17 duplicate runtimes.
-- Lazy initialization per location, tracked unit groups, paused/hidden/neutral
-  inactive locations, tracked explicit timer handles, source sleep guards.
-- One physical party (1..4 occupied human slots); heroes and their armies move
-  together. No serialization/recreation of heroes on a door transition.
-- On returning, call the original Import_All and Resume_Game routines to sync
-  quests and use original Set_Hero_Locations spawn A/B/C; place fourth hero
-  alongside party when original act-I code only knows three. Keep world actors
-  and original quest variables in memory. Partition shared story by act.
-- Original Export_Mission_Data can populate in-memory cache; disable StoreUnit
-  serialization because actual heroes persist. Track stash migration, quest
-  visibility, sounds, cinematics and resource initialization across entries.
-- Replace anonymous trigger timers with tracked timer-expire events so their
-  remaining time survives inactive zones. Protect portal conditions during
-  load and a short post-arrival interval against immediate bounce-back.
-- Native campaign AI exists only in OrcX02_06, OrcX03a and OrcX03b. Per-map unit
-  aliases and reused NPC player IDs may affect those AI scripts. Must resolve
-  this rather than assert a complete native campaign playthrough.
-- Merge/output classic W3I, object tables, doodads, terrain and proper minimap;
-  syntax/structure/original-function tests, actual transition event tests,
-  native-client party test with user. No native Warcraft client is available.
+The original AI scripts live in the game MPQ and assume one map's coordinates
+and rawcodes. Starting those VMs unchanged would be incorrect. AI-enabled
+factions instead have synchronized active-zone attacks and bounded production
+from living factories, using actual aliased train lists. Quest waves remain.
+This is an adapted AI, not a claim of identical original AI behavior.
 
-User-facing updates already explained the 17-region atlas and necessary ground
-material sharing; promised no next downloadable campaign until internal
-multiplayer location transitions are implemented. Do not imply background work
-or scheduled delivery when this task is paused.
+Tests execute actual generated code with explicit native mocks. They do not
+run the full mission initialization/cinematics or emulate native pathfinding,
+UI rendering or networking. Native Warcraft 1.26 and IrinaBot testing is still
+required. Manual codes preserve hero/story checkpoints rather than a complete
+snapshot of every NPC/combat event across a new session.

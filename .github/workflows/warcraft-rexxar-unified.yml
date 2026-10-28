@@ -1,0 +1,64 @@
+name: Rexxar VII single-map co-op test build
+on:
+  push:
+    branches: [warcraft-rexxar-unified]
+    paths:
+      - 'warcraft-campaigns/rexxar-coop/**'
+      - '.github/workflows/warcraft-rexxar-unified.yml'
+permissions:
+  contents: write
+concurrency:
+  group: rexxar-unified-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: warcraft-campaigns/rexxar-coop
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.100'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y libstorm-dev fonts-dejavu-core
+          python -m pip install lupa==2.8 Pillow==11.3.0
+          git clone https://github.com/lep/pjass.git "$RUNNER_TEMP/pjass"
+          git -C "$RUNNER_TEMP/pjass" checkout 654c3cf7731eb472518e6915e9d7672a72652165
+          make -C "$RUNNER_TEMP/pjass"
+          dotnet build coop/Tools -c Release --nologo
+      - name: Merge all seventeen original locations and campaign scripts
+        run: python coop/unified_build.py --out build-out
+      - name: Check exact native-1.26 JASS and independent archive reader
+        run: |
+          set -euo pipefail
+          "$RUNNER_TEMP/pjass/pjass" +shadow coop/tests/reference/common.j coop/tests/reference/Blizzard.j build-out/Rexxar-VII.j | tee build-out/JASS-check.txt
+          dotnet coop/Tools/bin/Release/net10.0/Tools.dll atlas-verify build-out/Maps/Rexxar-VII-Coop-1.26.w3x | tee build-out/Independent-check.txt
+          python coop/tests/test_unified_archive.py build-out | tee build-out/Archive-check.txt
+      - name: Execute generated menu, progression and in-session transition code
+        run: |
+          set -euo pipefail
+          dotnet coop/Tools/bin/Release/net10.0/Tools.dll transpile build-out/Rexxar-VII.j coop/tests/reference build-out/Rexxar-VII.lua
+          python -u coop/tests/test_unified.py build-out/Rexxar-VII.lua | tee build-out/Behavior-check.txt
+      - name: Package the exact checked map
+        run: python coop/package_unified.py build-out release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rexxar-vii-native-test-build
+          path: warcraft-campaigns/rexxar-coop/release/
+      - name: Publish test release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          tag="rexxar-vii-${GITHUB_SHA:0:8}"
+          gh release create "$tag" release/Rexxar-VII-Coop-1.26.zip release/Rexxar-VII-Coop-1.26.zip.sha256 release/Rexxar-VII-Coop-1.26.w3x build-out/Build-report.json --target "$GITHUB_SHA" --prerelease --latest=false --title 'Рексар VII: выбор героев и 17 областей в одной сетевой карте — тест' --notes-file coop/README-VII-RU.txt

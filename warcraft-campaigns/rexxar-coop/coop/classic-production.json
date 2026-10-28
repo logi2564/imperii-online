@@ -1,0 +1,165 @@
+{
+  "source": "w3x2lni 82916514a12b7edb15252d42225cd8cc8ce61cfd zhCN-1.24.4 stock UnitUI/UnitBalance/UnitData; train lists from stock unit data",
+  "factories": {
+    "halt": [
+      "Hamg",
+      "Hmkg",
+      "Hpal",
+      "Hblm"
+    ],
+    "harm": [
+      "hgyr",
+      "hmtm",
+      "hmtt",
+      "hrtt"
+    ],
+    "hars": [
+      "hmpr",
+      "hsor",
+      "hspt"
+    ],
+    "hbar": [
+      "hfoo",
+      "hrif",
+      "hkni"
+    ],
+    "hcas": [
+      "hpea"
+    ],
+    "hgra": [
+      "hgry",
+      "hdhw"
+    ],
+    "hkee": [
+      "hpea"
+    ],
+    "htow": [
+      "hpea"
+    ],
+    "oalt": [
+      "Obla",
+      "Ofar",
+      "Otch",
+      "Oshd"
+    ],
+    "obar": [
+      "ogru",
+      "ohun",
+      "otbk",
+      "ocat"
+    ],
+    "obea": [
+      "orai",
+      "okod",
+      "owyv",
+      "otbr"
+    ],
+    "ofrt": [
+      "opeo"
+    ],
+    "ogre": [
+      "opeo"
+    ],
+    "osld": [
+      "oshm",
+      "odoc",
+      "ospm"
+    ],
+    "ostr": [
+      "opeo"
+    ],
+    "otto": [
+      "otau"
+    ],
+    "eate": [
+      "Edem",
+      "Ekee",
+      "Emoo",
+      "Ewar"
+    ],
+    "edos": [
+      "echm"
+    ],
+    "uaod": [
+      "Udea",
+      "Ulic",
+      "Udre",
+      "Ucrl"
+    ],
+    "ubon": [
+      "ufro"
+    ],
+    "unp1": [
+      "uaco"
+    ],
+    "unp2": [
+      "uaco"
+    ],
+    "unpl": [
+      "uaco"
+    ],
+    "usep": [
+      "ugho",
+      "ucry",
+      "ugar"
+    ],
+    "uslh": [
+      "umtw",
+      "uabo",
+      "uobs"
+    ],
+    "utod": [
+      "unec",
+      "uban"
+    ],
+    "ndh2": [
+      "ndrl"
+    ],
+    "ndh3": [
+      "ndrn",
+      "ndrt",
+      "ndsa",
+      "ncat"
+    ],
+    "ndh4": [
+      "ndrs",
+      "ndrh"
+    ],
+    "ndke": [
+      "nfel",
+      "ninf",
+      "nbal"
+    ],
+    "ndkw": [
+      "nfel",
+      "ninf",
+      "nbal"
+    ],
+    "ndmg": [
+      "nfel",
+      "ninf",
+      "nbal"
+    ],
+    "ndrb": [
+      "nrwm"
+    ],
+    "nheb": [
+      "hhes",
+      "nhea",
+      "nws1"
+    ],
+    "nnsa": [
+      "nnsw",
+      "nwgs"
+    ],
+    "nnsg": [
+      "nmyr",
+      "nsnp",
+      "nhyc"
+    ],
+    "nntt": [
+      "nmpe",
+      "nnmg"
+    ]
+  }
+}

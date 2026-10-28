@@ -3,6 +3,7 @@ import json,re
 from pathlib import Path
 from build import ROOT,MAPS,globals_text,initialization,classic_strings,function,calls,hooks,transform,coop_info,player_remap,read_info
 from unified_script import FUNCTION,source_parts,namespace,localize,relocate,arguments
+from trigger_strings import resolve_string
 
 GLOBALS='''
     integer UM_hostColor=0
@@ -66,6 +67,16 @@ def build_zones(maps,terrains,catalog,schema):
         from build import apply_player_remap
         generated=transform(apply_player_remap(m['script'],remap),m,schema,catalog,players,remap,(ROOT/'runtime/core.j').read_text(),read_info(info)['forces'])
         part=source_parts(m['script'],generated,m['strings'],catalog.raw_maps[t.name],t,z);zone_parts[z]=part
+        # Original config is not run inside the atlas. Preserve its actual
+        # alliance BJ calls separately from lobby/team/start-position setup.
+        team_fn=next((x[0] for x in FUNCTION.finditer(m['script']) if x[1]=='InitCustomTeams'),'')
+        alliance_lines=[line for line in team_fn.splitlines() if re.match(r'\s*call SetPlayerAlliance\w*\(',line)]
+        alliance_body=apply_player_remap('\n'.join(alliance_lines),remap)
+        late.append(f'function UZ_DiplomacyZ{z:02} takes nothing returns nothing\n'+alliance_body+'\nendfunction')
+        source_info=read_info(m['data']['war3map.w3i'])
+        factions={remap.get(p['id'],p['id']):resolve_string(p['name'],m['strings']).decode() for p in source_info['players'] if p['id']!=0}
+        name_lines=[f'    call SetPlayerName(Player({n}),'+json.dumps(factions.get(n,'Нейтральная фракция'),ensure_ascii=False)+')' for n in range(4,12)]
+        late.append(f'function UZ_NamesZ{z:02} takes nothing returns nothing\n'+'\n'.join(name_lines)+'\nendfunction')
         source=part['functions'];triggers=re.findall(r'\btrigger\s+(Z\d+_gg_trg_\w+)\s*=',part['globals'])
         guard_count=0
         for name,code in source.items():
@@ -78,7 +89,10 @@ def build_zones(maps,terrains,catalog,schema):
                 # that disabled trigger when the party later comes back.
                 dest=(0 if z<5 else 5)+int(target[1])-1
                 code=code.split('\n',1)[0]+f'\n    call RC_Transition({dest},{int(area[1])})\nendfunction'
-            if name.endswith('_Actions') and 'TransitionTarget' in code:
+            # Only outgoing target assignments are guarded. Import_All reads
+            # TransitionTargetArea WHILE entry is pending; blocking that read
+            # skips mission imports and the correct arrival point entirely.
+            if name.endswith('_Actions') and re.search(r'\bset '+prefix+r'udg_TransitionTarget\s*=',code):
                 code=add_after_locals(code,'    if not RC_started or RC_transitionPending or TimerGetElapsed(RC_menuClock)<UZ_portalReadyAt then\n        return\n    endif')
             if re.search(r'\b(?:TriggerSleepAction|PolledWait|TriggerWaitForSound|TransmissionFromUnitWithNameBJ|TransmissionFromUnitBJ)\s*\(',code):
                 ret=re.search(r'\breturns (\w+)',code)[1]
@@ -314,6 +328,11 @@ def assemble(maps,terrains,catalog,schema):
         geometry.append(f"    set UM_unitType[{r}]='uC0{r}'")
         geometry.append(f'    set UM_panel[{r}]="RexxarUI\\\\Hero{r}.tga"')
     for slot in range(12):geometry.append(f"    set UM_ability[{slot}]='uM{slot:02}'")
+    for r in range(4):
+        for slot in range(4):geometry.append(f"    set UM_detailAbility[{r*4+slot}]='uI{r}{slot}'")
+    geometry.append("    set UM_backAbility='uIBk'")
+    for index,title in enumerate(['Глава 1: Дуротар','Глава 2: Союзники Орды','Глава 3: Битва за Терамор'],1):
+        geometry.append(f'    set UM_actTitle[{index}]='+json.dumps(title,ensure_ascii=False))
     geometry+=['endfunction']
     main='''function main takes nothing returns nothing
     call SetCameraBounds(-29696,-29696,29696,29696,-29696,29696,29696,-29696)

@@ -4,9 +4,14 @@ from pathlib import Path
 from lupa import LuaRuntime
 ROOT=Path(__file__).resolve().parent
 source=Path(sys.argv[1])
+BJ_HELPERS=None
 
 def setup(players=(0,1,2,3),source_init=False):
- lua=LuaRuntime(unpack_returned_tuples=True);lua.execute((ROOT/'natives.lua').read_text());lua.execute((ROOT/'unified_natives.lua').read_text());lua.execute(source.read_text());g=lua.globals()
+ global BJ_HELPERS
+ if BJ_HELPERS is None:
+  from campaign_bj import compile_helpers
+  BJ_HELPERS=compile_helpers(source.parent)
+ lua=LuaRuntime(unpack_returned_tuples=True);lua.execute((ROOT/'natives.lua').read_text());lua.execute((ROOT/'unified_natives.lua').read_text());lua.execute(BJ_HELPERS);lua.execute(source.read_text());g=lua.globals()
  for p in range(4):g.WORLD.players[p].state='playing' if p in players else 'empty'
  # Do not emulate 17 cinematic/quest initializers. The engine lifecycle,
  # dispatch, freezes, timers, transfers and progression below are REAL code.
@@ -33,6 +38,14 @@ def capture(g):
 
 def menus():
  _,g=setup();assert not g.RC_started
+ # Viewing information must preserve class/readiness and defer caster removal.
+ old=g.UM_unit[0];g.WORLD.events.unit=old;g.WORLD.events.player=0;g.WORLD.events.spell=g.UM_ability[9]
+ g.UM_Spell();assert not old.removed and g.UM_pending[0]==10
+ g.UM_Input();assert old.removed and g.UM_details[0] and not g.UM_ready[0]
+ assert all(g.GetUnitAbilityLevel(g.UM_unit[0],g.UM_detailAbility[i])==1 for i in range(4))
+ old=g.UM_unit[0];g.WORLD.events.unit=old;g.WORLD.events.spell=g.UM_backAbility
+ g.UM_Spell();assert not old.removed and g.UM_pending[0]==13
+ g.UM_Input();assert not g.UM_details[0] and not g.RC_started and not g.UM_ready[0]
  assert [g.UZ_playerClass[p] for p in range(4)]==list(range(4))
  # A native effect is deferred: the caster still exists on the spell stack.
  old=g.UM_unit[0];g.WORLD.events.unit=old;g.WORLD.events.player=0;g.WORLD.events.spell=g.UM_ability[2]
@@ -45,7 +58,7 @@ def menus():
  g.UM_pending[0]=8;g.UM_Input();assert g.RC_map==5
  for p in range(4):g.UM_pending[p]=12
  g.UM_Input();assert g.RC_started and [g.RC_hero[r].owner for r in range(4)]==[2,1,0,3]
- print('PASS native command-card dispatcher: deferred replacement, class swap/ownership, host-only difficulty/chapter and all-player readiness.')
+ print('PASS native command-card dispatcher: skill-information/back mode, deferred replacement, class swap/ownership, host-only difficulty/chapter and all-player readiness.')
 
 def travel():
  for players in [(0,),(1,),(0,1),(0,1,2),(0,1,2,3)]:
@@ -138,15 +151,16 @@ def adapted_ai():
  summoned=g.CreateUnit(10,g.FourCC('osw1'),100,200,0);g.WORLD.events.entering=summoned;g.UZ_UnitAppeared();assert g.LoadInteger(g.UZ_state,summoned.handle,1)==1
  print('PASS adapted AI: living factory production, no hero-flood, destroyed factory stops; native-spawned NPCs enter the zone registry.')
 
-menus();travel();gameplay();checkpoint();real_portal();skill_events();adapted_ai()
-# Existing outcome assertions exercise all forty advertised talent effects
-# against this exact unified artifact, with its real class/zone runtime.
-import test_progress
-from test_kits import ticks
-def talent_fresh(ignored):
- _,g=setup();start(g)
- for r in range(4):g.SetUnitPosition(g.RC_hero[r],100,200)
- return g
-test_progress.fresh=talent_fresh
-test_progress.node_effects(str(source))
-print('Native Warcraft 1.26 graphics, campaign cinematics, pathfinding and live multiplayer have NOT been exercised by these headless checks.')
+if __name__=='__main__':
+ menus();travel();gameplay();checkpoint();real_portal();skill_events();adapted_ai()
+ # Existing outcome assertions exercise all forty advertised talent effects
+ # against this exact unified artifact, with its real class/zone runtime.
+ import test_progress
+ from test_kits import ticks
+ def talent_fresh(ignored):
+  _,g=setup();start(g)
+  for r in range(4):g.SetUnitPosition(g.RC_hero[r],100,200)
+  return g
+ test_progress.fresh=talent_fresh
+ test_progress.node_effects(str(source))
+ print('Native Warcraft 1.26 graphics, campaign cinematics, pathfinding and live multiplayer have NOT been exercised by these headless checks.')

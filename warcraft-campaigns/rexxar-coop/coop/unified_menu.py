@@ -1,6 +1,7 @@
 """Classic command-card front end. No Reforged frames or injected natives."""
 from formats import field
 from kits import HEROES,SPECS
+import copy
 ORDERS=('channel','acidbomb','banish','farsight','drunkenhaze','healingward','thunderclap','roar','berserk','divineshield','fanofknives','taunt')
 KEYS='QWERASDFZXCV'
 MODELS=['Units\\Other\\Rexxar\\Rexxar.mdl','Units\\Orc\\HeroShadowHunter\\HeroShadowHunter.mdl','Units\\Creeps\\PandarenBrewmaster\\PandarenBrewmaster.mdl','Units\\Orc\\HeroTaurenChieftainCIN\\HeroTaurenChieftainCIN.mdl']
@@ -20,6 +21,21 @@ def objects():
   mods=[field('aher',0,0),field('aite',0,0),field('alev',0,1),field('arlv',0,0),field('anam',3,name),field('aart',3,'ReplaceableTextures\\CommandButtons\\'+icon+'.blp'),field('ahky',3,KEYS[slot]),field('abpx',0,slot%4),field('abpy',0,slot//4),field('acat',3,''),field('aeat',3,''),field('atat',3,''),field('arac',3,'other'),field('areq',3,''),field('arqa',3,'')]
   mods += [field('atp1',3,name+' ('+KEYS[slot]+')',1),field('aub1',3,desc,1),field('amcs',0,0,1),field('acdn',2,0.,1),field('acas',2,0.,1),field('aran',2,0.,1),field('Ncl1',2,0.,1),field('Ncl2',0,0,1),field('Ncl3',0,1,1),field('Ncl4',2,0.,1),field('Ncl5',0,0,1),field('Ncl6',3,ORDERS[slot],1)]
   abilities.append(dict(old=b'ANcl',new=f'uM{slot:02}'.encode(),mods=mods))
+ # A separate command card exposes the actual skill icons and full tooltips.
+ # These are explicitly information buttons, never pretend combat previews.
+ def info_button(raw,name,icon,key,description,order,x,y):
+  values={'anam':name,'aart':'ReplaceableTextures\\CommandButtons\\'+icon+'.blp',
+          'ahky':key,'atp1':name+' ('+key+')','aub1':description,'Ncl6':order,'abpx':x,'abpy':y}
+  mods=[field(m[0],m[1],values[m[0]],m[2]) if m[0] in values else copy.deepcopy(m) for m in abilities[0]['mods']]
+  return dict(old=b'ANcl',new=raw.encode(),mods=mods)
+ for role,specs in enumerate(SPECS):
+  for slot,(name,icon,target,mana,cooldown,description) in enumerate(specs):
+   desc=description.format(a='35 + 25 × ранг',b='90 + 50 × ранг',c='12 + 9 × ранг',d='100 + 80 × ранг',e='10 + 8 × ранг',f='18 + 17 × ранг',g='3 + 2 × ранг',h='180 + 60 × ранг',p='75 + 50 × ранг',q='4 × ранг')
+   desc+='|n|nМана в игре: '+str(mana)+'. Перезарядка: '+str(cooldown)+' сек.'
+   desc+='|nУровни изучения: '+('6 / 12 / 18.' if slot==3 else '1 / 3 / 5 / 7 / 9.')
+   desc+='|n|cffffcc00Просмотр описания. Назад к выбору — B.|r'
+   abilities.append(info_button(f'uI{role}{slot}','Справка: '+name,icon,'QWER'[slot],desc,ORDERS[slot],slot,0))
+ abilities.append(info_button('uIBk','Назад к выбору','BTNCancel','B','Вернуться к выбору героя, главы, сложности и готовности.','roar',3,2))
  for r in range(4):
   mods=[field('unam',3,'Выбор: '+NAMES[r]),field('umdl',3,MODELS[r]),field('uico',3,'ReplaceableTextures\\CommandButtons\\'+ICONS[r]+'.blp'),field('usca',1,1.),field('uabi',3,','.join(f'uM{i:02}' for i in range(12))+',Avul'),field('uhab',3,''),field('ures',3,''),field('utra',3,''),field('ubui',3,''),field('ufoo',0,0),field('uaen',0,0),field('uacq',2,0.),field('umvs',0,0),field('umvt',3,'fly'),field('umvh',2,0.),field('umvf',2,0.),field('ucol',2,0.),field('upat',3,''),field('ubdg',0,0),field('ushb',3,''),field('ushu',3,''),field('ucpt',2,0.),field('ucbs',2,0.),field('umpi',0,0),field('umpm',0,0),field('usid',0,0),field('usin',0,0)]
   units.append(dict(old=b'hfoo',new=f'uC0{r}'.encode(),mods=mods))
@@ -29,6 +45,10 @@ GLOBALS='''
     string array UM_panel
     unit array UM_unit
     boolean array UM_ready
+    boolean array UM_details
+    integer array UM_detailAbility
+    integer UM_backAbility=0
+    string array UM_actTitle
     integer array UM_pending
     integer array UM_unitType
     integer array UM_ability
@@ -65,7 +85,7 @@ def assets():
    for line in lines:d.text((72,y),line,font=font(19),fill='#e9ece3');y+=27
    y+=18
   d.line((42,443,328,443),fill='#917438',width=1)
-  for yy,text in [(463,'Q W E R — выбрать героя'),(494,'A S D — сложность'),(525,'F — выбрать акт'),(556,'V — готов / отмена'),(609,'K — навыки  ·  T — таланты'),(639,'Переходы без новой карты')]:
+  for yy,text in [(463,'Q W E R — выбрать героя'),(494,'A S D — сложность'),(525,'F — выбрать главу'),(556,'V — готов / отмена'),(593,'X — описание навыков'),(622,'B — назад из описаний'),(653,'В игре: K — навыки, T — таланты')]:
    d.text((42,yy),text,font=font(17),fill='#b4bdb6')
   # Bottom third is fully transparent: native portrait, HUD and command card.
   stream=BytesIO();im.save(stream,format='TGA');out[f'RexxarUI\\Hero{r}.tga']=stream.getvalue()

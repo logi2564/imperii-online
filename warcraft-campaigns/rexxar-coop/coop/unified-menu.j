@@ -3,7 +3,7 @@ function UM_Refresh takes nothing returns nothing
     local integer r
     local string state
     call LeaderboardClear(UM_board)
-    call LeaderboardSetLabel(UM_board,"Рексар • акт "+I2S(RC_act[RC_map])+" • "+RC_difficultyName[RC_difficulty])
+    call LeaderboardSetLabel(UM_board,UM_actTitle[RC_act[RC_map]]+" • "+RC_difficultyName[RC_difficulty])
     loop
         exitwhen p==4
         set r=UZ_playerClass[p]
@@ -20,20 +20,15 @@ function UM_Refresh takes nothing returns nothing
 endfunction
 
 function UM_Info takes integer p returns nothing
-    local integer r=UZ_playerClass[p]
-    local integer i=0
-    if r>=0 then
-        call RC_Tell(Player(p),25,RC_heroName[r]+". "+RC_difficultyName[RC_difficulty]+". Акт "+I2S(RC_act[RC_map])+". Уровень старта: "+I2S(RC_defaultLevel)+"; максимум: 20.")
-        loop
-            exitwhen i==4
-            call RC_Tell(Player(p),25,RC_skillName[r*5+i])
-            set i=i+1
-        endloop
+    if UZ_playerClass[p]>=0 then
+        set UM_details[p]=true
+        call UM_Replace(p)
     endif
 endfunction
 
 function UM_Replace takes integer p returns nothing
     local integer r=UZ_playerClass[p]
+    local integer i=0
     if UM_unit[p]!=null then
         call RemoveUnit(UM_unit[p])
     endif
@@ -41,6 +36,20 @@ function UM_Replace takes integer p returns nothing
     call UnitRemoveAbility(UM_unit[p],'Amov')
     call UnitRemoveAbility(UM_unit[p],'Aatk')
     call SetUnitPathing(UM_unit[p],false)
+    if UM_details[p] then
+        loop
+            exitwhen i==12
+            call UnitRemoveAbility(UM_unit[p],UM_ability[i])
+            set i=i+1
+        endloop
+        set i=0
+        loop
+            exitwhen i==4
+            call UnitAddAbility(UM_unit[p],UM_detailAbility[r*4+i])
+            set i=i+1
+        endloop
+        call UnitAddAbility(UM_unit[p],UM_backAbility)
+    endif
     if GetLocalPlayer()==Player(p) then
         call ClearSelection()
         call SelectUnit(UM_unit[p],true)
@@ -70,6 +79,7 @@ function UM_Choose takes integer p, integer role returns nothing
         return
     endif
     set UM_ready[p]=false
+    set UM_details[p]=false
     set UZ_classPlayer[old]=other
     set UZ_classPlayer[role]=p
     set UZ_playerClass[p]=role
@@ -80,7 +90,6 @@ function UM_Choose takes integer p, integer role returns nothing
     endif
     set RC_host=UZ_playerClass[UM_hostColor]
     call UM_Replace(p)
-    call UM_Info(p)
 endfunction
 
 function UM_Input takes nothing returns nothing
@@ -129,7 +138,7 @@ function UM_Input takes nothing returns nothing
                         set UM_ready[j]=false
                         set j=j+1
                     endloop
-                    call RC_Say("Акт "+I2S(RC_act[RC_map])+", "+RC_difficultyName[RC_difficulty]+". Подтвердите готовность (V).")
+                    call RC_Say(UM_actTitle[RC_act[RC_map]]+", "+RC_difficultyName[RC_difficulty]+". Подтвердите готовность (V).")
                 endif
             elseif action==9 then
                 call RC_Tell(Player(p),25,"Q/W/E/R — герой; A/S/D — сложность; F — акт. V — готовность. Между локациями отряд переходит вместе без перезапуска. Сохранение на другую игровую сессию: -save; загрузка до старта: -load КОД. K — навыки, T — таланты.")
@@ -137,8 +146,11 @@ function UM_Input takes nothing returns nothing
                 call UM_Info(p)
             elseif action==11 then
                 call RC_Tell(Player(p),25,"Продолжение: выбери своего героя (Q/W/E/R), затем напиши -load КОД. Все вводят коды одного сохранения; потом V. Локация и сложность выбираются из сохранения автоматически.")
-            else
+            elseif action==12 then
                 set UM_ready[p]=not UM_ready[p]
+            elseif action==13 then
+                set UM_details[p]=false
+                call UM_Replace(p)
             endif
         endif
         if UZ_playerClass[p]>=0 and not UM_ready[p] then
@@ -156,6 +168,16 @@ function UM_Spell takes nothing returns nothing
     local integer p=GetPlayerId(GetTriggerPlayer())
     local integer i=0
     if RC_started or p<0 or p>=4 or GetTriggerUnit()!=UM_unit[p] then
+        return
+    endif
+    if UM_details[p] then
+        if GetSpellAbilityId()==UM_backAbility then
+            set UM_pending[p]=13
+            if not UM_scheduled then
+                set UM_scheduled=true
+                call TimerStart(UM_inputClock,0.05,false,function UM_Input)
+            endif
+        endif
         return
     endif
     loop

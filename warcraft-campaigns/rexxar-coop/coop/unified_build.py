@@ -7,6 +7,7 @@ from formats import read_info,coop_info,Reader,i,s
 from storm import Storm
 from unified_catalog import UnifiedCatalog,ALL_KINDS
 from unified_script import source_parts
+from trigger_strings import parse_campaign_wts,resolve_string,write_wts
 import unified_terrain as terrain
 
 def atlas_info(original,title,dx,dy):
@@ -17,13 +18,21 @@ def atlas_info(original,title,dx,dy):
     bounds=(origin+1280,origin+768,-origin-1280,-origin-1280,origin+1280,-origin-1280,-origin-1280,origin+768)
     struct.pack_into('<8f4i2i',prefix,r.p,*bounds,6,6,4,8,468,468)
     host=copy.deepcopy(next(p for p in info['players'] if p['id']==0));players=[]
+    raw=read_info(original)
+    storm=Storm();handle=storm.open(ROOT/'inputs/OrcX01.w3x')
+    try:
+        strings=parse_campaign_wts(storm.read(handle,'war3map.wts'),'OrcX01')
+        source_script=storm.read(handle,'war3map.j').decode()
+    finally:storm.close(handle)
+    remap=player_remap(source_script,'OrcX01')
+    faction_names={remap.get(p['id'],p['id']):resolve_string(p['name'],strings) for p in raw['players'] if p['id']!=0}
     for number in range(12):
         p=copy.deepcopy(next((p for p in info['players'] if p['id']==number),host));p['id']=number
         p['x']=host['x']+dx;p['y']=host['y']+dy;p['low']=0;p['high']=15^(1<<number) if number<4 else 0
         if number<4:p['name']=('Игрок '+str(number+1)+' / выбор героя').encode()
-        if number>=4:p.update(controller=2,race=1,flags=1,name=('NPC '+str(number)).encode())
+        if number>=4:p.update(controller=2,race=1,flags=1,name=faction_names.get(number,'Нейтральная фракция'.encode()))
         players.append(p)
-    forces=[dict(flags=11,members=15,name='Отряд Рексара'.encode())]+[dict(flags=0,members=1<<n,name=('NPC '+str(n)).encode()) for n in range(4,12)]
+    forces=[dict(flags=11,members=15,name='Отряд Рексара'.encode())]+[dict(flags=0,members=1<<n,name=faction_names.get(n,'Нейтральная фракция'.encode())) for n in range(4,12)]
     out=bytes(prefix)+i(12)
     for p in players:out+=b''.join(i(p[k]) for k in ['id','controller','race','flags'])+s(p['name'])+struct.pack('<ffii',p['x'],p['y'],p['low'],p['high'])
     out+=i(len(forces))
@@ -32,12 +41,12 @@ def atlas_info(original,title,dx,dy):
 
 def prepare(out,missions=None):
     out=Path(out);out.mkdir(parents=True,exist_ok=True);storm=Storm();maps={};terrains=[];paths={};shadows={}
-    fields=set(EXTRA)|{v[0] for v in ALL_KINDS.values()}|{'war3map.w3e','war3map.wpm','war3map.shd'}
+    fields=set(EXTRA)|{v[0] for v in ALL_KINDS.values()}|{'war3map.w3e','war3map.wpm','war3map.shd','war3mapMap.blp'}
     for index,name in enumerate(MAPS):
         path=ROOT/'inputs'/(name+'.w3x');h=storm.open(path)
         try:data={file:storm.read(h,file) for file in fields}
         finally:storm.close(h)
-        strings={int(n):v.encode() for n,v in re.findall(r'STRING\s+(\d+)\s*\r?\n\{\r?\n(.*?)\r?\n\}',data['war3map.wts'].decode(),re.S)}
+        strings=parse_campaign_wts(data['war3map.wts'],name)
         script=data['war3map.j'].decode().replace('\r\n','\n')
         maps[name]=dict(name=name,index=index,path=path,data=data,script=script,strings=strings)
         terrains.append(terrain.read(name,data['war3map.w3e'],data['war3map.w3i']));paths[name]=data['war3map.wpm'];shadows[name]=data['war3map.shd']
@@ -86,17 +95,12 @@ def build(out,missions=None):
             for rank in range(1,11):mods += [field('Istr',0,3*rank,rank),field('Iagi',0,3*rank,rank),field('Iint',0,3*rank,rank),field('Ihid',0,1,rank),field('atp1',3,'Характеристики — ранг '+str(rank),rank),field('aub1',3,'+3 к силе, ловкости и интеллекту за ранг.',rank)]
             tables[0].append(dict(old=b'Aamk',new=b'\0'*4,mods=mods))
         entries[filename]=write_objects(tables,leveled)
-    # Source literals and object tooltips have already been localized.
-    entries['war3map.wts']=b''
+    # Script/object strings from all zones are inline. The W3I loading-screen
+    # and author metadata still reference the first source mission's WTS.
+    entries['war3map.wts']=write_wts(maps[MAPS[0]]['strings'])
     entries['war3mapMisc.txt']=b'[Misc]\r\nMaxHeroLevel=20\r\nHeroMaxLevel=20\r\n'
-    # Atlas overview: no stale minimap from the first original location.
-    size=256;pixels=bytearray([24,18,13,255])*(size*size)
-    for t in terrains:
-        x,y,w,h=t.atlas_x,t.atlas_y,*t.crop[2:]
-        for yy in range(int(y*size/480),int((y+h)*size/480)):
-            for xx in range(int(x*size/480),int((x+w)*size/480)):
-                q=(yy*size+xx)*4;pixels[q:q+4]=bytes((60+maps[t.name]['index']*3,90,130,255))
-    entries['war3mapMap.tga']=struct.pack('<BBBHHBHHHHBB',0,0,2,0,0,0,0,0,size,size,32,8)+pixels
+    from unified_minimap import render
+    entries['war3mapMap.tga']=render(terrains,maps)
     target=out/'Maps/Rexxar-VII-Coop-1.26.w3x';target.parent.mkdir(exist_ok=True)
     storm=Storm();storm.lib.SFileCreateArchive.argtypes=[c.c_char_p,c.c_uint32,c.c_uint32,c.POINTER(c.c_void_p)]
     with tempfile.TemporaryDirectory(prefix='rx-atlas-') as folder:

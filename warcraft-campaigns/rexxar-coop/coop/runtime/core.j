@@ -435,6 +435,9 @@ function RC_SaveAll takes boolean verbose returns nothing
     local boolean overflow = false
     set RC_saveOK = false
     call RC_ObserveStoryHeroes()
+    // Manual saves must read live quest variables, just like a portal exit.
+    // Otherwise a new session reloads the old checkpoint's story progress.
+    call RC_CollectStory()
     loop
         exitwhen n == 4
         if RC_Active(n) and (RC_hero[n] == null or GetUnitTypeId(RC_hero[n]) == 0) then
@@ -923,39 +926,40 @@ function RC_SetAlliance takes player a, player b, alliancetype flag, boolean val
     endif
 endfunction
 
+function RC_CopyAlliance takes player source, player target, player copySource, player copyTarget returns nothing
+    local integer flag = 0
+    loop
+        exitwhen flag == 10
+        call RC_SetAlliance(copySource, copyTarget, ConvertAllianceType(flag), GetPlayerAlliance(source, target, ConvertAllianceType(flag)))
+        set flag = flag + 1
+    endloop
+endfunction
+
 function RC_Alliances takes nothing returns nothing
     local integer a = 0
     local integer b
     local integer id
-    local boolean allied
     loop
         exitwhen a == 4
+        if RC_Active(a) then
         set id = 0
         loop
             exitwhen id == 16
             if not RC_IsPartyPlayer(Player(id)) then
-                set allied = GetPlayerAlliance(Player(0), Player(id), ALLIANCE_PASSIVE)
-                call RC_SetAlliance(RC_Player(a), Player(id), ALLIANCE_PASSIVE, allied)
-                call RC_SetAlliance(RC_Player(a), Player(id), ALLIANCE_SHARED_VISION, GetPlayerAlliance(Player(0), Player(id), ALLIANCE_SHARED_VISION))
-                call RC_SetAlliance(RC_Player(a), Player(id), ALLIANCE_SHARED_CONTROL, GetPlayerAlliance(Player(0), Player(id), ALLIANCE_SHARED_CONTROL))
-                call RC_SetAlliance(RC_Player(a), Player(id), ALLIANCE_SHARED_ADVANCED_CONTROL, GetPlayerAlliance(Player(0), Player(id), ALLIANCE_SHARED_ADVANCED_CONTROL))
-                call RC_SetAlliance(RC_Player(a), Player(id), ALLIANCE_SHARED_XP, GetPlayerAlliance(Player(0), Player(id), ALLIANCE_SHARED_XP))
-                call RC_SetAlliance(RC_Player(a), Player(id), ALLIANCE_SHARED_SPELLS, GetPlayerAlliance(Player(0), Player(id), ALLIANCE_SHARED_SPELLS))
-                set allied = GetPlayerAlliance(Player(id), Player(0), ALLIANCE_PASSIVE)
-                call RC_SetAlliance(Player(id), RC_Player(a), ALLIANCE_PASSIVE, allied)
-                call RC_SetAlliance(Player(id), RC_Player(a), ALLIANCE_SHARED_VISION, GetPlayerAlliance(Player(id), Player(0), ALLIANCE_SHARED_VISION))
-                call RC_SetAlliance(Player(id), RC_Player(a), ALLIANCE_SHARED_CONTROL, GetPlayerAlliance(Player(id), Player(0), ALLIANCE_SHARED_CONTROL))
-                call RC_SetAlliance(Player(id), RC_Player(a), ALLIANCE_SHARED_ADVANCED_CONTROL, GetPlayerAlliance(Player(id), Player(0), ALLIANCE_SHARED_ADVANCED_CONTROL))
-                call RC_SetAlliance(Player(id), RC_Player(a), ALLIANCE_SHARED_XP, GetPlayerAlliance(Player(id), Player(0), ALLIANCE_SHARED_XP))
-                call RC_SetAlliance(Player(id), RC_Player(a), ALLIANCE_SHARED_SPELLS, GetPlayerAlliance(Player(id), Player(0), ALLIANCE_SHARED_SPELLS))
+                if RC_Player(a) != Player(0) then
+                    call RC_CopyAlliance(Player(0), Player(id), RC_Player(a), Player(id))
+                    call RC_CopyAlliance(Player(id), Player(0), Player(id), RC_Player(a))
+                endif
             endif
             set id = id + 1
         endloop
         set b = 0
         loop
             exitwhen b == 4
-            if a != b then
+            if a != b and RC_Active(b) then
                 call RC_SetAlliance(RC_Player(a), RC_Player(b), ALLIANCE_PASSIVE, true)
+                call RC_SetAlliance(RC_Player(a), RC_Player(b), ALLIANCE_HELP_REQUEST, true)
+                call RC_SetAlliance(RC_Player(a), RC_Player(b), ALLIANCE_HELP_RESPONSE, true)
                 call RC_SetAlliance(RC_Player(a), RC_Player(b), ALLIANCE_SHARED_VISION, true)
                 call RC_SetAlliance(RC_Player(a), RC_Player(b), ALLIANCE_SHARED_XP, true)
                 call RC_SetAlliance(RC_Player(a), RC_Player(b), ALLIANCE_SHARED_SPELLS, true)
@@ -964,6 +968,7 @@ function RC_Alliances takes nothing returns nothing
             endif
             set b = b + 1
         endloop
+        endif
         set a = a + 1
     endloop
 endfunction

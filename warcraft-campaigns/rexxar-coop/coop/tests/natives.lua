@@ -43,7 +43,7 @@ function InitGameCache(s) return {} end
 function FlushGameCache(t) for k in pairs(t) do t[k]=nil end end
 function StoreInteger(t,m,k,v) t[m]=t[m] or {};t[m][k]=v end
 function StoreBoolean(t,m,k,v) t[m]=t[m] or {};t[m][k]=v end
-function CreateTrigger() return {actions={}} end
+function CreateTrigger() return {actions={},enabled=true,conditions={}} end
 function TriggerAddAction(t,f) table.insert(t.actions,f) end
 function TriggerRegisterPlayerChatEvent(...) end
 function TriggerRegisterPlayerUnitEvent(t,p,e,filter) table.insert(WORLD.unitEvents,{trigger=t,player=p,event=e}) end
@@ -137,7 +137,7 @@ function GetUnitTypeId(u) return u and not u.removed and u.id or 0 end
 function SetUnitOwner(u,p,c) u.owner=p end
 function GetWidgetLife(u) return u and u.hp or 0 end
 function SetWidgetLife(u,v) u.hp=math.min(u.maxhp,v) end
-function GetUnitState(u,s) return u[s] or 0 end
+function GetUnitState(u,s) return u and u[s] or 0 end
 function SetUnitState(u,s,v) u[s]=v end
 function GetUnitX(u) return u.x end
 function GetUnitY(u) return u.y end

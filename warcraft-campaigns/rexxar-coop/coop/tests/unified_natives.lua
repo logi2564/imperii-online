@@ -21,7 +21,32 @@ function TriggerRegisterTimerExpireEvent(t,clock) t.clock=clock end
 function ForGroup(g,action) local before=WORLD.enum;local copy={} for _,u in ipairs(g) do table.insert(copy,u) end for _,u in ipairs(copy) do WORLD.enum=u;action() end WORLD.enum=before end
 function GetEnumUnit() return WORLD.enum end
 function Rect(x,y,X,Y) return handle({minx=x,miny=y,maxx=X,maxy=Y}) end
-function GetPlayerName(p) return 'Player '..p end
+function GetPlayerName(p) return WORLD.players[p].name or 'Player '..p end
+function SetPlayerName(p,name) WORLD.players[p].name=name end
+function Location(x,y) return handle({x=x,y=y}) end
+function GetRectMinX(r) return r.minx end
+function GetRectMinY(r) return r.miny end
+function GetRectMaxX(r) return r.maxx end
+function GetRectMaxY(r) return r.maxy end
+ALLIANCE_HELP_REQUEST='help';ALLIANCE_HELP_RESPONSE='helpresponse'
+PLAYER_NEUTRAL_AGGRESSIVE=12;PLAYER_NEUTRAL_PASSIVE=15
+UNIT_STATE_LIFE='hp'
+function GetStoredInteger(c,m,k) return c[m] and c[m][k] or 0 end
+function GetStoredBoolean(c,m,k) return c[m] and c[m][k] or false end
+function GetStoredString(c,m,k) return c[m] and c[m][k] or '' end
+function Condition(f) return f end
+function TriggerAddCondition(t,f) table.insert(t.conditions,f) end
+function TriggerEvaluate(t)
+ if not t or t.destroyed then return false end
+ for _,f in ipairs(t.conditions) do if not f() then return false end end
+ return true
+end
+function TriggerExecute(t)
+ local before=WORLD.events.trigger;WORLD.events.trigger=t
+ for _,f in ipairs(t.actions) do f() end
+ WORLD.events.trigger=before
+end
+function GetTriggeringTrigger() return WORLD.events.trigger end
 function CreateLeaderboard() return handle({items={}}) end
 function LeaderboardClear(b) b.items={} end
 function LeaderboardSetLabel(b,s) b.title=s end

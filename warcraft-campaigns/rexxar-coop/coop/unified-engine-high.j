@@ -85,7 +85,9 @@ function UZ_Diplomacy takes integer z, boolean save returns nothing
                 elseif UZ_initialized[z] and LoadBoolean(UZ_state,z,91) then
                     call SetPlayerAlliance(Player(a),Player(b),ConvertAllianceType(flag),LoadBoolean(UZ_cache,100+z,key))
                 else
-                    call SetPlayerAlliance(Player(a),Player(b),ConvertAllianceType(flag),a==b or (a<4 and b<4 and (flag==0 or flag==4 or flag==5)))
+                    // Preserve the engine's neutral-player defaults. Making
+                    // every unused pair hostile also breaks passive vendors.
+                    call SetPlayerAlliance(Player(a),Player(b),ConvertAllianceType(flag),LoadBoolean(UZ_cache,99,key))
                 endif
                 set flag=flag+1
             endloop
@@ -171,12 +173,14 @@ function UZ_Enter takes integer z, boolean freshStart returns nothing
             set RC_transitionPending=false
             return
         endif
+        call ExecuteFunc("UZ_DiplomacyZ"+UZ_Two(z))
         call RC_InitialAlliances()
     else
         call ForGroup(UZ_units[z],function UZ_ThawUnit)
         call UZ_ShowFloorItems(z)
         call UZ_ZoneQuests(z,true)
     endif
+    call ExecuteFunc("UZ_NamesZ"+UZ_Two(z))
     call RC_SeedStory()
     if RC_partyLoaded then
         call RC_ApplyStory()
@@ -318,6 +322,8 @@ function UZ_Bootstrap takes nothing returns nothing
     set UZ_transitionClock=CreateTimer()
     set UZ_arrivalClock=CreateTimer()
     set UZ_aiClock=CreateTimer()
+    // Parent 99 holds the untouched classic defaults before the first zone.
+    call UZ_Diplomacy(-1,true)
     loop
         exitwhen role==4
         set UZ_classPlayer[role]=-1

@@ -1,7 +1,7 @@
 """Namespace and relocate original mission code, without touching strings blindly."""
 import json,re
 from build import mask
-from unified_terrain import material
+from trigger_strings import resolve_string
 
 FUNCTION=re.compile(r'^function (\w+) takes[^\n]*\n[\s\S]*?^endfunction\b',re.M)
 TOKEN=re.compile(r'\b[A-Za-z_]\w*\b')
@@ -23,8 +23,8 @@ def namespace(script,names,prefix):
 
 def localize(script,strings,raw_map):
     def string(m):
-        value=m[0][1:-1];ref=re.fullmatch(r'TRIGSTR_(\d+)',value)
-        if ref:return json.dumps(strings.get(int(ref[1]),m[0].encode()).decode(),ensure_ascii=False)
+        value=m[0][1:-1];resolved=resolve_string(value,strings)
+        if resolved!=value:return json.dumps(resolved,ensure_ascii=False)
         if len(value)==4 and value.encode() in raw_map:return '"'+raw_map[value.encode()].decode()+'"'
         return m[0]
     changes=[]
@@ -33,7 +33,10 @@ def localize(script,strings,raw_map):
         if m[0].startswith('"'):changes.append((m.start(),m.end(),string(m)))
         elif m[0].startswith("'") and len(m[0])==6:
             raw=m[0][1:-1].encode();value=raw_map.get(raw)
-            if value is None and raw.decode() in __import__('unified_terrain').MATERIALS:value=material(raw)
+            # Rawcode namespaces overlap. Odrt means BOTH Drek'Thar and an
+            # Outland dirt tile; terrain belongs to W3E, not unit creation.
+            # No source mission changes terrain types from JASS. Remapping
+            # every terrain-looking rawcode here deleted the actual NPC.
             if value is not None:changes.append((m.start(),m.end(),"'"+value.decode()+"'"))
     for a,b,value in reversed(changes):script=script[:a]+value+script[b:]
     return script

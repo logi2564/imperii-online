@@ -6,13 +6,18 @@ from formats import read_info,read_objects,ABILITY_POINTERS
 from storm import Storm
 from unified_catalog import ALL_KINDS
 from kits import HEROES
+from trigger_strings import parse_wts
 out=Path(sys.argv[1]);st=Storm();h=st.open(out/'Maps/Rexxar-VII-Coop-1.26.w3x')
 try:
  script=st.read(h,'war3map.j').decode();assert script==(out/'Rexxar-VII.j').read_text()
  info=read_info(st.read(h,'war3map.w3i'))
+ strings=parse_wts(st.read(h,'war3map.wts'))
+ assert all(int(key) in strings for key in re.findall(rb'TRIGSTR_(\d+)\x00',st.read(h,'war3map.w3i')))
+ assert not re.search(r'"(?:\\")?TRIGSTR_\d+',script)
  assert [p['id'] for p in info['players'] if p['controller']==1]==[0,1,2,3]
  assert [p['id'] for p in info['players']]==list(range(12))
  assert all((p['controller']==1)==(p['id']<4) for p in info['players'])
+ assert not any(re.fullmatch(rb'NPC\s*\d*',p['name']) for p in info['players'])
  tables={kind:read_objects(st.read(h,path),level) for kind,(path,level) in ALL_KINDS.items()}
  abilities={o['new']:o for o in tables['ability'][1]};units={o['new']:o for o in tables['unit'][1]}
  def value(obj,key,level=None):
@@ -33,7 +38,7 @@ try:
   # Uncompressed TGA, bottom-up origin. Native bottom-third HUD is unobscured.
   offset=18+tga[0];assert all(tga[offset+i*4+3]==0 for i in range(1024*330))
  for raw,obj in abilities.items():
-  if raw.startswith((b'uM',b'R4',b'R7')):
+  if raw.startswith((b'uM',b'uI',b'R4',b'R7')):
    for mod in obj['mods']:
     if mod[0].startswith('Ncl'):assert mod[3]==ABILITY_POINTERS[mod[0]],(raw,mod)
  for slot in range(12):
@@ -50,6 +55,9 @@ try:
  for z in range(17):
   assert f'function UZ_InitZ{z:02} ' in script and f'function Z{z:02}_InitCustomTriggers ' in script
   assert f'function UZ_ReturnZ{z:02} ' in script and f'function UZ_ExportZ{z:02} ' in script
+  if z<15:
+   incoming=re.search(r'function Z'+f'{z:02}'+r'_Trig_Import_All_Actions\b[\s\S]*?endfunction',script)[0]
+   assert 'UZ_portalReadyAt' not in incoming and 'if not RC_started or RC_transitionPending' not in incoming
  for forbidden in ['ChangeLevel','StartCampaignAI','LoadGame','SaveGameExists','CopySaveGameBJ','TriggerRegisterGameSavedEventBJ','SetMissionAvailable']:
   assert not re.search(r'\bcall '+forbidden+r'\s*\(',script),forbidden
   # Also reject condition-valued single-player disk checks.

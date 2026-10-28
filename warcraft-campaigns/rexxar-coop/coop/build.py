@@ -4,6 +4,7 @@ import argparse,copy,hashlib,json,os,re,shutil,struct,subprocess,tempfile,zipfil
 from pathlib import Path
 from formats import Reader,coop_info,field,i,read_info,read_objects,s,write_objects
 from storm import Storm
+from trigger_strings import parse_campaign_wts,resolve_string
 import kits,talents
 
 ROOT=Path(__file__).resolve().parent
@@ -88,9 +89,7 @@ class Catalog:
                 lookup[kind]={obj['old'] if table==0 else obj['new']:obj for table,items in enumerate(tables) for obj in items if obj['mods']}
             m['lookup']=lookup
     def resolve(self,m,value):
-        if not isinstance(value,bytes):return value
-        match=re.fullmatch(rb'TRIGSTR_(\d+)',value)
-        return m['strings'].get(int(match[1]),value) if match else value
+        return resolve_string(value,m['strings'])
     def dependencies(self,m,mod):
         if mod[1]!=3 or mod[0] in {'unam','upro','utip','utub','ides','anam','atp1','aub1','arut','aret','ureq','urqa'}:return []
         text=mod[4].decode('utf8',errors='replace')
@@ -237,7 +236,7 @@ def build(destination):
         try:data={file:storm.read(archive,file) for file in EXTRA+[v[0] for v in KINDS.values()]}
         finally:storm.close(archive)
         if not data['war3map.j'] or not data['war3map.w3i']:raise ValueError('Incomplete original '+name)
-        strings={int(n):v.encode() for n,v in re.findall(r'STRING\s+(\d+)\s*\r?\n\{\r?\n(.*?)\r?\n\}',(data['war3map.wts'] or b'').decode('utf8'),re.S)}
+        strings=parse_campaign_wts(data['war3map.wts'] or b'',name)
         maps[name]=dict(name=name,index=index,path=path,data=data,script=data['war3map.j'].decode('utf8').replace('\r\n','\n'),strings=strings)
     schema=state_schema(maps);catalog=Catalog(maps).build();runtime=(ROOT/'runtime'/'core.j').read_text();reports=[]
     plan={name:player_remap(m['script'],name) for name,m in maps.items()}
@@ -297,6 +296,10 @@ def build(destination):
     return report
 
 def transform(script,m,schema,catalog,players,remap,runtime,forces):
+    # The campaign's direct one-player force is also used by transmissions.
+    # Mapping GetForceOfPlayer alone leaves dialogue audio on red's PC only.
+    edits=list(re.finditer(r'\bbj_FORCE_PLAYER\s*\[\s*0\s*\]',mask(script)))
+    for match in reversed(edits):script=script[:match.start()]+'RC_force'+script[match.end():]
     # The original stash is a building. A temporary blade master only shuttles
     # its items through the single-player cache, then is removed. Keep the real
     # container intact and load our stash payload directly into it instead.

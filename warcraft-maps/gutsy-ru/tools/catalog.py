@@ -131,6 +131,27 @@ def txt_spans(s,skin=False,protected_names=()):
    a=m.start()+len(k)+1;result.append(dict(start=a,end=m.end(),text=v,kind='csv',context=section+':'+k))
  return result
 
+def slk_spans(data):
+ result=[];x=y=0;columns={}
+ offset=0
+ for line in data.splitlines(keepends=True):
+  if line.startswith(b'C;'):
+   mx=re.search(rb'(?:^|;)X(\d+)',line);my=re.search(rb'(?:^|;)Y(\d+)',line)
+   if mx:x=int(mx[1])
+   if my:y=int(my[1])
+   match=re.search(rb'(?:^|;)K"((?:[^"]|"")*)"(?:;|[\r\n]|$)',line)
+   if match:
+    raw=match[1].replace(b'""',b'"')
+    try:value=raw.decode('utf8')
+    except UnicodeDecodeError:
+     try:value=raw.decode('cp949')
+     except UnicodeDecodeError:value=raw.decode('cp1252')
+    if y==1:columns[x]=value.lower()
+    elif columns.get(x) in {'name','editorsuffix','description','tip','ubertip'} and prose(value):
+     result.append(dict(start=offset+match.start(1),end=offset+match.end(1),text=value,kind='slk',context=str(y)+':'+columns[x]))
+  offset+=len(line)
+ return result
+
 def info_spans(data):
  r=Reader(data);assert r.i()==25;r.read(8);result=[]
  for index in range(4):
@@ -148,9 +169,12 @@ def catalog(st,path):
    lower=name.lower()
    if lower=='war3map.j':continue
    data=st.read(h,name)
-   if lower.endswith('.txt') and (lower.startswith('units\\') or lower=='war3mapskin.txt'):
+   if lower.endswith('.txt') and (lower.startswith('units\\') or lower in ['war3mapskin.txt','war3mapmisc.txt']):
     text=data.decode('utf8');spans=txt_spans(text,skin=lower=='war3mapskin.txt',protected_names=protected)
     if spans:files[name]=dict(encoding='utf8',spans=spans,sha256=hashlib.sha256(data).hexdigest())
+   elif lower in ['doodads\\doodads.slk','units\\destructabledata.slk']:
+    spans=slk_spans(data)
+    if spans:files[name]=dict(encoding='binary',spans=spans,sha256=hashlib.sha256(data).hexdigest())
    elif lower in ['war3map.w3a','war3map.w3u','war3map.w3t','war3map.w3h','war3map.w3q']:
     spans=[span for span in object_spans(data,lower.endswith(('.w3a','.w3q'))) if not (span['context'].split(':')[0] in protected and span['context'].endswith(':anam'))]
     if spans:files[name]=dict(encoding='binary',spans=spans,sha256=hashlib.sha256(data).hexdigest())

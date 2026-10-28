@@ -28,9 +28,9 @@ def prepare(text,commands):
  if suffix:text+=' ('+', '.join(suffix)+')'
  # Existing text input protocols may contain ordinary English sentences.
  for cmd in sorted(commands,key=len,reverse=True):
-  if len(cmd)>=3:text=re.sub(r'(?<![A-Za-z0-9_])'+re.escape(cmd)+r'(?![A-Za-z0-9_])',lambda m:save(m[0]),text)
+  if len(cmd)>=3 and text!=cmd:text=re.sub(r'(?<![A-Za-z0-9_])'+re.escape(cmd)+r'(?![A-Za-z0-9_])',lambda m:save(m[0]),text)
  # All remaining engine tokens are protected before terminology substitutions.
- text=re.sub(r'ZXQ\d+QXZ|'+TOKEN.pattern,lambda m:m[0] if m[0].startswith('ZXQ') else save(m[0]),text,flags=re.I)
+ text=re.sub(r'ZXQ\d+QXZ|'+TOKEN.pattern.removeprefix('(?i)'),lambda m:m[0] if m[0].startswith('ZXQ') else save(m[0]),text,flags=re.I)
  # Translate terminology only in segments outside the placeholders.
  pieces=TOKEN_ID.split(text)
  for i in range(0,len(pieces),2):pieces[i]=TERMS.sub(lambda m:LOWER[m[0].lower()],pieces[i])

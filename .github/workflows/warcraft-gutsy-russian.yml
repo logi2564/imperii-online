@@ -24,9 +24,10 @@ jobs:
       - run: python -m pip install gdown==5.2.0
       - run: python warcraft-maps/gutsy-ru/tools/fetch_source.py source-out
       - name: Source snapshot for localization tooling
+        if: always()
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
           tag="gutsy-source-${GITHUB_SHA:0:8}"
-          gh release create "$tag" source-out/Gutsy-Geoid-EN-1.0.5.w3x source-out/Source.json --target "$GITHUB_SHA" --prerelease --latest=false --title 'Gutsy Geoid EN 1.0.5 — source snapshot for localization' --notes 'Source input only. Russian localization is being prepared.'
+          gh release create "$tag" source-out/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'Gutsy Geoid EN 1.0.5 — source snapshot for localization' --notes 'Source input only. Russian localization is being prepared.'

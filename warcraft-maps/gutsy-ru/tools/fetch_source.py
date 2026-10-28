@@ -6,6 +6,7 @@ root=Path(sys.argv[1]);root.mkdir(parents=True,exist_ok=True)
 folder='1zt5-LXPax5N4xsXCrSub0Id2k0szaqux'
 r=requests.get('https://drive.google.com/drive/folders/'+folder,timeout=60);r.raise_for_status()
 text=r.text
+(root/"Folder.html").write_text(text)
 m=re.search(r"window\['_DRIVE_ivd'\]\s*=\s*'((?:[^'\\]|\\.)*)'",text)
 if not m:raise RuntimeError('Public Drive folder listing unavailable')
 s=re.sub(r'\\x([a-fA-F0-9]{2})',lambda x:chr(int(x[1],16)),m[1]);s=s.replace('\\/','/')
@@ -18,6 +19,7 @@ def visit(x):
   if isinstance(child,list):visit(child)
 visit(data)
 selected=[(fid,name) for fid,name in files.items() if 'gutsy' in name.lower() and ('1.0.5' in name or '1_0_5' in name)]
+(root/'Listing.json').write_text(json.dumps(files,ensure_ascii=False,indent=2))
 if len(selected)!=1:raise RuntimeError('Expected one Gutsy 1.0.5 map; folder names: '+json.dumps(list(files.values()),ensure_ascii=False))
 fid,name=selected[0]
 if not name.lower().endswith('.w3x'):raise RuntimeError('Expected Warcraft map, found '+name)

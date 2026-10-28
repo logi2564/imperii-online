@@ -1,11 +1,13 @@
 {
   "inputSHA256": "9865022098044aad2e9e93f6e8738246c3dc4dcbc69004fb87f2bf7e93498c2b",
-  "outputSHA256": "3cf2c8aa678faf414d587cc5d1f7d65976fb02f79af989897b8050774c6e0651",
-  "bytes": 10215180,
+  "outputSHA256": "ea45571e1d489df26ff76b231f7e8c8d286425c4fcdfdb79beb367b1a940663b",
+  "bytes": 9641633,
   "races": 34,
   "players": 12,
-  "newPreviewTypes": 364,
-  "newAssets": 108,
+  "newPreviewTypes": 330,
+  "nativeControlTypes": 34,
+  "nativeButtonAbilities": 38,
+  "newAssets": 78,
   "deferredInitialTimers": 45,
   "originalTriggers": 262,
   "nativeWarcraftRun": false

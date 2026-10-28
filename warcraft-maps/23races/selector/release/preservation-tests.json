@@ -1,9 +1,11 @@
 {
   "originalMPQEntries": 629,
-  "byteIdenticalEntries": 620,
+  "byteIdenticalEntries": 619,
   "originalFunctionsEqualExceptInitialTimerRegistration": 865,
   "originalInitializers": 262,
-  "newAssets": 108,
+  "newAssets": 78,
+  "nativeCommandCards": 34,
+  "nativeButtonAbilities": 38,
   "classicW3I": 25,
   "nativeWarcraftRun": false
 }

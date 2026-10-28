@@ -1,12 +1,14 @@
 {
   "checks": [
-    "all 34 original worker/tech rewards; single confirm, cleanup and exact paused/enabled state restoration",
-    "all 68 live/ready cine-filter paths, generated unit models and trackable models resolve in the actual delivered MPQ",
-    "12 independent player choices; real registered arrow/trackable events; wrap, random, debounce and one-shot confirmation; simultaneous release of workers",
-    "90 second timeout confirms the visible choice; departing players cannot block start; fog settings restored",
-    "three different local-player views allocate identical gameplay handles and state for the same 12-player input sequence"
+    "all 34 races selected through actual native command-card ability lists and registered spell events, then confirmed; original five workers/tech reward; paused workers released together; state and timer restoration",
+    "native UI/input enabled, menu unit selected and unpaused, move/attack commands removed, camera ticks preserve selection, spell callback never tears down its caster",
+    "all 68 panel paths and generated model paths resolve in the actual delivered MPQ",
+    "race click followed by immediate confirm in the same input frame confirms the new race, without dropping the selection",
+    "five pages wrap; random preview; 12 independent selections and ready flags; unrelated units rejected; duplicate confirmation cannot issue extra workers",
+    "arrow backup and debounce, native 90-second countdown, timeout accepts shown choice, departure cannot block start, fog settings restored",
+    "different local-player views allocate identical gameplay handles/state for the same native-button sequence"
   ],
-  "passed": 5,
+  "passed": 7,
   "nativeWarcraftRun": false,
-  "limits": "Native mocks do not validate graphics, mouse hit testing, client performance or real network sync."
+  "limits": "Native mocks do not validate graphics, physical mouse input, client performance or real network sync."
 }

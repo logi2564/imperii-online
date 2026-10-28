@@ -24,7 +24,7 @@ string Generate(Map map) {
 
 if(args[0]=="patch") {
     var map=Map.Open(args[1]); string work=args[2];
-    map.Info!.MapName="23 Расы — Выбор расы FIX1";
+    map.Info!.MapName="23 Расы — Выбор расы FIX2";
     var entries=map.Triggers!.TriggerItems.OfType<TriggerDefinition>().ToArray();
     if(entries.Length!=265||map.Triggers.Variables.Count!=479)throw new Exception("Wrong baseline trigger inventory");
     using var vars=JsonDocument.Parse(File.ReadAllText(Path.Combine(work,"globals.json")));

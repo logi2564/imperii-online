@@ -2,7 +2,7 @@
 import argparse,hashlib,shutil,zipfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parent
-DOWNLOAD='23-Races-Race-Selection-FIX1-1.26'
+DOWNLOAD='23-Races-Race-Selection-FIX2-1.26'
 def package(work,out):
     out.mkdir(parents=True,exist_ok=True)
     game=work/'23-Races-Race-Selection-1.26.w3x';name=DOWNLOAD+'.w3x';shutil.copy2(game,out/name)

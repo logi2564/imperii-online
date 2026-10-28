@@ -2,6 +2,7 @@
 import hashlib,io,json,re,struct,sys
 from pathlib import Path
 import mpyq
+from PIL import Image
 from classic_data import read_objects
 from storm import Storm
 
@@ -16,7 +17,7 @@ def verify(work):
     assert b.header['format_version']==0 and b.header['header_size']==32 and b.header['archive_size']==output.stat().st_size-512
     entries=lambda arc:{(e.hash_a,e.hash_b,e.locale):e for e in arc.hash_table if e.block_table_index<0xfffffffe}
     before,after=entries(a),entries(b)
-    changed={'war3map.j','Scripts\\war3map.j','war3map.wtg','war3map.wct','war3map.w3u','war3map.w3i','war3map.imp','(listfile)','(attributes)'}
+    changed={'war3map.j','Scripts\\war3map.j','war3map.wtg','war3map.wct','war3map.w3u','war3map.w3a','war3map.w3i','war3map.imp','(listfile)','(attributes)'}
     changedHashes={(a._hash(n,'HASH_A'),a._hash(n,'HASH_B'),0) for n in changed}
     storm=Storm();ha,hb=storm.open(original),storm.open(output);count=0
     try:
@@ -30,19 +31,47 @@ def verify(work):
         assert storm.read(hb,'war3map.j')==storm.read(hb,'Scripts\\war3map.j')==(work/'editor-generated.j').read_bytes()
         x=read_objects(storm.read(ha,'war3map.w3u'));y=read_objects(storm.read(hb,'war3map.w3u'))
         assert x[0]==y[0] and x[1]==y[1][:len(x[1])], 'Modified original gameplay units'
-        imports=storm.read(hb,'war3map.imp');n=struct.unpack_from('<I',imports,4)[0];assert n==569+108
+        olda=read_objects(storm.read(ha,'war3map.w3a'),True);newa=read_objects(storm.read(hb,'war3map.w3a'),True)
+        assert olda[0]==newa[0] and olda[1]==newa[1][:len(olda[1])], 'Modified original gameplay abilities'
+        assets=json.loads((work/'build-report.json').read_text())['newAssets']
+        imports=storm.read(hb,'war3map.imp');n=struct.unpack_from('<I',imports,4)[0];assert n==569+assets
+        units={o['new'].decode():o for o in y[1]};abilities={o['new'].decode():o for o in newa[1]}
+        def vals(o):return {m[0]:(m[4].decode() if m[1]==3 else struct.unpack('<i' if m[1]==0 else '<f',m[4])[0]) for m in o['mods']}
+        races=json.loads((work/'catalog.json').read_text())
+        for r in races:
+            control=vals(units[f'qC{r["index"]:02}']);ids=control['uabi'].split(',');slots=[];orders=[];keys=[]
+            assert 'Aloc' not in ids and 'Avul' in ids
+            expected={f'qA{i:02}' for i in range(r['index']//8*8,min(r['index']//8*8+8,34))}|{'qPrv','qNxt','qRnd','qPck','Avul'}
+            assert set(ids)==expected and len(ids)<=13
+            assert control['uico']==r['icon'] and control['usid']==control['usin']==0
+            for raw in ids:
+                if raw=='Avul':continue
+                a=vals(abilities[raw]);slots.append((a['abpx'],a['abpy']));orders.append(a['Ncl6']);keys.append(a['ahky'])
+                assert a['aher']==a['aite']==a['amcs']==0 and a['Ncl2']==0 and a['Ncl3']==1 and a['Ncl5']==0
+                assert 0<=a['abpx']<4 and 0<=a['abpy']<3 and a['areq']==''
+                if raw.startswith('qA'):assert a['aart']==races[int(raw[2:])]['icon']
+                else:assert storm.read(hb,a['aart']) is not None
+            assert len(slots)==len(set(slots)) and len(orders)==len(set(orders)) and len(keys)==len(set(keys))
         for p in (work/'assets').iterdir():
             assert storm.read(hb,p.name.replace('__','\\'))==p.read_bytes()
+            if p.suffix=='.tga' and '__Panels__' in p.name:
+                with Image.open(p)as im:assert im.convert('RGBA').getchannel('A').crop((0,350,1024,512)).getbbox() is None,'Panel covers native HUD'
+            if p.suffix=='.blp':
+                assert p.read_bytes()[:4]==b'BLP1'
+                with Image.open(p)as im:im.load();assert im.size==(64,64)
             if p.suffix=='.mdx':
                 data=p.read_bytes();offset=4
                 while offset<len(data):
                     tag,size=struct.unpack_from('<4sI',data,offset);chunk=data[offset+8:offset+8+size];offset+=8+size
+                    if tag==b'MTLS' and '__Scene__Floor' in p.name:
+                        assert struct.unpack_from('<I',chunk,24)[0]==0
+                        assert not struct.unpack_from('<I',chunk,28)[0]&(64|128),'Floor must depth-test and write depth'
                     if tag==b'TEXS':
                         for start in range(0,size,268):
                             texture=chunk[start+4:start+264].split(b'\0',1)[0].decode()
                             if texture.lower().startswith('as\\'):assert storm.read(hb,texture) is not None,('Missing generated model texture',p.name,texture)
     finally:storm.close(ha);storm.close(hb)
-    print(f'PASS: all {len(before)} baseline MPQ entries retained; {count} unchanged entries byte-identical, including every original model/texture, terrain, pathing, placements, abilities and upgrade; original unit objects unchanged; all 108 new assets present.')
+    print(f'PASS: all {len(before)} baseline MPQ entries retained; {count} unchanged entries byte-identical; original unit/ability objects untouched; {assets} assets present; 34 native command cards have valid icons, distinct slots/hotkeys/orders, free visible unit abilities; panels leave the native HUD uncovered.')
     aa=functions((ROOT.parent/'source/original-gameplay.j').read_text());bb=functions((work/'editor-generated.j').read_text());index=json.loads((ROOT.parent/'source/trigger-index.json').read_text())['entries']
     names=list(aa);cursor=next(i for i,n in enumerate(names) if n.startswith('Trig_'));checked=0;initializers=0
     for e in index:
@@ -69,7 +98,7 @@ def verify(work):
     source=(work/'editor-generated.j').read_text()
     literals=re.findall(r'"(?:\\.|[^"\\])*"',source)
     assert max(len(s.encode())-2 for s in literals)<=1023
-    report={'originalMPQEntries':len(before),'byteIdenticalEntries':count,'originalFunctionsEqualExceptInitialTimerRegistration':checked,'originalInitializers':initializers,'newAssets':108,'classicW3I':25,'nativeWarcraftRun':False}
+    report={'originalMPQEntries':len(before),'byteIdenticalEntries':count,'originalFunctionsEqualExceptInitialTimerRegistration':checked,'originalInitializers':initializers,'newAssets':assets,'nativeCommandCards':34,'nativeButtonAbilities':38,'classicW3I':25,'nativeWarcraftRun':False}
     (work/'preservation-tests.json').write_text(json.dumps(report,indent=2)+'\n')
     print(f'PASS: {checked} original functions preserve actions/conditions/events; only initial timers moved to common start. Classic API and string-length checks pass.')
 

@@ -20,48 +20,26 @@ def lines(draw,text,x,y,width,size=10,max_lines=3,colour=WHITE):
     return y
 
 def panel(race,ready=False):
+    # The bottom third stays transparent: native portrait, minimap and all
+    # twelve command-card buttons must remain visible and clickable.
     image=Image.new('RGBA',(WIDTH,HEIGHT),(0,0,0,0));d=ImageDraw.Draw(image)
-    d.rounded_rectangle((20,26,301,490),radius=3,fill=(2,5,5,250),outline=(89,67,18,255),width=3)
-    d.rounded_rectangle((22,28,299,488),radius=2,outline=GOLD,width=1)
-    d.line((26,30,295,30),fill=(255,236,131,255));d.line((26,487,295,487),fill=(77,58,17,255))
-    d.text((41,43),'ВЫБЕРИ СВОЮ РАСУ',font=font(9),fill=GOLD)
-    # Real in-game icon is a textured 3D quad behind this transparent hole.
-    d.rectangle((41,79,96,134),fill=(132,124,96,255));d.rectangle((43,81,94,132),fill=(0,0,0,0))
-    title='Выбор подтверждён' if ready else race['name']
-    size=15
-    while d.textlength(title,font=font(size))>188 and size>10:size-=1
-    d.text((107,84),title,font=font(size),fill=LIGHT)
-    d.text((108,112),'Ожидаем остальных' if ready else f"Вариант {race['index']+1} / 34",font=font(9),fill=DIM)
-    d.line((40,148,280,148),fill=GOLD)
+    d.rounded_rectangle((20,20,320,342),radius=3,fill=(2,5,5,245),outline=GOLD,width=2)
+    d.text((36,32),'РАСА ВЫБРАНА' if ready else 'ВЫБОР РАСЫ',font=font(10),fill=GOLD)
+    lines(d,race['name'],36,52,270,18,1,colour=LIGHT)
+    d.text((36,80),f"Раса {race['index']+1} / 34    Страница {race['index']//8+1} / 5",font=font(9),fill=DIM)
+    d.line((36,101,304,101),fill=GOLD)
     if ready:
-        d.text((41,168),'Твоя раса выбрана',font=font(12),fill=LIGHT)
-        lines(d,race['name'],41,190,236,14,2)
-        lines(d,'Когда все участники подтвердят выбор, игра начнётся одновременно.',41,231,236,11,5)
-        lines(d,'Уровень сложности, войска и правила развития — как в исходной карте.',41,302,236,10,4,colour=DIM)
+        lines(d,'Выбор подтверждён. Ожидаем остальных игроков.',36,117,268,13,4)
+        lines(d,'Все начнут одновременно. Твой отряд уже подготовлен.',36,209,268,11,4,colour=DIM)
     else:
-        d.text((41,164),'Начальный отряд',font=font(11),fill=GOLD)
-        lines(d,'5 × '+race['workerName'],41,182,236,10,1)
-        d.text((41,198),f"Здоровье: {race['hp']}   Скорость: {race['speed']}",font=font(9),fill=DIM)
-        d.text((41,221),'Строительство',font=font(11),fill=GOLD)
-        lines(d,' · '.join(race['buildingNames'][:5]),41,239,236,10,3)
-        d.text((41,285),'Войска',font=font(11),fill=GOLD)
-        lines(d,' · '.join(race['armyNames'][:5]) or 'Армия развивается через постройки.',41,303,236,10,2)
-        d.text((41,334),'О расе',font=font(10),fill=GOLD)
-        lines(d,race['description'],41,350,236,8,2,colour=DIM)
-    for x,label in ((43,'<'),(249,'>')):
-        d.rounded_rectangle((x,378,x+30,402),radius=2,fill=(19,20,17,255),outline=GOLD,width=2)
-        d.text((x+9,380),label,font=font(15),fill=GOLD if not ready else DIM)
-    middle='Готово' if ready else 'Случайная'
-    d.text((116,385),middle,font=font(9),fill=DIM if ready else WHITE)
-    d.rounded_rectangle((43,417,279,448),radius=2,fill=(23,18,9,255),outline=GOLD,width=2)
-    label='Ждём остальных игроков' if ready else 'Выбрать расу'
-    f=font(13);d.text((161-d.textlength(label,font=f)/2,423),label,font=f,fill=LIGHT)
-    d.text((42,459),'ОСТАЛОСЬ ВРЕМЕНИ',font=font(8),fill=DIM)
-    # Live per-player texttags occupy holes; all render/gameplay handles are
-    # still allocated synchronously, with only tag visibility local.
-    d.rectangle((245,457,283,475),fill=(0,0,0,0))
-    d.rectangle((42,480,280,486),fill=(0,0,0,0))
-    d.text((330,461),'← / →  Листать     ↓  Случайная     ↑  Подтвердить',font=font(12),fill=LIGHT,stroke_width=2,stroke_fill=(0,0,0,255))
+        lines(d,f"5 × {race['workerName']}  ·  {race['hp']} HP  ·  скорость {race['speed']}",36,113,268,10,2)
+        d.text((36,150),'Строительство',font=font(11),fill=GOLD)
+        lines(d,' · '.join(race['buildingNames'][:5]),36,168,268,9,3)
+        d.text((36,211),'Войска',font=font(11),fill=GOLD)
+        lines(d,' · '.join(race['armyNames'][:5]),36,229,268,9,2)
+        lines(d,race['description'],36,264,268,8,3,colour=DIM)
+    d.text((36,313),'Иконки рас и кнопки — справа внизу',font=font(10),fill=LIGHT)
+    assert image.getbbox()[3] <= 350
     return image
 
 def chunk(name,data):return name.encode()+struct.pack('<I',len(data))+data
@@ -76,7 +54,11 @@ def quad(texture,width,height,hitbox=False,horizontal=False):
     model=chunk('VERS',struct.pack('<I',800))+chunk('MODL',fixed('Race selector UI',80)+bytes(260)+ext+struct.pack('<I',150))
     model+=chunk('SEQS',fixed('Stand',80)+struct.pack('<IIfIfI',0,1000,0.,0,0.,0)+ext)
     model+=chunk('TEXS',struct.pack('<I',0)+fixed(texture,260)+struct.pack('<I',0))
-    layer=struct.pack('<6If',28,2,1|16|32|64|128,0,0xFFFFFFFF,0,0. if hitbox else 1.)
+    # The ground belongs in the opaque depth-tested pass. UI-style no-depth
+    # flags would let the grass paint over the faction models in the camp.
+    filter_mode=0 if horizontal else 2
+    flags=1|16|32 if horizontal else 1|16|32|64|128
+    layer=struct.pack('<6If',28,filter_mode,flags,0,0xFFFFFFFF,0,0. if hitbox else 1.)
     model+=chunk('MTLS',struct.pack('<III',48,0,0)+b'LAYS'+struct.pack('<I',1)+layer)
     verts=[(-width/2,vy,vz),(width/2,vy,vz),(-width/2,-vy,-vz),(width/2,-vy,-vz)]
     geoset=b'VRTX'+struct.pack('<I',4)+b''.join(struct.pack('<3f',*p) for p in verts)
@@ -94,6 +76,17 @@ def quad(texture,width,height,hitbox=False,horizontal=False):
         model+=chunk('CLID',node+struct.pack('<I6f',0,-width/2,-v-8,-v-8,width/2,v+8,v+8))
     return b'MDLX'+model
 
+def blp1(image):
+    """Classic indexed BLP1, opaque palette, complete 64..1 mip chain."""
+    base=image.quantize(colors=256);palette=base.getpalette();palette=palette+([0]*(768-len(palette)))
+    colours=b''.join(bytes((palette[i+2],palette[i+1],palette[i],0)) for i in range(0,768,3))
+    mips=[];size=64
+    while size:
+        mips.append(image.resize((size,size),Image.Resampling.LANCZOS).quantize(palette=base,dither=Image.Dither.NONE).tobytes());size//=2
+    offset=156+1024;offsets=[]
+    for m in mips:offsets.append(offset);offset+=len(m)
+    return struct.pack('<4s6I',b'BLP1',1,0,64,64,5,1)+struct.pack('<16I',*(offsets+[0]*(16-len(mips))))+struct.pack('<16I',*([len(m) for m in mips]+[0]*(16-len(mips))))+colours+b''.join(mips)
+
 def build(catalog,out):
     out=Path(out);assets=out/'assets';assets.mkdir(parents=True,exist_ok=True);files={}
     half_h=800*math.tan(math.radians(35));half_w=half_h*4/3
@@ -102,11 +95,6 @@ def build(catalog,out):
             image=panel(race,ready);name=f"AS\\Panels\\{'ready' if ready else 'race'}{race['index']:02}.tga"
             path=assets/name.replace('\\','__');image.save(path,format='TGA');files[name]=path
             if race['index']==9 and not ready:image.save(out/'BloodElf-panel.png')
-        name=f"AS\\Icons\\race{race['index']:02}.mdx";path=assets/name.replace('\\','__')
-        path.write_bytes(quad(race['icon'],52/WIDTH*2*half_w,52/HEIGHT*2*half_h));files[name]=path
-    for key,w,h in [('prev',.06,.07),('next',.06,.07),('random',.14,.07),('pick',.24,.09)]:
-        name='AS\\Hitbox\\'+key+'.mdx';path=assets/name.replace('\\','__')
-        path.write_bytes(quad('UI\\Widgets\\EscMenu\\Human\\blank-background.blp',2*half_w*w,2*half_h*h,True));files[name]=path
     rng=random.Random(34);floor=Image.new('RGBA',(256,256));pixels=floor.load()
     for y in range(256):
         for x in range(256):
@@ -120,4 +108,13 @@ def build(catalog,out):
     for name,blob in [('AS\\Scene\\Floor.mdx',quad('AS\\Scene\\Grass.tga',4200,3200,horizontal=True))]:
         path=assets/name.replace('\\','__');path.write_bytes(blob);files[name]=path
     name='AS\\Scene\\Grass.tga';path=assets/name.replace('\\','__');floor.save(path,format='TGA');files[name]=path
+    for key,label in [('prev','←'),('next','→'),('random','?'),('pick','✓')]:
+        icon=Image.new('RGB',(64,64),(16,18,14));d=ImageDraw.Draw(icon)
+        d.rounded_rectangle((2,2,61,61),radius=4,outline=GOLD[:3],width=3)
+        f=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',42)
+        box=d.textbbox((0,0),label,font=f);d.text(((64-(box[2]-box[0]))/2-box[0],(64-(box[3]-box[1]))/2-box[1]),label,font=f,fill=LIGHT[:3])
+        for disabled in (False,True):
+            source=icon.convert('L').convert('RGB') if disabled else icon
+            name=('ReplaceableTextures\\CommandButtonsDisabled\\DISBTN_AS_' if disabled else 'ReplaceableTextures\\CommandButtons\\BTN_AS_')+key+'.blp'
+            path=assets/name.replace('\\','__');path.write_bytes(blp1(source));files[name]=path
     return files

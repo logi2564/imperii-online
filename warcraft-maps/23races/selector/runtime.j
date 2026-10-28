@@ -1,21 +1,9 @@
 // Classic 1.26 only. Camera/filter/tag visibility branches are local UI;
-// units, trees, timers, choices and trackables are created synchronously.
+// units, trees, timers and command-card input are created synchronously.
 // @@GLOBALS@@
 
 function AS_Active takes integer p returns boolean
     return GetPlayerController(Player(p)) == MAP_CONTROL_USER and GetPlayerSlotState(Player(p)) == PLAYER_SLOT_STATE_PLAYING
-endfunction
-
-function AS_UIX takes integer p, real u returns real
-    return udg_AS_StageX[p] + (u - 0.5) * 1493.776081
-endfunction
-
-function AS_UIY takes integer p, real v returns real
-    return udg_AS_StageY[p] - 848.528137 + (0.5 - v) * 792.194277
-endfunction
-
-function AS_UIHeight takes real v returns real
-    return 848.528137 + (0.5 - v) * 792.194277
 endfunction
 
 function AS_Number takes integer n returns string
@@ -33,17 +21,28 @@ function AS_Ground takes real x, real y returns real
     return z
 endfunction
 
+function AS_SelectControl takes integer p returns nothing
+    if GetLocalPlayer() == Player(p) and udg_AS_Control[p] != null then
+        if not IsUnitSelected(udg_AS_Control[p],Player(p)) then
+            call ClearSelection()
+            call SelectUnit(udg_AS_Control[p],true)
+        endif
+    endif
+endfunction
+
 function AS_Camera takes integer p returns nothing
+    local real cx = udg_AS_StageX[p]+200
+    local real cy = udg_AS_StageY[p]-600
     if GetLocalPlayer() == Player(p) then
-        call SetCameraBounds(udg_AS_StageX[p]-16, udg_AS_StageY[p]-16, udg_AS_StageX[p]+16, udg_AS_StageY[p]+16, udg_AS_StageX[p]-16, udg_AS_StageY[p]+16, udg_AS_StageX[p]+16, udg_AS_StageY[p]-16)
-        call SetCameraPosition(udg_AS_StageX[p], udg_AS_StageY[p])
+        call SetCameraBounds(cx-16,cy-16,cx+16,cy+16,cx-16,cy+16,cx+16,cy-16)
+        call SetCameraPosition(cx,cy)
         call SetCameraField(CAMERA_FIELD_TARGET_DISTANCE, 2000, 0)
         call SetCameraField(CAMERA_FIELD_ANGLE_OF_ATTACK, 315, 0)
         call SetCameraField(CAMERA_FIELD_ROTATION, 90, 0)
         call SetCameraField(CAMERA_FIELD_FIELD_OF_VIEW, 70, 0)
         call SetCameraField(CAMERA_FIELD_ZOFFSET, udg_AS_StageOffset[p], 0)
         call SetCameraField(CAMERA_FIELD_FARZ, 4200, 0)
-        call ClearSelection()
+        call AS_SelectControl(p)
     endif
 endfunction
 
@@ -53,8 +52,8 @@ function AS_Panel takes integer p returns nothing
         set texture = "AS\\Panels\\ready" + AS_Number(udg_AS_Choice[p]) + ".tga"
     endif
     if GetLocalPlayer() == Player(p) then
-        call ShowInterface(false, 0)
-        call EnableSelect(false, false)
+        call ShowInterface(true, 0)
+        call EnableSelect(true, true)
         call SetCineFilterTexture(texture)
         call SetCineFilterBlendMode(BLEND_MODE_BLEND)
         call SetCineFilterTexMapFlags(TEXMAP_FLAG_NONE)
@@ -75,6 +74,28 @@ function AS_RemoveActors takes integer p returns nothing
         call RemoveUnit(u)
         set u = FirstOfGroup(udg_AS_Actors[p])
     endloop
+endfunction
+
+function AS_UpdateControl takes integer p returns nothing
+    local unit old = udg_AS_Control[p]
+    local integer raw = udg_AS_ControlType[udg_AS_Choice[p]]
+    if GetUnitTypeId(old) != raw then
+        if GetLocalPlayer() == Player(p) then
+            call ClearSelection()
+        endif
+        if old != null then
+            call RemoveUnit(old)
+        endif
+        set udg_AS_Control[p] = CreateUnit(Player(p),raw,udg_AS_StageX[p]+200,udg_AS_StageY[p]-850,225)
+        call SetUnitFlyHeight(udg_AS_Control[p],udg_AS_StageZ[p]-AS_Ground(GetUnitX(udg_AS_Control[p]),GetUnitY(udg_AS_Control[p])),0)
+        call SetUnitPathing(udg_AS_Control[p],false)
+        call SetUnitInvulnerable(udg_AS_Control[p],true)
+        // No move/stop/attack buttons may displace the twelve menu commands.
+        call UnitRemoveAbility(udg_AS_Control[p],'Amov')
+        call UnitRemoveAbility(udg_AS_Control[p],'Aatk')
+    endif
+    call AS_SelectControl(p)
+    set old = null
 endfunction
 
 function AS_Preview takes integer p returns nothing
@@ -107,12 +128,7 @@ function AS_Preview takes integer p returns nothing
         endif
         set n = n + 1
     endloop
-    set u = CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), udg_AS_IconType[choice], AS_UIX(p, 0.066895), AS_UIY(p, 0.208008), 0)
-    call SetUnitFlyHeight(u,udg_AS_StageZ[p]+AS_UIHeight(0.208008)-AS_Ground(GetUnitX(u),GetUnitY(u)),0)
-    call PauseUnit(u, true)
-    call SetUnitInvulnerable(u, true)
-    call SetUnitPathing(u, false)
-    call GroupAddUnit(udg_AS_Actors[p], u)
+    call AS_UpdateControl(p)
     call AS_Panel(p)
     set u = null
 endfunction
@@ -146,8 +162,8 @@ endfunction
 
 function AS_ClosePlayer takes integer p returns nothing
     call AS_RemoveActors(p)
-    call SetTextTagVisibility(udg_AS_TimeText[p], false)
-    call SetTextTagVisibility(udg_AS_BarText[p], false)
+    call RemoveUnit(udg_AS_Control[p])
+    set udg_AS_Control[p] = null
     if GetLocalPlayer() == Player(p) then
         call DisplayCineFilter(false)
         call ShowInterface(true, 0)
@@ -167,7 +183,10 @@ function AS_Finish takes nothing returns nothing
         return
     endif
     set udg_AS_Running = false
-    call DisableTrigger(udg_AS_Clicks)
+    call DisableTrigger(udg_AS_Spells)
+    call PauseTimer(udg_AS_InputTimer)
+    call PauseTimer(udg_AS_Deadline)
+    call DestroyTimerDialog(udg_AS_Countdown)
     call PauseTimer(udg_AS_TickTimer)
     call PauseTimer(udg_AS_CameraTimer)
     call ForGroup(udg_AS_World, function AS_ResumeWorldUnit)
@@ -176,10 +195,6 @@ function AS_Finish takes nothing returns nothing
         if udg_AS_Entered[p] then
             call ForGroup(udg_AS_Workers[p], function AS_ResumeWorker)
             call AS_ClosePlayer(p)
-            call DestroyTextTag(udg_AS_TimeText[p])
-            call DestroyTextTag(udg_AS_BarText[p])
-            set udg_AS_TimeText[p] = null
-            set udg_AS_BarText[p] = null
             call DestroyGroup(udg_AS_Actors[p])
             call DestroyGroup(udg_AS_Workers[p])
             set udg_AS_Actors[p] = null
@@ -224,6 +239,7 @@ function AS_Confirm takes integer p returns nothing
     // A repeated click, held key, timeout, or other player's input cannot issue
     // the original five-worker reward twice.
     set udg_AS_Ready[p] = true
+    call PauseUnit(udg_AS_Control[p],true)
     call AS_ApplyRace(p, udg_AS_Choice[p])
     set created = GetLastCreatedGroup()
     call GroupAddGroup(created, udg_AS_Workers[p])
@@ -242,50 +258,111 @@ function AS_Confirm takes integer p returns nothing
     set u = null
 endfunction
 
-function AS_Browse takes integer p, integer delta returns nothing
-    if not udg_AS_Running or not AS_Active(p) or udg_AS_Ready[p] then
+function AS_Choose takes integer p, integer choice returns nothing
+    if not udg_AS_Running or not AS_Active(p) or udg_AS_Ready[p] or choice < 0 or choice >= 34 then
         return
     endif
+    if choice == udg_AS_Choice[p] then
+        return
+    endif
+    set udg_AS_Choice[p] = choice
+    call AS_Preview(p)
+endfunction
+
+function AS_Browse takes integer p, integer delta returns nothing
     if TimerGetElapsed(udg_AS_Clock) < udg_AS_NextInput[p] then
         return
     endif
     set udg_AS_NextInput[p] = TimerGetElapsed(udg_AS_Clock) + 0.18
     if delta == 0 then
-        set udg_AS_Choice[p] = GetRandomInt(0, 33)
+        call AS_Choose(p,GetRandomInt(0,33))
     else
-        set udg_AS_Choice[p] = ModuloInteger(udg_AS_Choice[p] + delta + 34, 34)
+        call AS_Choose(p,ModuloInteger(udg_AS_Choice[p]+delta+34,34))
     endif
-    call AS_Preview(p)
 endfunction
 
-function AS_TrackClick takes nothing returns nothing
-    local integer key = GetHandleId(GetTriggeringTrackable())
-    local integer p = LoadInteger(udg_AS_State, key, 1) - 1
-    local integer action = LoadInteger(udg_AS_State, key, 2)
-    if p < 0 or p >= 12 then
+function AS_FlushInputs takes nothing returns nothing
+    local integer p = 0
+    local integer action
+    local integer page
+    local boolean confirm
+    loop
+        exitwhen p == 12 or not udg_AS_Running
+        set action = udg_AS_Pending[p]
+        set udg_AS_Pending[p] = 0
+        set confirm = udg_AS_PendingConfirm[p]
+        set udg_AS_PendingConfirm[p] = false
+        if AS_Active(p) and not udg_AS_Ready[p] then
+            if action >= 1 and action <= 34 then
+                call AS_Choose(p,action-1)
+            elseif action == 101 or action == 102 then
+                set page = udg_AS_Choice[p] / 8
+                if action == 101 then
+                    set page = ModuloInteger(page+4,5)
+                else
+                    set page = ModuloInteger(page+1,5)
+                endif
+                call AS_Choose(p,page*8)
+            elseif action == 103 then
+                call AS_Browse(p,0)
+            elseif action == 105 then
+                call AS_Browse(p,-1)
+            elseif action == 106 then
+                call AS_Browse(p,1)
+            endif
+            if confirm then
+                call AS_Confirm(p)
+            endif
+        endif
+        set p = p + 1
+    endloop
+endfunction
+
+function AS_Spell takes nothing returns nothing
+    local unit caster = GetTriggerUnit()
+    local integer p = GetPlayerId(GetOwningPlayer(caster))
+    local integer spell = GetSpellAbilityId()
+    local integer n = 0
+    if p < 0 or p >= 12 or not udg_AS_Running or not AS_Active(p) or udg_AS_Ready[p] or caster != udg_AS_Control[p] then
+        set caster = null
         return
     endif
-    if action == 1 then
-        call AS_Browse(p, -1)
-    elseif action == 2 then
-        call AS_Browse(p, 1)
-    elseif action == 3 then
-        call AS_Browse(p, 0)
-    elseif action == 4 then
-        call AS_Confirm(p)
+    loop
+        exitwhen n == 34
+        if spell == udg_AS_RaceAbility[n] then
+            set udg_AS_Pending[p] = n+1
+            set caster = null
+            return
+        endif
+        set n = n+1
+    endloop
+    if spell == 'qPrv' then
+        set udg_AS_Pending[p] = 101
+    elseif spell == 'qNxt' then
+        set udg_AS_Pending[p] = 102
+    elseif spell == 'qRnd' then
+        set udg_AS_Pending[p] = 103
+    elseif spell == 'qPck' then
+        set udg_AS_PendingConfirm[p] = true
     endif
+    // The caster is replaced only from AS_FlushInputs, after the native spell
+    // callback has returned. No unit/UI teardown inside the cast stack.
+    set caster = null
 endfunction
 
 function AS_Key takes nothing returns nothing
     local integer p = GetPlayerId(GetTriggerPlayer())
+    if not udg_AS_Running or udg_AS_Ready[p] then
+        return
+    endif
     if GetTriggerEventId() == EVENT_PLAYER_ARROW_LEFT_DOWN then
-        call AS_Browse(p, -1)
+        set udg_AS_Pending[p] = 105
     elseif GetTriggerEventId() == EVENT_PLAYER_ARROW_RIGHT_DOWN then
-        call AS_Browse(p, 1)
+        set udg_AS_Pending[p] = 106
     elseif GetTriggerEventId() == EVENT_PLAYER_ARROW_DOWN_DOWN then
-        call AS_Browse(p, 0)
+        set udg_AS_Pending[p] = 103
     elseif GetTriggerEventId() == EVENT_PLAYER_ARROW_UP_DOWN then
-        call AS_Confirm(p)
+        set udg_AS_PendingConfirm[p] = true
     endif
 endfunction
 
@@ -300,36 +377,12 @@ function AS_Leave takes nothing returns nothing
     endif
 endfunction
 
-function AS_UpdateTime takes nothing returns nothing
-    local integer p = 0
-    local integer n = 0
-    local integer bars = udg_AS_Remaining * 30 / 90
-    local string bar = "|cffe2b94a"
-    loop
-        exitwhen n == 30
-        if n == bars then
-            set bar = bar + "|cff942727"
-        endif
-        set bar = bar + "I"
-        set n = n + 1
-    endloop
-    loop
-        exitwhen p == 12
-        if udg_AS_Entered[p] then
-            call SetTextTagText(udg_AS_TimeText[p], I2S(udg_AS_Remaining)+"с", 0.014)
-            call SetTextTagText(udg_AS_BarText[p], bar, 0.015)
-        endif
-        set p = p + 1
-    endloop
-endfunction
-
 function AS_Tick takes nothing returns nothing
     local integer p = 0
     if not udg_AS_Running then
         return
     endif
     set udg_AS_Remaining = udg_AS_Remaining - 1
-    call AS_UpdateTime()
     if udg_AS_Remaining <= 0 then
         loop
             exitwhen p == 12 or not udg_AS_Running
@@ -352,19 +405,6 @@ function AS_CameraTick takes nothing returns nothing
         endif
         set p = p + 1
     endloop
-endfunction
-
-function AS_Button takes integer p, integer action, real u, real v, string model returns nothing
-    local real x = AS_UIX(p,u)
-    local real y = AS_UIY(p,v)
-    local destructable platform = CreateDestructableZ('OTip',x,y,udg_AS_StageZ[p]+AS_UIHeight(v),0,1,0)
-    local trackable buttonTrack = CreateTrackable(model,x,y,0)
-    call RemoveDestructable(platform)
-    call SaveInteger(udg_AS_State,GetHandleId(buttonTrack),1,p+1)
-    call SaveInteger(udg_AS_State,GetHandleId(buttonTrack),2,action)
-    call TriggerRegisterTrackableHitEvent(udg_AS_Clicks,buttonTrack)
-    set platform = null
-    set buttonTrack = null
 endfunction
 
 function AS_FindSelector takes integer p returns nothing
@@ -395,7 +435,7 @@ function AS_SetupPlayer takes integer p returns nothing
     set udg_AS_Choice[p] = 9
     set udg_AS_Actors[p] = CreateGroup()
     set udg_AS_Workers[p] = CreateGroup()
-    set udg_AS_StageOffset[p] = udg_AS_StageZ[p]-AS_Ground(udg_AS_StageX[p],udg_AS_StageY[p])
+    set udg_AS_StageOffset[p] = udg_AS_StageZ[p]-AS_Ground(udg_AS_StageX[p]+200,udg_AS_StageY[p]-600)
     set udg_AS_SpawnX[p] = GetStartLocationX(GetPlayerStartLocation(Player(p)))
     set udg_AS_SpawnY[p] = GetStartLocationY(GetPlayerStartLocation(Player(p)))
     call AS_FindSelector(p)
@@ -408,19 +448,12 @@ function AS_SetupPlayer takes integer p returns nothing
         set udg_AS_TreeCount = udg_AS_TreeCount + 1
         set n = n + 1
     endloop
-    call AS_Button(p,1,0.05664,0.76172,"AS\\Hitbox\\prev.mdx")
-    call AS_Button(p,2,0.25781,0.76172,"AS\\Hitbox\\next.mdx")
-    call AS_Button(p,3,0.15723,0.76172,"AS\\Hitbox\\random.mdx")
-    call AS_Button(p,4,0.15723,0.84375,"AS\\Hitbox\\pick.mdx")
-    set udg_AS_TimeText[p] = CreateTextTag()
-    call SetTextTagPos(udg_AS_TimeText[p],AS_UIX(p,0.240),AS_UIY(p,0.910),udg_AS_StageZ[p]+AS_UIHeight(0.910)-AS_Ground(AS_UIX(p,0.240),AS_UIY(p,0.910)))
-    call SetTextTagColor(udg_AS_TimeText[p],240,206,110,255)
-    call SetTextTagPermanent(udg_AS_TimeText[p],true)
-    call SetTextTagVisibility(udg_AS_TimeText[p],GetLocalPlayer()==Player(p))
-    set udg_AS_BarText[p] = CreateTextTag()
-    call SetTextTagPos(udg_AS_BarText[p],AS_UIX(p,0.041),AS_UIY(p,0.942),udg_AS_StageZ[p]+AS_UIHeight(0.942)-AS_Ground(AS_UIX(p,0.041),AS_UIY(p,0.942)))
-    call SetTextTagPermanent(udg_AS_BarText[p],true)
-    call SetTextTagVisibility(udg_AS_BarText[p],GetLocalPlayer()==Player(p))
+    if GetLocalPlayer() == Player(p) then
+        call EnableUserControl(true)
+        call EnableUserUI(true)
+        call ShowInterface(true,0)
+        call EnableSelect(true,true)
+    endif
     call AS_Camera(p)
     call AS_Preview(p)
 endfunction
@@ -435,7 +468,9 @@ function AS_SetupNext takes nothing returns nothing
         call TimerStart(udg_AS_SetupTimer,0.03,false,function AS_SetupNext)
     else
         set udg_AS_Running = true
-        call AS_UpdateTime()
+        call TimerStart(udg_AS_InputTimer,0.03,true,function AS_FlushInputs)
+        call TimerStart(udg_AS_Deadline,90,false,null)
+        call TimerDialogDisplay(udg_AS_Countdown,true)
         call TimerStart(udg_AS_TickTimer,1,true,function AS_Tick)
         call TimerStart(udg_AS_CameraTimer,0.05,true,function AS_CameraTick)
         if AS_AllReady() then
@@ -465,13 +500,19 @@ function AS_Bootstrap takes nothing returns nothing
     set udg_AS_SetupTimer = CreateTimer()
     set udg_AS_TickTimer = CreateTimer()
     set udg_AS_CameraTimer = CreateTimer()
+    set udg_AS_InputTimer = CreateTimer()
+    set udg_AS_Deadline = CreateTimer()
+    set udg_AS_Countdown = CreateTimerDialog(udg_AS_Deadline)
+    call TimerDialogSetTitle(udg_AS_Countdown,"Выбор расы")
+    call TimerDialogSetTimeColor(udg_AS_Countdown,240,206,110,255)
     call TimerStart(udg_AS_Clock,86400,false,null)
-    set udg_AS_Clicks = CreateTrigger()
-    call TriggerAddAction(udg_AS_Clicks,function AS_TrackClick)
+    set udg_AS_Spells = CreateTrigger()
+    call TriggerAddAction(udg_AS_Spells,function AS_Spell)
     call TriggerAddAction(keys,function AS_Key)
     call TriggerAddAction(leaving,function AS_Leave)
     loop
         exitwhen p == 12
+        call TriggerRegisterPlayerUnitEvent(udg_AS_Spells,Player(p),EVENT_PLAYER_UNIT_SPELL_EFFECT,null)
         call TriggerRegisterPlayerEvent(keys,Player(p),EVENT_PLAYER_ARROW_LEFT_DOWN)
         call TriggerRegisterPlayerEvent(keys,Player(p),EVENT_PLAYER_ARROW_RIGHT_DOWN)
         call TriggerRegisterPlayerEvent(keys,Player(p),EVENT_PLAYER_ARROW_DOWN_DOWN)

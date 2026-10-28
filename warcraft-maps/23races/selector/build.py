@@ -2,10 +2,11 @@
 import argparse,copy,hashlib,json,os,re,shutil,struct,subprocess
 from pathlib import Path
 from catalog import Catalog
-from classic_data import field,write_objects,read_info,s
+from classic_data import field,write_objects,read_objects,read_info,s
 from stages import choose
 from storm import Storm
 from ui_assets import build as build_assets
+from controls import abilities as control_abilities,units as control_units
 
 ROOT=Path(__file__).resolve().parent
 BASE=ROOT.parent/'release/23-Races-3.2D-Triggers-NewGen-1.26.w3x'
@@ -14,16 +15,16 @@ def global_vars():
     rows=[]
     def add(typ,scalars='',arrays=''):
         rows.extend(dict(name='AS_'+n,type=typ,array=a) for a,names in [(False,scalars),(True,arrays)] for n in names.split())
-    add('integer','Remaining TreeCount SetupIndex','Choice PreviewType IconType')
+    add('integer','Remaining TreeCount SetupIndex','Choice PreviewType ControlType RaceAbility Pending')
     add('real','','NextInput PreviewX PreviewY SpawnX SpawnY StageOffset StageX StageY StageZ OriginalDelay')
-    add('boolean','Running WasFog WasFogMask','Entered Ready OriginalEnabled OriginalRepeat')
+    add('boolean','Running WasFog WasFogMask','Entered Ready PendingConfirm OriginalEnabled OriginalRepeat')
     add('group','World','Actors Workers')
-    add('unit','','Selector')
+    add('unit','','Selector Control')
     add('destructable','','Tree')
-    add('texttag','','TimeText BarText')
     add('hashtable','State')
-    add('timer','Clock SetupTimer TickTimer CameraTimer','OriginalTimer')
-    add('trigger','Clicks','OriginalTrigger')
+    add('timer','Clock SetupTimer TickTimer CameraTimer InputTimer Deadline','OriginalTimer')
+    add('timerdialog','Countdown')
+    add('trigger','Spells','OriginalTrigger')
     return rows
 
 def initial_timers(source):
@@ -43,7 +44,7 @@ def runtime(catalog,aliases,stages,timers,entries):
     for n,(x,y) in enumerate(offsets):
         init.extend([f'set udg_AS_PreviewX[{n}] = {x}.',f'set udg_AS_PreviewY[{n}] = {y}.'])
     for race in catalog.races:
-        r=race['index'];init.append(f"set udg_AS_IconType[{r}] = 'qI{r:02}'")
+        r=race['index'];init.extend([f"set udg_AS_ControlType[{r}] = 'qC{r:02}'",f"set udg_AS_RaceAbility[{r}] = 'qA{r:02}'"])
         items=race['previewBuildings']+['']*(4-len(race['previewBuildings']))+race['previewUnits']+[race['worker']]
         assert len(items)<=12
         for n,raw in enumerate(items):
@@ -80,7 +81,7 @@ def main():
     try:
         cat=Catalog(storm,h,source);preview,aliases=cat.preview_objects()
         stages=choose(storm.read(h,'war3map.w3e'),storm.read(h,'war3map.wpm'),source)
-        oldimp=storm.read(h,'war3map.imp');oldlist=storm.read(h,'(listfile)');oldinfo=storm.read(h,'war3map.w3i')
+        oldimp=storm.read(h,'war3map.imp');oldlist=storm.read(h,'(listfile)');oldinfo=storm.read(h,'war3map.w3i');ability_tables=read_objects(storm.read(h,'war3map.w3a'),True)
     finally:storm.close(h)
     timers=initial_timers(source);entries=json.loads((ROOT.parent/'source/trigger-index.json').read_text())['entries']
     for name,obj in [('catalog.json',cat.races),('stages.json',stages),('timers.json',timers),('globals.json',global_vars())]:
@@ -91,13 +92,15 @@ def main():
     subprocess.run(cmd+['patch',str(BASE),str(out)],check=True)
     # Source declaration version stays classic; only add isolated preview types.
     tables=copy.deepcopy(cat.tables);tables[1]+=preview
-    tables[1]+=[ui_object(f'qI{r["index"]:02}',f'AS\\Icons\\race{r["index"]:02}.mdx') for r in cat.races]
+    tables[1]+=control_units(cat)
     tables[1].append(ui_object('qPln','AS\\Scene\\Floor.mdx'))
     ids=[o['new'] for o in tables[1]];assert len(ids)==len(set(ids))
+    ability_tables[1]+=control_abilities(cat)
+    ids=[o['new'] for o in ability_tables[1]];assert len(ids)==len(set(ids))
     script=(out/'editor-generated.j').read_bytes()
-    a,b=read_info(oldinfo)['title'];title='23 Расы — Выбор расы FIX1';info=oldinfo[:a]+s(title)+oldinfo[b:]
+    a,b=read_info(oldinfo)['title'];title='23 Расы — Выбор расы FIX2';info=oldinfo[:a]+s(title)+oldinfo[b:]
     newimp=struct.pack('<II',1,struct.unpack_from('<I',oldimp,4)[0]+len(assets))+oldimp[8:]+b''.join(b'\r'+s(n) for n in assets)
-    replacements={'war3map.wtg':(out/'war3map.wtg').read_bytes(),'war3map.wct':(out/'war3map.wct').read_bytes(),'war3map.w3u':write_objects(tables),'war3map.j':script,'Scripts\\war3map.j':script,'war3map.imp':newimp,'war3map.w3i':info}
+    replacements={'war3map.wtg':(out/'war3map.wtg').read_bytes(),'war3map.wct':(out/'war3map.wct').read_bytes(),'war3map.w3u':write_objects(tables),'war3map.w3a':write_objects(ability_tables,True),'war3map.j':script,'Scripts\\war3map.j':script,'war3map.imp':newimp,'war3map.w3i':info}
     replacements.update({name:path.read_bytes() for name,path in assets.items()})
     # StormLib owns (listfile); it adds every inserted name on archive close.
     target=out/'23-Races-Race-Selection-1.26.w3x';shutil.copy2(BASE,target)
@@ -109,7 +112,7 @@ def main():
     end=blob.index(0,8);prefix=blob[:8]+s(title)+blob[end+1:end+9]
     assert len(prefix)<=512
     target.write_bytes(prefix+bytes(512-len(prefix))+blob[512:]);blob=target.read_bytes()
-    report=dict(inputSHA256=hashlib.sha256(BASE.read_bytes()).hexdigest(),outputSHA256=hashlib.sha256(blob).hexdigest(),bytes=len(blob),races=34,players=12,newPreviewTypes=len(preview)+35,newAssets=len(assets),deferredInitialTimers=len(timers),originalTriggers=262,nativeWarcraftRun=False)
+    report=dict(inputSHA256=hashlib.sha256(BASE.read_bytes()).hexdigest(),outputSHA256=hashlib.sha256(blob).hexdigest(),bytes=len(blob),races=34,players=12,newPreviewTypes=len(preview)+1,nativeControlTypes=34,nativeButtonAbilities=38,newAssets=len(assets),deferredInitialTimers=len(timers),originalTriggers=262,nativeWarcraftRun=False)
     (out/'build-report.json').write_text(json.dumps(report,indent=2)+'\n')
     subprocess.run(cmd+['verify',str(target),str(out/'verify')],check=True)
     subprocess.run(cmd+['models',str(out/'assets')],check=True)

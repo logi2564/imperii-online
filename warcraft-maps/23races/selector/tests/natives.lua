@@ -2,9 +2,9 @@
 -- pathfinding, engine memory limits or actual network synchronization.
 function __jarray(v) return setmetatable({}, {__index=function() return v end}) end
 function FourCC(s) local n=0 for i=1,4 do n=n*256+s:byte(i) end return n end
-W={next=0,units={},trees={},players={},events={},time=0,localPlayer=0,messages={},timers={},playerEvents={},trackEvents={},tech={},fog=true,mask=true,resources={},models={},assetLoads={}}
+W={next=0,units={},trees={},players={},events={},time=0,localPlayer=0,messages={},timers={},playerEvents={},trackEvents={},tech={},fog=true,mask=true,resources={},models={},assetLoads={},unitEvents={},unitAbilities={},selected={},uiVisible=true,selectEnabled=true,userControl=true,userUI=true,cameraFields={}}
 function LoadSelectorResource(path)
- if path:sub(1,3):lower()=='as\\' then
+ if path:sub(1,3):lower()=='as\\' or path:find('BTN_AS_',1,true) then
   assert(W.resources[path:lower()], 'Missing selector resource in delivered MPQ: '..path)
   table.insert(W.assetLoads,path)
  end
@@ -12,7 +12,7 @@ end
 local function handle(o) W.next=W.next+1;o.handle=W.next;return o end
 for p=0,15 do W.players[p]={controller='user',state='playing'};W.tech[p]={} end
 MAP_CONTROL_USER='user';PLAYER_SLOT_STATE_PLAYING='playing';PLAYER_NEUTRAL_PASSIVE=15
-EVENT_PLAYER_ARROW_LEFT_DOWN='left';EVENT_PLAYER_ARROW_RIGHT_DOWN='right';EVENT_PLAYER_ARROW_DOWN_DOWN='down';EVENT_PLAYER_ARROW_UP_DOWN='up';EVENT_PLAYER_LEAVE='leave'
+EVENT_PLAYER_UNIT_SPELL_EFFECT='spell';EVENT_PLAYER_ARROW_LEFT_DOWN='left';EVENT_PLAYER_ARROW_RIGHT_DOWN='right';EVENT_PLAYER_ARROW_DOWN_DOWN='down';EVENT_PLAYER_ARROW_UP_DOWN='up';EVENT_PLAYER_LEAVE='leave'
 bj_UNIT_FACING=270;bj_DEGTORAD=math.pi/180;bj_FORCE_ALL_PLAYERS='all'
 function Player(p) return p end
 function GetPlayerId(p) return p end
@@ -22,7 +22,21 @@ function GetLocalPlayer() return W.localPlayer end
 function GetPlayerName(p) return 'P'..p end
 function GetTriggerPlayer() return W.events.player end
 function GetTriggerEventId() return W.events.event end
-function GetTriggeringTrackable() return W.events.trackable end
+function GetTriggerUnit() return W.events.unit end
+function GetSpellAbilityId() return W.events.spell end
+function TriggerRegisterPlayerUnitEvent(t,p,event,filter) table.insert(W.unitEvents,{trigger=t,player=p,event=event}) end
+function EmitSpell(u,spell)
+ assert(not u.removed and not u.paused, 'Menu caster must be alive and unpaused')
+ assert(u.abilities[spell], 'Command is absent from actual unit ability list')
+ if u.owner==W.localPlayer then
+  assert(W.uiVisible and W.selectEnabled and W.userUI and W.userControl, 'Native input disabled')
+  assert(W.selected[u], 'Native command card unit is not selected')
+ end
+ W.events={unit=u,player=u.owner,spell=spell,event='spell'}
+ W.inSpell=true
+ for _,r in ipairs(W.unitEvents) do if r.player==u.owner and r.event=='spell' and r.trigger.enabled then for _,a in ipairs(r.trigger.actions) do a() end end end
+ W.inSpell=false
+end
 function GetHandleId(h) assert(h,'missing handle');return h.handle end
 function InitHashtable() return {} end
 function SaveInteger(t,p,k,v) t[p]=t[p] or {};t[p][k]=v end
@@ -59,12 +73,33 @@ function ForGroup(g,f) local old=W.enum;local snapshot={} for u in pairs(g) do t
 function GetEnumUnit() return W.enum end
 function GroupEnumUnitsInRect(g,r,filter) for _,u in ipairs(W.units) do if not u.removed then g[u]=true end end end
 function GroupEnumUnitsOfPlayer(g,p,filter) for _,u in ipairs(W.units) do if u.owner==p and not u.removed then g[u]=true end end end
-function CreateUnit(p,raw,x,y,facing) if W.models[raw] then LoadSelectorResource(W.models[raw]) end local u=handle({owner=p,raw=raw,x=x,y=y,paused=false});table.insert(W.units,u);return u end
+function CreateUnit(p,raw,x,y,facing)
+ if W.models[raw] then LoadSelectorResource(W.models[raw]) end
+ local abilities={[FourCC('Amov')]=true,[FourCC('Aatk')]=true}
+ if W.unitAbilities[raw] then for id in pairs(W.unitAbilities[raw]) do abilities[id]=true end end
+ local u=handle({owner=p,raw=raw,x=x,y=y,paused=false,abilities=abilities});table.insert(W.units,u);return u
+end
+function UnitRemoveAbility(u,id) local old=u.abilities[id];u.abilities[id]=nil;return old or false end
+function IsUnitSelected(u,p) return p==W.localPlayer and W.selected[u] or false end
+function SelectUnit(u,v) W.selected[u]=v or nil end
+function ClearSelection() W.selected={} end
+function ShowInterface(v,duration) W.uiVisible=v end
+function EnableSelect(v,circle) W.selectEnabled=v end
+function EnableUserUI(v) W.userUI=v end
+function EnableUserControl(v) W.userControl=v end
+for _,name in ipairs({'CAMERA_FIELD_TARGET_DISTANCE','CAMERA_FIELD_ANGLE_OF_ATTACK','CAMERA_FIELD_ROTATION','CAMERA_FIELD_FIELD_OF_VIEW','CAMERA_FIELD_ZOFFSET','CAMERA_FIELD_FARZ'}) do _G[name]=name end
+function SetCameraPosition(x,y) W.cameraX=x;W.cameraY=y end
+function SetCameraField(field,value,duration) W.cameraFields[field]=value end
+function CreateTimerDialog(t) return handle({timer=t}) end
+function DestroyTimerDialog(t) t.destroyed=true end
+function TimerDialogDisplay(t,v) t.visible=v end
+function TimerDialogSetTitle(t,title) t.title=title end
+function TimerDialogSetTimeColor(...) end
 function GetUnitTypeId(u) return u and not u.removed and u.raw or 0 end
 function GetUnitX(u) return u.x end
 function GetUnitY(u) return u.y end
 function GetOwningPlayer(u) return u.owner end
-function RemoveUnit(u) if u then u.removed=true end end
+function RemoveUnit(u) assert(not W.inSpell,'Caster teardown inside native spell callback');if u then u.removed=true;W.selected[u]=nil end end
 function IsUnitPaused(u) return u.paused end
 function PauseUnit(u,v) u.paused=v end
 function SetUnitFlyHeight(u,v,rate) u.flyHeight=v end
@@ -101,4 +136,4 @@ function Sin(n) return math.sin(n) end
 function GetRandomInt(a,b) return (a+b)//2 end
 function ConvertPlayerColor(p) return p end
 function GetCameraMargin(...) return 0 end
-for _,name in ipairs({'SetCameraBounds','SetCameraPosition','SetCameraField','ClearSelection','ShowInterface','EnableSelect','SetCineFilterBlendMode','SetCineFilterTexMapFlags','SetCineFilterStartUV','SetCineFilterEndUV','SetCineFilterStartColor','SetCineFilterEndColor','SetCineFilterDuration','SetUnitColor','SetUnitInvulnerable','SetUnitPathing','SetUnitAnimation','SelectUnit','ResetToGameCamera','PanCameraToTimed','SetTextTagPos','SetTextTagColor','SetTextTagPermanent'}) do _G[name]=function(...) end end
+for _,name in ipairs({'SetCameraBounds','SetCineFilterBlendMode','SetCineFilterTexMapFlags','SetCineFilterStartUV','SetCineFilterEndUV','SetCineFilterStartColor','SetCineFilterEndColor','SetCineFilterDuration','SetUnitColor','SetUnitInvulnerable','SetUnitPathing','SetUnitAnimation','ResetToGameCamera','PanCameraToTimed','SetTextTagPos','SetTextTagColor','SetTextTagPermanent'}) do _G[name]=function(...) end end

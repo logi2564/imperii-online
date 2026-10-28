@@ -4,6 +4,16 @@ Adds a black/gold Russian selection panel and a temporary 3D faction camp to
 the user's recovered 23 Races map. Uses only classic 1.26 APIs. All **34** actual
 research choices remain available. See [player instructions](README-RU.txt).
 
+FIX1 addresses a confirmed startup resource defect: the runtime requested
+`AS\Panels\choice09.tga` while the asset generator packaged `race09.tga`.
+The mismatch came from renaming a JASS variable with a text replacement that
+also changed a filename string. Native-boundary tests now resolve cine filters,
+trackables and generated unit models against the **actual output MPQ**. Running
+the new check on the previously published map fails during initial panel load;
+all 34 live panels and 34 ready panels are exercised after the fix. Internal
+generated MDX texture references are checked too. This confirms the defect and
+its correction, without claiming native reproduction of the reported crash.
+
 The uploaded map is byte-identical to `../release/23-Races-3.2D-Triggers-NewGen-1.26.w3x`.
 Its SHA256 is `9865022098044aad2e9e93f6e8738246c3dc4dcbc69004fb87f2bf7e93498c2b`.
 The screenshot supplied the visual reference. The Drive folder could not be

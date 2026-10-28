@@ -2,7 +2,13 @@
 -- pathfinding, engine memory limits or actual network synchronization.
 function __jarray(v) return setmetatable({}, {__index=function() return v end}) end
 function FourCC(s) local n=0 for i=1,4 do n=n*256+s:byte(i) end return n end
-W={next=0,units={},trees={},players={},events={},time=0,localPlayer=0,messages={},timers={},playerEvents={},trackEvents={},tech={},fog=true,mask=true}
+W={next=0,units={},trees={},players={},events={},time=0,localPlayer=0,messages={},timers={},playerEvents={},trackEvents={},tech={},fog=true,mask=true,resources={},models={},assetLoads={}}
+function LoadSelectorResource(path)
+ if path:sub(1,3):lower()=='as\\' then
+  assert(W.resources[path:lower()], 'Missing selector resource in delivered MPQ: '..path)
+  table.insert(W.assetLoads,path)
+ end
+end
 local function handle(o) W.next=W.next+1;o.handle=W.next;return o end
 for p=0,15 do W.players[p]={controller='user',state='playing'};W.tech[p]={} end
 MAP_CONTROL_USER='user';PLAYER_SLOT_STATE_PLAYING='playing';PLAYER_NEUTRAL_PASSIVE=15
@@ -53,7 +59,7 @@ function ForGroup(g,f) local old=W.enum;local snapshot={} for u in pairs(g) do t
 function GetEnumUnit() return W.enum end
 function GroupEnumUnitsInRect(g,r,filter) for _,u in ipairs(W.units) do if not u.removed then g[u]=true end end end
 function GroupEnumUnitsOfPlayer(g,p,filter) for _,u in ipairs(W.units) do if u.owner==p and not u.removed then g[u]=true end end end
-function CreateUnit(p,raw,x,y,facing) local u=handle({owner=p,raw=raw,x=x,y=y,paused=false});table.insert(W.units,u);return u end
+function CreateUnit(p,raw,x,y,facing) if W.models[raw] then LoadSelectorResource(W.models[raw]) end local u=handle({owner=p,raw=raw,x=x,y=y,paused=false});table.insert(W.units,u);return u end
 function GetUnitTypeId(u) return u and not u.removed and u.raw or 0 end
 function GetUnitX(u) return u.x end
 function GetUnitY(u) return u.y end
@@ -79,12 +85,12 @@ function FogEnable(v) W.fog=v end
 function FogMaskEnable(v) W.mask=v end
 function CreateDestructableZ(raw,x,y,z,face,scale,var) local t=handle({raw=raw,x=x,y=y,z=z});table.insert(W.trees,t);return t end
 function RemoveDestructable(t) t.removed=true end
-function CreateTrackable(model,x,y,facing) return handle({model=model,x=x,y=y}) end
+function CreateTrackable(model,x,y,facing) LoadSelectorResource(model);return handle({model=model,x=x,y=y}) end
 function CreateTextTag() return handle({}) end
 function DestroyTextTag(t) t.destroyed=true end
 function SetTextTagVisibility(t,v) t.visible=v end
 function SetTextTagText(t,text,size) t.text=text end
-function SetCineFilterTexture(texture) W.texture=texture end
+function SetCineFilterTexture(texture) LoadSelectorResource(texture);W.texture=texture end
 function DisplayCineFilter(v) W.filter=v end
 function DisplayTimedTextToForce(force,duration,text) table.insert(W.messages,text) end
 function ModuloInteger(n,d) return n%d end

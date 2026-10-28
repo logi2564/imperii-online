@@ -48,7 +48,7 @@ function AS_Camera takes integer p returns nothing
 endfunction
 
 function AS_Panel takes integer p returns nothing
-    local string texture = "AS\\Panels\\choice" + AS_Number(udg_AS_Choice[p]) + ".tga"
+    local string texture = "AS\\Panels\\race" + AS_Number(udg_AS_Choice[p]) + ".tga"
     if udg_AS_Ready[p] then
         set texture = "AS\\Panels\\ready" + AS_Number(udg_AS_Choice[p]) + ".tga"
     endif

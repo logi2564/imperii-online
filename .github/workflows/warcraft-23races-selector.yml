@@ -64,4 +64,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          gh release create "23races-selector-${GITHUB_SHA::8}" /tmp/selector-release/* --target "$GITHUB_SHA" --prerelease --latest=false --title '23 Расы — пример выбора рас (Warcraft 1.26)' --notes-file warcraft-maps/23races/selector/README-RU.txt
+          gh release create "23races-selector-${GITHUB_SHA::8}" /tmp/selector-release/* --target "$GITHUB_SHA" --prerelease --latest=false --title '23 Расы — выбор рас FIX1 (Warcraft 1.26)' --notes-file warcraft-maps/23races/selector/README-RU.txt

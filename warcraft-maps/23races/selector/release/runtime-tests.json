@@ -1,11 +1,12 @@
 {
   "checks": [
     "all 34 original worker/tech rewards; single confirm, cleanup and exact paused/enabled state restoration",
+    "all 68 live/ready cine-filter paths, generated unit models and trackable models resolve in the actual delivered MPQ",
     "12 independent player choices; real registered arrow/trackable events; wrap, random, debounce and one-shot confirmation; simultaneous release of workers",
     "90 second timeout confirms the visible choice; departing players cannot block start; fog settings restored",
     "three different local-player views allocate identical gameplay handles and state for the same 12-player input sequence"
   ],
-  "passed": 4,
+  "passed": 5,
   "nativeWarcraftRun": false,
   "limits": "Native mocks do not validate graphics, mouse hit testing, client performance or real network sync."
 }

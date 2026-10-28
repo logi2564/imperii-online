@@ -33,6 +33,14 @@ def verify(work):
         imports=storm.read(hb,'war3map.imp');n=struct.unpack_from('<I',imports,4)[0];assert n==569+108
         for p in (work/'assets').iterdir():
             assert storm.read(hb,p.name.replace('__','\\'))==p.read_bytes()
+            if p.suffix=='.mdx':
+                data=p.read_bytes();offset=4
+                while offset<len(data):
+                    tag,size=struct.unpack_from('<4sI',data,offset);chunk=data[offset+8:offset+8+size];offset+=8+size
+                    if tag==b'TEXS':
+                        for start in range(0,size,268):
+                            texture=chunk[start+4:start+264].split(b'\0',1)[0].decode()
+                            if texture.lower().startswith('as\\'):assert storm.read(hb,texture) is not None,('Missing generated model texture',p.name,texture)
     finally:storm.close(ha);storm.close(hb)
     print(f'PASS: all {len(before)} baseline MPQ entries retained; {count} unchanged entries byte-identical, including every original model/texture, terrain, pathing, placements, abilities and upgrade; original unit objects unchanged; all 108 new assets present.')
     aa=functions((ROOT.parent/'source/original-gameplay.j').read_text());bb=functions((work/'editor-generated.j').read_text());index=json.loads((ROOT.parent/'source/trigger-index.json').read_text())['entries']

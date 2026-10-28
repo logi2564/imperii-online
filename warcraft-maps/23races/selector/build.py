@@ -95,7 +95,7 @@ def main():
     tables[1].append(ui_object('qPln','AS\\Scene\\Floor.mdx'))
     ids=[o['new'] for o in tables[1]];assert len(ids)==len(set(ids))
     script=(out/'editor-generated.j').read_bytes()
-    a,b=read_info(oldinfo)['title'];title='23 Расы — Выбор расы v1';info=oldinfo[:a]+s(title)+oldinfo[b:]
+    a,b=read_info(oldinfo)['title'];title='23 Расы — Выбор расы FIX1';info=oldinfo[:a]+s(title)+oldinfo[b:]
     newimp=struct.pack('<II',1,struct.unpack_from('<I',oldimp,4)[0]+len(assets))+oldimp[8:]+b''.join(b'\r'+s(n) for n in assets)
     replacements={'war3map.wtg':(out/'war3map.wtg').read_bytes(),'war3map.wct':(out/'war3map.wct').read_bytes(),'war3map.w3u':write_objects(tables),'war3map.j':script,'Scripts\\war3map.j':script,'war3map.imp':newimp,'war3map.w3i':info}
     replacements.update({name:path.read_bytes() for name,path in assets.items()})

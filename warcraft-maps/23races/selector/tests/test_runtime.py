@@ -1,12 +1,33 @@
 """Exercise the actual delivered JASS, transpiled unchanged by War3Net."""
-import argparse,hashlib,json
+import argparse,hashlib,json,sys
+from functools import lru_cache
 from pathlib import Path
 from lupa import LuaRuntime
 
 ROOT=Path(__file__).resolve().parent
+sys.path.insert(0,str(ROOT.parent))
+from storm import Storm
+from classic_data import read_objects
+
+@lru_cache(maxsize=None)
+def archive_resources(work):
+    storm=Storm();h=storm.open(work/'23-Races-Race-Selection-1.26.w3x')
+    try:
+        names=storm.read(h,'(listfile)').decode().splitlines()
+        tables=read_objects(storm.read(h,'war3map.w3u'))
+        models={}
+        for table in tables:
+            for obj in table:
+                for m in obj['mods']:
+                    if m[0]=='umdl':models[int.from_bytes(obj['new'] if obj['new']!=b'\0'*4 else obj['old'],'big')]=m[4].decode()
+        return names,models
+    finally:storm.close(h)
 
 def setup(work,players=range(12),local=0):
     lua=LuaRuntime(unpack_returned_tuples=True);lua.execute((ROOT/'natives.lua').read_text());lua.execute((work/'runtime.lua').read_text());g=lua.globals();g.W.localPlayer=local
+    names,models=archive_resources(work)
+    for name in names:g.W.resources[name.lower()]=True
+    for raw,name in models.items():g.W.models[raw]=name
     entries=json.loads((ROOT.parent.parent/'source/trigger-index.json').read_text())['entries']
     original=[]
     for n,e in enumerate(entries):
@@ -32,7 +53,7 @@ def run(work):
     # Each exact original research choice produces the same five worker types.
     for race in races:
         _,g,triggers,paused,normal=setup(work,players=[0])
-        g.udg_AS_Choice[0]=race['index'];g.AS_Confirm(0)
+        g.udg_AS_Choice[0]=race['index'];g.AS_Preview(0);g.AS_Confirm(0)
         assert len(live(g,0,race['worker']))==5 and not live(g,0,'n00B')
         assert g.W.tech[0][g.FourCC(race['research'])]==1
         assert not g.udg_AS_Running and all(not u.paused for u in live(g,0))
@@ -42,6 +63,7 @@ def run(work):
         assert all(t.removed for _,t in g.W.trees.items())
         before=len(g.W.units);g.AS_Confirm(0);assert len(g.W.units)==before
     checks.append('all 34 original worker/tech rewards; single confirm, cleanup and exact paused/enabled state restoration')
+    checks.append('all 68 live/ready cine-filter paths, generated unit models and trackable models resolve in the actual delivered MPQ')
     _,g,_,_,_=setup(work)
     g.EmitKey(3,'right');assert g.udg_AS_Choice[3]==10 and g.udg_AS_Choice[2]==9
     g.EmitKey(3,'right');assert g.udg_AS_Choice[3]==10  # held input debounce

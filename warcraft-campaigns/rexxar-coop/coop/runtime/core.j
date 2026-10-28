@@ -681,13 +681,33 @@ function RC_CameraHome takes nothing returns nothing
     endloop
 endfunction
 
-function RC_Cinematic takes boolean enabled, force players returns nothing
+function RC_PartyForce takes force players returns boolean
+    local integer n = 0
+    if players == null then
+        return false
+    endif
+    // Player(0) is the original single-player campaign owner, including when
+    // the actual Rexxar player occupies another lobby colour.
+    if IsPlayerInForce(Player(0), players) then
+        return true
+    endif
+    loop
+        exitwhen n == 4
+        if RC_Active(n) and IsPlayerInForce(RC_Player(n), players) then
+            return true
+        endif
+        set n = n + 1
+    endloop
+    return false
+endfunction
+
+function RC_CinematicEx takes boolean enabled, force players, real fadeTime returns nothing
     local integer n = 0
     set RC_cinematicMode = enabled
     if not enabled then
         call RC_HideStoryActors()
     endif
-    if IsPlayerInForce(Player(0), players) then
+    if RC_PartyForce(players) then
         if enabled then
             loop
                 exitwhen n == 4
@@ -700,13 +720,17 @@ function RC_Cinematic takes boolean enabled, force players returns nothing
                 set n = n + 1
             endloop
         endif
-        call CinematicModeBJ(enabled, RC_force)
+        call CinematicModeExBJ(enabled, RC_force, fadeTime)
         if not enabled then
             call RC_CameraHome()
         endif
     else
-        call CinematicModeBJ(enabled, players)
+        call CinematicModeExBJ(enabled, players, fadeTime)
     endif
+endfunction
+
+function RC_Cinematic takes boolean enabled, force players returns nothing
+    call RC_CinematicEx(enabled, players, bj_CINEMODE_INTERFACEFADE)
 endfunction
 
 function RC_CameraSetup takes boolean pan, camerasetup setup, player p, real duration returns nothing

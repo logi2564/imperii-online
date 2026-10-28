@@ -34,6 +34,12 @@
     real array RK_value
     integer array RK_phase
     integer array RC_talents
+    integer array RC_talentAbility
+    integer array RC_talentTech
+    integer array RC_talentBook
+    integer array RC_pendingTalent
+    timer RC_talentClock = null
+    boolean RC_talentScheduled = false
     integer array RC_talentLevel
     integer array RC_talentAnnounced
     string array RC_talentName

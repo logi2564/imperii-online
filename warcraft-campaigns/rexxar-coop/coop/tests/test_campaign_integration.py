@@ -150,9 +150,10 @@ def voice_wait_during_travel():
     print('PASS original caravan voice callback: normal completion cleans up; resuming a voice wait after travel cannot reset the new scene audio or touch its queue.')
 
 
-original_player_setup()
-original_cave_conditions()
-manual_save_quests()
-original_drekthar_spawn()
-imports_during_arrival()
-voice_wait_during_travel()
+if __name__=='__main__':
+    original_player_setup()
+    original_cave_conditions()
+    manual_save_quests()
+    original_drekthar_spawn()
+    imports_during_arrival()
+    voice_wait_during_travel()

@@ -1,5 +1,25 @@
 // Independent cast slots: two zones/projectiles never overwrite one another.
 // These mechanics use only classic 1.26 APIs and built-in effect resources.
+function RK_ExpireVisual takes nothing returns nothing
+    local timer clock = GetExpiredTimer()
+    local integer key = GetHandleId(clock)
+    local effect visual = LoadEffectHandle(RC_table,key,901)
+    call DestroyEffect(visual)
+    call FlushChildHashtable(RC_table,key)
+    call DestroyTimer(clock)
+    set visual = null
+    set clock = null
+endfunction
+
+function RK_KeepVisual takes effect visual, real duration returns nothing
+    local timer clock = CreateTimer()
+    // Missile/impact models without a death sequence disappeared when their
+    // effect was destroyed on the same tick it was created.
+    call SaveEffectHandle(RC_table,GetHandleId(clock),901,visual)
+    call TimerStart(clock,duration,false,function RK_ExpireVisual)
+    set clock = null
+endfunction
+
 function RK_Alive takes unit u returns boolean
     return u != null and GetUnitTypeId(u) != 0 and GetWidgetLife(u) > 0.405
 endfunction
@@ -210,7 +230,7 @@ function RK_Pulse takes integer slot, integer step returns nothing
             set RK_age[slot] = RK_limit[slot]
         elseif ModuloInteger(step, 10) == 0 then
             call RK_Heal(target, (10.0 + 8.0 * rank) * (1.0 + RC_TalentBonus(1, 0, 1, 0.3)))
-            call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Orc\\HealingWave\\HealingWaveTarget.mdl", target, "origin"))
+            call RK_KeepVisual(AddSpecialEffectTarget("Abilities\\Spells\\Orc\\HealingWave\\HealingWaveTarget.mdl", target, "origin"),0.5)
         endif
     elseif kind == 6 or kind == 8 or kind == 16 then
         if kind == 6 and not RK_Alive(RK_marker[slot]) then
@@ -514,6 +534,11 @@ function RC_Spell takes nothing returns nothing
         set target = null
         return
     endif
+    if RC_QueueTalent(role,abilityId) then
+        set caster = null
+        set target = null
+        return
+    endif
     if abilityId == 'R5Sk' or abilityId == 'R5Ta' then
         if abilityId == 'R5Sk' then
             call RC_OpenProgress(role, 0, 0)
@@ -556,7 +581,7 @@ function RC_Spell takes nothing returns nothing
             set n = n + 1
         endloop
         call RK_Area(caster, x, y, 280, 100.0 + 80.0 * rank, RC_HasTalent(0, 3, 1), 0, true)
-        call DestroyEffect(AddSpecialEffect("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", x, y))
+        call RK_KeepVisual(AddSpecialEffect("Abilities\\Spells\\Other\\Stampede\\StampedeMissileDeath.mdl", x, y),0.8)
     elseif kind == 9 then
         set angle = Atan2(y - GetUnitY(caster), x - GetUnitX(caster))
         call GroupEnumUnitsInRange(RC_skillGroup, GetUnitX(caster), GetUnitY(caster), 550, null)
@@ -572,7 +597,7 @@ function RC_Spell takes nothing returns nothing
                 call SaveReal(RC_table, GetHandleId(u), 301, RC_skillTime + 6 + RC_TalentBonus(2, 0, 1, 3))
             endif
         endloop
-        call DestroyEffect(AddSpecialEffectTarget("Abilities\\Spells\\Other\\BreathOfFire\\BreathOfFireMissile.mdl", caster, "origin"))
+        call RK_KeepVisual(AddSpecialEffectTarget("Abilities\\Spells\\Other\\BreathOfFire\\BreathOfFireMissile.mdl", caster, "origin"),0.75)
     elseif kind == 1 or kind == 10 or kind == 11 or kind == 13 then
         call RK_Launch(caster, kind, rank, x, y, 0)
         if (kind == 1 and RC_HasTalent(0, 4, 1)) or (kind == 13 and RC_HasTalent(3, 4, 1)) then

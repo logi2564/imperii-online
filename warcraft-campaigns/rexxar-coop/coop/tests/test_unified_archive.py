@@ -6,6 +6,7 @@ from formats import read_info,read_objects,ABILITY_POINTERS
 from storm import Storm
 from unified_catalog import ALL_KINDS
 from kits import HEROES
+import talents
 from trigger_strings import parse_wts
 out=Path(sys.argv[1]);st=Storm();h=st.open(out/'Maps/Rexxar-VII-Coop-1.26.w3x')
 try:
@@ -38,9 +39,26 @@ try:
   # Uncompressed TGA, bottom-up origin. Native bottom-third HUD is unobscured.
   offset=18+tga[0];assert all(tga[offset+i*4+3]==0 for i in range(1024*330))
  for raw,obj in abilities.items():
-  if raw.startswith((b'uM',b'uI',b'R4',b'R7')):
+  if raw.startswith((b'uM',b'uI',b'R4',b'R7',b'T9',b'R9T')):
    for mod in obj['mods']:
-    if mod[0].startswith('Ncl'):assert mod[3]==ABILITY_POINTERS[mod[0]],(raw,mod)
+    if mod[0].startswith(('Ncl','spb')):assert mod[3]==ABILITY_POINTERS[mod[0]],(raw,mod)
+ upgrade_defs={o['new']:o for o in tables['upgrade'][1]}
+ for role in range(4):
+  book=abilities[talents.book_id(role).encode()]
+  assert book['old']==b'Aspb' and value(book,'spb3',1)==10 and value(book,'spb4',1)==10
+  nested=value(book,'spb1',1).split(',')
+  assert nested==[talents.ability_id(role,n) for n in range(10)]
+  orders=[]
+  for node in range(10):
+   a=abilities[nested[node].encode()]
+   assert value(a,'Ncl2',1)==0 and value(a,'amcs',1)==0
+   orders.append(value(a,'Ncl6',1))
+   tech=value(a,'areq').encode();assert tech in upgrade_defs
+   assert all(value(upgrade_defs[tech],'gef'+str(n))=='' for n in range(1,5))
+  assert len(set(orders))==10
+  for slot in range(4):
+   assert value(abilities[f'R4{role}{slot}'.encode()],'Ncl6',1) not in orders
+   assert value(abilities[f'R7{role}{slot}'.encode()],'Ncl6',1) not in orders
  for slot in range(12):
   a=abilities[f'uM{slot:02}'.encode()]
   assert value(a,'Ncl2',1)==0 and value(a,'Ncl3',1)==1 and value(a,'amcs',1)==0 and value(a,'acdn',1)==0

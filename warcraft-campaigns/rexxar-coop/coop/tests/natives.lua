@@ -20,6 +20,14 @@ function GetPlayerController(p) return WORLD.players[p].controller end
 function GetPlayerSlotState(p) return WORLD.players[p].state end
 function GetPlayerState(p,s) return WORLD.players[p][s] or 0 end
 function SetPlayerState(p,s,v) WORLD.players[p][s]=v end
+function GetPlayerTechCount(p,id,specific)
+ local tech=WORLD.players[p].tech
+ return tech and tech[id] or 0
+end
+function SetPlayerTechResearched(p,id,level)
+ WORLD.players[p].tech=WORLD.players[p].tech or {}
+ WORLD.players[p].tech[id]=level
+end
 function GetPlayerHandicap(p) return WORLD.players[p].hp end
 function SetPlayerHandicap(p,v) WORLD.players[p].hp=v end
 function SetPlayerHandicapXP(p,v) WORLD.players[p].xp=v end
@@ -63,7 +71,7 @@ function TriggerRegisterTimerEventSingle(...) end
 function IsTriggerEnabled(t) return t and t.enabled or false end
 function DisableTrigger(t) if t then t.enabled=false end end
 function EnableTrigger(t) if t then t.enabled=true end end
-function CreateTimer() return {} end
+function CreateTimer() WORLD.timerSequence=(WORLD.timerSequence or 10000)+1;return {handle=WORLD.timerSequence} end
 function TimerStart(t,d,repeated,action) t.duration=d;t.action=action;t.started=WORLD.time;WORLD.lastTimer=t end
 function TimerGetElapsed(t) return WORLD.time-(t.started or 0) end
 function PauseTimer(t) t.paused=true end
@@ -118,7 +126,7 @@ function GetLearnedSkillLevel() return WORLD.events.learnedRank end
 function GetUnitAbilityLevel(u,id) return u.abilities[id] or 0 end
 function UnitAddAbility(u,id) if WORLD.rejectAbility==id or u.abilities[id] then return false end u.abilities[id]=1;return true end
 function UnitRemoveAbility(u,id) u.abilities[id]=nil;return true end
-function SetUnitAbilityLevel(u,id,n) if WORLD.rejectAbility==id then return 0 end u.abilities[id]=n;return n end
+function SetUnitAbilityLevel(u,id,n) if WORLD.rejectAbility==id or u.abilities[id]==nil then return 0 end u.abilities[id]=n;return n end
 function UnitMakeAbilityPermanent(u,flag,id) u.permanent=u.permanent or {};u.permanent[id]=flag;return true end
 function SuspendHeroXP(u,v) u.suspended=v end
 function UnitItemInSlot(u,n) return u.items[n] end
@@ -156,9 +164,19 @@ function UnitAddType(u,t) u[t]=true;return true end
 function GetItemOfTypeFromUnitBJ(u,id) for n=0,5 do if u.items[n] and u.items[n].id==id then return u.items[n] end end return nil end
 function UnitRemoveBuffs(u,a,b) u.cleansed=true end
 function UnitDamageTarget(c,u,amount,...) u.hp=u.hp-amount;return true end
-function AddSpecialEffect(...) return {} end
-function AddSpecialEffectTarget(...) return {} end
-function DestroyEffect(e) end
+function AddSpecialEffect(path,x,y)
+ local e={path=path,x=x,y=y,destroyed=false}
+ WORLD.effects=WORLD.effects or {};table.insert(WORLD.effects,e);return e
+end
+function AddSpecialEffectTarget(path,target,point)
+ local e={path=path,target=target,point=point,destroyed=false}
+ WORLD.effects=WORLD.effects or {};table.insert(WORLD.effects,e);return e
+end
+function DestroyEffect(e) if e then e.destroyed=true end end
+function SaveEffectHandle(t,p,c,e) SaveInteger(t,p,c,e);return true end
+function LoadEffectHandle(t,p,c) return t[p] and t[p][c] or nil end
+function GetExpiredTimer() return WORLD.expiredTimer end
+function DestroyTimer(t) t.destroyed=true end
 function ReviveHero(u,x,y,b) u.hp=u.maxhp;u.x=x;u.y=y;return true end
 function GetPlayerStartLocation(p) return p end
 function GetStartLocationX(p) return 100 end
@@ -167,6 +185,10 @@ function IssueImmediateOrder(u,s) return true end
 function PanCameraToTimedForPlayer(...) end
 function SelectUnitForPlayerSingle(...) end
 function CinematicModeBJ(...) end
+bj_CINEMODE_INTERFACEFADE=0.5
+function CinematicModeExBJ(enabled,players,fade)
+ WORLD.cinematic={enabled=enabled,players=players,fade=fade}
+end
 function CinematicFadeBJ(...) end
 bj_CINEFADETYPE_FADEIN=1
 function CameraSetupApplyForPlayer(...) end

@@ -31,7 +31,10 @@ def abilities():
             mods=[field('aher',0,0),field('aite',0,0),field('alev',0,levels),field('arlv',0,6 if slot==3 else 1),field('alsk',0,6 if slot==3 else 2),field('anam',3,name),field('aart',3,'ReplaceableTextures\\CommandButtons\\'+icon+'.blp'),field('arar',3,'ReplaceableTextures\\CommandButtons\\'+icon+'.blp'),field('ahky',3,key),field('arhk',3,key),field('abpx',0,slot),field('abpy',0,2),field('arpx',0,slot),field('arpy',0,0),field('aret',3,name+' ('+key+')'),field('arut',3,'Открывает новый ранг навыка. '+description.format(a='35 + 25 × ранг',b='90 + 50 × ранг',c='12 + 9 × ранг',d='100 + 80 × ранг',e='10 + 8 × ранг',f='18 + 17 × ранг',g='3 + 2 × ранг',h='180 + 60 × ранг',p='75 + 50 × ранг',q='4 × ранг')),field('acat',3,''),field('aeat',3,''),field('atat',3,'')]
             for level in range(1,levels+1):
                 desc=description.format(a=35+25*level,b=90+50*level,c=12+9*level,d=100+80*level,e=10+8*level,f=18+17*level,g=3+2*level,h=180+60*level,p=75+50*level,q=4*level)
-                mods += [field('atp1',3,f'{name} ({key}) — ранг {level}',level),field('aub1',3,desc+f'|nМана: {mana}. Перезарядка: {cooldown} сек.',level),field('amcs',0,mana,level),field('acdn',2,float(cooldown),level),field('aran',2,700.,level),field('atar',3,'air,ground,friend,enemy,organic,neutral',level),field('Ncl1',2,0.,level),field('Ncl2',0,target,level),field('Ncl3',0,1,level),field('Ncl4',2,0.,level),field('Ncl5',0,0,level),field('Ncl6',3,['channel','farsight','drunkenhaze','healingward'][slot],level)]
+                targets='air,ground,friend,enemy,organic,neutral'
+                if role==0 and slot==2:targets='air,ground,enemy,organic'
+                if role==1 and slot in (0,2):targets='air,ground,friend,self,hero,organic'
+                mods += [field('atp1',3,f'{name} ({key}) — ранг {level}',level),field('aub1',3,desc+f'|nМана: {mana}. Перезарядка: {cooldown} сек.',level),field('amcs',0,mana,level),field('acdn',2,float(cooldown),level),field('aran',2,700.,level),field('atar',3,targets,level),field('Ncl1',2,0.,level),field('Ncl2',0,target,level),field('Ncl3',0,1,level),field('Ncl4',2,0.,level),field('Ncl5',0,0,level),field('Ncl6',3,['channel','farsight','drunkenhaze','healingward'][slot],level)]
             out.append(dict(old=b'ANcl',new=skill_id(role,slot).encode(),mods=mods))
             # A hidden hero ability supplies the native '+' learning button.
             # The separately installed UNIT ability supplies the actual cast
@@ -55,7 +58,8 @@ def abilities():
     for rank in range(1,6):out.append(dict(old=b'AId1',new=f'RD0{rank}'.encode(),mods=[field('Idef',0,3+2*rank,1),field('aite',0,1),field('aart',3,'')]))
     for rank in range(1,6):out.append(dict(old=b'AItg',new=f'RP0{rank}'.encode(),mods=[field('Iatt',0,4*rank,1),field('aite',0,1),field('aart',3,'')]))
     out += [dict(old=b'Aslo',new=b'RSlw',mods=[field('Slo1',2,.35,1),field('Slo2',2,.20,1),field('amcs',0,0,1),field('adur',2,2.,1),field('ahdu',2,.8,1),field('aran',2,9999.,1),field('atar',3,'air,ground,enemy,organic',1)]),dict(old=b'AHtb',new=b'RStn',mods=[field('Htb1',2,0.,1),field('amcs',0,0,1),field('adur',2,.65,1),field('ahdu',2,.30,1),field('aran',2,9999.,1),field('atar',3,'air,ground,enemy,organic',1),field('amat',3,'')])]
-    return out
+    import talents
+    return out+talents.abilities()
 
 def unit_helpers():
     return [dict(old=b'hpea',new=b'rD40',mods=[field('unam',3,'Spell helper'),field('uabi',3,'Aloc,Avul'),field('umdl',3,''),field('umvs',0,0),field('umvt',3,'fly'),field('ufoo',0,0),field('umpi',0,10000),field('umpm',0,10000),field('ucpt',2,0.),field('ucbs',2,0.),field('ushb',3,''),field('ushu',3,''),field('udtm',2,.01)])]

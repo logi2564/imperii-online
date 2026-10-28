@@ -20,6 +20,30 @@ function RC_TalentBonus takes integer role, integer tier, integer choice, real a
     return 0.0
 endfunction
 
+function RC_RefreshTalentTree takes integer role returns nothing
+    local integer n = 0
+    local integer unlocked
+    local integer chosen
+    local player owner = RC_Player(role)
+    if not RC_Active(role) or RC_hero[role] == null then
+        set owner = null
+        return
+    endif
+    loop
+        exitwhen n == 10
+        set chosen = RC_TalentChoice(role, n / 2)
+        set unlocked = 0
+        if GetHeroLevel(RC_hero[role]) >= RC_talentLevel[n / 2] and (chosen == 0 or chosen == ModuloInteger(n,2)+1) then
+            set unlocked = 1
+        endif
+        if GetPlayerTechCount(owner,RC_talentTech[role*10+n],true) != unlocked then
+            call SetPlayerTechResearched(owner,RC_talentTech[role*10+n],unlocked)
+        endif
+        set n = n + 1
+    endloop
+    set owner = null
+endfunction
+
 function RC_GiveTalent takes integer role, integer tier, integer choice returns boolean
     local integer power = 1
     local integer n = 0
@@ -35,6 +59,7 @@ function RC_GiveTalent takes integer role, integer tier, integer choice returns 
         set n = n + 1
     endloop
     set RC_talents[role] = RC_talents[role] + choice * power
+    call RC_RefreshTalentTree(role)
     call RC_Tell(RC_Owner(role), 15, "Талант: " + RC_talentName[role * 10 + tier * 2 + choice - 1] + ". " + RC_talentText[role * 10 + tier * 2 + choice - 1])
     return true
 endfunction
@@ -54,6 +79,7 @@ function RC_SetSkillRank takes integer role, integer skill, integer rank returns
     local integer id = RC_skill[role * 5 + skill]
     local integer learned = RC_learnSkill[role * 5 + skill]
     local integer previous = GetUnitAbilityLevel(hero, id)
+    local integer previousLearned = GetUnitAbilityLevel(hero, learned)
     if rank > 0 then
         if GetUnitAbilityLevel(hero, id) == 0 then
             call UnitAddAbility(hero, id)
@@ -74,6 +100,20 @@ function RC_SetSkillRank takes integer role, integer skill, integer rank returns
                 call UnitAddAbility(hero, learned)
             endif
             call SetUnitAbilityLevel(hero, learned, rank)
+            if GetUnitAbilityLevel(hero, learned) != rank then
+                if previous == 0 then
+                    call UnitRemoveAbility(hero, id)
+                else
+                    call SetUnitAbilityLevel(hero, id, previous)
+                endif
+                if previousLearned == 0 then
+                    call UnitRemoveAbility(hero, learned)
+                else
+                    call SetUnitAbilityLevel(hero, learned, previousLearned)
+                endif
+                set hero = null
+                return false
+            endif
             call UnitMakeAbilityPermanent(hero, true, learned)
         endif
     else
@@ -92,10 +132,15 @@ function RC_SetSkillRank takes integer role, integer skill, integer rank returns
 endfunction
 
 function RC_InstallProgress takes unit hero returns nothing
+    local integer role = RC_TypeRole(hero)
     call UnitAddAbility(hero, 'R5Sk')
-    call UnitAddAbility(hero, 'R5Ta')
+    call UnitRemoveAbility(hero, 'R5Ta')
     call UnitMakeAbilityPermanent(hero, true, 'R5Sk')
-    call UnitMakeAbilityPermanent(hero, true, 'R5Ta')
+    if role >= 0 then
+        call UnitAddAbility(hero, RC_talentBook[role])
+        call UnitMakeAbilityPermanent(hero, true, RC_talentBook[role])
+        call RC_RefreshTalentTree(role)
+    endif
     // All automatic kill experience is replaced by explicit party awards.
     call SuspendHeroXP(hero, true)
 endfunction

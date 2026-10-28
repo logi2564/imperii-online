@@ -13,7 +13,7 @@ ROLES=[0,1,2,3]
 FILE_PREFIX='RX6-'
 DISPLAY_PREFIX='REXXAR VI FIX - '
 KINDS={'item':('war3map.w3t',False),'ability':('war3map.w3a',True),'unit':('war3map.w3u',False),'buff':('war3map.w3h',False)}
-EXTRA=['war3map.j','war3map.w3i','war3map.wts','war3mapMisc.txt','war3mapUnits.doo']
+EXTRA=['war3map.j','war3map.w3i','war3map.wts','war3mapMisc.txt','war3mapUnits.doo','war3map.w3q']
 
 def mask(text):
     # Retain offsets/newlines while ignoring strings, rawcodes and comments.
@@ -268,6 +268,9 @@ def build(destination):
                     for mod in obj['mods']:
                         if mod[0] in metadata and mod[1]!=metadata[mod[0]]:raise ValueError(f'Classic metadata type mismatch: {name} {filename} {mod[0]}')
             edits[filename]=write_objects(tables,leveled)
+        upgrade_tables=read_objects(m['data']['war3map.w3q'],True)
+        upgrade_tables[1].extend(talents.upgrades())
+        edits['war3map.w3q']=write_objects(upgrade_tables,True)
         misc=(m['data']['war3mapMisc.txt'] or b'[Misc]\r\n').decode('utf8')
         if re.search(r'(?mi)^MaxHeroLevel=',misc):misc=re.sub(r'(?mi)^MaxHeroLevel=[^\r\n]*','MaxHeroLevel=20',misc)
         elif re.search(r'(?mi)^\[Misc\][^\S\r\n]*\r?$',misc):misc=re.sub(r'(?mi)^(\[Misc\][^\S\r\n]*\r?\n)',r'\1MaxHeroLevel=20\r\n',misc,count=1)
@@ -324,7 +327,7 @@ def transform(script,m,schema,catalog,players,remap,runtime,forces):
     for pattern,group in [(owner+r'\s*==\s*(?:udg_AP1_Player|Player\(\s*0\s*\))',1),(r'(?:udg_AP1_Player|Player\(\s*0\s*\))\s*==\s*'+owner,1)]:
         for match in re.finditer(pattern,mask(script)):replacements.append((match.start(),match.end(),'RC_IsPartyPlayer('+script[match.start(group):match.end(group)]+')'))
     for a,b,value in sorted(replacements,reverse=True):script=script[:a]+value+script[b:]
-    mapped={'GetGameDifficulty':'RC_GetDifficulty','GetForceOfPlayer':'RC_GetForce','IsUnitOwnedByPlayer':'RC_UnitOwned','TriggerRegisterPlayerUnitEvent':'RC_RegisterUnitEvent','TriggerRegisterPlayerEventEndCinematic':'RC_RegisterSkip','CinematicModeBJ':'RC_Cinematic','CameraSetupApplyForPlayer':'RC_CameraSetup','GetUnitsOfPlayerAll':'RC_UnitsOfPlayer','InitGameCacheBJ':'RC_InitCache','ReloadGameCachesFromDisk':'RC_ReloadCache','SaveGameCacheBJ':'RC_SaveCache','RestoreUnitLocFacingAngleBJ':'RC_RestoreHero','StartCampaignAI':'RC_StartAI','ChangeLevel':'RC_ChangeLevel','SetNextLevelBJ':'RC_SetNextLevel','CustomVictoryBJ':'RC_Victory','CustomDefeatBJ':'RC_Defeat','SetPlayerStateBJ':'RC_Resource','AdjustPlayerStateBJ':'RC_AdjustResource'}
+    mapped={'GetGameDifficulty':'RC_GetDifficulty','GetForceOfPlayer':'RC_GetForce','IsUnitOwnedByPlayer':'RC_UnitOwned','TriggerRegisterPlayerUnitEvent':'RC_RegisterUnitEvent','TriggerRegisterPlayerEventEndCinematic':'RC_RegisterSkip','CinematicModeBJ':'RC_Cinematic','CinematicModeExBJ':'RC_CinematicEx','CameraSetupApplyForPlayer':'RC_CameraSetup','GetUnitsOfPlayerAll':'RC_UnitsOfPlayer','InitGameCacheBJ':'RC_InitCache','ReloadGameCachesFromDisk':'RC_ReloadCache','SaveGameCacheBJ':'RC_SaveCache','RestoreUnitLocFacingAngleBJ':'RC_RestoreHero','StartCampaignAI':'RC_StartAI','ChangeLevel':'RC_ChangeLevel','SetNextLevelBJ':'RC_SetNextLevel','CustomVictoryBJ':'RC_Victory','CustomDefeatBJ':'RC_Defeat','SetPlayerStateBJ':'RC_Resource','AdjustPlayerStateBJ':'RC_AdjustResource'}
     mapped.update({'CreateUnit':'RC_SourceCreate','CreateNUnitsAtLoc':'RC_SourceCreateAtLoc','CreateNUnitsAtLocFacingLocBJ':'RC_SourceCreateFacing','GetOwningPlayer':'RC_StoryOwner','SetUnitOwner':'RC_SourceOwner','ShowUnit':'RC_SourceShow','ShowUnitShow':'RC_SourceShowOn','ShowUnitHide':'RC_SourceShowOff','GroupAddUnit':'RC_SourceGroupAdd','GroupAddUnitSimple':'RC_SourceGroupSimple','GroupAddGroup':'RC_SourceGroupMerge','SelectHeroSkill':'RC_Learn','SetPlayerHandicapXPBJ':'RC_XPHandicapPercent','SetPlayerHandicapXP':'RC_XPHandicap','SuspendHeroXPBJ':'RC_SuspendExperienceBJ','SuspendHeroXP':'RC_SuspendExperience','UnitHasItemOfTypeBJ':'RC_HasQuestItem','GetItemOfTypeFromUnitBJ':'RC_QuestItem'})
     mapped['RemoveUnit']='RC_SourceRemove'
     script=calls(script,mapped)

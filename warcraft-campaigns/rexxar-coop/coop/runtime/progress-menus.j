@@ -1,3 +1,42 @@
+function RC_CommitTalents takes nothing returns nothing
+    local integer role = 0
+    local integer node
+    set RC_talentScheduled = false
+    loop
+        exitwhen role == 4
+        set node = RC_pendingTalent[role] - 1
+        set RC_pendingTalent[role] = 0
+        if node >= 0 then
+            call RC_GiveTalent(role,node/2,ModuloInteger(node,2)+1)
+        endif
+        set role = role + 1
+    endloop
+endfunction
+
+function RC_QueueTalent takes integer role, integer abilityId returns boolean
+    local integer node = 0
+    loop
+        exitwhen node == 10
+        if abilityId == RC_talentAbility[role*10+node] then
+            if RC_TalentChoice(role,node/2) != 0 then
+                call RC_Tell(RC_Player(role),5,"В этом ряду талант уже выбран.")
+            elseif GetHeroLevel(RC_hero[role]) >= RC_talentLevel[node/2] and RC_pendingTalent[role] == 0 then
+                set RC_pendingTalent[role] = node + 1
+                if not RC_talentScheduled then
+                    if RC_talentClock == null then
+                        set RC_talentClock = CreateTimer()
+                    endif
+                    set RC_talentScheduled = true
+                    call TimerStart(RC_talentClock,0.05,false,function RC_CommitTalents)
+                endif
+            endif
+            return true
+        endif
+        set node = node + 1
+    endloop
+    return false
+endfunction
+
 function RC_LearnRank takes integer role, integer skill returns boolean
     local unit hero = RC_hero[role]
     local integer rank
@@ -203,6 +242,7 @@ function RC_ProgressTick takes integer role returns nothing
     local integer tiers = GetHeroLevel(RC_hero[role]) / 4
     local integer n = 0
     local boolean available = false
+    call RC_RefreshTalentTree(role)
     if tiers > 5 then
         set tiers = 5
     endif

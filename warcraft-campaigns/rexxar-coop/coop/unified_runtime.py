@@ -294,8 +294,8 @@ def assemble(maps,terrains,catalog,schema):
     shared=shared.replace('            call TriggerRegisterPlayerUnitEvent(t, RC_Player(n), e, filter)','            if RC_Active(n) then\n                call TriggerRegisterPlayerUnitEvent(t,RC_Player(n),e,filter)\n            endif')
     shared=shared.replace('            call TriggerRegisterPlayerEventEndCinematic(t, RC_Player(n))','            if RC_Active(n) then\n                call TriggerRegisterPlayerEventEndCinematic(t,RC_Player(n))\n            endif')
     source_resource=next(m[0] for m in FUNCTION.finditer(shared) if m[1]=='RC_Resource')
-    shared=shared.replace(source_resource,add_after_locals(source_resource,'    if UZ_entering and RC_ready and (state==PLAYER_STATE_RESOURCE_GOLD or state==PLAYER_STATE_RESOURCE_LUMBER) then\n        return\n    endif'))
-    shared=shared.replace('        call CinematicModeBJ(enabled, RC_force)','''        call CinematicModeBJ(enabled, RC_force)
+    shared=shared.replace(source_resource,add_after_locals(source_resource,'    if UZ_entering and (RC_ready or RC_partyLoaded) and RC_IsPartyPlayer(p) and (state==PLAYER_STATE_RESOURCE_GOLD or state==PLAYER_STATE_RESOURCE_LUMBER) then\n        return\n    endif'))
+    shared=shared.replace('        call CinematicModeExBJ(enabled, RC_force, fadeTime)','''        call CinematicModeExBJ(enabled, RC_force, fadeTime)
         if not enabled and RC_started then
             set n=0
             loop

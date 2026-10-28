@@ -6,10 +6,11 @@ for _,name in ipairs({'CreateTrigger','CreateTimer','CreateQuest','DialogCreate'
  local original=_G[name];_G[name]=function(...) return handle(original(...)) end
 end
 function GetHandleId(h) if h==nil then return 0 elseif type(h)=='number' then return 200000+h elseif not h.handle then handle(h) end return h.handle end
-for _,kind in ipairs({'Unit','Timer','Trigger','Quest','Item'}) do
+for _,kind in ipairs({'Unit','Timer','Trigger','Quest','Item','Effect'}) do
  _G['Save'..kind..'Handle']=function(t,p,c,v) SaveInteger(t,p,c,v) end
  _G['Load'..kind..'Handle']=function(t,p,c) return t[p] and t[p][c] or nil end
 end
+function GetExpiredTimer() return WORLD.expiredTimer end
 function HaveSavedInteger(t,p,c) return t[p] and t[p][c]~=nil or false end
 HaveSavedBoolean=HaveSavedInteger
 function SaveStr(t,p,c,v) SaveInteger(t,p,c,v) end
@@ -38,8 +39,11 @@ function Condition(f) return f end
 function TriggerAddCondition(t,f) table.insert(t.conditions,f) end
 function TriggerEvaluate(t)
  if not t or t.destroyed then return false end
- for _,f in ipairs(t.conditions) do if not f() then return false end end
- return true
+ local before=WORLD.events.trigger;WORLD.events.trigger=t
+ local result=true
+ for _,f in ipairs(t.conditions) do if not f() then result=false;break end end
+ WORLD.events.trigger=before
+ return result
 end
 function TriggerExecute(t)
  local before=WORLD.events.trigger;WORLD.events.trigger=t
@@ -47,6 +51,15 @@ function TriggerExecute(t)
  WORLD.events.trigger=before
 end
 function GetTriggeringTrigger() return WORLD.events.trigger end
+function DoNothing() end
+function QuestSetCompleted(q,v) q.completed=v end
+function QuestCreateItem(q)
+ local item=handle({quest=q,completed=false})
+ q.items=q.items or {};table.insert(q.items,item)
+ return item
+end
+function QuestItemSetDescription(item,s) item.description=s end
+function QuestItemSetCompleted(item,v) item.completed=v end
 function CreateLeaderboard() return handle({items={}}) end
 function LeaderboardClear(b) b.items={} end
 function LeaderboardSetLabel(b,s) b.title=s end

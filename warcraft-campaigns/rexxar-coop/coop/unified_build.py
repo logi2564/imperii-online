@@ -73,7 +73,7 @@ def prepare(out,missions=None):
 
 
 def build(out,missions=None):
-    import kits,unified_menu,unified_runtime,ctypes as c,hashlib,tempfile
+    import kits,talents,unified_menu,unified_runtime,ctypes as c,hashlib,tempfile
     from formats import field,write_objects
     out=Path(out);maps,terrains,catalog,schema,parts=prepare(out,missions)
     script,zones=unified_runtime.assemble(maps,terrains,catalog,schema)
@@ -94,6 +94,7 @@ def build(out,missions=None):
             mods=[field('arpx',0,0),field('arpy',0,1),field('abpx',0,0),field('abpy',0,1),field('alev',0,10),field('arlv',0,1),field('alsk',0,2)]
             for rank in range(1,11):mods += [field('Istr',0,3*rank,rank),field('Iagi',0,3*rank,rank),field('Iint',0,3*rank,rank),field('Ihid',0,1,rank),field('atp1',3,'Характеристики — ранг '+str(rank),rank),field('aub1',3,'+3 к силе, ловкости и интеллекту за ранг.',rank)]
             tables[0].append(dict(old=b'Aamk',new=b'\0'*4,mods=mods))
+        if kind=='upgrade':tables[1]+=talents.upgrades()
         entries[filename]=write_objects(tables,leveled)
     # Script/object strings from all zones are inline. The W3I loading-screen
     # and author metadata still reference the first source mission's WTS.
@@ -114,7 +115,7 @@ def build(out,missions=None):
     try:
         for name,data in entries.items():assert storm.read(verify,name)==data,name
     finally:storm.close(verify)
-    report=dict(status='experimental-native-client-test-required',nativeWarcraftTested=False,liveIrinaBotTested=False,sourceMaps=17,terrainSize=480,sourceZones=zones,objects={k:len(v) for k,v in catalog.output.items()},skillKits=16,talentChoices=40,minPlayers=1,maxPlayers=4,heroLevelCap=20,nextMapRequiresNewLobby=False,localSessionSaves='Z6/C4',AI='Adapted synchronized active-zone attack and factory replenishment; original native campaign AI not started',bytes=target.stat().st_size,sha256=hashlib.sha256(target.read_bytes()).hexdigest())
+    report=dict(status='experimental-native-client-test-required',nativeWarcraftTested=False,liveIrinaBotTested=False,sourceMaps=17,terrainSize=480,sourceZones=zones,objects={k:len(v) for k,v in catalog.output.items()},skillKits=16,talentChoices=40,talentBooks=4,talentUI='Classic spellbook; level requirements and permanent per-tier choice',minPlayers=1,maxPlayers=4,heroLevelCap=20,nextMapRequiresNewLobby=False,localSessionSaves='Z6/C4',AI='Adapted synchronized active-zone attack and factory replenishment; original native campaign AI not started',bytes=target.stat().st_size,sha256=hashlib.sha256(target.read_bytes()).hexdigest())
     (out/'Build-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2));print('BUILT',target,report['bytes'])
     return report
 

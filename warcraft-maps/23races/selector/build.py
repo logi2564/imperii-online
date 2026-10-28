@@ -71,7 +71,7 @@ def runtime(catalog,aliases,stages,timers,entries):
     return text.replace('// @@GLOBALS@@','')
 
 def ui_object(raw,model):
-    mods=[field('unam',3,'Экран выбора расы'),field('umdl',3,model),field('usca',2,1.),field('uabi',3,'Aloc,Avul'),field('uhab',3,''),field('ures',3,''),field('utra',3,''),field('ubui',3,''),field('ufoo',0,0),field('uaen',0,0),field('uacq',2,0.),field('umvs',0,0),field('umvt',3,'fly'),field('umvh',2,0.),field('umvf',2,0.),field('ucol',2,0.),field('upat',3,''),field('ubdg',0,0),field('ushb',3,''),field('ushu',3,''),field('umxp',2,0.),field('umxr',2,0.),field('uclr',0,255),field('uclg',0,255),field('uclb',0,255)]
+    mods=[field('unam',3,'Экран выбора расы'),field('umdl',3,model),field('usca',1,1.),field('uabi',3,'Aloc,Avul'),field('uhab',3,''),field('ures',3,''),field('utra',3,''),field('ubui',3,''),field('ufoo',0,0),field('uaen',0,0),field('uacq',2,0.),field('umvs',0,0),field('umvt',3,'fly'),field('umvh',2,0.),field('umvf',2,0.),field('ucol',2,0.),field('upat',3,''),field('ubdg',0,0),field('ushb',3,''),field('ushu',3,''),field('umxp',1,0.),field('umxr',1,0.),field('uclr',0,255),field('uclg',0,255),field('uclb',0,255)]
     return dict(old=b'hfoo',new=raw.encode(),mods=mods)
 
 def main():

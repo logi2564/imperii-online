@@ -64,4 +64,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          gh release create "23races-selector-${GITHUB_SHA::8}" /tmp/selector-release/* --target "$GITHUB_SHA" --prerelease --latest=false --title '23 Расы — выбор рас FIX2 (Warcraft 1.26)' --notes-file warcraft-maps/23races/selector/README-RU.txt
+          gh release create "23races-selector-${GITHUB_SHA::8}" /tmp/selector-release/* --target "$GITHUB_SHA" --prerelease --latest=false --title '23 Расы — FIX2, обычные кнопки и иконки (Warcraft 1.26)' --notes-file warcraft-maps/23races/selector/README-RU.txt
+          gh release view 23races-selector-dd66034b --json body --jq .body > /tmp/old-selector-notes.txt
+          python - <<'PY'
+          from pathlib import Path
+          import os
+          old=Path('/tmp/old-selector-notes.txt').read_text()
+          link='https://github.com/'+os.environ['GITHUB_REPOSITORY']+'/releases/tag/23races-selector-'+os.environ['GITHUB_SHA'][:8]
+          warning='Эта промежуточная сборка заменена: неверные DataPointer параметров Channel. Используйте [исправленную FIX2]('+link+').\n\n---\n\n'
+          Path('/tmp/superseded-selector-notes.txt').write_text(warning+old)
+          PY
+          gh release edit 23races-selector-dd66034b --title 'Архив: промежуточная FIX2 — используйте исправленную сборку' --notes-file /tmp/superseded-selector-notes.txt

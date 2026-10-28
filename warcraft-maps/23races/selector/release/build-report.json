@@ -1,7 +1,7 @@
 {
   "inputSHA256": "9865022098044aad2e9e93f6e8738246c3dc4dcbc69004fb87f2bf7e93498c2b",
-  "outputSHA256": "ea45571e1d489df26ff76b231f7e8c8d286425c4fcdfdb79beb367b1a940663b",
-  "bytes": 9641633,
+  "outputSHA256": "7ac271e154a58dfb98f8731b1dafcc859d9ef374b61bd277fab68feb559797fe",
+  "bytes": 9641629,
   "races": 34,
   "players": 12,
   "newPreviewTypes": 330,

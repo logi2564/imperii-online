@@ -36,6 +36,17 @@ def verify(work):
         assets=json.loads((work/'build-report.json').read_text())['newAssets']
         imports=storm.read(hb,'war3map.imp');n=struct.unpack_from('<I',imports,4)[0];assert n==569+assets
         units={o['new'].decode():o for o in y[1]};abilities={o['new'].decode():o for o in newa[1]}
+        schema=json.loads((ROOT/'classic-control-schema.json').read_text())
+        def check_schema(obj,kind):
+            for mod in obj['mods']:
+                meta=schema[kind][mod[0]];t=meta['type']
+                typ=0 if t in {'int','bool','channelType','channelFlags','attackBits'} else (1 if t=='real' else (2 if t=='unreal' else 3))
+                assert mod[1]==typ,('Classic field type',obj['new'],mod[0],mod[1],typ)
+                if kind=='ability':
+                    assert mod[3]==meta['data'],('Classic DataPointer',obj['new'],mod[0],mod[3],meta['data'])
+                    assert mod[2]==(1 if meta['repeat'] else 0),('Classic field level',obj['new'],mod[0],mod[2])
+        for raw in [f'qA{i:02}' for i in range(34)]+['qPrv','qNxt','qRnd','qPck']:check_schema(abilities[raw],'ability')
+        for raw in [f'qC{i:02}' for i in range(34)]+['qPln']:check_schema(units[raw],'unit')
         def vals(o):return {m[0]:(m[4].decode() if m[1]==3 else struct.unpack('<i' if m[1]==0 else '<f',m[4])[0]) for m in o['mods']}
         races=json.loads((work/'catalog.json').read_text())
         for r in races:
@@ -98,7 +109,7 @@ def verify(work):
     source=(work/'editor-generated.j').read_text()
     literals=re.findall(r'"(?:\\.|[^"\\])*"',source)
     assert max(len(s.encode())-2 for s in literals)<=1023
-    report={'originalMPQEntries':len(before),'byteIdenticalEntries':count,'originalFunctionsEqualExceptInitialTimerRegistration':checked,'originalInitializers':initializers,'newAssets':assets,'nativeCommandCards':34,'nativeButtonAbilities':38,'classicW3I':25,'nativeWarcraftRun':False}
+    report={'originalMPQEntries':len(before),'byteIdenticalEntries':count,'originalFunctionsEqualExceptInitialTimerRegistration':checked,'originalInitializers':initializers,'newAssets':assets,'nativeCommandCards':34,'nativeButtonAbilities':38,'classicControlSchemaSource':schema['source'],'classicChannelDataPointers':[1,2,3,4,5,6],'classicW3I':25,'nativeWarcraftRun':False}
     (work/'preservation-tests.json').write_text(json.dumps(report,indent=2)+'\n')
     print(f'PASS: {checked} original functions preserve actions/conditions/events; only initial timers moved to common start. Classic API and string-length checks pass.')
 

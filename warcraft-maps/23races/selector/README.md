@@ -27,6 +27,11 @@ base orders. The units have no attack or movement commands and stay unpaused;
 preview actors and the original world remain paused. Race icons come from the
 original research data. Four new control icons include gray disabled variants
 in classic BLP1 format with a complete mip chain. No Reforged frame API is used.
+Channel's Ncl1..Ncl6 modifications explicitly carry DataPointer1..6, matching
+classic AbilityMetaData's DataA..DataF columns. `classic-control-schema.json`
+records the pinned classic metadata for every new ability/unit field; validation
+checks types, levels and data pointers, not only the visible values. The schema
+check rejects the intermediate zero-pointer build.
 
 A registered `EVENT_PLAYER_UNIT_SPELL_EFFECT` handler validates the caster and
 owner, then queues input. The selected unit is replaced from a later timer

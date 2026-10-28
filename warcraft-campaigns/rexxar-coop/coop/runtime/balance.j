@@ -60,12 +60,12 @@ function RC_Damaged takes nothing returns nothing
     local real amount = GetEventDamage()
     local real scaled = amount
     local integer slot = 1
-    if RC_damageBusy or amount <= 0 or source == null or not RC_started or RC_transitionPending then
+    if RC_damageBusy or amount <= 0 or source == null or (not RC_started and not RC_training) or RC_transitionPending then
         set victim = null
         set source = null
         return
     endif
-    if RC_EnemyUnit(source) and RC_IsPartyPlayer(GetOwningPlayer(victim)) then
+    if not RC_training and RC_EnemyUnit(source) and RC_IsPartyPlayer(GetOwningPlayer(victim)) then
         set scaled = amount * RC_enemyDamage
         if RC_enemyDamage > 1 then
             // Damage event has already applied armour/resistance to amount.
@@ -121,6 +121,7 @@ endfunction
 function RC_Balance takes nothing returns nothing
     local integer role = 0
     local integer count = RC_MaskCount(RC_CurrentMask())
+    local integer noticeKey = RC_difficulty * 5 + count
     local real extra = I2R(count - 1)
     if count < 1 then
         return
@@ -136,6 +137,7 @@ function RC_Balance takes nothing returns nothing
         set RC_enemyDamage = 1.25 + extra * 0.25
     endif
     if RC_map == 16 then
+        set noticeKey = noticeKey + 15
         set RC_enemyLife = 1.0 + (0.4 + RC_difficulty * 0.7) * I2R(count) / 4.0
         set RC_enemyDamage = 1.0 + RC_difficulty * 0.3 * I2R(count) / 4.0
     endif
@@ -150,5 +152,8 @@ function RC_Balance takes nothing returns nothing
         set role = role + 1
     endloop
     call TimerStart(RC_balanceTimer, 0.25, true, function RC_BalanceScan)
-    call RC_Say("Героев в отряде: " + I2S(count) + ". Сложность: " + RC_difficultyName[RC_difficulty] + ". Здоровье врагов ×" + R2SW(RC_enemyLife, 1, 1) + ", урон ×" + R2SW(RC_enemyDamage, 1, 1) + ". Каждый герой получает свою полную награду опыта.")
+    if RC_balanceNoticeKey != noticeKey then
+        set RC_balanceNoticeKey = noticeKey
+        call RC_Say("Героев в отряде: " + I2S(count) + ". Сложность: " + RC_difficultyName[RC_difficulty] + ". Здоровье врагов ×" + R2SW(RC_enemyLife, 1, 1) + ", урон ×" + R2SW(RC_enemyDamage, 1, 1) + ". Каждый герой получает свою полную награду опыта.")
+    endif
 endfunction

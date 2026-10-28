@@ -242,6 +242,8 @@ def shared_runtime(m0,catalog,schema,parts,hooks_code):
     # A completed checkpoint may resume any of the seventeen atlas regions.
     runtime=runtime.replace('RC_Number(SubString(text, 9, 10)) != RC_map','(RC_Number(SubString(text, 9, 10))>16 or (RC_checkpointLoaded and RC_Number(SubString(text,9,10))!=RC_map))')
     runtime=runtime.replace('    set RC_loadedGroup = common','    set RC_map=RC_Number(SubString(text,9,10))\n    set RC_defaultLevel=2\n    if RC_map>=15 then\n        set RC_defaultLevel=12\n    elseif RC_map>=5 then\n        set RC_defaultLevel=8\n    endif\n    set RC_loadedGroup = common')
+    runtime=runtime.replace('    set RC_checkpointCode[role] = RC_CompactCode(text)', '    set RC_checkpointCode[role] = RC_CompactCode(text)\n    call ExecuteFunc("UM_AfterLoad")')
+    runtime=runtime.replace('        call RC_ResetCheckpoint()', '        call RC_ResetCheckpoint()\n        call ExecuteFunc("UM_AfterLoad")')
     runtime=runtime.replace('Этот код предназначен для другой карты или версии. Откройте указанную при завершении миссию.','Код содержит неверную локацию/сложность либо не совпадает с уже загруженным сохранением.')
     return runtime
 
@@ -333,6 +335,8 @@ def assemble(maps,terrains,catalog,schema):
     geometry.append("    set UM_backAbility='uIBk'")
     for index,title in enumerate(['Глава 1: Дуротар','Глава 2: Союзники Орды','Глава 3: Битва за Терамор'],1):
         geometry.append(f'    set UM_actTitle[{index}]='+json.dumps(title,ensure_ascii=False))
+    for player,(x,y) in enumerate(maps[MAPS[0]]['previewStages']):
+        geometry += [f'    set UM_stageX[{player}]={x}',f'    set UM_stageY[{player}]={y}']
     geometry+=['endfunction']
     main='''function main takes nothing returns nothing
     call SetCameraBounds(-29696,-29696,29696,29696,-29696,29696,29696,-29696)
@@ -349,7 +353,7 @@ endfunction'''
         n=p['id'];config += [f'    call DefineStartLocation({n},{p["x"]},{p["y"]})',f'    call SetPlayerStartLocation(Player({n}),{n})',f'    call ForcePlayerStartLocation(Player({n}),{n})',f'    call SetPlayerColor(Player({n}),ConvertPlayerColor({n}))',f'    call SetPlayerController(Player({n}),'+('MAP_CONTROL_USER' if n<4 else 'MAP_CONTROL_COMPUTER')+')',f'    call SetPlayerTeam(Player({n}),{0 if n<4 else n-3})',f'    call SetPlayerRacePreference(Player({n}),RACE_PREF_ORC)',f'    call SetPlayerRaceSelectable(Player({n}),false)']
         if n<4:config.append(f'    call SetPlayerSlotAvailable(Player({n}),MAP_CONTROL_USER)')
     config+=['endfunction']
-    functions='\n\n'.join([(ROOT/'unified-engine-low.j').read_text(),shared,source,late,'\n'.join(geometry),(ROOT/'unified-engine-high.j').read_text(),(ROOT/'unified-menu.j').read_text(),ai_code(maps,catalog),main,'\n'.join(config)])
+    functions='\n\n'.join([(ROOT/'unified-engine-low.j').read_text(),shared,source,late,'\n'.join(geometry),(ROOT/'unified-engine-high.j').read_text(),(ROOT/'unified-menu.j').read_text(),(ROOT/'unified-demo.j').read_text(),ai_code(maps,catalog),main,'\n'.join(config)])
     globals_block='globals\n'+globals_text(maps[MAPS[0]],len(schema))+GLOBALS+unified_menu.GLOBALS+'\n'.join(p['globals'] for p in parts.values())+'\nendglobals\n'
     result=classic_strings(globals_block+order_functions(functions))
     assert '@@' not in result

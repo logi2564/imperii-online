@@ -2,6 +2,8 @@
     integer array RC_learnSkill
     integer array RC_skillRanks
     boolean RC_writingXP = false
+    boolean RC_training = false
+    integer RC_balanceNoticeKey = -1
     hashtable RC_codec = null
     integer array RC_hpBit
     integer array RC_armorId

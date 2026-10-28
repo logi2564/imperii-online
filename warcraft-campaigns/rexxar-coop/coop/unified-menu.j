@@ -78,6 +78,10 @@ function UM_Choose takes integer p, integer role returns nothing
         call RC_Tell(Player(p),8,"Этот герой уже подтверждён другим игроком.")
         return
     endif
+    call UM_StopDemo(p)
+    if other>=0 and other!=p then
+        call UM_StopDemo(other)
+    endif
     set UM_ready[p]=false
     set UM_details[p]=false
     set UZ_classPlayer[old]=other
@@ -90,6 +94,20 @@ function UM_Choose takes integer p, integer role returns nothing
     endif
     set RC_host=UZ_playerClass[UM_hostColor]
     call UM_Replace(p)
+endfunction
+
+function UM_AfterLoad takes nothing returns nothing
+    local integer p=0
+    // A newly accepted save changes the chapter/difficulty for the whole
+    // party. Old ready votes and rehearsal actors must not carry across.
+    loop
+        exitwhen p==4
+        call UM_StopDemo(p)
+        set UM_ready[p]=false
+        set p=p+1
+    endloop
+    set UM_act=RC_act[RC_map]-1
+    call UM_Refresh()
 endfunction
 
 function UM_Input takes nothing returns nothing
@@ -149,8 +167,11 @@ function UM_Input takes nothing returns nothing
             elseif action==12 then
                 set UM_ready[p]=not UM_ready[p]
             elseif action==13 then
+                call UM_StopDemo(p)
                 set UM_details[p]=false
                 call UM_Replace(p)
+            elseif action>=14 and action<=17 then
+                call UM_StartDemo(p,action-14)
             endif
         endif
         if UZ_playerClass[p]>=0 and not UM_ready[p] then
@@ -173,10 +194,19 @@ function UM_Spell takes nothing returns nothing
     if UM_details[p] then
         if GetSpellAbilityId()==UM_backAbility then
             set UM_pending[p]=13
-            if not UM_scheduled then
-                set UM_scheduled=true
-                call TimerStart(UM_inputClock,0.05,false,function UM_Input)
-            endif
+        else
+            loop
+                exitwhen i==4
+                if GetSpellAbilityId()==UM_detailAbility[UZ_playerClass[p]*4+i] then
+                    set UM_pending[p]=14+i
+                    exitwhen true
+                endif
+                set i=i+1
+            endloop
+        endif
+        if UM_pending[p]>0 and not UM_scheduled then
+            set UM_scheduled=true
+            call TimerStart(UM_inputClock,0.05,false,function UM_Input)
         endif
         return
     endif
@@ -215,10 +245,12 @@ function UM_Close takes nothing returns nothing
     local integer p=0
     call PauseTimer(UM_clock)
     call PauseTimer(UM_inputClock)
+    call PauseTimer(UM_demoClock)
     call LeaderboardDisplay(UM_board,false)
     call DisplayCineFilter(false)
     loop
         exitwhen p==4
+        call UM_StopDemo(p)
         if UM_unit[p]!=null then
             call RemoveUnit(UM_unit[p])
             set UM_unit[p]=null
@@ -233,6 +265,7 @@ function UM_Open takes nothing returns nothing
     set UM_board=CreateLeaderboard()
     set UM_clock=CreateTimer()
     set UM_inputClock=CreateTimer()
+    set UM_demoClock=CreateTimer()
     loop
         exitwhen p==4
         if UZ_playerClass[p]>=0 then
@@ -246,6 +279,7 @@ function UM_Open takes nothing returns nothing
     call UM_Refresh()
     call LeaderboardDisplay(UM_board,true)
     call TimerStart(UM_clock,0.35,true,function UM_KeepSelection)
+    call TimerStart(UM_demoClock,0.1,true,function UM_DemoTick)
     call RC_Say("Выберите героя обычными кнопками Q/W/E/R. Ведущий: A/S/D — сложность, F — акт. Всем V — готовность. Один игрок должен взять Рексара. Наведите мышь на кнопки для описаний.")
     set t=null
 endfunction

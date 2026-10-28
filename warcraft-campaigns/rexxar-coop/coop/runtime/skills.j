@@ -450,7 +450,7 @@ endfunction
 function RK_Tick takes nothing returns nothing
     local integer slot = 1
     local integer step
-    if not RC_started or RC_StoryCinematic() then
+    if (not RC_started and not RC_training) or RC_StoryCinematic() then
         return
     endif
     set RC_skillTime = RC_skillTime + 0.1
@@ -506,18 +506,13 @@ function RK_Launch takes unit caster, integer kind, integer rank, real x, real y
     endif
 endfunction
 
-function RC_Spell takes nothing returns nothing
-    local unit caster = GetTriggerUnit()
-    local unit target = GetSpellTargetUnit()
-    local integer abilityId = GetSpellAbilityId()
+function RK_Cast takes unit caster, unit target, integer abilityId, real x, real y returns nothing
     local integer role = 0
     local integer skill = 0
     local integer kind
     local integer rank = GetUnitAbilityLevel(caster, abilityId)
     local integer slot = 0
     local integer n = 0
-    local real x = GetSpellTargetX()
-    local real y = GetSpellTargetY()
     local real dx
     local real dy
     local real distance
@@ -699,6 +694,10 @@ function RC_Spell takes nothing returns nothing
     set target = null
     set partner = null
     set u = null
+endfunction
+
+function RC_Spell takes nothing returns nothing
+    call RK_Cast(GetTriggerUnit(),GetSpellTargetUnit(),GetSpellAbilityId(),GetSpellTargetX(),GetSpellTargetY())
 endfunction
 
 // Scripted stock-skill purchases must not spend the player's unassigned points.

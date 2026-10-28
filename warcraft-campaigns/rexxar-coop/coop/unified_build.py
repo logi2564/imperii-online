@@ -52,6 +52,9 @@ def prepare(out,missions=None):
         terrains.append(terrain.read(name,data['war3map.w3e'],data['war3map.w3i']));paths[name]=data['war3map.wpm'];shadows[name]=data['war3map.shd']
     terrain.arrange(terrains);catalog=UnifiedCatalog(maps);schema=state_schema(maps)
     merged,cliffs=terrain.merge(terrains,paths,shadows);stage=out/'merged';stage.mkdir(exist_ok=True)
+    stages=terrain.preview_stages(terrains,merged)
+    (out/'Preview-stages.json').write_text(json.dumps(stages))
+    for m in maps.values():m['previewStages']=stages
     for name,blob in merged.items():(stage/name).write_bytes(blob)
     plan={};parts={}
     for t in terrains:

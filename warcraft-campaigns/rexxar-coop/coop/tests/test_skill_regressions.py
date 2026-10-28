@@ -1,5 +1,5 @@
 """Point-loss rollback, progression and the lifetime of one-shot skill effects."""
-from test_unified import setup,start
+from test_unified import setup,start,advance
 from test_kits import cast,ticks,enemy
 import test_progress
 
@@ -46,7 +46,18 @@ def transient_effects():
     print('PASS fire cone, stampede impact and healing pulse survive their creation frame, expire on their own timer and release effect/timer handles.')
 
 
+def startup_messages():
+    g=fresh()
+    def notices():return [text for _,text in g.WORLD.messages.items() if 'Героев в отряде:' in text]
+    # Entry finalization and RC_Ready both calculate balance on startup.
+    assert len(notices())==1
+    advance(g,1);advance(g,0)
+    assert len(notices())==1
+    print('PASS one shared balance notice across actual startup finalization and unchanged cave departure/return.')
+
+
 failed_learning()
 transient_effects()
+startup_messages()
 test_progress.fresh=fresh
 test_progress.experience(None)

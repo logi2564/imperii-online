@@ -117,3 +117,36 @@ def merge(terrains,paths,shadows):
             if old_shadow is not None:shadow[dest:dest+w*4]=old_shadow[start:start+w*4]
     env=b'W3E!'+i(11)+b'B'+i(1)+i(len(GROUND))+b''.join(GROUND)+i(len(cliffs))+b''.join(cliffs)+struct.pack('<iiff',SIZE+1,SIZE+1,ORIGIN,ORIGIN)+vertices
     return {'war3map.w3e':env,'war3map.wpm':b'MP3W'+struct.pack('<iii',0,SIZE*4,SIZE*4)+path,'war3map.shd':bytes(shadow)},cliffs
+
+
+def preview_stages(terrains,entries):
+    """Four flat rehearsal platforms outside every original mission crop."""
+    occupied=[[False]*SIZE for _ in range(SIZE)]
+    for t in terrains:
+        for y in range(max(0,t.atlas_y-1),min(SIZE,t.atlas_y+t.crop[3]+1)):
+            for x in range(max(0,t.atlas_x-1),min(SIZE,t.atlas_x+t.crop[2]+1)):occupied[y][x]=True
+    spots=[];width=14
+    for y in range(6,SIZE-width-6):
+        for x in range(6,SIZE-width-6):
+            if all(not occupied[Y][X] for Y in range(y,y+width) for X in range(x,x+width)):
+                spots.append((x,y))
+                for Y in range(y,y+width):
+                    for X in range(x,x+width):occupied[Y][X]=True
+                if len(spots)==4:break
+        if len(spots)==4:break
+    if len(spots)!=4:raise ValueError('No safe space for four preview platforms')
+    env=bytearray(entries['war3map.w3e']);r=Reader(env);r.read(13)
+    r.read(r.i()*4);r.read(r.i()*4);r.read(16);start=r.p
+    path=bytearray(entries['war3map.wpm']);shadow=bytearray(entries['war3map.shd'])
+    for x,y in spots:
+        for Y in range(y,y+width+1):
+            for X in range(x,x+width+1):
+                tile=GROUND.index(b'Bgrr' if X in (x,x+width) or Y in (y,y+width) else b'Bflr')
+                at=start+(Y*(SIZE+1)+X)*7
+                env[at:at+7]=struct.pack('<HHBBB',8192,8192,tile,0,0xF2)
+        for Y in range(y*4,(y+width)*4):
+            at=Y*SIZE*4+x*4
+            path[16+at:16+at+width*4]=bytes(width*4)
+            shadow[at:at+width*4]=bytes(width*4)
+    entries.update({'war3map.w3e':bytes(env),'war3map.wpm':bytes(path),'war3map.shd':bytes(shadow)})
+    return [(ORIGIN+(x+width/2)*128,ORIGIN+(y+width/2)*128) for x,y in spots]

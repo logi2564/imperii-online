@@ -11,7 +11,7 @@ CONTROLS=[('Выбрать '+n,ICONS[r], 'Твоя роль: '+['урон и з�
  ('Лёгкая','BTNHumanArmorUpOne','Ведущий выбирает сложность. Здоровье врагов растёт с числом игроков.'),('Обычная','BTNHumanArmorUpTwo','Враги усиливаются по здоровью и урону за каждого участника.'),('Тяжёлая','BTNHumanArmorUpThree','Для четырёх героев: здоровье обычных врагов ×6,5, урон ×2. Отдельный баланс массовой битвы финала.'),
  ('Выбрать акт','BTNSelectHeroOn','Ведущий переключает начало: акт I → II → III. Для полного прохождения начните с I. Сохранение выбирает локацию автоматически.'),
  ('Состав и правила','BTNScroll','Показать героев, сложность и правила кампании. Сохранение новой сессии: -save, загрузка до старта: -load КОД.'),
- ('О герое','BTNTomeOfRetraining','Показать описание четырёх навыков выбранного героя. В игре: K — обучение, T — таланты на 4/8/12/16/20.'),
+ ('О герое','BTNTomeOfRetraining','Описания, иконки и показ четырёх навыков на манекенах. В игре: K — обучение, T — таланты на 4/8/12/16/20.'),
  ('Продолжение','BTNChestOfGold','В новой сессии выбери своего героя и введи -load КОД. Коды нужны только между игровыми сессиями, не на дверях.'),
  ('Готов / отменить','BTNSelectHeroOn','Подтвердить своего героя. Когда все готовы и выбран Рексар, кампания начнётся. Повторное нажатие отменяет готовность.')]
 
@@ -22,7 +22,7 @@ def objects():
   mods += [field('atp1',3,name+' ('+KEYS[slot]+')',1),field('aub1',3,desc,1),field('amcs',0,0,1),field('acdn',2,0.,1),field('acas',2,0.,1),field('aran',2,0.,1),field('Ncl1',2,0.,1),field('Ncl2',0,0,1),field('Ncl3',0,1,1),field('Ncl4',2,0.,1),field('Ncl5',0,0,1),field('Ncl6',3,ORDERS[slot],1)]
   abilities.append(dict(old=b'ANcl',new=f'uM{slot:02}'.encode(),mods=mods))
  # A separate command card exposes the actual skill icons and full tooltips.
- # These are explicitly information buttons, never pretend combat previews.
+ # Clicks run the actual skill code on isolated training stages.
  def info_button(raw,name,icon,key,description,order,x,y):
   values={'anam':name,'aart':'ReplaceableTextures\\CommandButtons\\'+icon+'.blp',
           'ahky':key,'atp1':name+' ('+key+')','aub1':description,'Ncl6':order,'abpx':x,'abpy':y}
@@ -33,7 +33,7 @@ def objects():
    desc=description.format(a='35 + 25 × ранг',b='90 + 50 × ранг',c='12 + 9 × ранг',d='100 + 80 × ранг',e='10 + 8 × ранг',f='18 + 17 × ранг',g='3 + 2 × ранг',h='180 + 60 × ранг',p='75 + 50 × ранг',q='4 × ранг')
    desc+='|n|nМана в игре: '+str(mana)+'. Перезарядка: '+str(cooldown)+' сек.'
    desc+='|nУровни изучения: '+('6 / 12 / 18.' if slot==3 else '1 / 3 / 5 / 7 / 9.')
-   desc+='|n|cffffcc00Просмотр описания. Назад к выбору — B.|r'
+   desc+='|n|cffffcc00Нажми для показа на манекенах. Назад к выбору — B.|r'
    abilities.append(info_button(f'uI{role}{slot}','Справка: '+name,icon,'QWER'[slot],desc,ORDERS[slot],slot,0))
  abilities.append(info_button('uIBk','Назад к выбору','BTNCancel','B','Вернуться к выбору героя, главы, сложности и готовности.','roar',3,2))
  for r in range(4):
@@ -49,6 +49,19 @@ GLOBALS='''
     integer array UM_detailAbility
     integer UM_backAbility=0
     string array UM_actTitle
+    real array UM_stageX
+    real array UM_stageY
+    unit array UM_demoHero
+    trigger array UM_demoDamage
+    group array UM_demoEnemies
+    integer array UM_demoRole
+    integer array UM_demoSkill
+    real array UM_demoAge
+    boolean array UM_demoCast
+    boolean array UM_demoHit
+    integer UM_demoCount=0
+    integer UM_demoOwner=0
+    timer UM_demoClock=null
     integer array UM_pending
     integer array UM_unitType
     integer array UM_ability

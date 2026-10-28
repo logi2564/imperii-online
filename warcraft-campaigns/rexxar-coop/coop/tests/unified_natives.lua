@@ -71,6 +71,7 @@ function SelectUnit(u,b) WORLD.selected=u end
 function IsUnitSelected(u,p) return WORLD.selected==u end
 function SetCameraPosition(...) end
 function SetCameraField(...) end
+function SetUnitAnimation(u,name) u.animation=name end
 CAMERA_FIELD_TARGET_DISTANCE='distance';UNIT_TYPE_DEAD='dead';UNIT_TYPE_PEON='peon'
 local originalType=IsUnitType
 function IsUnitType(u,t) if not u then return false end if t==UNIT_TYPE_DEAD then return u.hp<=0.405 end return originalType(u,t) end

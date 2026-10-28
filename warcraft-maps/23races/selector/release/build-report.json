@@ -1,0 +1,12 @@
+{
+  "inputSHA256": "9865022098044aad2e9e93f6e8738246c3dc4dcbc69004fb87f2bf7e93498c2b",
+  "outputSHA256": "2588b7fe07946a7f52c935e5f007481386591fe9a19beefbaac8322f79cc6a61",
+  "bytes": 10215172,
+  "races": 34,
+  "players": 12,
+  "newPreviewTypes": 364,
+  "newAssets": 108,
+  "deferredInitialTimers": 45,
+  "originalTriggers": 262,
+  "nativeWarcraftRun": false
+}

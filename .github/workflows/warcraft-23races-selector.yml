@@ -1,0 +1,67 @@
+name: Build and validate classic 34-race selection example
+on:
+  push:
+    branches: [warcraft-23races-selector]
+    paths:
+      - 'warcraft-maps/23races/selector/**'
+      - '.github/workflows/warcraft-23races-selector.yml'
+permissions:
+  contents: write
+jobs:
+  selector:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      STORMLIB_PATH: /tmp/storm-build/libstorm.so
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.100'
+      - name: Install pinned build and validation tools
+        run: |
+          python -m pip install Pillow==11.3.0 mpyq==0.2.5 lupa==2.8
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq bison flex fonts-dejavu-core
+          git clone --depth 1 --branch v9.25 https://github.com/ladislav-zezula/StormLib.git /tmp/storm-source
+          test "$(git -C /tmp/storm-source rev-parse HEAD)" = "28c9b4be3f23c6b3a5ff55cacac7dbe5b9cdc4fc"
+          cmake -S /tmp/storm-source -B /tmp/storm-build -DBUILD_SHARED_LIBS=ON -DSTORM_USE_BUNDLED_LIBRARIES=ON -DSTORM_SKIP_INSTALL=ON -DCMAKE_BUILD_TYPE=Release
+          cmake --build /tmp/storm-build --parallel 2
+          git clone https://github.com/lep/pjass.git /tmp/pjass
+          git -C /tmp/pjass checkout 654c3cf7731eb472518e6915e9d7672a72652165
+          make -C /tmp/pjass -j2
+          git clone https://github.com/Drake53/War3Net.git /tmp/War3Net
+          git -C /tmp/War3Net checkout 5f6f7bac26ed7ce7d0db83ceb4fb9ce59f918ff8
+          mkdir -p /tmp/classic-jass
+          curl -fsSL https://raw.githubusercontent.com/tdauth/wc3lib/4b221577921c20ab5fac410f0c1d555f64beeb56/src/jass/test/common.j -o /tmp/classic-jass/common.j
+          curl -fsSL https://raw.githubusercontent.com/tdauth/wc3lib/4b221577921c20ab5fac410f0c1d555f64beeb56/src/jass/test/Blizzard.j -o /tmp/classic-jass/Blizzard.j
+      - name: Build actual W3X with editable triggers and independently parsed MDX800
+        run: |
+          dotnet build warcraft-maps/23races/selector/Check -p:War3NetSource=/tmp/War3Net -v quiet
+          python warcraft-maps/23races/selector/build.py --out /tmp/selector-build
+      - name: Check original content, strict classic JASS and actual selector behavior
+        run: |
+          python warcraft-maps/23races/selector/verify.py /tmp/selector-build /tmp/classic-jass
+          /tmp/pjass/pjass +shadow /tmp/classic-jass/common.j /tmp/classic-jass/Blizzard.j /tmp/selector-build/editor-generated.j | tee /tmp/selector-build/pjass-runtime.txt
+          /tmp/pjass/pjass +shadow /tmp/classic-jass/common.j /tmp/classic-jass/Blizzard.j /tmp/selector-build/verify/editor-regenerated.j | tee /tmp/selector-build/pjass-editor.txt
+          dotnet warcraft-maps/23races/selector/Check/bin/Debug/net10.0/Check.dll transpile /tmp/selector-build/editor-generated.j /tmp/classic-jass /tmp/selector-build/runtime.lua
+          python warcraft-maps/23races/selector/tests/test_runtime.py /tmp/selector-build
+          python warcraft-maps/23races/selector/package.py /tmp/selector-build /tmp/selector-release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 23-Races-Race-Selection-1.26
+          path: /tmp/selector-release/*
+      - name: Publish prototype with explicit native-client test limits
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "23races-selector-${GITHUB_SHA::8}" /tmp/selector-release/* --target "$GITHUB_SHA" --prerelease --latest=false --title '23 Расы — пример выбора рас (Warcraft 1.26)' --notes-file warcraft-maps/23races/selector/README-RU.txt

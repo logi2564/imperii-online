@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="War3Net.Build" Version="6.1.2" />
+    <PackageReference Include="War3Net.CodeAnalysis.Transpilers" Version="6.1.1" />
+    <!-- Modeling is not published on NuGet. Pin the upstream source in CI. -->
+    <Compile Include="$(War3NetSource)/src/War3Net.Modeling/**/*.cs" Exclude="$(War3NetSource)/src/War3Net.Modeling/obj/**;$(War3NetSource)/src/War3Net.Modeling/bin/**" />
+  </ItemGroup>
+</Project>

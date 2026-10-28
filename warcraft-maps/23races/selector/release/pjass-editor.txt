@@ -1,0 +1,4 @@
+Parse successful:     2418 lines: /workspace/imperii-rexxar/warcraft-campaigns/rexxar-coop/coop/tests/reference/common.j
+Parse successful:    10230 lines: /workspace/imperii-rexxar/warcraft-campaigns/rexxar-coop/coop/tests/reference/Blizzard.j
+Parse successful:    19199 lines: /workspace/warcraft-map-work/23races/selector-build/verify/editor-regenerated.j
+Parse successful:    31847 lines: <total>

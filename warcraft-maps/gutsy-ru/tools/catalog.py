@@ -154,9 +154,19 @@ def slk_spans(data):
 
 def info_spans(data):
  r=Reader(data);assert r.i()==25;r.read(8);result=[]
- for index in range(4):
+ def take(context,visible=True):
   a,b,t=r.string()
-  if index!=1 and prose(t):result.append(dict(start=a,end=b,text=t,kind='binary',context='map-info:'+str(index)))
+  if visible and prose(t):result.append(dict(start=a,end=b,text=t,kind='binary',context=context))
+ for index in range(4):take('map-info:'+str(index),index!=1)
+ r.read(56+5);r.i();take('loading-model',False)
+ for index in range(3):take('loading:'+str(index))
+ r.i();take('prologue-model',False)
+ for index in range(3):take('prologue:'+str(index))
+ r.read(24);take('sound-environment',False);r.read(5)
+ for index in range(r.i()):
+  r.read(16);take('lobby-player:'+str(index));r.read(16)
+ for index in range(r.i()):
+  r.read(8);take('lobby-force:'+str(index))
  return result
 
 def catalog(st,path):

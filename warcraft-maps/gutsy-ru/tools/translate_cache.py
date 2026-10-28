@@ -27,8 +27,11 @@ def prepare(text,commands):
  text=re.sub(r'(?i)(?<![A-Za-z])([A-Za-z]*)\|c([0-9a-f]{8})([A-Za-z])\|r([A-Za-z]+)',lambda m:(suffix.append('|c'+m[2]+m[3]+'|r') or m[1]+m[3]+m[4]),text)
  if suffix:text+=' ('+', '.join(suffix)+')'
  # Existing text input protocols may contain ordinary English sentences.
+ instruction=bool(re.search(r'\b(?:type|write|enter|input|command|commands|chat)\b',text,re.I))
  for cmd in sorted(commands,key=len,reverse=True):
-  if len(cmd)>=3 and text!=cmd:text=re.sub(r'(?<![A-Za-z0-9_])'+re.escape(cmd)+r'(?![A-Za-z0-9_])',lambda m:save(m[0]),text)
+  if len(cmd)<3 or text==cmd:continue
+  if not instruction and not cmd.startswith('-') and not re.search(r"['\"]"+re.escape(cmd)+r"['\"]",text):continue
+  text=re.sub(r'(?<![A-Za-z0-9_])'+re.escape(cmd)+r'(?![A-Za-z0-9_])',lambda m:save(m[0]),text)
  # All remaining engine tokens are protected before terminology substitutions.
  text=re.sub(r'ZXQ\d+QXZ|'+TOKEN.pattern.removeprefix('(?i)'),lambda m:m[0] if m[0].startswith('ZXQ') else save(m[0]),text,flags=re.I)
  # Translate terminology only in segments outside the placeholders.
@@ -36,7 +39,12 @@ def prepare(text,commands):
  for i in range(0,len(pieces),2):pieces[i]=TERMS.sub(lambda m:LOWER[m[0].lower()],pieces[i])
  # split() includes ID digits; reconstruct the placeholder delimiters.
  text=''.join(v if i%2==0 else 'ZXQ'+v+'QXZ' for i,v in enumerate(pieces))
- return text,protected
+ # Commands may occur after an earlier color tag; canonicalize placeholder
+ # indices by appearance so validation checks actual sequence, not discovery.
+ ordered=[protected[int(m[1])] for m in TOKEN_ID.finditer(text)]
+ counter=iter(range(len(ordered)))
+ text=TOKEN_ID.sub(lambda m:' ZXQ'+str(next(counter))+'QXZ ',text)
+ return text,ordered
 
 def restore(text,protected):
  ids=[int(m[1]) for m in TOKEN_ID.finditer(text)]

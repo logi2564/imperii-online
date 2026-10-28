@@ -27,9 +27,12 @@ jobs:
           sudo apt-get install -y libstorm-dev
           mkdir -p work
           curl --fail --location --retry 2 'https://github.com/logi2564/imperii-online/releases/download/gutsy-source-6ac86d86/Gutsy-Geoid-EN-1.0.5.w3x' -o work/original.w3x
-          python warcraft-maps/gutsy-ru/tools/catalog.py work/original.w3x work/catalog.json
+          set -o pipefail
+          python warcraft-maps/gutsy-ru/tools/catalog.py work/original.w3x work/catalog.json 2>&1 | tee work/Catalog-log.txt
       - name: Translate and validate protected text tokens
-        run: python -u warcraft-maps/gutsy-ru/tools/translate_cache.py work/catalog.json work/Translations.json
+        run: |
+          set -o pipefail
+          python -u warcraft-maps/gutsy-ru/tools/translate_cache.py work/catalog.json work/Translations.json 2>&1 | tee work/Translation-log.txt
       - name: Preserve reviewable translation cache
         if: always()
         env:
@@ -37,4 +40,4 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           tag="gutsy-ru-cache-${GITHUB_SHA:0:8}"
-          gh release create "$tag" work/Translations.json work/Progress.json --target "$GITHUB_SHA" --prerelease --latest=false --title 'Gutsy Geoid — Russian text cache for review' --notes 'Translation data for the localization build. Not a playable map.'
+          gh release create "$tag" work/*.json work/*log.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Gutsy Geoid — Russian text cache for review' --notes 'Translation data for the localization build. Not a playable map.'

@@ -23,13 +23,9 @@ function RC_LearnRank takes integer role, integer skill returns boolean
         set hero = null
         return false
     endif
-    // This path also repairs a slot removed by an older save/actor handover.
-    // It shares the hero's actual skill-point pool with native learning.
-    if rank == 0 then
-        call UnitAddAbility(hero, abilityId)
-    endif
-    call SetUnitAbilityLevel(hero, abilityId, rank + 1)
-    if GetUnitAbilityLevel(hero, abilityId) != rank + 1 then
+    // Install a normal cast ability, and mirror its hidden native learn entry.
+    // Spend the point only after verifying the installed rank.
+    if not RC_SetSkillRank(role, skill, rank + 1) then
         set hero = null
         return false
     endif
@@ -37,6 +33,40 @@ function RC_LearnRank takes integer role, integer skill returns boolean
     call RC_Tell(RC_Owner(role), 10, RC_skillName[role * 5 + skill] + ": ранг " + I2S(rank + 1) + ". Осталось очков: " + I2S(GetHeroSkillPoints(hero)))
     set hero = null
     return true
+endfunction
+
+function RC_NativeLearn takes nothing returns nothing
+    local unit hero = GetLearningUnit()
+    local integer id = GetLearnedSkill()
+    local integer role = 0
+    local integer skill = 0
+    local integer rank = GetLearnedSkillLevel()
+    loop
+        exitwhen role == 4 or RC_hero[role] == hero
+        set role = role + 1
+    endloop
+    if role == 4 or not RC_started or RC_transitionPending then
+        set hero = null
+        return
+    endif
+    loop
+        exitwhen skill == 4 or RC_learnSkill[role * 5 + skill] == id
+        set skill = skill + 1
+    endloop
+    if skill < 4 then
+        if not RC_SetSkillRank(role, skill, rank) then
+            if RC_skillRanks[role * 5 + skill] == 0 then
+                call UnitRemoveAbility(hero, id)
+            else
+                call SetUnitAbilityLevel(hero, id, RC_skillRanks[role * 5 + skill])
+            endif
+            call UnitModifySkillPoints(hero, 1)
+            call RC_Tell(RC_Owner(role), 15, "Навык не установился; очко возвращено. Открой K или -skills.")
+        else
+            call RC_Tell(RC_Owner(role), 10, RC_skillName[role * 5 + skill] + ": изучен ранг " + I2S(rank) + ". Кнопка навыка — в нижнем ряду героя.")
+        endif
+    endif
+    set hero = null
 endfunction
 
 function RC_OpenProgress takes integer role, integer mode, integer tier returns nothing
@@ -145,14 +175,18 @@ endfunction
 function RC_InitProgress takes nothing returns nothing
     local integer role = 0
     local trigger clicks = CreateTrigger()
+    local trigger learned = CreateTrigger()
     call TriggerAddAction(clicks, function RC_ProgressClick)
+    call TriggerAddAction(learned, function RC_NativeLearn)
     loop
         exitwhen role == 4
         set RC_progressPanel[role] = DialogCreate()
         call TriggerRegisterDialogEvent(clicks, RC_progressPanel[role])
+        call TriggerRegisterPlayerUnitEvent(learned, RC_Player(role), EVENT_PLAYER_HERO_SKILL, null)
         set role = role + 1
     endloop
     set clicks = null
+    set learned = null
 endfunction
 
 function RC_ProgressTick takes integer role returns nothing

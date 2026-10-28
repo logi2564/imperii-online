@@ -34,7 +34,7 @@ def run(first,second):
     g.RC_Transition(destination.RC_map,2)
     assert g.RC_saveOK and g.RC_transitionPending and g.WORLD.paused
     codes=[g.RC_checkpointCode[n] for n in range(4)]
-    assert all(c.startswith('Z5') and len(g.RC_ExpandCode(c))==106 and len('-load '+c)<=127 for c in codes)
+    assert all(c.startswith(('Z5','Z6')) and len(g.RC_ExpandCode(c))==106 and len('-load '+c)<=127 for c in codes)
     assert len({g.RC_ExpandCode(c)[3:41] for c in codes})==1
     assert all(c in g.RC_codeQuest[n].description for n,c in enumerate(codes))
     assert all('-load '+c in g.RC_saveQuest.description for c in codes)

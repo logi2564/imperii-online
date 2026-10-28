@@ -34,9 +34,9 @@ if(args[0]=="owners"){
         if(map.Units is null||map.Environment is null||map.ItemObjectData is null||map.AbilityObjectData is null)throw new InvalidDataException("Missing mission data");
         if(map.ItemObjectData.NewItems.Count<300)throw new InvalidDataException("Portable item catalog absent");
         int Raw(string id)=>BitConverter.ToInt32(System.Text.Encoding.ASCII.GetBytes(id));
-        for(int role=0;role<4;role++)for(int skill=0;skill<4;skill++){string id=$"R4{role}{skill}";if(!map.AbilityObjectData.NewAbilities.Any(a=>a.NewId==Raw(id)))throw new InvalidDataException("Missing learnable skill "+id);}
+        for(int role=0;role<4;role++)for(int skill=0;skill<4;skill++)foreach(int group in new[]{4,7}){string id=$"R{group}{role}{skill}";if(!map.AbilityObjectData.NewAbilities.Any(a=>a.NewId==Raw(id)))throw new InvalidDataException("Missing cast/learn skill "+id);}
         count++;
     }
     if(count!=17)throw new InvalidDataException("Expected all seventeen actual mission maps");
-    Console.WriteLine("PASS: independent War3Net reader opened 17 actual maps, classic W3I 25, four human roles, terrain, unit placements, portable items and sixteen learnable scripted abilities.");
+    Console.WriteLine("PASS: independent War3Net reader opened 17 actual maps, classic W3I 25, four human roles, terrain, unit placements, portable items, sixteen cast abilities and sixteen native learning proxies.");
 }else throw new ArgumentException("Unknown verification command");

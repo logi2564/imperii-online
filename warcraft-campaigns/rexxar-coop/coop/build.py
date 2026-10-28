@@ -10,7 +10,7 @@ ROOT=Path(__file__).resolve().parent
 MAPS=['OrcX01']+[f'OrcX01_{n:02}' for n in range(2,6)]+['OrcX02']+[f'OrcX02_{n:02}' for n in range(2,11)]+['OrcX03a','OrcX03b']
 ROLES=[0,1,2,3]
 FILE_PREFIX='RX6-'
-DISPLAY_PREFIX='REXXAR VI - '
+DISPLAY_PREFIX='REXXAR VI FIX - '
 KINDS={'item':('war3map.w3t',False),'ability':('war3map.w3a',True),'unit':('war3map.w3u',False),'buff':('war3map.w3h',False)}
 EXTRA=['war3map.j','war3map.w3i','war3map.wts','war3mapMisc.txt','war3mapUnits.doo']
 
@@ -323,6 +323,7 @@ def transform(script,m,schema,catalog,players,remap,runtime,forces):
     for a,b,value in sorted(replacements,reverse=True):script=script[:a]+value+script[b:]
     mapped={'GetGameDifficulty':'RC_GetDifficulty','GetForceOfPlayer':'RC_GetForce','IsUnitOwnedByPlayer':'RC_UnitOwned','TriggerRegisterPlayerUnitEvent':'RC_RegisterUnitEvent','TriggerRegisterPlayerEventEndCinematic':'RC_RegisterSkip','CinematicModeBJ':'RC_Cinematic','CameraSetupApplyForPlayer':'RC_CameraSetup','GetUnitsOfPlayerAll':'RC_UnitsOfPlayer','InitGameCacheBJ':'RC_InitCache','ReloadGameCachesFromDisk':'RC_ReloadCache','SaveGameCacheBJ':'RC_SaveCache','RestoreUnitLocFacingAngleBJ':'RC_RestoreHero','StartCampaignAI':'RC_StartAI','ChangeLevel':'RC_ChangeLevel','SetNextLevelBJ':'RC_SetNextLevel','CustomVictoryBJ':'RC_Victory','CustomDefeatBJ':'RC_Defeat','SetPlayerStateBJ':'RC_Resource','AdjustPlayerStateBJ':'RC_AdjustResource'}
     mapped.update({'CreateUnit':'RC_SourceCreate','CreateNUnitsAtLoc':'RC_SourceCreateAtLoc','CreateNUnitsAtLocFacingLocBJ':'RC_SourceCreateFacing','GetOwningPlayer':'RC_StoryOwner','SetUnitOwner':'RC_SourceOwner','ShowUnit':'RC_SourceShow','ShowUnitShow':'RC_SourceShowOn','ShowUnitHide':'RC_SourceShowOff','GroupAddUnit':'RC_SourceGroupAdd','GroupAddUnitSimple':'RC_SourceGroupSimple','GroupAddGroup':'RC_SourceGroupMerge','SelectHeroSkill':'RC_Learn','SetPlayerHandicapXPBJ':'RC_XPHandicapPercent','SetPlayerHandicapXP':'RC_XPHandicap','SuspendHeroXPBJ':'RC_SuspendExperienceBJ','SuspendHeroXP':'RC_SuspendExperience','UnitHasItemOfTypeBJ':'RC_HasQuestItem','GetItemOfTypeFromUnitBJ':'RC_QuestItem'})
+    mapped['RemoveUnit']='RC_SourceRemove'
     script=calls(script,mapped)
     if 'function Trig_Transition_Actions ' in script:
         base=0 if m['index']<5 else 5
@@ -448,6 +449,7 @@ def initialization(m):
         lines += [f"    set RC_heroType[{role}] = '{type}'",f'    set RC_heroName[{role}] = "{name}"',f'    set RC_loadedHero[{role}] = ""']
         for skill,id in enumerate(skills):
             lines.append(f"    set RC_skill[{role*5+skill}] = '{kits.skill_id(role,skill) if skill<4 else id}'")
+            lines.append(f"    set RC_learnSkill[{role*5+skill}] = '{kits.learn_id(role,skill) if skill<4 else id}'")
             if skill<4:lines.append(f"    set RC_oldSkill[{role*4+skill}] = '{id}'")
             title=kits.SPECS[role][skill][0] if skill<4 else 'Характеристики'
             lines.append(f'    set RC_skillName[{role*5+skill}] = "{title}"')

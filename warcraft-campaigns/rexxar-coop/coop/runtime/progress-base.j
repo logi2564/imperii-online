@@ -39,9 +39,63 @@ function RC_GiveTalent takes integer role, integer tier, integer choice returns 
     return true
 endfunction
 
+// Never rely on SetHeroXP bypassing the native suspension. Source campaign
+// level-cap callbacks must not suspend the hero in the middle of this write.
+function RC_WriteXP takes unit hero, integer experience, boolean effects returns nothing
+    set RC_writingXP = true
+    call SuspendHeroXP(hero, false)
+    call SetHeroXP(hero, experience, effects)
+    call SuspendHeroXP(hero, true)
+    set RC_writingXP = false
+endfunction
+
+function RC_SetSkillRank takes integer role, integer skill, integer rank returns boolean
+    local unit hero = RC_hero[role]
+    local integer id = RC_skill[role * 5 + skill]
+    local integer learned = RC_learnSkill[role * 5 + skill]
+    local integer previous = GetUnitAbilityLevel(hero, id)
+    if rank > 0 then
+        if GetUnitAbilityLevel(hero, id) == 0 then
+            call UnitAddAbility(hero, id)
+        endif
+        call SetUnitAbilityLevel(hero, id, rank)
+        if GetUnitAbilityLevel(hero, id) != rank then
+            if previous == 0 then
+                call UnitRemoveAbility(hero, id)
+            else
+                call SetUnitAbilityLevel(hero, id, previous)
+            endif
+            set hero = null
+            return false
+        endif
+        call UnitMakeAbilityPermanent(hero, true, id)
+        if learned != id then
+            if GetUnitAbilityLevel(hero, learned) == 0 then
+                call UnitAddAbility(hero, learned)
+            endif
+            call SetUnitAbilityLevel(hero, learned, rank)
+            call UnitMakeAbilityPermanent(hero, true, learned)
+        endif
+    else
+        call UnitRemoveAbility(hero, id)
+        if learned != id then
+            call UnitRemoveAbility(hero, learned)
+        endif
+    endif
+    if GetUnitAbilityLevel(hero, id) != rank then
+        set hero = null
+        return false
+    endif
+    set RC_skillRanks[role * 5 + skill] = rank
+    set hero = null
+    return true
+endfunction
+
 function RC_InstallProgress takes unit hero returns nothing
     call UnitAddAbility(hero, 'R5Sk')
     call UnitAddAbility(hero, 'R5Ta')
+    call UnitMakeAbilityPermanent(hero, true, 'R5Sk')
+    call UnitMakeAbilityPermanent(hero, true, 'R5Ta')
     // All automatic kill experience is replaced by explicit party awards.
     call SuspendHeroXP(hero, true)
 endfunction

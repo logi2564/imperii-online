@@ -1,7 +1,7 @@
 """Dynamic 1..4 player campaign, party-only troop allocation, and save codecs.
 Executes the actual generated mission scripts with native boundaries mocked.
 """
-import sys,shutil
+import sys,shutil,random
 from pathlib import Path
 from test_runtime import setup,begin,chat,stats
 from test_kits import cast,ticks,enemy
@@ -88,7 +88,7 @@ def saves(first,second):
         g=create(first,mask);populate(g,mask);before={n:stats(g,n) for n in roles(mask)}
         g.RC_Transition(5,2);assert g.RC_saveOK
         codes=[g.RC_checkpointCode[n] for n in roles(mask)]
-        assert len(codes)==len(roles(mask)) and all(c.startswith('Z5') and len('-load '+c)<=127 for c in codes)
+        assert len(codes)==len(roles(mask)) and all(c.startswith(('Z5','Z6')) and len('-load '+c)<=127 for c in codes)
         assert all(g.RC_checkpointCode[n]=='' for n in range(4) if n not in roles(mask))
         _,h=setup(second,players=roles(mask))
         for role in roles(mask):chat(h,role,'-load '+g.RC_checkpointCode[role])
@@ -102,18 +102,42 @@ def saves(first,second):
             assert h.GetItemCharges(h.UnitItemInSlot(h.udg_Stash,n))==17+n
             assert h.RC_extraCharges[n]==7+n
         if mask in [1,3,7,15]:fixtures(g,folder/('party-'+str(len(roles(mask)))))
-    # Dense solo state cannot be forced into one 127-character chat command.
+    # Repeated full inventories now compress to one command, without dropping
+    # the twelve stash slots. A genuinely high-entropy state still needs S2.
     g=create(first,1);populate(g,1,dense=True);g.RC_Transition(5,0)
+    assert g.RC_saveOK and g.RC_savedInline==1 and len('-load '+g.RC_checkpointCode[0])<=127
+    raw=g.RC_ExpandCode(g.RC_checkpointCode[0])
+    assert len(g.RC_checkpointCode[0])<len(g.RC_RLECode(raw))
+    fixtures(g,folder/'codec-z6')
+    print('PASS: repeated full solo inventory checkpoint shortened from',len(g.RC_RLECode(raw)),'to',len(g.RC_checkpointCode[0]),'characters, with all twelve stash slots inline.')
+    rng=random.Random(726)
+    for attempt in range(10):
+        g=create(first,1);populate(g,1,dense=True);u=g.RC_hero[0]
+        g.SetHeroXP(u,rng.randrange(100000,16000000),False)
+        u.str=rng.randrange(1024,4096);u.agi=rng.randrange(1024,4096);u.int=rng.randrange(1024,4096)
+        g.WORLD.players[0].gold=rng.randrange(100000,16777216);g.WORLD.players[0].wood=rng.randrange(100000,16777216)
+        for n in range(g.RC_storyCount):g.RC_story[n]=rng.randrange(1<<g.RC_storyBits[n])
+        indices=rng.sample(range(1,g.RC_itemCount),18)
+        for n,index in enumerate(indices):
+            raw=g.RC_ItemExpand(index);charges=rng.randrange(65,4096)
+            if n<12:
+                carrier=u if n<6 else g.udg_Stash;slot=n%6
+                g.RemoveItem(g.UnitItemInSlot(carrier,slot));g.UnitAddItemToSlotById(carrier,g.RC_ItemToLocal(raw),slot)
+                g.SetItemCharges(g.UnitItemInSlot(carrier,slot),charges)
+            else:g.RC_extraItem[n-12]=raw;g.RC_extraCharges[n-12]=charges
+        g.RC_Transition(5,0)
+        if g.RC_savedInline==0:break
     assert g.RC_saveOK and g.RC_savedInline==0 and g.RC_externalStash.startswith('S2')
+    last_charges=g.RC_extraCharges[5]
     assert len('-load '+g.RC_checkpointCode[0])<=127 and len('-stash '+g.RC_externalStash)<=127
     fixtures(g,folder/'party-1-full')
     _,h=setup(second,players=[0]);chat(h,0,'-load '+g.RC_checkpointCode[0]);h.RC_Begin();assert not h.RC_started
     raw=g.RC_externalStash;h.RC_codeOK=True;bad=h.RC_Seal(raw[:5]+'___'+raw[8:-3])
     chat(h,0,'-stash '+bad);assert h.RC_loadedStash==''
-    chat(h,0,'-stash '+raw);begin(h);assert h.RC_started and h.RC_extraCharges[5]==4095
+    chat(h,0,'-stash '+raw);begin(h);assert h.RC_started and h.RC_extraCharges[5]==last_charges
     _,pending=setup(second,players=[0]);chat(pending,0,'-stash '+raw);pending.RC_Begin();assert not pending.RC_started
     chat(pending,0,'-load '+g.RC_checkpointCode[0]);begin(pending)
-    assert pending.RC_started and pending.RC_extraCharges[5]==4095
+    assert pending.RC_started and pending.RC_extraCharges[5]==last_charges
     print('PASS: all 8 party masks round-trip XP/stats/skills/items and all 12 stash/companion slots; only participant codes required; 1/2/3/4-player Windows fixtures written; dense solo uses matching S2 backup, rejects wrong snapshot, supports either load order, every command <=127.')
 
 def legacy_and_departure(first,second):

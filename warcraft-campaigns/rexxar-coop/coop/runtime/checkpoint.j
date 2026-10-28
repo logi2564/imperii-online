@@ -95,7 +95,7 @@ endfunction
 
 // Z3/C2 and Z4/C3 use the same lossless run-length envelope. A dot followed by one
 // alphabet digit encodes 3..63 zeroes; malformed envelopes never reach state.
-function RC_CompactCode takes string text returns string
+function RC_RLECode takes string text returns string
     local string out = "Z3"
     local integer pos = 2
     local integer count
@@ -122,13 +122,67 @@ function RC_CompactCode takes string text returns string
     return out
 endfunction
 
+// Z6 adds short back-references to repeated non-zero data. A hash table finds
+// one candidate per position; no quadratic sliding-window scan in classic JASS.
+// Keep the old envelope whenever it is shorter. Both expand to the SAME C4.
+function RC_CompactCode takes string text returns string
+    local string fallback = RC_RLECode(text)
+    local string out = "Z6"
+    local string prefix
+    local integer pos = 2
+    local integer previous
+    local integer count
+    local integer zeroes
+    local integer key
+    if SubString(text, 0, 2) != "C4" then
+        return fallback
+    endif
+    call FlushChildHashtable(RC_codec, 0)
+    loop
+        exitwhen pos >= StringLength(text)
+        set count = 0
+        if pos + 4 <= StringLength(text) then
+            set prefix = SubString(text, pos, pos + 4)
+            set key = StringHash(prefix)
+            set previous = LoadInteger(RC_codec, 0, key)
+            call SaveInteger(RC_codec, 0, key, pos)
+            if previous >= 2 and previous < pos and pos - previous <= 63 and SubString(text, previous, previous + 4) == prefix then
+                loop
+                    exitwhen count == 63 or pos + count >= StringLength(text) or SubString(text, previous + count, previous + count + 1) != SubString(text, pos + count, pos + count + 1)
+                    set count = count + 1
+                endloop
+            endif
+        endif
+        set zeroes = 0
+        loop
+            exitwhen zeroes == 63 or pos + zeroes >= StringLength(text) or SubString(text, pos + zeroes, pos + zeroes + 1) != "0"
+            set zeroes = zeroes + 1
+        endloop
+        if count >= 4 and count > zeroes then
+            set out = out + "~" + RC_Pack(pos - previous, 1) + RC_Pack(count, 1)
+            set pos = pos + count
+        elseif zeroes >= 3 then
+            set out = out + "." + RC_Pack(zeroes, 1)
+            set pos = pos + zeroes
+        else
+            set out = out + SubString(text, pos, pos + 1)
+            set pos = pos + 1
+        endif
+    endloop
+    if StringLength(out) < StringLength(fallback) then
+        return out
+    endif
+    return fallback
+endfunction
+
 function RC_ExpandCode takes string text returns string
     local string out = "C2"
     local string c
     local integer pos = 2
     local integer count
+    local integer distance
     local integer maximum = RC_checkpointLength - 2
-    if SubString(text, 0, 2) == "Z5" then
+    if SubString(text, 0, 2) == "Z5" or SubString(text, 0, 2) == "Z6" then
         set out = "C4"
         set maximum = 142
     elseif SubString(text, 0, 2) == "Z4" then
@@ -140,7 +194,22 @@ function RC_ExpandCode takes string text returns string
     loop
         exitwhen pos >= StringLength(text)
         set c = SubString(text, pos, pos + 1)
-        if c == "." then
+        if c == "~" and SubString(text, 0, 2) == "Z6" then
+            if pos + 2 >= StringLength(text) then
+                return ""
+            endif
+            set distance = RC_Digit(SubString(text, pos + 1, pos + 2))
+            set count = RC_Digit(SubString(text, pos + 2, pos + 3))
+            if distance < 1 or distance > StringLength(out) - 2 or count < 4 or StringLength(out) + count > maximum then
+                return ""
+            endif
+            loop
+                exitwhen count == 0
+                set out = out + SubString(out, StringLength(out) - distance, StringLength(out) - distance + 1)
+                set count = count - 1
+            endloop
+            set pos = pos + 3
+        elseif c == "." then
             if pos + 1 >= StringLength(text) then
                 return ""
             endif

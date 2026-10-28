@@ -18,7 +18,9 @@ function RC_SuspendExperience takes unit hero, boolean flag returns nothing
     loop
         exitwhen role == 4
         if hero == RC_hero[role] then
-            call SuspendHeroXP(hero, true)
+            if not RC_writingXP then
+                call SuspendHeroXP(hero, true)
+            endif
             return
         endif
         set role = role + 1
@@ -35,6 +37,9 @@ function RC_KillExperience takes nothing returns nothing
     local unit killer = GetKillingUnit()
     local integer award
     local integer role = 0
+    local real dx
+    local real dy
+    local integer before
     local texttag floating
     if not RC_started or RC_transitionPending or RC_StoryCinematic() or killer == null or dead == null then
         set dead = null
@@ -54,10 +59,15 @@ function RC_KillExperience takes nothing returns nothing
     endif
     loop
         exitwhen role == 4
-        if RC_Active(role) and RC_hero[role] != null and GetWidgetLife(RC_hero[role]) > 0.405 and IsUnitInRange(dead, RC_hero[role], 1600) and GetHeroLevel(RC_hero[role]) < 20 then
-            // SetHeroXP bypasses the native automatic-XP suspension and still
-            // awards native level/skill points. No player-count/level penalty.
-            call SetHeroXP(RC_hero[role], GetHeroXP(RC_hero[role]) + award, true)
+        if RC_Active(role) and RC_hero[role] != null and GetWidgetLife(RC_hero[role]) > 0.405 and GetHeroLevel(RC_hero[role]) < 20 then
+            // Coordinate distance also works for corpses; do not depend on a
+            // living-unit range query after the native death event.
+            set dx = GetUnitX(dead) - GetUnitX(RC_hero[role])
+            set dy = GetUnitY(dead) - GetUnitY(RC_hero[role])
+            if dx * dx + dy * dy <= 2560000 then
+            set before = GetHeroXP(RC_hero[role])
+            call RC_WriteXP(RC_hero[role], before + award, true)
+            if GetHeroXP(RC_hero[role]) > before then
             set floating = CreateTextTag()
             call SetTextTagText(floating, "+" + I2S(award) + " опыта", 0.024)
             call SetTextTagPosUnit(floating, RC_hero[role], 64)
@@ -68,6 +78,10 @@ function RC_KillExperience takes nothing returns nothing
             call SetTextTagFadepoint(floating, 1.0)
             // All handles are created synchronously; only visibility is local UI.
             call SetTextTagVisibility(floating, GetLocalPlayer() == RC_Owner(role))
+            else
+                call RC_Tell(RC_Owner(role), 10, "Опыт не начислен: проверь, что загружена карта REXXAR VI FIX. Команда -progress покажет состояние героя.")
+            endif
+            endif
         endif
         set role = role + 1
     endloop

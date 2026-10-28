@@ -1,3 +1,19 @@
+# Rexxar VI FIX: XP, skill-learning events and shorter codes
+Read [the Russian update notes](README-VI-FIX-RU.txt). Registered hero-skill
+events mirror hidden native learning entries into permanent unit cast abilities;
+the K dialog and `-learn q/w/e/r/5` share the same verified purchase path.
+Experience writes explicitly clear/restore suspension, and corpse distance uses
+coordinates. Original story deletion preserves the gameplay hero until adoption.
+Z6 back-references shorten repeated state while preserving all existing save
+formats. The Windows helper validates both envelopes against actual JASS fixtures.
+
+This remains seventeen separate network maps: **seamless cave/location changes
+are not implemented**. Rehosting is still required. Native Warcraft/IrinaBot
+gameplay has not been executed here; mocked-event checks do not establish a
+native playthrough. `test_gameplay_events.py` states and tests those boundaries.
+
+---
+
 # Rexxar cooperative campaign — VI
 
 Current output: seventeen `RX6-*.w3x` missions, `package_vi.py`, and

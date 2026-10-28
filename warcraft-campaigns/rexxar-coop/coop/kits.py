@@ -22,16 +22,26 @@ SPECS=[
   ('Земля предков','BTNWarStomp',0,150,50,'8 сек. зона вокруг места применения. Герои рядом получают +{g} брони. Раз в 2 сек. враги получают {d} урона и короткое оглушение. Броня снимается при выходе из зоны.')]]
 
 def skill_id(role,slot):return f'R4{role}{slot}'
+def learn_id(role,slot):return f'R7{role}{slot}'
 def abilities():
     out=[]
     for role,specs in enumerate(SPECS):
         for slot,(name,icon,target,mana,cooldown,description) in enumerate(specs):
             key='QWER'[slot];levels=3 if slot==3 else 5
-            mods=[field('aher',0,1),field('aite',0,0),field('alev',0,levels),field('arlv',0,6 if slot==3 else 1),field('alsk',0,6 if slot==3 else 2),field('anam',3,name),field('aart',3,'ReplaceableTextures\\CommandButtons\\'+icon+'.blp'),field('arar',3,'ReplaceableTextures\\CommandButtons\\'+icon+'.blp'),field('ahky',3,key),field('arhk',3,key),field('abpx',0,slot),field('abpy',0,2),field('arpx',0,slot),field('arpy',0,0),field('aret',3,name+' ('+key+')'),field('arut',3,'Открывает новый ранг навыка. '+description.format(a='35 + 25 × ранг',b='90 + 50 × ранг',c='12 + 9 × ранг',d='100 + 80 × ранг',e='10 + 8 × ранг',f='18 + 17 × ранг',g='3 + 2 × ранг',h='180 + 60 × ранг',p='75 + 50 × ранг',q='4 × ранг')),field('acat',3,''),field('aeat',3,''),field('atat',3,'')]
+            mods=[field('aher',0,0),field('aite',0,0),field('alev',0,levels),field('arlv',0,6 if slot==3 else 1),field('alsk',0,6 if slot==3 else 2),field('anam',3,name),field('aart',3,'ReplaceableTextures\\CommandButtons\\'+icon+'.blp'),field('arar',3,'ReplaceableTextures\\CommandButtons\\'+icon+'.blp'),field('ahky',3,key),field('arhk',3,key),field('abpx',0,slot),field('abpy',0,2),field('arpx',0,slot),field('arpy',0,0),field('aret',3,name+' ('+key+')'),field('arut',3,'Открывает новый ранг навыка. '+description.format(a='35 + 25 × ранг',b='90 + 50 × ранг',c='12 + 9 × ранг',d='100 + 80 × ранг',e='10 + 8 × ранг',f='18 + 17 × ранг',g='3 + 2 × ранг',h='180 + 60 × ранг',p='75 + 50 × ранг',q='4 × ранг')),field('acat',3,''),field('aeat',3,''),field('atat',3,'')]
             for level in range(1,levels+1):
                 desc=description.format(a=35+25*level,b=90+50*level,c=12+9*level,d=100+80*level,e=10+8*level,f=18+17*level,g=3+2*level,h=180+60*level,p=75+50*level,q=4*level)
                 mods += [field('atp1',3,f'{name} ({key}) — ранг {level}',level),field('aub1',3,desc+f'|nМана: {mana}. Перезарядка: {cooldown} сек.',level),field('amcs',0,mana,level),field('acdn',2,float(cooldown),level),field('aran',2,700.,level),field('atar',3,'air,ground,friend,enemy,organic,neutral',level),field('Ncl1',2,0.,level),field('Ncl2',0,target,level),field('Ncl3',0,1,level),field('Ncl4',2,0.,level),field('Ncl5',0,0,level),field('Ncl6',3,['channel','farsight','drunkenhaze','healingward'][slot],level)]
             out.append(dict(old=b'ANcl',new=skill_id(role,slot).encode(),mods=mods))
+            # A hidden hero ability supplies the native '+' learning button.
+            # The separately installed UNIT ability supplies the actual cast
+            # button, avoiding a zero-level hero-list entry masking that button.
+            learn=[]
+            for mod in mods:
+                if mod[0]=='aher':learn.append(field('aher',0,1,mod[2]))
+                elif mod[0]=='Ncl3':learn.append(field('Ncl3',0,0,mod[2]))
+                else:learn.append(list(mod))
+            out.append(dict(old=b'ANcl',new=learn_id(role,slot).encode(),mods=learn))
     for raw,name,icon,key,x,order in [('R5Sk','Изучить навыки','BTNTomeOfRetraining','K',2,'berserk'),('R5Ta','Таланты героя','BTNStatUp','T',1,'roar')]:
         helptext='Открывает обучение пяти навыкам за свободные очки героя.' if raw=='R5Sk' else 'Один из двух талантов на уровнях 4, 8, 12, 16 и 20. Выбор сохраняется между миссиями.'
         out.append(dict(old=b'ANcl',new=raw.encode(),mods=[field('aher',0,0),field('alev',0,1),field('anam',3,name),field('aart',3,'ReplaceableTextures\\CommandButtons\\'+icon+'.blp'),field('ahky',3,key),field('abpx',0,x),field('abpy',0,1),field('atp1',3,name+' ('+key+')',1),field('aub1',3,helptext,1),field('amcs',0,0,1),field('acdn',2,0.,1),field('Ncl1',2,0.,1),field('Ncl2',0,0,1),field('Ncl3',0,1,1),field('Ncl4',2,0.,1),field('Ncl5',0,0,1),field('Ncl6',3,order,1),field('acat',3,''),field('aeat',3,''),field('atat',3,'')]))
@@ -52,4 +62,4 @@ def apply_heroes(tables):
     for role,raw in enumerate(HEROES):
         obj=next((o for o in tables[0] if o['old']==raw.encode()),None)
         if obj is None:obj=dict(old=raw.encode(),new=b'\0'*4,mods=[]);tables[0].append(obj)
-        obj['mods']=[m for m in obj['mods'] if m[0]!='uhab']+[field('uhab',3,','.join([skill_id(role,n) for n in range(4)]+['Aamk']))]
+        obj['mods']=[m for m in obj['mods'] if m[0]!='uhab']+[field('uhab',3,','.join([learn_id(role,n) for n in range(4)]+['Aamk']))]

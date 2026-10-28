@@ -56,6 +56,7 @@ jobs:
           python coop/tests/test_kits.py build-out/runtime.lua | tee Skills-balance-save-check.txt
           python coop/tests/test_progress.py build-out/runtime.lua build-out/runtime-act2.lua | tee Talents-XP-learning-check.txt
           python coop/tests/test_party.py build-out/runtime.lua build-out/runtime-act2.lua | tee Party-roster-check.txt
+          python coop/tests/test_gameplay_events.py build-out/runtime.lua | tee Gameplay-events-check.txt
           PJASS="$RUNNER_TEMP/pjass/pjass" python coop/tests/test_entry_regression.py build-out | tee Entry-regression-check.txt
       - name: Stage maps and verification reports
         run: |
@@ -137,5 +138,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          tag="rexxar-coop-vi-${GITHUB_SHA:0:8}"
-          gh release create "$tag" release/Rexxar-Coop-VI.zip release/Rexxar-Coop-VI.zip.sha256 release/RX6-OrcX01.w3x release/VI-package.json release/Package-check.txt mission-artifact/Skills-balance-save-check.txt mission-artifact/Talents-XP-learning-check.txt mission-artifact/Party-roster-check.txt mission-artifact/Entry-regression-check.txt helper-out/Windows-helper-check.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Рексар VI: 1–4 игрока, только свои герои и войска, уровень 20' --notes-file warcraft-campaigns/rexxar-coop/coop/README-VI-RU.txt
+          tag="rexxar-coop-vi-fix-${GITHUB_SHA:0:8}"
+          gh release create "$tag" release/Rexxar-Coop-VI-Fix.zip release/Rexxar-Coop-VI-Fix.zip.sha256 release/RX6-OrcX01.w3x release/VI-package.json release/Package-check.txt mission-artifact/Skills-balance-save-check.txt mission-artifact/Talents-XP-learning-check.txt mission-artifact/Party-roster-check.txt mission-artifact/Gameplay-events-check.txt mission-artifact/Entry-regression-check.txt helper-out/Windows-helper-check.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Рексар VI FIX: опыт, обычное обучение и сжатые коды; смена локаций всё ещё через лобби' --notes-file warcraft-campaigns/rexxar-coop/coop/README-VI-FIX-RU.txt

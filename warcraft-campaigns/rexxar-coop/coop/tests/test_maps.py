@@ -39,14 +39,18 @@ for name in MAPS:
         unit_tables=read_objects(storm.read(b,'war3map.w3u'),False)
         for role,hero_id in enumerate(kits.HEROES):
             hero=next(o for o in unit_tables[0] if o['old']==hero_id.encode())
-            assert next(m[4].decode() for m in hero['mods'] if m[0]=='uhab')==','.join([kits.skill_id(role,n) for n in range(4)]+['Aamk'])
+            assert next(m[4].decode() for m in hero['mods'] if m[0]=='uhab')==','.join([kits.learn_id(role,n) for n in range(4)]+['Aamk'])
             orders=[]
             for slot in range(4):
                 obj=lookup[kits.skill_id(role,slot).encode()]
                 assert obj['old']==b'ANcl'
                 values={(mod[0],mod[2]):mod[4] for mod in obj['mods']}
                 import struct
-                assert struct.unpack('<i',values[('aher',0)])[0]==1
+                assert struct.unpack('<i',values[('aher',0)])[0]==0
+                learn={(mod[0],mod[2]):mod[4] for mod in lookup[kits.learn_id(role,slot).encode()]['mods']}
+                assert struct.unpack('<i',learn[('aher',0)])[0]==1
+                assert struct.unpack('<i',learn[('Ncl3',1)])[0]==0
+                assert struct.unpack('<i',values[('Ncl3',1)])[0]==1
                 assert struct.unpack('<i',values[('alev',0)])[0]==(3 if slot==3 else 5)
                 assert struct.unpack('<i',values[('arlv',0)])[0]==(6 if slot==3 else 1)
                 orders.append(values[('Ncl6',1)])
@@ -86,5 +90,6 @@ assert not missing,('Not in classic API reference',missing)
 from kits import abilities
 from talents import TREES
 assert sum(len(pair) for tree in TREES for pair in tree)==40
-icons=[next(mod[4] for mod in obj['mods'] if mod[0]=='aart') for obj in abilities()[:16]];assert len(set(icons))==16
+cast_ids={kits.skill_id(role,slot).encode() for role in range(4) for slot in range(4)}
+icons=[next(mod[4] for mod in obj['mods'] if mod[0]=='aart') for obj in abilities() if obj['new'] in cast_ids];assert len(icons)==16 and len(set(icons))==16
 print(f'PASS: all 17 actual maps: classic object metadata types, unique IDs, four roles, retained quest functions, strict literal sizes, classic API, and {untouched} byte-identical terrain/import entries; sixteen distinct skill icons.')

@@ -169,7 +169,7 @@ def persistence(first,second):
         for tier in range(5):assert g.RC_GiveTalent(role,tier,1+(role+tier)%2)
         masks.append(g.RC_talents[role])
     g.RC_Transition(5,1);codes=[g.RC_checkpointCode[n] for n in range(4)]
-    assert all(c.startswith('Z5') and len('-load '+c)<=127 for c in codes)
+    assert all(c.startswith(('Z5','Z6')) and len('-load '+c)<=127 for c in codes)
     _,h=setup(second)
     for c in codes:chat(h,0,'-load '+c)
     begin(h);assert [h.RC_talents[n] for n in range(4)]==masks

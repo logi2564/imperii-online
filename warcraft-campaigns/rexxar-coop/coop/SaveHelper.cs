@@ -12,18 +12,23 @@ internal static class SaveHelper {
     const string Alphabet="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_";
     [STAThread] static int Main(string[] args) {
         if(args.Length>0&&args[0]=="--self-test") {
-            try { SelfTest(args[1]);if(args.Length>2)File.WriteAllText(args[2],"PASS: exact Windows EXE parsed four actual-JASS Z5/C4 dynamic-party plus legacy Z4/C3 and Z3/C2 checkpoint files; one command per hero, checksums, role numbers, shared completion identity, classic chat length, quoted Preload text and corruption refusals. No game code was executed.");return 0; } catch(Exception e){Console.WriteLine(e);if(args.Length>2)File.WriteAllText(args[2],e.ToString());return 1;}
+            try { SelfTest(args[1]);if(args.Length>2)File.WriteAllText(args[2],"PASS: exact Windows EXE parsed real-JASS Z6 back-references, Z5/C4 dynamic-party and legacy Z4/C3/Z3/C2 checkpoints; malformed references, checksums, role numbers, snapshot identity, classic chat length, quoted Preload text and corruption checked. No game code was executed.");return 0; } catch(Exception e){Console.WriteLine(e);if(args.Length>2)File.WriteAllText(args[2],e.ToString());return 1;}
         }
         Application.EnableVisualStyles();Application.SetCompatibleTextRenderingDefault(false);
         Application.Run(new SaveWindow());return 0;
     }
     internal static string Expand(string text) {
-        if(!text.StartsWith("Z3")&&!text.StartsWith("Z4")&&!text.StartsWith("Z5"))return text;
-        int maximum=text.StartsWith("Z5")?142:text.StartsWith("Z4")?104:102;
+        if(!text.StartsWith("Z3")&&!text.StartsWith("Z4")&&!text.StartsWith("Z5")&&!text.StartsWith("Z6"))return text;
+        int maximum=(text.StartsWith("Z5")||text.StartsWith("Z6"))?142:text.StartsWith("Z4")?104:102;
         var output=new StringBuilder(maximum==142?"C4":maximum==104?"C3":"C2");
         for(int pos=2;pos<text.Length;pos++) {
             char c=text[pos];
-            if(c=='.') {
+            if(c=='~'&&text.StartsWith("Z6")) {
+                if(pos+2>=text.Length)return "";
+                int distance=Alphabet.IndexOf(text[++pos]),count=Alphabet.IndexOf(text[++pos]);
+                if(distance<1||distance>output.Length-2||count<4||output.Length+count>maximum)return "";
+                for(int n=0;n<count;n++)output.Append(output[output.Length-distance]);
+            } else if(c=='.') {
                 if(++pos>=text.Length)return "";
                 int count=Alphabet.IndexOf(text[pos]);
                 if(count<3||output.Length+count>maximum)return "";
@@ -33,7 +38,7 @@ internal static class SaveHelper {
         }
         return output.ToString();
     }
-    static bool IsCheckpoint(string command) { return command.StartsWith("-load C2")||command.StartsWith("-load Z3")||command.StartsWith("-load C3")||command.StartsWith("-load Z4")||command.StartsWith("-load C4")||command.StartsWith("-load Z5"); }
+    static bool IsCheckpoint(string command) { return command.StartsWith("-load C2")||command.StartsWith("-load Z3")||command.StartsWith("-load C3")||command.StartsWith("-load Z4")||command.StartsWith("-load C4")||command.StartsWith("-load Z5")||command.StartsWith("-load Z6"); }
     static string GroupIdentity(string command) { string raw=Expand(command.Substring(6));return raw.Substring(3,raw.StartsWith("C4")?38:36); }
     static bool StashMatches(string command,string hero) {
         string raw=Expand(hero.Substring(6)),stash=command.Substring(7);
@@ -60,7 +65,7 @@ internal static class SaveHelper {
     }
     internal static Dictionary<string,string> Parse(string text) {
         var commands=new Dictionary<string,string>();
-        foreach(Match match in Regex.Matches(text,@"-load ((?:C2[A-Za-z0-9_-]{100}|C3[A-Za-z0-9_-]{102}|C4[A-Za-z0-9_-]{92,140}|Z[345][A-Za-z0-9_.-]{2,140}))(?![A-Za-z0-9_.-])")){
+        foreach(Match match in Regex.Matches(text,@"-load ((?:C2[A-Za-z0-9_-]{100}|C3[A-Za-z0-9_-]{102}|C4[A-Za-z0-9_-]{92,140}|Z[3456][A-Za-z0-9_.~-]{2,140}))(?![A-Za-z0-9_.~-])")){
             string payload=match.Groups[1].Value;string expanded=Expand(payload);int role=expanded.Length>2?Alphabet.IndexOf(expanded[2]):-1;
             if(payload.Length+6<=127&&Valid(payload,'C')&&role>=0&&role<4)commands["hero"+(role+1)]="-load "+payload;
         }
@@ -107,14 +112,21 @@ internal static class SaveHelper {
             if(players!=expected||common.Count!=1||(group.EndsWith("full")&&stash!=1))throw new Exception("Dynamic-party fixture mismatch: "+group);
         }
         if(dynamicGroups!=5)throw new Exception("Expected real JASS fixtures for all party sizes and dense solo stash");
-        Console.WriteLine("PASS: exact Windows save helper parsed four actual-JASS Z5/C4 dynamic-party plus legacy Z4/C3 and Z3/C2 fixtures, one command each, quoted Preload text, checksums, roles and classic chat lengths; rejected corruption and checked matching completion identity. No game code was executed.");
+        int newCodes=0;
+        foreach(string file in Directory.GetFiles(Path.Combine(folder,"codec-z6"),"RexxarCoop-P*.txt")) {
+            var parsed=Parse(File.ReadAllText(file));
+            foreach(string command in parsed.Values)if(command.StartsWith("-load Z6")){newCodes++;if(!Valid(command.Substring(6),'C'))throw new Exception("Invalid new codec fixture");}
+        }
+        if(newCodes==0)throw new Exception("Missing actual-JASS Z6 fixture");
+        foreach(string malformed in new[]{"Z6~11","Z6A~00","Z6A~13","Z6A~2Z","Z6A~1_~1_~1_","Z6A~1","Z5A~14"})if(Expand(malformed)!="")throw new Exception("Malformed back-reference accepted");
+        Console.WriteLine("PASS: exact Windows save helper parsed real-JASS Z6/Z5, all party sizes, legacy formats, clipboard commands and snapshot identity; rejected corrupt and malformed back-references. No game code was executed.");
     }
     sealed class SaveWindow:Form {
         string folder=AppDomain.CurrentDomain.BaseDirectory;
         readonly Label status=new Label();readonly ListBox commands=new ListBox();
         readonly Dictionary<string,string> loaded=new Dictionary<string,string>();
         public SaveWindow(){
-            Text="Коды продолжения Рексара — VI";ClientSize=new Size(650,355);Font=new Font("Segoe UI",10);StartPosition=FormStartPosition.CenterScreen;
+            Text="Коды продолжения Рексара — VI FIX";ClientSize=new Size(650,355);Font=new Font("Segoe UI",10);StartPosition=FormStartPosition.CenterScreen;
             var description=new Label{Left=16,Top=12,Width=620,Height=62,Text="В конце миссии код получают только участвовавшие герои.\nВ следующей карте введи -load СВОЙ_КОД, затем ведущий — -start.\nЭта программа только помогает скопировать код; играть можно без неё."};Controls.Add(description);
             commands.SetBounds(16,84,618,145);commands.DisplayMember="Key";Controls.Add(commands);
             var copy=new Button{Text="Скопировать выбранную команду",Left=16,Top=240,Width=310,Height=36};copy.Click+=(s,e)=>Copy();Controls.Add(copy);

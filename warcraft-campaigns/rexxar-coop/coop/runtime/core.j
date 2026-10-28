@@ -193,18 +193,11 @@ function RC_ApplyHero takes integer role, string payload returns nothing
     local integer charges
     local item it
     call RC_ClearOldSkills(hero, role)
-    call SetHeroXP(hero, RC_Number(SubString(payload, 6, 10)), false)
+    call RC_WriteXP(hero, RC_Number(SubString(payload, 6, 10)), false)
     loop
         exitwhen n == 5
         set level = RC_Number(SubString(payload, 17 + n, 18 + n))
-        if level > 0 then
-            if GetUnitAbilityLevel(hero, RC_skill[role * 5 + n]) == 0 then
-                call UnitAddAbility(hero, RC_skill[role * 5 + n])
-            endif
-            call SetUnitAbilityLevel(hero, RC_skill[role * 5 + n], level)
-        elseif GetUnitAbilityLevel(hero, RC_skill[role * 5 + n]) > 0 then
-            call UnitRemoveAbility(hero, RC_skill[role * 5 + n])
-        endif
+        call RC_SetSkillRank(role, n, level)
         set n = n + 1
     endloop
     call UnitModifySkillPoints(hero, RC_Number(SubString(payload, 16, 17)) - GetHeroSkillPoints(hero))
@@ -270,6 +263,24 @@ function RC_Adopt takes integer role, unit hero returns nothing
     call RC_InstallProgress(hero)
     set old = null
     set it = null
+endfunction
+
+// The original campaign deletes and recreates companions during recruitment.
+// Keep the old gameplay handle until RC_Adopt has copied its progression.
+function RC_SourceRemove takes unit u returns nothing
+    local integer role = 0
+    if RC_started then
+        loop
+            exitwhen role == 4
+            if u != null and u == RC_hero[role] then
+                call ShowUnit(u, false)
+                call PauseUnit(u, true)
+                return
+            endif
+            set role = role + 1
+        endloop
+    endif
+    call RemoveUnit(u)
 endfunction
 
 // @@HOOKS@@
@@ -1281,7 +1292,26 @@ function RC_Chat takes nothing returns nothing
     local string payload
     local integer requested = -1
     local integer n
-    if (text == "-skills" or text == "-skill") and RC_started then
+    if text == "-progress" and RC_started and role >= 0 and RC_hero[role] != null then
+        call RC_Tell(p, 30, "REXXAR VI FIX. Уровень " + I2S(GetHeroLevel(RC_hero[role])) + "/20; опыт " + I2S(GetHeroXP(RC_hero[role])) + "; очки навыков " + I2S(GetHeroSkillPoints(RC_hero[role])) + ". Обучение: K / -skills; таланты: T / -talents.")
+    elseif SubString(text, 0, 7) == "-learn " and RC_started and role >= 0 then
+        set payload = StringCase(SubString(text, 7, StringLength(text)), false)
+        set n = -1
+        if payload == "q" or payload == "1" then
+            set n = 0
+        elseif payload == "w" or payload == "2" then
+            set n = 1
+        elseif payload == "e" or payload == "3" then
+            set n = 2
+        elseif payload == "r" or payload == "4" then
+            set n = 3
+        elseif payload == "5" then
+            set n = 4
+        endif
+        if n < 0 or not RC_LearnRank(role, n) then
+            call RC_Tell(p, 15, "Обучение: -learn q / w / e / r / 5. Нужны свободное очко и требуемый уровень; при ошибке очко не тратится.")
+        endif
+    elseif (text == "-skills" or text == "-skill") and RC_started then
         call RC_OpenProgress(role, 0, 0)
     elseif (text == "-talents" or text == "-таланты") and RC_started then
         call RC_OpenProgress(role, 1, 0)
@@ -1315,7 +1345,7 @@ function RC_Chat takes nothing returns nothing
     elseif SubString(text, 0, 6) == "-load " and not RC_started then
         set requested = role
         set payload = SubString(text, 6, StringLength(text))
-        if (SubString(payload, 0, 2) == "C2" or SubString(payload, 0, 2) == "Z3" or SubString(payload, 0, 2) == "C3" or SubString(payload, 0, 2) == "Z4" or SubString(payload, 0, 2) == "C4" or SubString(payload, 0, 2) == "Z5") then
+        if (SubString(payload, 0, 2) == "C2" or SubString(payload, 0, 2) == "Z3" or SubString(payload, 0, 2) == "C3" or SubString(payload, 0, 2) == "Z4" or SubString(payload, 0, 2) == "C4" or SubString(payload, 0, 2) == "Z5" or SubString(payload, 0, 2) == "Z6") then
             if not RC_LoadCheckpoint(payload, role) then
                 call RC_Say("Код не принят. Проверь карту, номер героя и все символы; введи код из того же завершения миссии, что остальные.")
             endif
@@ -1351,6 +1381,7 @@ function RC_Menu takes nothing returns nothing
     set RC_table = InitHashtable()
     set RC_digits = InitHashtable()
     set RC_items = InitHashtable()
+    set RC_codec = InitHashtable()
     loop
         exitwhen n == 64
         set character = SubString(RC_alphabet, n, n + 1)

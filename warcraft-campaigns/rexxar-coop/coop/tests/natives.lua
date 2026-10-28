@@ -3,7 +3,7 @@
 function __jarray(default) return setmetatable({}, {__index=function() return default end}) end
 function FourCC(s) local v=0 for n=1,4 do v=v*256+s:byte(n) end return v end
 function Player(n) return n end
-WORLD={players={},units={},events={},messages={},files={},ai={},drops={},time=0,localPlayer=0,hashIgnoresCase=true}
+WORLD={players={},units={},events={},messages={},files={},ai={},drops={},unitEvents={},time=0,localPlayer=0,hashIgnoresCase=true}
 for n=0,15 do WORLD.players[n]={controller='computer',state='playing',gold=0,wood=0,hp=1,xp=1,alliances={}} end
 for _,n in ipairs({0,1,2,3}) do WORLD.players[n].controller='user' end
 MAP_CONTROL_USER='user';PLAYER_SLOT_STATE_PLAYING='playing'
@@ -37,6 +37,7 @@ function SaveInteger(t,p,c,v) t[p]=t[p] or {};t[p][c]=v end
 function LoadInteger(t,p,c) return t[p] and t[p][c] or 0 end
 function SaveBoolean(t,p,c,v) t[p]=t[p] or {};t[p][c]=v end
 function LoadBoolean(t,p,c) return t[p] and t[p][c] or false end
+function FlushChildHashtable(t,p) t[p]=nil end
 function GetHandleId(h) return h.handle end
 function InitGameCache(s) return {} end
 function FlushGameCache(t) for k in pairs(t) do t[k]=nil end end
@@ -45,7 +46,17 @@ function StoreBoolean(t,m,k,v) t[m]=t[m] or {};t[m][k]=v end
 function CreateTrigger() return {actions={}} end
 function TriggerAddAction(t,f) table.insert(t.actions,f) end
 function TriggerRegisterPlayerChatEvent(...) end
-function TriggerRegisterPlayerUnitEvent(...) end
+function TriggerRegisterPlayerUnitEvent(t,p,e,filter) table.insert(WORLD.unitEvents,{trigger=t,player=p,event=e}) end
+function EmitUnitEvent(event,u,fields)
+ local before=WORLD.events;local fired={}
+ WORLD.events=fields or {};WORLD.events.unit=u;WORLD.events.player=u.owner
+ for _,reg in ipairs(WORLD.unitEvents) do
+  if reg.event==event and reg.player==u.owner and not fired[reg.trigger] and reg.trigger.enabled~=false then
+   fired[reg.trigger]=true;for _,action in ipairs(reg.trigger.actions) do action() end
+  end
+ end
+ WORLD.events=before
+end
 function TriggerRegisterPlayerEventEndCinematic(...) end
 function TriggerRegisterDialogEvent(...) end
 function TriggerRegisterTimerEventSingle(...) end
@@ -86,7 +97,7 @@ function CreateUnit(p,id,x,y,f)
 end
 function GetHeroXP(u) return u.xp end
 function GetHeroLevel(u) return u.level end
-function SetHeroXP(u,xp,fx) local old=u.level;u.xp=xp;u.level=1 while u.level<20 and 50*(u.level+1)*(u.level+2)-100<=xp do u.level=u.level+1 end u.points=math.max(0,u.points+u.level-old) end
+function SetHeroXP(u,xp,fx) if WORLD.strictSuspension and u.suspended then return end local old=u.level;u.xp=xp;u.level=1 while u.level<20 and 50*(u.level+1)*(u.level+2)-100<=xp do u.level=u.level+1 end u.points=math.max(0,u.points+u.level-old) end
 function SetHeroLevel(u,n,fx) u.level=n;u.xp=n==1 and 0 or 50*n*(n+1)-100;u.points=n end
 function GetHeroStr(u,b) return u.str end
 function GetHeroAgi(u,b) return u.agi end
@@ -96,11 +107,19 @@ function SetHeroAgi(u,v,b) u.agi=v end
 function SetHeroInt(u,v,b) u.int=v end
 function GetHeroSkillPoints(u) return u.points end
 function UnitModifySkillPoints(u,n) u.points=u.points+n;return true end
-function SelectHeroSkill(u,id) u.abilities[id]=(u.abilities[id] or 0)+1;u.points=math.max(0,u.points-1) end
+function SelectHeroSkill(u,id)
+ if u.points<1 then return end
+ u.abilities[id]=(u.abilities[id] or 0)+1;u.points=u.points-1
+ EmitUnitEvent(EVENT_PLAYER_HERO_SKILL,u,{learned=id,learnedRank=u.abilities[id]})
+end
+function GetLearningUnit() return WORLD.events.unit end
+function GetLearnedSkill() return WORLD.events.learned end
+function GetLearnedSkillLevel() return WORLD.events.learnedRank end
 function GetUnitAbilityLevel(u,id) return u.abilities[id] or 0 end
-function UnitAddAbility(u,id) if u.abilities[id] then return false end u.abilities[id]=1;return true end
+function UnitAddAbility(u,id) if WORLD.rejectAbility==id or u.abilities[id] then return false end u.abilities[id]=1;return true end
 function UnitRemoveAbility(u,id) u.abilities[id]=nil;return true end
-function SetUnitAbilityLevel(u,id,n) u.abilities[id]=n;return n end
+function SetUnitAbilityLevel(u,id,n) if WORLD.rejectAbility==id then return 0 end u.abilities[id]=n;return n end
+function UnitMakeAbilityPermanent(u,flag,id) u.permanent=u.permanent or {};u.permanent[id]=flag;return true end
 function SuspendHeroXP(u,v) u.suspended=v end
 function UnitItemInSlot(u,n) return u.items[n] end
 function GetItemTypeId(it) return it and not it.removed and it.id or 0 end
@@ -127,7 +146,7 @@ function SetUnitFacing(u,v) u.facing=v end
 function SetUnitPositionLoc(u,p) if p then u.x=p.x;u.y=p.y end end
 function IsUnitType(u,t) return u[t] or false end
 function IsUnitPaused(u) return u.paused or false end
-function IsUnitInRange(a,b,r) return (a.x-b.x)^2+(a.y-b.y)^2<=r*r end
+function IsUnitInRange(a,b,r) if WORLD.rejectCorpseRange and (a.hp<=0.405 or b.hp<=0.405) then return false end return (a.x-b.x)^2+(a.y-b.y)^2<=r*r end
 function IsPlayerEnemy(p,q) return p~=q and not GetPlayerAlliance(p,q,ALLIANCE_PASSIVE) end
 function IsUnitEnemy(u,p) return IsPlayerEnemy(u.owner,p) end
 function GetPlayerAlliance(p,q,flag) local a=WORLD.players[p].alliances[q];return a and a[flag] or false end
@@ -203,13 +222,16 @@ function UnitAddAbility(u,id) local ok=oldAdd(u,id);if ok then u.maxhp=u.maxhp+h
 function UnitRemoveAbility(u,id) if u.abilities[id] then u.maxhp=u.maxhp-hpBonus(id) end return oldRemove(u,id) end
 function UnitDamageTarget(c,u,amount,...)
  local old=WORLD.events
+ local alive=u.hp>0.405
  WORLD.events={unit=u,source=c,damage=amount}
  if u.damageTrigger then for _,f in ipairs(u.damageTrigger.actions) do f() end end
  u.hp=u.hp-amount
+ if alive and u.hp<=0.405 then EmitUnitEvent(EVENT_PLAYER_UNIT_DEATH,u,{killer=c}) end
  WORLD.events=old
  return true
 end
 EVENT_PLAYER_UNIT_DEATH='death'
+EVENT_PLAYER_HERO_SKILL='learn'
 function GetUnitLevel(u) return u.level end
 function GetKillingUnit() return WORLD.events.killer end
 function IsUnitIllusion(u) return u.illusion or false end

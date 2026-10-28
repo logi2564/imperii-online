@@ -57,6 +57,7 @@ def travel():
   before=capture(g)
   u=g.UZ_CreateUnit(10,g.FourCC('hfoo'),g.UZ_startX[0]+500,g.UZ_startY[0],0)
   q=g.UZ_CreateQuest();g.QuestSetEnabled(q,True)
+  trigger=g.UZ_CreateTrigger();g.UZ_RegisterTrigger(trigger,0);g.UZ_GateZone(0,True);g.UZ_DestroyTrigger(trigger)
   t=g.CreateTimer();g.UZ_TimerStart(t,20,False,None,0)
   dead=g.CreateTimer();g.UZ_TimerStart(dead,3,False,None,0);g.UZ_DestroyTimer(dead)
   # World state freezes, while physical party handles move.

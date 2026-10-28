@@ -64,3 +64,5 @@ BLEND_MODE_BLEND='blend';TEXMAP_FLAG_NONE='none'
 function TriggerRegisterEnterRectSimple(t,r) WORLD.spawnTrigger=t end
 function GetWorldBounds() return Rect(-30720,-30720,30720,30720) end
 function GetEnteringUnit() return WORLD.events.entering end
+
+function DestroyTrigger(t) t.destroyed=true;t.enabled=false end

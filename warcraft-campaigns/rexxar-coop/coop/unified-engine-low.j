@@ -144,12 +144,41 @@ function UZ_ZoneTimers takes integer z, boolean active returns nothing
     set t=null
 endfunction
 
-function UZ_RegisterTrigger takes trigger trg, integer z returns nothing
+function UZ_CreateTrigger takes nothing returns trigger
+    local trigger trg=CreateTrigger()
+    local integer z=RC_map
     local integer n=UZ_triggerCount[z]
     call SaveTriggerHandle(UZ_state,z,20000+n,trg)
+    call SaveInteger(UZ_state,GetHandleId(trg),31,z+1)
+    call SaveInteger(UZ_state,GetHandleId(trg),32,n)
+    call SaveBoolean(UZ_state,GetHandleId(trg),30,true)
+    set UZ_triggerCount[z]=n+1
+    return trg
+endfunction
+
+function UZ_RegisterTrigger takes trigger trg, integer z returns nothing
+    local integer n
+    if trg==null then
+        return
+    endif
+    if not HaveSavedInteger(UZ_state,GetHandleId(trg),31) then
+        set n=UZ_triggerCount[z]
+        call SaveTriggerHandle(UZ_state,z,20000+n,trg)
+        call SaveInteger(UZ_state,GetHandleId(trg),31,z+1)
+        call SaveInteger(UZ_state,GetHandleId(trg),32,n)
+        set UZ_triggerCount[z]=n+1
+    endif
     call SaveBoolean(UZ_state,GetHandleId(trg),30,IsTriggerEnabled(trg))
     call DisableTrigger(trg)
-    set UZ_triggerCount[z]=n+1
+endfunction
+
+function UZ_DestroyTrigger takes trigger trg returns nothing
+    local integer z=LoadInteger(UZ_state,GetHandleId(trg),31)-1
+    if z>=0 then
+        call SaveTriggerHandle(UZ_state,z,20000+LoadInteger(UZ_state,GetHandleId(trg),32),null)
+    endif
+    call FlushChildHashtable(UZ_state,GetHandleId(trg))
+    call DestroyTrigger(trg)
 endfunction
 
 function UZ_GateZone takes integer z, boolean enable returns nothing
@@ -158,6 +187,7 @@ function UZ_GateZone takes integer z, boolean enable returns nothing
     loop
         exitwhen n>=UZ_triggerCount[z]
         set trg=LoadTriggerHandle(UZ_state,z,20000+n)
+        if trg!=null then
         if enable then
             if LoadBoolean(UZ_state,GetHandleId(trg),30) then
                 call EnableTrigger(trg)
@@ -165,6 +195,7 @@ function UZ_GateZone takes integer z, boolean enable returns nothing
         else
             call SaveBoolean(UZ_state,GetHandleId(trg),30,IsTriggerEnabled(trg))
             call DisableTrigger(trg)
+        endif
         endif
         set n=n+1
     endloop

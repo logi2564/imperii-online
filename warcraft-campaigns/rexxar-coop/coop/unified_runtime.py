@@ -56,7 +56,7 @@ def scoped_calls(code,z):
             assert len(args)==count,(m[1],args)
             edits.extend([(m.start(1),m.end(1),new),(args[-1][1],args[-1][1],', '+str(z))])
     for a,b,v in sorted(edits,reverse=True):code=code[:a]+v+code[b:]
-    return calls(code,{'SaveGameExists':'UZ_SaveGameExists','CopySaveGameBJ':'UZ_CopySave','TriggerRegisterGameSavedEventBJ':'UZ_SavedEvent','SetCampaignMenuRaceBJ':'UZ_CampaignRace','SetMissionAvailable':'UZ_MissionAvailable','PauseTimer':'UZ_PauseTimer','ResumeTimer':'UZ_ResumeTimer','DestroyTimer':'UZ_DestroyTimer','PauseAllUnitsBJ':'UZ_PauseCurrent','DestroyQuest':'UZ_DestroyQuest','CreateQuest':'UZ_CreateQuest','CreateQuestBJ':'UZ_CreateQuestBJ','StoreUnit':'UZ_StoreUnit','StoreUnitBJ':'UZ_StoreUnitBJ','HaveStoredUnit':'UZ_HaveStoredUnit','SetHeroLevel':'UZ_SetHeroLevel'})
+    return calls(code,{'CreateTrigger':'UZ_CreateTrigger','DestroyTrigger':'UZ_DestroyTrigger','SaveGameExists':'UZ_SaveGameExists','CopySaveGameBJ':'UZ_CopySave','TriggerRegisterGameSavedEventBJ':'UZ_SavedEvent','SetCampaignMenuRaceBJ':'UZ_CampaignRace','SetMissionAvailable':'UZ_MissionAvailable','PauseTimer':'UZ_PauseTimer','ResumeTimer':'UZ_ResumeTimer','DestroyTimer':'UZ_DestroyTimer','PauseAllUnitsBJ':'UZ_PauseCurrent','DestroyQuest':'UZ_DestroyQuest','CreateQuest':'UZ_CreateQuest','CreateQuestBJ':'UZ_CreateQuestBJ','StoreUnit':'UZ_StoreUnit','StoreUnitBJ':'UZ_StoreUnitBJ','HaveStoredUnit':'UZ_HaveStoredUnit','SetHeroLevel':'UZ_SetHeroLevel'})
 
 def build_zones(maps,terrains,catalog,schema):
     outputs=[];late=[];zone_parts={};perzone_hooks={};reports=[]

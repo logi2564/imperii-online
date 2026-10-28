@@ -40,6 +40,7 @@ def abilities():
             for mod in mods:
                 if mod[0]=='aher':learn.append(field('aher',0,1,mod[2]))
                 elif mod[0]=='Ncl3':learn.append(field('Ncl3',0,0,mod[2]))
+                elif mod[0]=='Ncl6':learn.append(field('Ncl6',3,['acidbomb','banish','divineshield','ensnare'][slot],mod[2]))
                 else:learn.append(list(mod))
             out.append(dict(old=b'ANcl',new=learn_id(role,slot).encode(),mods=learn))
     for raw,name,icon,key,x,order in [('R5Sk','Изучить навыки','BTNTomeOfRetraining','K',2,'berserk'),('R5Ta','Таланты героя','BTNStatUp','T',1,'roar')]:

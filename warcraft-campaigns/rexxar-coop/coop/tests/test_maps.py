@@ -40,7 +40,7 @@ for name in MAPS:
         for role,hero_id in enumerate(kits.HEROES):
             hero=next(o for o in unit_tables[0] if o['old']==hero_id.encode())
             assert next(m[4].decode() for m in hero['mods'] if m[0]=='uhab')==','.join([kits.learn_id(role,n) for n in range(4)]+['Aamk'])
-            orders=[]
+            orders=[];learn_orders=[]
             for slot in range(4):
                 obj=lookup[kits.skill_id(role,slot).encode()]
                 assert obj['old']==b'ANcl'
@@ -51,13 +51,16 @@ for name in MAPS:
                 assert struct.unpack('<i',learn[('aher',0)])[0]==1
                 assert struct.unpack('<i',learn[('Ncl3',1)])[0]==0
                 assert struct.unpack('<i',values[('Ncl3',1)])[0]==1
+                learn_orders.append(learn[('Ncl6',1)])
                 assert struct.unpack('<i',values[('alev',0)])[0]==(3 if slot==3 else 5)
                 assert struct.unpack('<i',values[('arlv',0)])[0]==(6 if slot==3 else 1)
                 orders.append(values[('Ncl6',1)])
             assert len(set(orders))==4,(name,role,'Channel order collision')
+            assert len(set(learn_orders))==4 and not set(orders)&set(learn_orders),(name,role,'Hidden learning proxy intercepts cast order')
             for menu_id in [b'R5Sk',b'R5Ta']:
                 values={(mod[0],mod[2]):mod[4] for mod in lookup[menu_id]['mods']}
                 assert values[('Ncl6',1)] not in orders
+                assert values[('Ncl6',1)] not in learn_orders
                 assert struct.unpack('<i',values[('aher',0)])[0]==0
         misc=storm.read(b,'war3mapMisc.txt');assert re.search(rb'(?mi)^MaxHeroLevel=20\s*$',misc),(name,'hero level cap not twenty')
         script=storm.read(b,'war3map.j').decode();assert script.count('call RC_Bootstrap()')==1

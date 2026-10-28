@@ -18,7 +18,7 @@ def visit(x):
  for child in x:
   if isinstance(child,list):visit(child)
 visit(data)
-selected=[(fid,name) for fid,name in files.items() if 'gutsy' in name.lower() and ('1.0.5' in name or '1_0_5' in name)]
+selected=[(fid,name) for fid,name in files.items() if ('gutsy' in name.lower() or re.search(r'(?:^|_)ggg(?:_|$)',name.lower())) and ('1.0.5' in name or '1_0_5' in name)]
 (root/'Listing.json').write_text(json.dumps(files,ensure_ascii=False,indent=2))
 if len(selected)!=1:raise RuntimeError('Expected one Gutsy 1.0.5 map; folder names: '+json.dumps(list(files.values()),ensure_ascii=False))
 fid,name=selected[0]

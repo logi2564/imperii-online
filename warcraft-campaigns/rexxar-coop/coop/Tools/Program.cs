@@ -7,7 +7,9 @@ using War3Net.CodeAnalysis.Jass;
 using War3Net.CodeAnalysis.Transpilers;
 using War3Net.IO.Mpq;
 
-if(args[0]=="owners"){
+if(args[0]=="atlas-placements"){
+    AtlasPlacements.Run(args[1],args[2],args[3],args[4]);
+}else if(args[0]=="owners"){
     using var json=JsonDocument.Parse(File.ReadAllText(args[2]));Directory.CreateDirectory(args[3]);
     foreach(var item in json.RootElement.EnumerateObject()){
         using var archive=MpqArchive.Open(Path.Combine(args[1],item.Name+".w3x"));using var source=archive.OpenFile("war3mapUnits.doo");using var memory=new MemoryStream();source.CopyTo(memory);byte[] original=memory.ToArray();

@@ -160,7 +160,11 @@ return z
 endfunction
 
 function GGVLine takes integer p,string text returns nothing
-local multiboarditem rowItem=MultiboardGetItem(GGVInfo[p],GGVInfoRow[p],0)
+local multiboarditem rowItem=null
+if GGVInfoRow[p]>=32 then
+call MultiboardSetRowCount(GGVInfo[p],GGVInfoRow[p]+1)
+endif
+set rowItem=MultiboardGetItem(GGVInfo[p],GGVInfoRow[p],0)
 call MultiboardSetItemValue(rowItem,text)
 call MultiboardSetItemWidth(rowItem,0.34)
 call MultiboardSetItemStyle(rowItem,true,false)
@@ -718,6 +722,10 @@ if GGVPhase==1 then
 set q=0
 loop
 exitwhen q==10
+if udg_Player[q+1]==null then
+set GGVSent[q]=false
+set GGVAcknowledged[q]=false
+endif
 call GGVClose(q)
 set q=q+1
 endloop
@@ -765,6 +773,10 @@ endif
 endif
 set GGVChoice[p]=-1
 set GGVReady[p]=false
+if udg_Player[p+1]==null then
+set GGVSent[p]=false
+set GGVAcknowledged[p]=false
+endif
 endfunction
 
 function GGVAction takes integer p,integer action,integer value returns nothing

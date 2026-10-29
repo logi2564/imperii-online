@@ -200,7 +200,9 @@ class Engine:
     def register(self,*args):self.registration.append(args);return self.h('registration')
     def effect(self,*args):self.e['bj_lastCreatedEffect']=self.h('effect');return self.e['bj_lastCreatedEffect']
     def board(self):return self.h('board',rows=32,columns=1,items={},visible=False)
-    def board_item(self,b,row,column):return self.h('boarditem',board=b,row=row,column=column)
+    def board_item(self,b,row,column):
+        assert 0<=row<b['rows'] and 0<=column<b['columns'],('Out of bounds native multiboard access',row,column,b['rows'],b['columns'])
+        return self.h('boarditem',board=b,row=row,column=column)
     def board_value(self,item,value):item['board']['items'][(item['row'],item['column'])]=value
     def create_board_bj(self,cols,rows,title):
         b=self.board();b.update(columns=cols,rows=rows,title=title);self.e['bj_lastCreatedMultiboard']=b;return b
@@ -546,14 +548,26 @@ def test(out):
     full.click(0,12);full.advance(8)
     assert full.e['GGVPhase']==2 and len(full.orders)==10
     assert len({full.e['udg_Player'][p+1]['id'] for p in range(10)})==10
+    full.e['GetPlayerName']=lambda p:'|cffffcc00Игрок123456789 (Жанна д’Арк — Правительница)|r'
+    full.e['GGVOpen'](0)
+    full.e['GGVStatus'][0]='Проверка длинных имён, состояния запуска и полного списка игроков.'
+    full.e['GGVBoard'](0)
+    assert full.e['GGVInfo'][0]['rows']==full.e['GGVInfoRow'][0]
 
     # A successful native order is not an acknowledgement of initialized hero.
     missing=Engine(out);missing.choose(0,15);missing.missing_sale=True
     missing.click(0,12);missing.advance(32)
     assert missing.e['GGVPhase']==1 and len(missing.orders)==1
     assert missing.e['GGVOpenState'][0] and not missing.e['GGVAcknowledged'][0]
-    missing.click(0,12);missing.advance(32)
-    assert len(missing.orders)==1,'Accepted orders must not be issued twice'
+    missing.missing_sale=False;missing.click(0,12);missing.advance(8)
+    assert len(missing.orders)==2 and missing.e['GGVPhase']==2
+    late=missing.sell(0,'H00D')
+    assert late['removed'] and missing.gold[0]==3000,'Late duplicate must not award anything'
+    changed=Engine(out);changed.choose(0,15);changed.missing_sale=True
+    changed.click(0,12);changed.advance(32);changed.click(0,10)
+    changed.choose(0,3);changed.missing_sale=False;changed.click(0,12);changed.advance(8)
+    assert changed.e['GGVPhase']==2 and changed.e['udg_Player'][1]['raw']=='H005'
+    assert len(changed.orders)==2
     rejected=Engine(out);rejected.choose(0,15);rejected.reject_orders=True
     rejected.click(0,12);rejected.advance(5)
     assert not rejected.orders and not rejected.e['GGVAcknowledged'][0]
@@ -589,6 +603,7 @@ def test(out):
                 actualHeroInitializations=initialized,sourceLockedHeroes=locked,
                 familyReservationAndHostLeave=True,readyAndHostGates=True,
                 sourceTeamAlliancesChecked=True,acceptedOrderNotAcknowledgement=True,
+                explicitRetryAndChangedChoiceRecoverMissingSale=True,
                 rejectedOrdersRecoverWithoutDuplicateHero=True,unreservedManualSaleRejected=True)
     (out/'Gallery-tests.json').write_text(json.dumps(report,indent=2))
     print(json.dumps(report))

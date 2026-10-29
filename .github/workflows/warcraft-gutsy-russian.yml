@@ -24,9 +24,15 @@ jobs:
       - name: Prepare exact source and offline validation tools
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y libstorm-dev
+          sudo apt-get install -y cmake g++ make
           mkdir -p work
           curl --fail --location --retry 2 'https://github.com/logi2564/imperii-online/releases/download/gutsy-source-6ac86d86/Gutsy-Geoid-EN-1.0.5.w3x' -o work/original.w3x
+          git clone https://github.com/ladislav-zezula/StormLib.git "$RUNNER_TEMP/StormLib"
+          git -C "$RUNNER_TEMP/StormLib" checkout 28c9b4be3f23c6b3a5ff55cacac7dbe5b9cdc4fc
+          cmake -S "$RUNNER_TEMP/StormLib" -B "$RUNNER_TEMP/storm-build" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DSTORM_SKIP_INSTALL=ON -DSTORM_USE_BUNDLED_LIBRARIES=ON
+          cmake --build "$RUNNER_TEMP/storm-build" --parallel 2
+          printf 'STORMLIB_PATH=%s\n' "$RUNNER_TEMP/storm-build/libstorm.so" >> "$GITHUB_ENV"
+          printf 'PYTHONFAULTHANDLER=1\n' >> "$GITHUB_ENV"
           git clone https://github.com/lep/pjass.git "$RUNNER_TEMP/pjass"
           git -C "$RUNNER_TEMP/pjass" checkout 654c3cf7731eb472518e6915e9d7672a72652165
           make -C "$RUNNER_TEMP/pjass"

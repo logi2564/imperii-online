@@ -47,7 +47,12 @@ jobs:
           set -euo pipefail
           python warcraft-maps/gutsy-ru/tools/verify.py work/original.w3x work | tee work/Preservation-check.txt
           python warcraft-maps/gutsy-ru/tools/check_jass.py work/original.w3x work "$RUNNER_TEMP/pjass/pjass" warcraft-maps/gutsy-ru/tests/reference | tee work/Compiler-check.txt
-          python warcraft-maps/gutsy-ru/tools/package.py work release
+      - name: Add native menus and audit every hero/skill page
+        run: |
+          set -euo pipefail
+          python warcraft-maps/gutsy-ru/menu/build_menu.py work/Gutsy-Geoid-Game-RU-v1.0.5.w3x work/menu "$RUNNER_TEMP/pjass/pjass" | tee work/Menu-build-check.txt
+          python warcraft-maps/gutsy-ru/menu/test_menu.py work/menu | tee work/Menu-behavior-check.txt
+          python warcraft-maps/gutsy-ru/menu/package_menu.py work work/menu release
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -55,13 +60,16 @@ jobs:
           path: |
             work/*-check.txt
             work/*report.json
+            work/menu/*report.json
+            work/menu/Menu-tests.json
+            work/menu/Menu-compiler.txt
       - name: Publish the complete text localization
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
           tag="gutsy-ru-${GITHUB_SHA:0:8}"
-          gh release create "$tag" release/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'GGG RU FIX2 — описания навыков в исходном формате карты' --notes-file warcraft-maps/gutsy-ru/README-RU.txt
+          gh release create "$tag" release/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'GGG RU MENU I — режимы, герои и каталог навыков' --notes-file warcraft-maps/gutsy-ru/menu/README-RU.txt
           printf 'В FIX1 игрок сообщил о пропавших описаниях навыков. Новая сборка возвращает исходный формат хранения подсказок: https://github.com/%s/releases/tag/%s\n' "$GITHUB_REPOSITORY" "$tag" > obsolete-release.txt
           gh release edit gutsy-ru-809dede6 --title 'GGG RU FIX1 — устарела, пропадали описания' --notes-file obsolete-release.txt --prerelease --latest=false
           printf 'В этой сборке подтверждён вылет при загрузке. Новая сборка: https://github.com/%s/releases/tag/%s\n' "$GITHUB_REPOSITORY" "$tag" > obsolete-release.txt

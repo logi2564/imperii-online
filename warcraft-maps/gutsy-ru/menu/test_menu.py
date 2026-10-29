@@ -267,6 +267,14 @@ def test(out):
             model.click(0, 15)
             assert env['GGMPage'][0] == ordinal//6
     assert len(visited) == len(data['heroes']) == env['GGMHeroCount']
+    for alias in range(env['GGMAliasCount']):
+        model.player = 0
+        model.chat = '-skills'
+        env['udg_Player'][1] = {'raw': env['GGMAliasRaw'][alias], 'owner': 0}
+        env['GGMChat']()
+        assert env['GGMScreen'][0] == 5
+        assert env['GGMHero'][0] == env['GGMAliasHero'][alias]
+    env['udg_Player'][1] = None
     # Looking at a model selects only the real preview, never buys/clones it.
     # During draft even that selection is suppressed to avoid an accidental
     # second click in the original confirmation trigger.
@@ -339,6 +347,7 @@ def test(out):
                   independentPlayerMenus=True, hostAndDraftTurnGuards=True,
                   duplicateStartsRejected=True, bannedAndDuplicateHeroPicksRejected=True,
                   modelPreviewDoesNotPick=True, threeModeStartRoutes=True,
+                  transformedHeroTypesChecked=env['GGMAliasCount'],
                   noGameplayMutationsInLocalPlayerBranch=True)
     (out/'Menu-tests.json').write_text(json.dumps(result, ensure_ascii=False, indent=2))
     print(json.dumps(result, ensure_ascii=False))

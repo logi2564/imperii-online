@@ -26,6 +26,7 @@ def generated_data(data):
     for i, role in enumerate(data['roles']):
         set_('GGMRoleName', i, role)
     skill_id = text_id = about_id = 0
+    aliases = {}
     for i, hero in enumerate(data['heroes']):
         lines.append(f"set GGMHeroRaw[{i}]='{hero['raw']}'")
         set_('GGMHeroName', i, hero['name'])
@@ -38,6 +39,8 @@ def generated_data(data):
             about_id += 1
         set_('GGMHeroSkillStart', i, skill_id)
         set_('GGMHeroSkillCount', i, len(hero['skills']))
+        for raw in hero['aliases']:
+            aliases.setdefault(raw, i)  # shared cosmetic forms resolve to the base hero
         for skill in hero['skills']:
             set_('GGMSkillName', skill_id, skill['title'])
             set_('GGMSkillTextStart', skill_id, text_id)
@@ -46,6 +49,9 @@ def generated_data(data):
                 set_('GGMSkillText', text_id, text)
                 text_id += 1
             skill_id += 1
+    for i, (raw, hero) in enumerate(aliases.items()):
+        lines.append(f"set GGMAliasRaw[{i}]='{raw}'")
+        set_('GGMAliasHero', i, hero)
     assert max(skill_id, text_id, about_id) < 8192
     functions = []
     names = []
@@ -54,9 +60,10 @@ def generated_data(data):
         names.append(name)
         functions.append(f'function {name} takes nothing returns nothing\n'+'\n'.join(lines[first:first+80])+'\nendfunction\n')
     init = f'set GGMHeroCount={len(data["heroes"])}\n'
+    init += f'set GGMAliasCount={len(aliases)}\n'
     init += '\n'.join(f'call ExecuteFunc("{name}")' for name in names)
     return '\n'.join(functions), init, dict(heroes=len(data['heroes']), skills=skill_id,
-                                         skillPages=text_id, heroPages=about_id)
+                                         skillPages=text_id, heroPages=about_id, transformedHeroTypes=len(aliases))
 
 
 def enhance(script, data):

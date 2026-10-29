@@ -17,6 +17,9 @@ boolean GGMStarted=false
 boolean GGMLaunching=false
 integer GGMGoalPending=0
 integer GGMHeroCount=0
+integer GGMAliasCount=0
+integer array GGMAliasRaw
+integer array GGMAliasHero
 integer array GGMHeroRaw
 integer array GGMHeroRole
 integer array GGMHeroTavern
@@ -77,6 +80,26 @@ endfunction
 
 function GGMAvailable takes integer p,integer h returns boolean
 return h>=0 and h<GGMHeroCount and GetPlayerTechMaxAllowed(Player(p),GGMHeroRaw[h])!=0
+endfunction
+
+function GGMFindHero takes integer raw returns integer
+local integer h=0
+loop
+exitwhen h>=GGMHeroCount
+if GGMHeroRaw[h]==raw then
+return h
+endif
+set h=h+1
+endloop
+set h=0
+loop
+exitwhen h>=GGMAliasCount
+if GGMAliasRaw[h]==raw then
+return GGMAliasHero[h]
+endif
+set h=h+1
+endloop
+return -1
 endfunction
 
 function GGMModeName takes integer mode returns string
@@ -269,7 +292,7 @@ exitwhen true
 endif
 endloop
 call DestroyGroup(g)
-if target==null and GetUnitTypeId(udg_Player[p+1])==GGMHeroRaw[h] then
+if target==null and GGMFindHero(GetUnitTypeId(udg_Player[p+1]))==h then
 set target=udg_Player[p+1]
 endif
 if target!=null then
@@ -401,11 +424,8 @@ function GGMChat takes nothing returns nothing
 local integer p=GetPlayerId(GetTriggerPlayer())
 local integer h=0
 if GetEventPlayerChatString()=="-skills" then
-loop
-exitwhen h>=GGMHeroCount or GGMHeroRaw[h]==GetUnitTypeId(udg_Player[p+1])
-set h=h+1
-endloop
-if h<GGMHeroCount then
+set h=GGMFindHero(GetUnitTypeId(udg_Player[p+1]))
+if h>=0 then
 set GGMHero[p]=h
 set GGMPage[p]=0
 set GGMTextPage[p]=0
@@ -430,11 +450,8 @@ endif
 if udg_Player[p+1]!=null or udg_Banpickmode or not RectContainsUnit(gg_rct_Loc_SelUnit,GetTriggerUnit()) then
 return
 endif
-loop
-exitwhen h>=GGMHeroCount or GGMHeroRaw[h]==raw
-set h=h+1
-endloop
-if h<GGMHeroCount then
+set h=GGMFindHero(raw)
+if h>=0 then
 set GGMHero[p]=h
 set GGMPage[p]=0
 set GGMTextPage[p]=0

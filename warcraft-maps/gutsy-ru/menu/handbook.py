@@ -108,6 +108,7 @@ def extract(st, archive):
 
     heroes = []
     seen = set()
+    purchasable = {raw.strip().replace('|n', '') for shop, _, _ in SHOPS for raw in unit[shop]['sellunits']}
     for role, (shop, tavern, category) in enumerate(SHOPS):
         for raw in unit[shop]['sellunits']:
             raw = raw.strip().replace('|n', '')
@@ -117,8 +118,9 @@ def extract(st, archive):
             data = unit[raw]
             name = plain(data.get('tip', data.get('name'))[0])
             about = '\n'.join(plain(v) for v in data.get('ubertip', []) if v.strip())
+            aliases = [v for v in data.get('dependencyor', []) if len(v) == 4 and v in unit and v in loadout and v not in purchasable]
             skills = []
-            codes = loadout[raw].get('abillist', '') + ',' + loadout[raw].get('heroabillist', '')
+            codes = ','.join(loadout[form].get('abillist', '')+','+loadout[form].get('heroabillist', '') for form in [raw]+aliases)
             for code in dict.fromkeys(codes.split(',')):
                 data = ability.get(code)
                 if not data or not data.get('tip') or not any(data.get('ubertip', [])):
@@ -147,6 +149,6 @@ def extract(st, archive):
             skills.sort(key=lambda v: v['additionalForm'])
             assert skills, (raw, 'No actual skills in handbook')
             heroes.append(dict(raw=raw, name=name, role=role, tavern=tavern,
-                               about=pages(about), skills=skills))
+                               about=pages(about), aliases=aliases, skills=skills))
     return dict(heroes=heroes, roles=[s[2] for s in SHOPS],
                 unresolvedOriginalReferences=sorted(unresolved))

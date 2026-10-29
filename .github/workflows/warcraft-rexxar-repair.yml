@@ -1,7 +1,8 @@
-name: Rexxar campaign repair checks (no release)
+name: Rexxar repair checks and explicitly tagged previews
 on:
   push:
     branches: [warcraft-rexxar-repair]
+    tags: [rexxar-repair-preview-*]
     paths:
       - 'warcraft-campaigns/rexxar-coop/**'
       - '.github/workflows/warcraft-rexxar-repair.yml'
@@ -58,6 +59,14 @@ jobs:
           python -u coop/tests/test_skill_regressions.py build-out/Rexxar-VII.lua | tee build-out/Skill-regression-check.txt
           python -u coop/tests/test_skill_demos.py build-out/Rexxar-VII.lua | tee build-out/Skill-demo-check.txt
           python -u coop/tests/test_world_restore.py build-out/Rexxar-VII.lua | tee build-out/World-restore-check.txt
+      - name: Package an explicitly requested preview
+        if: startsWith(github.ref, 'refs/tags/rexxar-repair-preview-')
+        run: python coop/package_repair.py build-out release
+      - uses: actions/upload-artifact@v4
+        if: startsWith(github.ref, 'refs/tags/rexxar-repair-preview-')
+        with:
+          name: rexxar-repair-preview
+          path: warcraft-campaigns/rexxar-coop/release/
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -65,3 +74,20 @@ jobs:
           path: |
             warcraft-campaigns/rexxar-coop/build-out/*-check.txt
             warcraft-campaigns/rexxar-coop/build-out/Build-report.json
+  publish-preview:
+    if: startsWith(github.ref, 'refs/tags/rexxar-repair-preview-')
+    needs: check
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: rexxar-repair-preview
+          path: preview
+      - name: Publish the checked preview without changing latest
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" preview/* --verify-tag --prerelease --latest=false --title 'Рексар: текущие исправления для 1–4 игроков — тест 1.26' --notes-file preview/README-Repair-RU.txt

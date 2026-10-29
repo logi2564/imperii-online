@@ -4,6 +4,7 @@ from collections import Counter
 from pathlib import Path
 from catalog import catalog,encode_jass,decode_jass,STR,prose
 from storm import Storm
+from text_storage import CELL_LIMIT,LINE_LIMIT,TOOLTIP_FIELDS,migrate
 ROOT=Path(__file__).resolve().parents[1]
 TAG=re.compile(r'(?i)\|c[0-9a-f]{8}|\|[rn]|<[^<>\r\n]+>|(?<![0-9])%(?:\d+\$)?[+\-0 #]*(?:\d+|\*)?(?:\.(?:\d+|\*))?[diouxXeEfFgGcs%]')
 NUMBER=re.compile(r'[+\-]?(?:\d+(?:\.\d+)?|\.\d+)%?')
@@ -40,7 +41,7 @@ def build(source_path,cache_path,output_dir):
  source=source_path.read_bytes();reference=json.loads((ROOT/'source/Original.json').read_text());assert hashlib.sha256(source).hexdigest()==reference['sha256']
  st=Storm();data=catalog(st,source_path);cache=json.loads(Path(cache_path).read_text());manual=json.loads((ROOT/'source/manual.json').read_text()) if (ROOT/'source/manual.json').exists() else {};cache.update(manual)
  missing=[s for s in data['phrases'] if s not in cache];assert not missing,('Missing reviewed translation entries',missing[:10],len(missing))
- edits={};reports=[];replacements=0;translated_phrases=set();h=st.open(source_path);manifest={}
+ edits={};reports=[];replacements=0;translated_phrases=set();h=st.open(source_path);manifest={};long_text=[]
  try:
   names=(st.read(h,'(listfile)') or b'').decode('utf8').splitlines()
   for name in names:
@@ -59,7 +60,16 @@ def build(source_path,cache_path,output_dir):
      translated_phrases.add(text)
      return result
     if span['kind']=='csv':
-     values=next(csv.reader([before]));after=csv_render([translate(v) for v in values]);assert len(next(csv.reader([after])))==len(values)
+     values=next(csv.reader([before]));localized=[translate(v) for v in values];after=csv_render(localized)
+     section,key=span['context'].split(':',1)
+     needs_storage=any(len(v.encode())>CELL_LIMIT or '"' in v for v in localized) or len((key+'='+after).encode())>LINE_LIMIT
+     if needs_storage and name.lower().endswith('abilitystrings.txt') and key.lower() in TOOLTIP_FIELDS:
+      field=TOOLTIP_FIELDS[key.lower()].decode()
+      for rank,text in enumerate(localized,1):long_text.append(dict(id=section,field=field,level=rank if field in ('aub1','atp1') else 0,text=text))
+      # Retain the original parse-safe base. Standard object overrides apply
+      # the full Russian descriptions after the TXT tables have been loaded.
+      after=before
+     assert len(next(csv.reader([after])))==len(values)
     elif span['kind']=='jass':after=split_literal(translate(before))
     elif span['kind']=='slk':after=translate(before).replace('"','""').encode('utf8')
     else:after=translate(before).encode('utf8')
@@ -67,6 +77,20 @@ def build(source_path,cache_path,output_dir):
    for a,b,v,_ in sorted(changes,reverse=True):raw=raw[:a]+v+raw[b:]
    blob=raw if isinstance(raw,bytes) else raw.encode(meta['encoding'])
    edits[name]=blob;replacements+=len(changes);reports.append(dict(file=name,changedSpans=len(changes),sourceSha256=meta['sha256'],outputSha256=hashlib.sha256(blob).hexdigest()))
+  assert st.read(h,'war3map.wts') is None,'Existing WTS needs an ID merge'
+  ability=edits.get('war3map.w3a',st.read(h,'war3map.w3a'))
+  ability,wts,storage=migrate(ability,st.read(h,'units\\abilitydata.slk'),long_text)
+  edits['war3map.w3a']=ability;edits['war3map.wts']=wts
+  for file in reports:
+   if file['file']=='war3map.w3a':file['outputSha256']=hashlib.sha256(ability).hexdigest()
+  for name,blob in edits.items():
+   if not name.lower().endswith('.txt'):continue
+   for n,line in enumerate(blob.decode().splitlines(),1):
+    if '=' not in line or line.startswith('//'):continue
+    key,value=line.split('=',1)
+    assert len(line.encode())<=LINE_LIMIT,(name,n,'TXT line overflow',len(line.encode()))
+    assert all(len(v.encode())<=CELL_LIMIT for v in next(csv.reader([value]))),(name,n,'TXT value overflow')
+    assert all('"' not in v for v in next(csv.reader([value]))),(name,n,'Unsupported nested quote')
  finally:st.close(h)
  target=output_dir/'Gutsy-Geoid-Game-RU-v1.0.5.w3x';shutil.copyfile(source_path,target)
  with tempfile.TemporaryDirectory(prefix='gutsy-ru-') as folder:st.replace(target,edits,folder)
@@ -90,9 +114,10 @@ def build(source_path,cache_path,output_dir):
    assert actual==edits[name] if name in edits else hashlib.sha256(actual).hexdigest()==checksum,name
   for name,expected in edits.items():assert st.read(verify,name)==expected,name
  finally:st.close(verify)
- report=dict(source=reference,translationMethod='Machine translation with reviewed Russian names/terminology and manually corrected interface text',sourceVersion='1.0.5',targetLanguage='ru',uniquePlayerTexts=len(data['phrases']),translatedTextOccurrences=replacements,translatedFiles=reports,retainedFilesVerified=len(manifest),chatCommandsPreserved=len(data['commands']),orderNamesPreserved=data['protectedObjectNames'],gameplayCodeChanged=False,voiceTracks='original',nativeWarcraftTested=False,bytes=target.stat().st_size,sha256=hashlib.sha256(target.read_bytes()).hexdigest())
+ report=dict(source=reference,translationMethod='Machine translation with reviewed Russian names/terminology and manually corrected interface text',sourceVersion='1.0.5',targetLanguage='ru',uniquePlayerTexts=len(data['phrases']),translatedTextOccurrences=replacements,translatedFiles=reports,retainedFilesVerified=len(manifest),chatCommandsPreserved=len(data['commands']),orderNamesPreserved=data['protectedObjectNames'],gameplayCodeChanged=False,voiceTracks='original',nativeWarcraftTested=False,bytes=target.stat().st_size,sha256=hashlib.sha256(target.read_bytes()).hexdigest(),classicTextStorage='WTS-backed object overrides',tooltipOverrides=len(storage))
  (output_dir/'Localization-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
  (output_dir/'Source-file-hashes.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2));(output_dir/'Translations.json').write_text(json.dumps(cache,ensure_ascii=False,indent=2));(output_dir/'catalog.json').write_text(json.dumps(data,ensure_ascii=False))
+ (output_dir/'Text-storage.json').write_text(json.dumps(storage,ensure_ascii=False,indent=2))
  print('BUILT',target,report['bytes'],'bytes;',replacements,'text replacements')
  return report
 if __name__=='__main__':build(*sys.argv[1:4])

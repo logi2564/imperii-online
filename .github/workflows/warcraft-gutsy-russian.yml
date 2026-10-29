@@ -61,4 +61,6 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           tag="gutsy-ru-${GITHUB_SHA:0:8}"
-          gh release create "$tag" release/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'Gutsy Geoid Game v1.0.5 — полный русский текст' --notes-file warcraft-maps/gutsy-ru/README-RU.txt
+          gh release create "$tag" release/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'GGG RU FIX1 — совместимость текстов с Warcraft 1.26' --notes-file warcraft-maps/gutsy-ru/README-RU.txt
+          printf 'В этой сборке подтверждён вылет при загрузке. Исправленная версия: https://github.com/%s/releases/tag/%s\n' "$GITHUB_REPOSITORY" "$tag" > obsolete-release.txt
+          gh release edit gutsy-ru-378b23bc --title 'GGG RU — старая версия с вылетом на загрузке' --notes-file obsolete-release.txt --prerelease --latest=false

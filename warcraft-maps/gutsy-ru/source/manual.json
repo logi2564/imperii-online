@@ -44,7 +44,7 @@
   "Apostle (Boss)": "Апостол (босс)",
   "Team 1": "Команда 1",
   "Team 2": "Команда 2",
-  "|cffffcc00Gutsy Geoid Game EN|r v1.0.5": "|cffffcc00Гатси Геоид — русская версия|r v1.0.5",
+  "|cffffcc00Gutsy Geoid Game EN|r v1.0.5": "|cffffcc00GGG 1.0.5 RU FIX|r",
   "This is not a valid target.": "Неподходящая цель.",
   "Not enough Thorium ingots.": "Недостаточно ториевых слитков.",
   "It is lacking.": "Недостаточно очков характеристик.",
@@ -126,5 +126,7 @@
   "Purchase Clarit|cffffcc00y|r Potion": "Купить зелье ясности (|cffffcc00y|r)",
   "Purchase Goblin Nigh|cffffcc00t|r Scope": "Купить гоблинский ночной прицел (|cffffcc00t|r)",
   "Purchase Tiny Lumbe|cffffcc00r|r Mill": "Купить походную лесопилку (|cffffcc00r|r)",
-  "Create two Skeleton Warriors from a single corpse. |n<rnec": "Создаёт двух воинов-скелетов из одного трупа."
+  "Create two Skeleton Warriors from a single corpse. |n<rnec": "Создаёт двух воинов-скелетов из одного трупа.",
+  "AI Editor": "Редактор ИИ",
+  "|c00ffff80Gutsy Geoid Game|r 8.011": "|c00ffff80GGG RU|r 8.011"
 }

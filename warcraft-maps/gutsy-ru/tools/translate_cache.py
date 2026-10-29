@@ -11,7 +11,7 @@ GLOSSARY=json.loads((ROOT/'source/glossary.json').read_text())
 MANUAL=json.loads((ROOT/'source/manual.json').read_text()) if (ROOT/'source/manual.json').exists() else {}
 TERMS=re.compile(r'(?<![A-Za-z])('+'|'.join(re.escape(s) for s in sorted(GLOSSARY,key=len,reverse=True))+r')(?![A-Za-z])',re.I)
 LOWER={k.lower():v for k,v in GLOSSARY.items()}
-TOKEN=re.compile(r'(?i)\|c[0-9a-f]{8}[A-Za-z]\|r(?=\W|$)|\|T[^|]*\|t|\|H[^|]*\|h|\|c[0-9a-f]{8}|\|[rRnN]|<[^<>\r\n]+>|%(?:\d+\$)?[+\-0 #]*(?:\d+|\*)?(?:\.(?:\d+|\*))?[diouxXeEfFgGcs%]|https?://[^\s|]+|\b(?:F\d{1,2}|ESC|TAB|ALT|SHIFT|CTRL|HK416|2B)\b|(?<!\w)-[A-Za-z][A-Za-z0-9_-]*|\([A-Za-z]\)|\[[A-Za-z]\]|[+\-]?(?:\d+(?:\.\d+)?|\.\d+)%?|[\r\n]+')
+TOKEN=re.compile(r'(?i)\|c[0-9a-f]{8}[A-Za-z]\|r(?=\W|$)|\|T[^|]*\|t|\|H[^|]*\|h|\|c[0-9a-f]{8}|\|[rRnN]|<[^<>\r\n]+>|%(?:\d+\$)?[+\-0 #]*(?:\d+|\*)?(?:\.(?:\d+|\*))?[diouxXeEfFgGcs%]|(?:https?://|www\.|discord\.gg/|cafe\.naver\.com/)[^\s|]+|\b(?=[A-Za-z0-9_-]*[A-Za-z])(?=[A-Za-z0-9_-]*[0-9])[A-Za-z_][A-Za-z0-9_-]*\b(?!\.[0-9])|\b(?:F\d{1,2}|ESC|TAB|ALT|SHIFT|CTRL|HK416|2B)\b|(?<!\w)-[A-Za-z][A-Za-z0-9_-]*|\([A-Za-z]\)|\[[A-Za-z]\]|[+\-]?(?:\d+(?:\.\d+)?|\.\d+)%?|[\r\n]+')
 FOREIGN=re.compile(r'[A-Za-z]{2}|[\uac00-\ud7ff\u3040-\u30ff\u3400-\u9fff]')
 TOKEN_ID=re.compile(r'ZXQ\s*(\d+)\s*QXZ')
 _lock=threading.Lock()
@@ -24,8 +24,14 @@ def prepare(text,commands):
  # A shortcut highlighted inside an English word moves to an explicit suffix;
  # the actual key stays Latin and the whole word becomes translatable.
  suffix=[]
- text=re.sub(r'(?i)(?<![A-Za-z])([A-Za-z]*)\|c([0-9a-f]{8})([A-Za-z])\|r([A-Za-z]+)',lambda m:(suffix.append('|c'+m[2]+m[3]+'|r') or m[1]+m[3]+m[4]),text)
+ def hotkey(m):
+  if not (m[1] or m[4]):return m[0]
+  suffix.append('|c'+m[2]+m[3]+'|r')
+  return m[1]+m[3]+m[4]
+ text=re.sub(r'(?i)(?<![A-Za-z])([A-Za-z]*)\|c([0-9a-f]{8})([A-Za-z])\|r([A-Za-z]*)',hotkey,text)
  if suffix:text+=' ('+', '.join(suffix)+')'
+ if re.search(r'\b(?:model|modeling|modelling|credits|creator|cafe)\b',text,re.I):
+  text=re.sub(r"'([A-Za-z][A-Za-z0-9_.-]{1,40})'",lambda m:save(m[0]),text)
  # Existing text input protocols may contain ordinary English sentences.
  instruction=bool(re.search(r'\b(?:type|write|enter|input|command|commands|chat)\b',text,re.I))
  for cmd in sorted(commands,key=len,reverse=True):
@@ -33,7 +39,11 @@ def prepare(text,commands):
   if not instruction and not cmd.startswith('-') and not re.search(r"['\"]"+re.escape(cmd)+r"['\"]",text):continue
   text=re.sub(r'(?<![A-Za-z0-9_])'+re.escape(cmd)+r'(?![A-Za-z0-9_])',lambda m:save(m[0]),text)
  # All remaining engine tokens are protected before terminology substitutions.
- text=re.sub(r'ZXQ\d+QXZ|'+TOKEN.pattern.removeprefix('(?i)'),lambda m:m[0] if m[0].startswith('ZXQ') else save(m[0]),text,flags=re.I)
+ # A model credit like Spongebob-'author' already contains a protected
+ # nickname. Do not let the alphanumeric-token matcher swallow that marker
+ # into another marker (Spongebob-ZXQ0QXZ), which cannot be restored safely.
+ text=''.join(part if TOKEN_ID.fullmatch(part) else TOKEN.sub(lambda m:save(m[0]),part)
+              for part in re.split(r'(ZXQ\d+QXZ)',text))
  # Translate terminology only in segments outside the placeholders.
  pieces=TOKEN_ID.split(text)
  for i in range(0,len(pieces),2):pieces[i]=TERMS.sub(lambda m:LOWER[m[0].lower()],pieces[i])

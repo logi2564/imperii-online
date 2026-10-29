@@ -5,13 +5,21 @@ from pathlib import Path
 from catalog import catalog,encode_jass,decode_jass,STR,prose
 from storm import Storm
 ROOT=Path(__file__).resolve().parents[1]
-TAG=re.compile(r'(?i)\|c[0-9a-f]{8}|\|[rn]|<[^<>\r\n]+>|%(?:\d+\$)?[+\-0 #]*(?:\d+|\*)?(?:\.(?:\d+|\*))?[diouxXeEfFgGcs%]')
-NUMBER=re.compile(r'(?<![A-Za-z])[+\-]?(?:\d+(?:\.\d+)?|\.\d+)%?')
+TAG=re.compile(r'(?i)\|c[0-9a-f]{8}|\|[rn]|<[^<>\r\n]+>|(?<![0-9])%(?:\d+\$)?[+\-0 #]*(?:\d+|\*)?(?:\.(?:\d+|\*))?[diouxXeEfFgGcs%]')
+NUMBER=re.compile(r'[+\-]?(?:\d+(?:\.\d+)?|\.\d+)%?')
 
 def structural(text):
  tags=TAG.findall(text)
- # Normalize a literal newline to the engine line-break marker equivalently.
- digits=NUMBER.findall(TAG.sub('',text))
+ # Tag boundaries separate values: 2.5|n100 must not become 2.5100. A
+ # list dash or Level 1 - 200 HP is punctuation, not negative 200 HP.
+ plain=TAG.sub(lambda m:'\n' if m[0].lower()=='|n' else ' ',text)
+ # Two imported descriptions already contain broken color escapes without
+ # the pipe. Their hexadecimal bytes are formatting debris, not statistics.
+ plain=re.sub(r'(?i)\bc\s*000080\s*ff|\bc\s*00\s*ffff\s*00',' ',plain)
+ plain=re.sub(r'(?i)\b((?:level|уровень)\s+\d+)\s*[-–—]\s*(?=\d)',r'\1: ',plain)
+ plain=re.sub(r'(?<=\d)\s*[-–—]\s*(?=\d)',' ',plain)
+ plain=re.sub(r'(?<!\d)[-–—]\s+',' ',plain)
+ digits=[n.lstrip('+') for n in NUMBER.findall(plain)]
  return (Counter(v.lower() for v in tags if v.lower()!='|n'),digits)
 
 def split_literal(text):
@@ -46,6 +54,7 @@ def build(source_path,cache_path,output_dir):
      if not prose(text):return text
      result=cache[text]
      assert '\0' not in result
+     if '\n' not in text and '\r' not in text:result=result.replace('\r\n','|n').replace('\n','|n').replace('\r','|n')
      if structural(text)!=structural(result):raise ValueError('Engine markup or tooltip numbers changed: '+repr(text)+' => '+repr(result))
      translated_phrases.add(text)
      return result
@@ -72,7 +81,7 @@ def build(source_path,cache_path,output_dir):
  map_name=next(sp['text'] for sp in data['files'][info['file']]['spans'] if sp['context']=='map-info:0');localized_name=cache.get(map_name,map_name)
  header=old_header[:8]+localized_name.encode()+b'\0'+old_header[end+1:end+9];assert len(header)<512
  blob=bytearray(target.read_bytes());blob[:512]=header+bytes(512-len(header));target.write_bytes(blob)
- # Verify all 3581 retained files from the exact final archive, not a staging directory.
+ # Verify every retained file from the exact final archive, not a staging directory.
  verify=st.open(target)
  try:
   for name,checksum in manifest.items():

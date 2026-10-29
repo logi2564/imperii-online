@@ -7,7 +7,7 @@ FUNC=re.compile(r'(?m)^function (\w+) takes ([^\r\n]+) returns (\w+)')
 DISPLAY={'name','propernames','tip','ubertip','awakentip','revivetip','description','researchtip','researchubertip','untip','unubertip','editorsuffix','bufftip','buffubertip'}
 OBJDISPLAY={'unam','upro','utip','utub','uawt','urev','ides','anam','ansf','atp1','aub1','aut1','auu1','aret','arut','fnam','ftip','fube','gnam','gtp1','gub1','bnam','bsuf','dnam'}
 UI={'DisplayTextToPlayer':[3],'DisplayTimedTextToPlayer':[4],'DisplayTextToForce':[1],'DisplayTimedTextToForce':[2],'BJDebugMsg':[0],'SetTextTagText':[1],'SetTextTagTextBJ':[0],'CreateTextTagLocBJ':[0],'CreateTextTagUnitBJ':[0],'DialogSetMessage':[1],'DialogAddButton':[1],'DialogAddButtonBJ':[1],'MultiboardSetItemValue':[1],'MultiboardSetItemValueBJ':[3],'MultiboardSetTitleText':[1],'LeaderboardSetLabel':[1],'LeaderboardAddItem':[1],'CreateMultiboardBJ':[2],'CreateQuestBJ':[1,2],'CreateQuestItemBJ':[1],'QuestSetTitle':[1],'QuestSetDescription':[1],'QuestItemSetDescription':[1],'QuestMessageBJ':[2],'TimerDialogSetTitle':[1],'CreateTimerDialogBJ':[1],'SetMapName':[0],'SetMapDescription':[0],'SetPlayerName':[1],'BlzFrameSetText':[1],'DzFrameSetText':[1],'BlzSetUnitName':[1],'BlzSetHeroProperName':[1],'BlzSetItemName':[1],'BlzSetItemDescription':[1],'BlzSetItemTooltip':[1],'BlzSetItemExtendedTooltip':[1],'BlzSetAbilityTooltip':[1],'BlzSetAbilityExtendedTooltip':[1],'BlzSetAbilityResearchTooltip':[1],'BlzSetAbilityResearchExtendedTooltip':[1]}
-TECH=re.compile(r'^(?:TRIGSTR_\d+|(?:WESTRING|UISTR|WESTRING)_[A-Z0-9_]+|[A-Za-z_]+\.[A-Za-z]{2,4})$')
+TECH=re.compile(r'^(?:TRIGSTR_\d+|(?:WESTRING|UISTR)_[A-Z0-9_]+|[A-Za-z_]+\.[A-Za-z]{2,4})$',re.I)
 LETTERS=re.compile(r'[A-Za-z]{2}|[\uac00-\ud7ff\u3040-\u30ff\u3400-\u9fff]')
 
 def mask(s):return LEX.sub(lambda m:re.sub(r'[^\r\n]',' ',m[0]),s)
@@ -45,13 +45,15 @@ def jass_spans(s):
   while fi+1<len(ordered) and pos>ordered[fi][1]['end']:fi+=1
   return ordered[fi][0] if ordered and ordered[fi][1]['start']<=pos<ordered[fi][1]['end'] else ''
  def key(name,fn):return fn+'::'+name if fn and name in functions[fn]['locals'] else name
- assignments=defaultdict(list);calls=defaultdict(list);seeds=[];commands=set();protected_names=set()
+ assignments=defaultdict(list);calls=defaultdict(list);seeds=[];technical=[];commands=set();protected_names=set()
  fi=0
  for m in re.finditer(r'(?m)^\s*(?:set\s+|(?:local\s+)?(?:constant\s+)?string\s+)(\w+)(?:\[[^\r\n]*?\])?\s*=([^\r\n]*)',masked):
   fn=owner(m.start());assignments[key(m[1],fn)].append((m.start(2),m.end(2),fn))
  fi=0
  for m in re.finditer(r'\b([A-Za-z_]\w*)\s*\(',masked):
   fn=owner(m.start());args=arguments(masked,m.end()-1);calls[m[1]].append((args,fn))
+  technical_index=2 if m[1]=='TriggerRegisterPlayerChatEvent' else 0 if m[1] in {'ExecuteFunc','StringHash','GetLocalizedString','GetLocalizedHotkey'} else 1 if m[1].startswith('Issue') or m[1] in {'SetUnitAnimation','QueueUnitAnimation'} else None
+  if technical_index is not None and technical_index<len(args):technical.append((*args[technical_index],fn))
   for n in UI.get(m[1],[]):
    if n<len(args):seeds.append((*args[n],fn))
   if m[1]=='TriggerRegisterPlayerChatEvent' and len(args)>2:
@@ -80,6 +82,23 @@ def jass_spans(s):
      if p==token:
       for caller_args,caller in calls.get(fn,[]):
        if index<len(caller_args):queue.append((*caller_args[index],caller))
+ # A string variable can be both displayed and consumed as an order or
+ # input protocol. Preserve its literal origins even when a UI sink sees it.
+ technical_seen=set();technical_queue=deque(technical);protected_offsets=set()
+ while technical_queue:
+  a,b,fn=technical_queue.popleft()
+  if (a,b,fn) in technical_seen:continue
+  technical_seen.add((a,b,fn))
+  protected_offsets.update(m.start() for m in STR.finditer(s,a,b))
+  for token in re.findall(r'\b[A-Za-z_]\w*\b',masked[a:b]):
+   if token not in globals_string and not (fn and token in functions[fn]['locals']):continue
+   technical_queue.extend(assignments.get(key(token,fn),[]))
+   if fn and token in functions[fn]['params']:
+    for index,p in enumerate(functions[fn]['params']):
+     if p==token:
+      for caller_args,caller in calls.get(fn,[]):
+       if index<len(caller_args):technical_queue.append((*caller_args[index],caller))
+ for offset in protected_offsets:selected.pop(offset,None)
  # All commands are literals consumed by the existing chat parser. Their
  # spellings remain usable, and are separately protected inside translated help.
  return sorted(selected.values(),key=lambda x:x['start']),sorted(commands),sorted(protected_names)

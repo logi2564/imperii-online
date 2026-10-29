@@ -1,4 +1,4 @@
-name: Gutsy Geoid Russian localization
+name: Build and audit full Gutsy Geoid Russian localization
 on:
   push:
     branches: [warcraft-gutsy-russian]
@@ -21,23 +21,38 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Read exact original and extract player text
+      - name: Prepare exact source and offline validation tools
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y libstorm-dev
           mkdir -p work
           curl --fail --location --retry 2 'https://github.com/logi2564/imperii-online/releases/download/gutsy-source-6ac86d86/Gutsy-Geoid-EN-1.0.5.w3x' -o work/original.w3x
-          set -o pipefail
-          python warcraft-maps/gutsy-ru/tools/catalog.py work/original.w3x work/catalog.json 2>&1 | tee work/Catalog-log.txt
-      - name: Translate and validate protected text tokens
+          git clone https://github.com/lep/pjass.git "$RUNNER_TEMP/pjass"
+          git -C "$RUNNER_TEMP/pjass" checkout 654c3cf7731eb472518e6915e9d7672a72652165
+          make -C "$RUNNER_TEMP/pjass"
+      - name: Build the reviewed Russian text into the real map
         run: |
-          set -o pipefail
-          python -u warcraft-maps/gutsy-ru/tools/translate_cache.py work/catalog.json work/Translations.json 2>&1 | tee work/Translation-log.txt
-      - name: Preserve reviewable translation cache
+          set -euo pipefail
+          python warcraft-maps/gutsy-ru/tools/catalog.py work/original.w3x work/catalog.json
+          python warcraft-maps/gutsy-ru/tools/test_tokens.py work/catalog.json | tee work/Tokens-check.txt
+          python warcraft-maps/gutsy-ru/tools/build.py work/original.w3x warcraft-maps/gutsy-ru/source/Translations.json work
+      - name: Audit code, assets, audio, data and inherited compiler diagnostics
+        run: |
+          set -euo pipefail
+          python warcraft-maps/gutsy-ru/tools/verify.py work/original.w3x work | tee work/Preservation-check.txt
+          python warcraft-maps/gutsy-ru/tools/check_jass.py work/original.w3x work "$RUNNER_TEMP/pjass/pjass" warcraft-maps/gutsy-ru/tests/reference | tee work/Compiler-check.txt
+          python warcraft-maps/gutsy-ru/tools/package.py work release
+      - uses: actions/upload-artifact@v4
         if: always()
+        with:
+          name: gutsy-russian-audit
+          path: |
+            work/*-check.txt
+            work/*report.json
+      - name: Publish the complete text localization
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          tag="gutsy-ru-cache-${GITHUB_SHA:0:8}"
-          gh release create "$tag" work/*.json work/*log.txt --target "$GITHUB_SHA" --prerelease --latest=false --title 'Gutsy Geoid — Russian text cache for review' --notes 'Translation data for the localization build. Not a playable map.'
+          tag="gutsy-ru-${GITHUB_SHA:0:8}"
+          gh release create "$tag" release/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'Gutsy Geoid Game v1.0.5 — полный русский текст' --notes-file warcraft-maps/gutsy-ru/README-RU.txt

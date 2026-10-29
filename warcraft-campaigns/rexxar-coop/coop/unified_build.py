@@ -51,6 +51,10 @@ def prepare(out,missions=None):
         maps[name]=dict(name=name,index=index,path=path,data=data,script=script,strings=strings)
         terrains.append(terrain.read(name,data['war3map.w3e'],data['war3map.w3i']));paths[name]=data['war3map.wpm'];shadows[name]=data['war3map.shd']
     terrain.arrange(terrains);catalog=UnifiedCatalog(maps);schema=state_schema(maps)
+    import unified_world
+    layouts=unified_world.layouts(maps)
+    (out/'World-layout.json').write_text(json.dumps(layouts,ensure_ascii=False,indent=2))
+    for m in maps.values():m['worldLayout']=layouts.get(m['index'])
     merged,cliffs=terrain.merge(terrains,paths,shadows);stage=out/'merged';stage.mkdir(exist_ok=True)
     stages=terrain.preview_stages(terrains,merged)
     (out/'Preview-stages.json').write_text(json.dumps(stages))

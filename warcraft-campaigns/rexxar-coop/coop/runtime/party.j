@@ -212,6 +212,20 @@ function RC_SourceCreate takes player p, integer id, real x, real y, real facing
     return u
 endfunction
 
+function RC_RescueUnit takes unit u, player recipient, boolean colour returns nothing
+    // Stock RescueUnitBJ changes ownership inside Blizzard.j, bypassing the
+    // ordinary source-owner hook. Rescue boats/troops must join the party's
+    // distribution queue, including when the red colour is unoccupied.
+    if RC_started and recipient==Player(0) and RC_Role(recipient)<0 then
+        set recipient=RC_Player(0)
+    endif
+    call RescueUnitBJ(u,recipient,colour)
+    if RC_started then
+        call RC_CheckSourceUnit(u)
+        call RC_MarkShared(u)
+    endif
+endfunction
+
 function RC_SourceCreateAtLoc takes integer count, integer id, player p, location point, real facing returns group
     local group created = CreateNUnitsAtLoc(count, id, p, point, facing)
     local group scan = CreateGroup()

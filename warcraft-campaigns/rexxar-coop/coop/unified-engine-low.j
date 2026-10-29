@@ -96,6 +96,16 @@ function UZ_TimerSingle takes trigger trg, real duration, integer z returns noth
     set t=null
 endfunction
 
+function UZ_StartTimerBJ takes timer clock, boolean periodic, real timeout, integer z returns timer
+    call UZ_TimerStart(clock,timeout,periodic,null,z)
+    set bj_lastStartedTimer=clock
+    return clock
+endfunction
+
+function UZ_CreateTimerBJ takes boolean periodic, real timeout, integer z returns timer
+    return UZ_StartTimerBJ(CreateTimer(),periodic,timeout,z)
+endfunction
+
 function UZ_TimerPeriodic takes trigger trg, real duration, integer z returns nothing
     local timer t=CreateTimer()
     call TriggerRegisterTimerExpireEvent(trg,t)
@@ -113,6 +123,14 @@ function UZ_ResumeTimer takes timer t returns nothing
     call SaveBoolean(UZ_state,GetHandleId(t),22,true)
     if z<0 or UZ_live[z] then
         call ResumeTimer(t)
+    endif
+endfunction
+
+function UZ_PauseTimerBJ takes boolean paused, timer clock returns nothing
+    if paused then
+        call UZ_PauseTimer(clock)
+    else
+        call UZ_ResumeTimer(clock)
     endif
 endfunction
 

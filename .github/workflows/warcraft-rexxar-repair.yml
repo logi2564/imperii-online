@@ -56,6 +56,7 @@ jobs:
           python -u coop/tests/test_talent_book.py build-out/Rexxar-VII.lua | tee build-out/Talent-book-check.txt
           python -u coop/tests/test_skill_regressions.py build-out/Rexxar-VII.lua | tee build-out/Skill-regression-check.txt
           python -u coop/tests/test_skill_demos.py build-out/Rexxar-VII.lua | tee build-out/Skill-demo-check.txt
+          python -u coop/tests/test_world_restore.py build-out/Rexxar-VII.lua | tee build-out/World-restore-check.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:

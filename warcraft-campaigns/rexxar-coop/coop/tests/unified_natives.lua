@@ -29,6 +29,8 @@ function GetRectMinX(r) return r.minx end
 function GetRectMinY(r) return r.miny end
 function GetRectMaxX(r) return r.maxx end
 function GetRectMaxY(r) return r.maxy end
+function GetRectCenterX(r) return (r.minx+r.maxx)/2 end
+function GetRectCenterY(r) return (r.miny+r.maxy)/2 end
 ALLIANCE_HELP_REQUEST='help';ALLIANCE_HELP_RESPONSE='helpresponse'
 PLAYER_NEUTRAL_AGGRESSIVE=12;PLAYER_NEUTRAL_PASSIVE=15
 UNIT_STATE_LIFE='hp'
@@ -51,6 +53,23 @@ function TriggerExecute(t)
  WORLD.events.trigger=before
 end
 function GetTriggeringTrigger() return WORLD.events.trigger end
+function EmitUnitEvent(event,u,fields)
+ local before=WORLD.events;local fired={}
+ WORLD.events=fields or {};WORLD.events.unit=u;WORLD.events.player=u.owner
+ for _,reg in ipairs(WORLD.unitEvents) do
+  local t=reg.trigger
+  if reg.event==event and ((reg.unit~=nil and reg.unit==u) or (reg.unit==nil and reg.player==u.owner)) and not fired[t] and t.enabled~=false and not t.destroyed then
+   fired[t]=true
+   if TriggerEvaluate(t) then TriggerExecute(t) end
+  end
+ end
+ WORLD.events=before
+end
+EVENT_UNIT_DEATH='unitdeath'
+function TriggerRegisterUnitEvent(t,u,event)
+ if event==EVENT_UNIT_DAMAGED then u.damageTrigger=t
+ else table.insert(WORLD.unitEvents,{trigger=t,unit=u,event=event}) end
+end
 function DoNothing() end
 function QuestSetCompleted(q,v) q.completed=v end
 function QuestCreateItem(q)
@@ -72,6 +91,53 @@ function IsUnitSelected(u,p) return WORLD.selected==u end
 function SetCameraPosition(...) end
 function SetCameraField(...) end
 function SetUnitAnimation(u,name) u.animation=name end
+function Filter(f) return f end
+function DestroyBoolExpr(f) end
+function GetFilterUnit() return WORLD.filterUnit end
+function GetDyingUnit() return GetTriggerUnit() end
+function IsUnitIdType(raw,kind)
+ for _,u in ipairs(WORLD.units) do if u.id==raw and u[kind] then return true end end
+ return false
+end
+function GroupEnumUnitsOfPlayer(g,p,filter)
+ for n=#g,1,-1 do g[n]=nil end
+ local previous=WORLD.filterUnit
+ for _,u in ipairs(WORLD.units) do
+  if u.owner==p and not u.removed then
+   WORLD.filterUnit=u
+   if filter==nil or filter() then table.insert(g,u) end
+  end
+ end
+ WORLD.filterUnit=previous
+end
+function KillUnit(u)
+ if u and not u.removed and u.hp>0.405 then
+  u.hp=0
+  EmitUnitEvent(EVENT_PLAYER_UNIT_DEATH,u,{killer=nil})
+  EmitUnitEvent(EVENT_UNIT_DEATH,u,{killer=nil})
+ end
+end
+function IsQuestDiscovered(q) return q and q.discovered or false end
+function IsQuestCompleted(q) return q and q.completed or false end
+function LeaderboardGetPlayerIndex(b,p) return p end
+function LeaderboardSetItemLabel(b,i,s) b.items[i]=s end
+function LeaderboardHasPlayerItem(b,p) return b.items[p]~=nil end
+function LeaderboardRemovePlayerItem(b,p) b.items[p]=nil end
+function LeaderboardGetItemCount(b) local n=0 for _ in pairs(b.items) do n=n+1 end return n end
+function LeaderboardGetLabelText(b) return b.title or '' end
+function LeaderboardSetSizeByItemCount(b,n) b.size=n end
+function LeaderboardSetValueColor(...) end
+function LeaderboardSetLabelColor(...) end
+function LeaderboardSetStyle(...) end
+function CommandAI(p,command,data)
+ WORLD.commands=WORLD.commands or {}
+ table.insert(WORLD.commands,{player=p,command=command,data=data})
+end
+function UnitShareVision(u,p,v) u.vision=u.vision or {};u.vision[p]=v end
+function IssuePointOrderLoc(u,order,point) return IssuePointOrder(u,order,point.x,point.y) end
+function RemoveGuardPosition(u) u.guarded=false end
+function AddItemToStock(u,raw,current,max) u.stock=u.stock or {};u.stock[raw]=current end
+function Pow(a,b) return a^b end
 CAMERA_FIELD_TARGET_DISTANCE='distance';UNIT_TYPE_DEAD='dead';UNIT_TYPE_PEON='peon'
 local originalType=IsUnitType
 function IsUnitType(u,t) if not u then return false end if t==UNIT_TYPE_DEAD then return u.hp<=0.405 end return originalType(u,t) end

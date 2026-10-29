@@ -4,6 +4,7 @@ from pathlib import Path
 from build import ROOT,MAPS,globals_text,initialization,classic_strings,function,calls,hooks,transform,coop_info,player_remap,read_info
 from unified_script import FUNCTION,source_parts,namespace,localize,relocate,arguments
 from trigger_strings import resolve_string
+import unified_world
 
 GLOBALS='''
     integer UM_hostColor=0
@@ -47,7 +48,7 @@ def add_after_locals(code,statement):
     return '\n'.join(lines)
 
 def scoped_calls(code,z):
-    names={'TriggerRegisterTimerEventSingle':('UZ_TimerSingle',2),'TriggerRegisterTimerEventPeriodic':('UZ_TimerPeriodic',2),'TimerStart':('UZ_TimerStart',4)}
+    names={'TriggerRegisterTimerEventSingle':('UZ_TimerSingle',2),'TriggerRegisterTimerEventPeriodic':('UZ_TimerPeriodic',2),'TimerStart':('UZ_TimerStart',4),'StartTimerBJ':('UZ_StartTimerBJ',3),'CreateTimerBJ':('UZ_CreateTimerBJ',2)}
     # Parse spans against a masked source, preserving strings and nested calls.
     from build import mask
     masked=mask(code);edits=[]
@@ -57,7 +58,7 @@ def scoped_calls(code,z):
             assert len(args)==count,(m[1],args)
             edits.extend([(m.start(1),m.end(1),new),(args[-1][1],args[-1][1],', '+str(z))])
     for a,b,v in sorted(edits,reverse=True):code=code[:a]+v+code[b:]
-    return calls(code,{'CreateTrigger':'UZ_CreateTrigger','DestroyTrigger':'UZ_DestroyTrigger','SaveGameExists':'UZ_SaveGameExists','CopySaveGameBJ':'UZ_CopySave','TriggerRegisterGameSavedEventBJ':'UZ_SavedEvent','SetCampaignMenuRaceBJ':'UZ_CampaignRace','SetMissionAvailable':'UZ_MissionAvailable','PauseTimer':'UZ_PauseTimer','ResumeTimer':'UZ_ResumeTimer','DestroyTimer':'UZ_DestroyTimer','PauseAllUnitsBJ':'UZ_PauseCurrent','DestroyQuest':'UZ_DestroyQuest','CreateQuest':'UZ_CreateQuest','CreateQuestBJ':'UZ_CreateQuestBJ','StoreUnit':'UZ_StoreUnit','StoreUnitBJ':'UZ_StoreUnitBJ','HaveStoredUnit':'UZ_HaveStoredUnit','SetHeroLevel':'UZ_SetHeroLevel'})
+    return calls(code,{'CreateTrigger':'UZ_CreateTrigger','DestroyTrigger':'UZ_DestroyTrigger','SaveGameExists':'UZ_SaveGameExists','CopySaveGameBJ':'UZ_CopySave','TriggerRegisterGameSavedEventBJ':'UZ_SavedEvent','SetCampaignMenuRaceBJ':'UZ_CampaignRace','SetMissionAvailable':'UZ_MissionAvailable','PauseTimer':'UZ_PauseTimer','PauseTimerBJ':'UZ_PauseTimerBJ','ResumeTimer':'UZ_ResumeTimer','DestroyTimer':'UZ_DestroyTimer','PauseAllUnitsBJ':'UZ_PauseCurrent','DestroyQuest':'UZ_DestroyQuest','CreateQuest':'UZ_CreateQuest','CreateQuestBJ':'UZ_CreateQuestBJ','StoreUnit':'UZ_StoreUnit','StoreUnitBJ':'UZ_StoreUnitBJ','HaveStoredUnit':'UZ_HaveStoredUnit','SetHeroLevel':'UZ_SetHeroLevel'})
 
 def build_zones(maps,terrains,catalog,schema):
     outputs=[];late=[];zone_parts={};perzone_hooks={};reports=[]
@@ -75,12 +76,13 @@ def build_zones(maps,terrains,catalog,schema):
         late.append(f'function UZ_DiplomacyZ{z:02} takes nothing returns nothing\n'+alliance_body+'\nendfunction')
         source_info=read_info(m['data']['war3map.w3i'])
         factions={remap.get(p['id'],p['id']):resolve_string(p['name'],m['strings']).decode() for p in source_info['players'] if p['id']!=0}
-        name_lines=[f'    call SetPlayerName(Player({n}),'+json.dumps(factions.get(n,'Нейтральная фракция'),ensure_ascii=False)+')' for n in range(4,12)]
+        name_lines=[f'    call SetPlayerName(Player({n}),'+json.dumps(factions.get(n,'Нейтральная фракция'),ensure_ascii=False)+')' for n in [*range(4,12),13,14]]
         late.append(f'function UZ_NamesZ{z:02} takes nothing returns nothing\n'+'\n'.join(name_lines)+'\nendfunction')
         source=part['functions'];triggers=re.findall(r'\btrigger\s+(Z\d+_gg_trg_\w+)\s*=',part['globals'])
         guard_count=0
         for name,code in source.items():
             code=scoped_calls(code,z)
+            code=unified_world.instrument(code,name,z,m.get('worldLayout'))
             target=re.search(r'set '+prefix+r'udg_TransitionTarget\s*=\s*(\d+)',code)
             area=re.search(r'set '+prefix+r'udg_TransitionTargetArea\s*=\s*(\d+)',code)
             if name.startswith('Trig_Zone_to_') and name.endswith('_Actions') and target and area:
@@ -321,7 +323,9 @@ def assemble(maps,terrains,catalog,schema):
     # Keep explicit save destinations coherent for -save in a unified region.
     code=next(m[0] for m in FUNCTION.finditer(shared) if m[1]=='RC_SaveAll')
     shared=shared.replace(code,add_after_locals(code,'    set RC_nextMap=RC_map\n    set RC_nextArea=0'))
+    shared=unified_world.adapt_runtime(shared)
     geometry=['function UZ_InitGeometry takes nothing returns nothing']
+    geometry+=unified_world.initialization({m['index']:m['worldLayout'] for m in maps.values() if m.get('worldLayout')})
     for t in terrains:
         m=maps[t.name];z=m['index'];dx,dy=t.offset
         info=read_info(m['data']['war3map.w3i']);host=next(p for p in info['players'] if p['id']==0)
@@ -353,8 +357,8 @@ endfunction'''
         n=p['id'];config += [f'    call DefineStartLocation({n},{p["x"]},{p["y"]})',f'    call SetPlayerStartLocation(Player({n}),{n})',f'    call ForcePlayerStartLocation(Player({n}),{n})',f'    call SetPlayerColor(Player({n}),ConvertPlayerColor({n}))',f'    call SetPlayerController(Player({n}),'+('MAP_CONTROL_USER' if n<4 else 'MAP_CONTROL_COMPUTER')+')',f'    call SetPlayerTeam(Player({n}),{0 if n<4 else n-3})',f'    call SetPlayerRacePreference(Player({n}),RACE_PREF_ORC)',f'    call SetPlayerRaceSelectable(Player({n}),false)']
         if n<4:config.append(f'    call SetPlayerSlotAvailable(Player({n}),MAP_CONTROL_USER)')
     config+=['endfunction']
-    functions='\n\n'.join([(ROOT/'unified-engine-low.j').read_text(),shared,source,late,'\n'.join(geometry),(ROOT/'unified-engine-high.j').read_text(),(ROOT/'unified-menu.j').read_text(),(ROOT/'unified-demo.j').read_text(),ai_code(maps,catalog),main,'\n'.join(config)])
-    globals_block='globals\n'+globals_text(maps[MAPS[0]],len(schema))+GLOBALS+unified_menu.GLOBALS+'\n'.join(p['globals'] for p in parts.values())+'\nendglobals\n'
+    functions='\n\n'.join([(ROOT/'unified-engine-low.j').read_text(),shared,source,late,'\n'.join(geometry),(ROOT/'unified-engine-high.j').read_text(),(ROOT/'unified-menu.j').read_text(),(ROOT/'unified-demo.j').read_text(),(ROOT/'unified-world.j').read_text(),(ROOT/'unified-world-state.j').read_text(),ai_code(maps,catalog),main,'\n'.join(config)])
+    globals_block='globals\n'+globals_text(maps[MAPS[0]],len(schema))+GLOBALS+unified_menu.GLOBALS+unified_world.GLOBALS+'\n'.join(p['globals'] for p in parts.values())+'\nendglobals\n'
     result=classic_strings(globals_block+order_functions(functions))
     assert '@@' not in result
     return result,reports

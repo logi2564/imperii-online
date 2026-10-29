@@ -52,7 +52,16 @@ def classic_strings(script):
     return re.sub(pattern,shorten,script)
 
 def player_remap(script,name):
-    if name=='OrcX03b':return {1:4,2:5,3:1,4:2,5:3} # Enemies -> 4/5; three Horde armies -> blue/teal/purple.
+    if name=='OrcX03b':
+        # All three Horde armies remain independent NPC factions. Assigning
+        # them to blue/teal/purple let the party-adoption code steal their
+        # units, breaking the original base groups and death conditions.
+        # Revival stones can share neutral-passive with shops: they have no
+        # AI/economy and already use neutral alliances. Keep the stash in its
+        # dedicated shared-control faction, rather than exposing all shops.
+        if re.search(r'Player\(\s*1[34]\s*\)|PLAYER_NEUTRAL_(?:VICTIM|EXTRA)',mask(script)):
+            raise ValueError('Final-act neutral NPC slots are already used')
+        return {1:4,2:5,3:13,4:14,5:6,6:15}
     used=set(map(int,re.findall(r'\bPlayer\(\s*(\d+)\s*\)',mask(script))))
     targets=[n for n in range(1,12) if n not in ROLES and n not in used]
     moved={}
@@ -330,6 +339,7 @@ def transform(script,m,schema,catalog,players,remap,runtime,forces):
     mapped={'GetGameDifficulty':'RC_GetDifficulty','GetForceOfPlayer':'RC_GetForce','IsUnitOwnedByPlayer':'RC_UnitOwned','TriggerRegisterPlayerUnitEvent':'RC_RegisterUnitEvent','TriggerRegisterPlayerEventEndCinematic':'RC_RegisterSkip','CinematicModeBJ':'RC_Cinematic','CinematicModeExBJ':'RC_CinematicEx','CameraSetupApplyForPlayer':'RC_CameraSetup','GetUnitsOfPlayerAll':'RC_UnitsOfPlayer','InitGameCacheBJ':'RC_InitCache','ReloadGameCachesFromDisk':'RC_ReloadCache','SaveGameCacheBJ':'RC_SaveCache','RestoreUnitLocFacingAngleBJ':'RC_RestoreHero','StartCampaignAI':'RC_StartAI','ChangeLevel':'RC_ChangeLevel','SetNextLevelBJ':'RC_SetNextLevel','CustomVictoryBJ':'RC_Victory','CustomDefeatBJ':'RC_Defeat','SetPlayerStateBJ':'RC_Resource','AdjustPlayerStateBJ':'RC_AdjustResource'}
     mapped.update({'CreateUnit':'RC_SourceCreate','CreateNUnitsAtLoc':'RC_SourceCreateAtLoc','CreateNUnitsAtLocFacingLocBJ':'RC_SourceCreateFacing','GetOwningPlayer':'RC_StoryOwner','SetUnitOwner':'RC_SourceOwner','ShowUnit':'RC_SourceShow','ShowUnitShow':'RC_SourceShowOn','ShowUnitHide':'RC_SourceShowOff','GroupAddUnit':'RC_SourceGroupAdd','GroupAddUnitSimple':'RC_SourceGroupSimple','GroupAddGroup':'RC_SourceGroupMerge','SelectHeroSkill':'RC_Learn','SetPlayerHandicapXPBJ':'RC_XPHandicapPercent','SetPlayerHandicapXP':'RC_XPHandicap','SuspendHeroXPBJ':'RC_SuspendExperienceBJ','SuspendHeroXP':'RC_SuspendExperience','UnitHasItemOfTypeBJ':'RC_HasQuestItem','GetItemOfTypeFromUnitBJ':'RC_QuestItem'})
     mapped['RemoveUnit']='RC_SourceRemove'
+    mapped['RescueUnitBJ']='RC_RescueUnit'
     script=calls(script,mapped)
     if 'function Trig_Transition_Actions ' in script:
         base=0 if m['index']<5 else 5

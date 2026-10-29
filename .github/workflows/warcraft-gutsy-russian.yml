@@ -24,7 +24,8 @@ jobs:
       - name: Prepare exact source and offline validation tools
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y cmake g++ make
+          sudo apt-get install -y cmake g++ make fonts-dejavu-core
+          python -m pip install 'Pillow==12.3.0'
           mkdir -p work
           curl --fail --location --retry 2 'https://github.com/logi2564/imperii-online/releases/download/gutsy-source-6ac86d86/Gutsy-Geoid-EN-1.0.5.w3x' -o work/original.w3x
           git clone https://github.com/ladislav-zezula/StormLib.git "$RUNNER_TEMP/StormLib"
@@ -47,12 +48,13 @@ jobs:
           set -euo pipefail
           python warcraft-maps/gutsy-ru/tools/verify.py work/original.w3x work | tee work/Preservation-check.txt
           python warcraft-maps/gutsy-ru/tools/check_jass.py work/original.w3x work "$RUNNER_TEMP/pjass/pjass" warcraft-maps/gutsy-ru/tests/reference | tee work/Compiler-check.txt
-      - name: Add native menus and audit every hero/skill page
+      - name: Build graphical gallery and test actual original hero initialization
         run: |
           set -euo pipefail
-          python warcraft-maps/gutsy-ru/menu/build_menu.py work/Gutsy-Geoid-Game-RU-v1.0.5.w3x work/menu "$RUNNER_TEMP/pjass/pjass" | tee work/Menu-build-check.txt
-          python warcraft-maps/gutsy-ru/menu/test_menu.py work/menu | tee work/Menu-behavior-check.txt
-          python warcraft-maps/gutsy-ru/menu/package_menu.py work work/menu release
+          python warcraft-maps/gutsy-ru/gallery/build.py work/Gutsy-Geoid-Game-RU-v1.0.5.w3x work/gallery "$RUNNER_TEMP/pjass/pjass" | tee work/Gallery-build-check.txt
+          python warcraft-maps/gutsy-ru/gallery/audit.py work/Gutsy-Geoid-Game-RU-v1.0.5.w3x work/gallery | tee work/Gallery-audit-check.txt
+          python warcraft-maps/gutsy-ru/gallery/test_runtime.py work/gallery | tee work/Gallery-behavior-check.txt
+          python warcraft-maps/gutsy-ru/gallery/package.py work work/gallery release
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -60,16 +62,17 @@ jobs:
           path: |
             work/*-check.txt
             work/*report.json
-            work/menu/*report.json
-            work/menu/Menu-tests.json
-            work/menu/Menu-compiler.txt
-      - name: Publish the complete text localization
+            work/gallery/Gallery-*.json
+            work/gallery/Gallery-compiler.txt
+      - name: Publish audited graphical gallery
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
           tag="gutsy-ru-${GITHUB_SHA:0:8}"
-          gh release create "$tag" release/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'GGG RU MENU I — режимы, герои и каталог навыков' --notes-file warcraft-maps/gutsy-ru/menu/README-RU.txt
+          gh release create "$tag" release/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'GGG RU GALLERY FIX — графическое меню и запуск боя' --notes-file warcraft-maps/gutsy-ru/gallery/README-RU.txt
+          printf 'В MENU I подтверждены повторный выбор героя и незавершённый старт. Меню полностью заменено: https://github.com/%s/releases/tag/%s\n' "$GITHUB_REPOSITORY" "$tag" > obsolete-menu.txt
+          gh release edit gutsy-ru-f4c049b3 --title 'GGG RU MENU I — устарела: повторный выбор и сбой старта' --notes-file obsolete-menu.txt --prerelease --latest=false
           printf 'В FIX1 игрок сообщил о пропавших описаниях навыков. Новая сборка возвращает исходный формат хранения подсказок: https://github.com/%s/releases/tag/%s\n' "$GITHUB_REPOSITORY" "$tag" > obsolete-release.txt
           gh release edit gutsy-ru-809dede6 --title 'GGG RU FIX1 — устарела, пропадали описания' --notes-file obsolete-release.txt --prerelease --latest=false
           printf 'В этой сборке подтверждён вылет при загрузке. Новая сборка: https://github.com/%s/releases/tag/%s\n' "$GITHUB_REPOSITORY" "$tag" > obsolete-release.txt

@@ -1,0 +1,363 @@
+{
+  "source": "sumneko/w3x2lni@82916514a12b7edb15252d42225cd8cc8ce61cfd/data/zhCN-1.24.4/mpq/units",
+  "abilityMetadataSHA256": "891109928d7f34fc5f4e33eb53b807513ae54107b13dea0dde5ce75bbe063246",
+  "unitMetadataSHA256": "95759d1deabfcded627a50dcdaceb53d7d496769331d2eca7d4a113cb00e5134",
+  "ability": {
+    "Ncl1": {
+      "type": "unreal",
+      "field": "Data",
+      "data": 1,
+      "repeat": 4
+    },
+    "Ncl2": {
+      "type": "channelType",
+      "field": "Data",
+      "data": 2,
+      "repeat": 4
+    },
+    "Ncl3": {
+      "type": "channelFlags",
+      "field": "Data",
+      "data": 3,
+      "repeat": 4
+    },
+    "Ncl4": {
+      "type": "unreal",
+      "field": "Data",
+      "data": 4,
+      "repeat": 4
+    },
+    "Ncl5": {
+      "type": "bool",
+      "field": "Data",
+      "data": 5,
+      "repeat": 4
+    },
+    "Ncl6": {
+      "type": "orderString",
+      "field": "Data",
+      "data": 6,
+      "repeat": 4
+    },
+    "aart": {
+      "type": "icon",
+      "field": "Art",
+      "data": 0,
+      "repeat": 0
+    },
+    "abpx": {
+      "type": "int",
+      "field": "Buttonpos",
+      "data": 0,
+      "repeat": 0
+    },
+    "abpy": {
+      "type": "int",
+      "field": "Buttonpos",
+      "data": 0,
+      "repeat": 0
+    },
+    "acas": {
+      "type": "unreal",
+      "field": "Cast",
+      "data": 0,
+      "repeat": 4
+    },
+    "acat": {
+      "type": "modelList",
+      "field": "CasterArt",
+      "data": 0,
+      "repeat": 0
+    },
+    "acdn": {
+      "type": "unreal",
+      "field": "Cool",
+      "data": 0,
+      "repeat": 4
+    },
+    "aeat": {
+      "type": "modelList",
+      "field": "EffectArt",
+      "data": 0,
+      "repeat": 0
+    },
+    "aher": {
+      "type": "bool",
+      "field": "hero",
+      "data": 0,
+      "repeat": 0
+    },
+    "ahky": {
+      "type": "char",
+      "field": "Hotkey",
+      "data": 0,
+      "repeat": 0
+    },
+    "aite": {
+      "type": "bool",
+      "field": "item",
+      "data": 0,
+      "repeat": 0
+    },
+    "alev": {
+      "type": "int",
+      "field": "levels",
+      "data": 0,
+      "repeat": 0
+    },
+    "amcs": {
+      "type": "int",
+      "field": "Cost",
+      "data": 0,
+      "repeat": 4
+    },
+    "anam": {
+      "type": "string",
+      "field": "Name",
+      "data": 0,
+      "repeat": 0
+    },
+    "arac": {
+      "type": "unitRace",
+      "field": "race",
+      "data": 0,
+      "repeat": 0
+    },
+    "aran": {
+      "type": "unreal",
+      "field": "Rng",
+      "data": 0,
+      "repeat": 4
+    },
+    "areq": {
+      "type": "techList",
+      "field": "Requires",
+      "data": 0,
+      "repeat": 0
+    },
+    "arlv": {
+      "type": "int",
+      "field": "reqLevel",
+      "data": 0,
+      "repeat": 0
+    },
+    "arqa": {
+      "type": "intList",
+      "field": "Requiresamount",
+      "data": 0,
+      "repeat": 0
+    },
+    "atat": {
+      "type": "modelList",
+      "field": "TargetArt",
+      "data": 0,
+      "repeat": 0
+    },
+    "atp1": {
+      "type": "string",
+      "field": "Tip",
+      "data": 0,
+      "repeat": 3
+    },
+    "aub1": {
+      "type": "string",
+      "field": "Ubertip",
+      "data": 0,
+      "repeat": 3
+    }
+  },
+  "unit": {
+    "uabi": {
+      "type": "abilityList",
+      "field": "abilList",
+      "data": 0,
+      "repeat": 0
+    },
+    "uacq": {
+      "type": "unreal",
+      "field": "acquire",
+      "data": 0,
+      "repeat": 0
+    },
+    "uaen": {
+      "type": "attackBits",
+      "field": "weapsOn",
+      "data": 0,
+      "repeat": 0
+    },
+    "ubdg": {
+      "type": "bool",
+      "field": "isbldg",
+      "data": 0,
+      "repeat": 0
+    },
+    "ubui": {
+      "type": "unitList",
+      "field": "Builds",
+      "data": 0,
+      "repeat": 0
+    },
+    "ucbs": {
+      "type": "unreal",
+      "field": "castbsw",
+      "data": 0,
+      "repeat": 0
+    },
+    "uclb": {
+      "type": "int",
+      "field": "blue",
+      "data": 0,
+      "repeat": 0
+    },
+    "uclg": {
+      "type": "int",
+      "field": "green",
+      "data": 0,
+      "repeat": 0
+    },
+    "uclr": {
+      "type": "int",
+      "field": "red",
+      "data": 0,
+      "repeat": 0
+    },
+    "ucol": {
+      "type": "unreal",
+      "field": "collision",
+      "data": 0,
+      "repeat": 0
+    },
+    "ucpt": {
+      "type": "unreal",
+      "field": "castpt",
+      "data": 0,
+      "repeat": 0
+    },
+    "ufoo": {
+      "type": "int",
+      "field": "fused",
+      "data": 0,
+      "repeat": 0
+    },
+    "uhab": {
+      "type": "heroAbilityList",
+      "field": "heroAbilList",
+      "data": 0,
+      "repeat": 0
+    },
+    "uico": {
+      "type": "icon",
+      "field": "Art",
+      "data": 0,
+      "repeat": 0
+    },
+    "umdl": {
+      "type": "model",
+      "field": "file",
+      "data": 0,
+      "repeat": 0
+    },
+    "umpi": {
+      "type": "int",
+      "field": "mana0",
+      "data": 0,
+      "repeat": 0
+    },
+    "umpm": {
+      "type": "int",
+      "field": "manaN",
+      "data": 0,
+      "repeat": 0
+    },
+    "umvf": {
+      "type": "unreal",
+      "field": "moveFloor",
+      "data": 0,
+      "repeat": 0
+    },
+    "umvh": {
+      "type": "unreal",
+      "field": "moveHeight",
+      "data": 0,
+      "repeat": 0
+    },
+    "umvs": {
+      "type": "int",
+      "field": "spd",
+      "data": 0,
+      "repeat": 0
+    },
+    "umvt": {
+      "type": "moveType",
+      "field": "movetp",
+      "data": 0,
+      "repeat": 0
+    },
+    "umxp": {
+      "type": "real",
+      "field": "maxPitch",
+      "data": 0,
+      "repeat": 0
+    },
+    "umxr": {
+      "type": "real",
+      "field": "maxRoll",
+      "data": 0,
+      "repeat": 0
+    },
+    "unam": {
+      "type": "string",
+      "field": "Name",
+      "data": 0,
+      "repeat": 0
+    },
+    "upat": {
+      "type": "pathingTexture",
+      "field": "pathTex",
+      "data": 0,
+      "repeat": 0
+    },
+    "ures": {
+      "type": "upgradeList",
+      "field": "Researches",
+      "data": 0,
+      "repeat": 0
+    },
+    "usca": {
+      "type": "real",
+      "field": "modelScale",
+      "data": 0,
+      "repeat": 0
+    },
+    "ushb": {
+      "type": "shadowTexture",
+      "field": "buildingShadow",
+      "data": 0,
+      "repeat": 0
+    },
+    "ushu": {
+      "type": "shadowImage",
+      "field": "unitShadow",
+      "data": 0,
+      "repeat": 0
+    },
+    "usid": {
+      "type": "int",
+      "field": "sight",
+      "data": 0,
+      "repeat": 0
+    },
+    "usin": {
+      "type": "int",
+      "field": "nsight",
+      "data": 0,
+      "repeat": 0
+    },
+    "utra": {
+      "type": "unitList",
+      "field": "Trains",
+      "data": 0,
+      "repeat": 0
+    }
+  }
+}

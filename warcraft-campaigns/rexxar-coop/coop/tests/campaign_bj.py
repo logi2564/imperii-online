@@ -18,6 +18,8 @@ def compile_helpers(out):
     wanted = set('GetBooleanAnd GetBooleanOr RectContainsUnit IsUnitAliveBJ IsTriggerQueueEmptyBJ SetPlayerAllianceStateBJ ConditionalTriggerExecute GetForLoopIndexA GetStoredIntegerBJ GetStoredBooleanBJ GetStoredStringBJ GetLastCreatedGameCacheBJ CreateQuestBJ CreateQuestItemBJ GetLastCreatedQuestBJ GetLastCreatedQuestItemBJ QuestSetDiscoveredBJ QuestSetCompletedBJ QuestItemSetCompletedBJ IMaxBJ GetPlayersAll'.split())
     wanted.update('GetUnitsOfPlayerAndTypeId GetUnitsOfPlayerAndTypeIdFilter GetUnitsOfPlayerMatching ForGroupBJ SetHeroLevelBJ AddItemToStockBJ GetRectCenter UnitShareVisionBJ IssuePointOrderLocBJ GetLastCreatedUnit LeaderboardSetPlayerItemLabelBJ CountUnitsInGroup IsUnitGroupDeadBJ TriggerRegisterPlayerUnitEventSimple GroupRemoveUnitSimple TriggerRegisterTimerExpireEventBJ'.split())
     wanted.add('RescueUnitBJ')
+    wanted.update('GetLastRestoredUnitBJ GetStoredRealBJ SetUnitLifeBJ SetUnitManaBJ StoreIntegerBJ StoreBooleanBJ'.split())
+    wanted.update('CreateItemLoc DestroyEffectBJ LeaderboardDisplayBJ'.split())
     campaign_script=(Path(out)/'Rexxar-VII.j').read_text()
     for mission_fn in FUNCTION.finditer(campaign_script):
         if re.match(r'Z(?:15|16)_(?:Create\w+|Trig_(?:Init_01_Players|Init_02_Units|Activate_Shipyard|Create_Battleship_Leaderboard|Retarget_Human_Forces)\w*)$',mission_fn[1]):

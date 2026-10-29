@@ -122,7 +122,7 @@ def build(out,missions=None):
     try:
         for name,data in entries.items():assert storm.read(verify,name)==data,name
     finally:storm.close(verify)
-    report=dict(status='experimental-native-client-test-required',nativeWarcraftTested=False,liveIrinaBotTested=False,sourceMaps=17,terrainSize=480,sourceZones=zones,objects={k:len(v) for k,v in catalog.output.items()},skillKits=16,talentChoices=40,talentBooks=4,talentUI='Classic spellbook; level requirements and permanent per-tier choice',minPlayers=1,maxPlayers=4,heroLevelCap=20,nextMapRequiresNewLobby=False,localSessionSaves='Z6/C4',AI='Adapted synchronized active-zone attack and factory replenishment; original native campaign AI not started',bytes=target.stat().st_size,sha256=hashlib.sha256(target.read_bytes()).hexdigest())
+    report=dict(status='experimental-native-client-test-required',nativeWarcraftTested=False,liveIrinaBotTested=False,sourceMaps=17,terrainSize=480,sourceZones=zones,objects={k:len(v) for k,v in catalog.output.items()},skillKits=16,talentChoices=40,talentBooks=4,talentUI='Classic spellbook; level requirements and permanent per-tier choice',minPlayers=1,maxPlayers=4,heroLevelCap=20,nextMapRequiresNewLobby=False,localSessionSaves='W1/Z6/C4',AI='Adapted synchronized active-zone attack and factory replenishment; original native campaign AI not started',bytes=target.stat().st_size,sha256=hashlib.sha256(target.read_bytes()).hexdigest())
     (out/'Build-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2));print('BUILT',target,report['bytes'])
     return report
 

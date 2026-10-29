@@ -34,6 +34,24 @@ function RC_CurrentMask takes nothing returns integer
     return bits
 endfunction
 
+// Generic story interactions belong to the occupied hero roles, including
+// the fourth hero in areas written for the original two/three companions.
+// Exact handles exclude pets, recruited troops and hidden narrative actors.
+function RC_IsPartyHero takes unit u returns boolean
+    local integer role = 0
+    if u == null then
+        return false
+    endif
+    loop
+        exitwhen role == 4
+        if RC_Active(role) and u == RC_hero[role] then
+            return true
+        endif
+        set role = role + 1
+    endloop
+    return false
+endfunction
+
 function RC_PartRank takes integer role, integer bits returns integer
     local integer n = 0
     local integer rank = 0

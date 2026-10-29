@@ -47,6 +47,21 @@ def add_after_locals(code,statement):
     lines.insert(pos,statement)
     return '\n'.join(lines)
 
+def party_interaction_filter(code):
+    """Recognize only a pure OR of original hero identities.
+
+    Keep identity-specific story scenes, quest prerequisites, and side effects
+    intact. Act I's generic NPC filters otherwise ignore the fourth hero; the
+    Mulgore arrival filter likewise predates Cairne's recruitment.
+    """
+    body=code.split('\n',1)[1].rsplit('endfunction',1)[0]
+    compact=re.sub(r'\s+','',re.sub(r'//[^\n]*','',body))
+    branch=r'if\(\((GetEnteringUnit\(\))==(?:Z\d+_)?udg_(Rexxar|Rokhan|Chen|Cairne)\)\)thenreturntrueendif'
+    choices=list(re.finditer(branch,compact))
+    if len({m[2] for m in choices})<2 or re.sub(branch,'',compact)!='returnfalse':
+        return code
+    return code.split('\n',1)[0]+'\n    return RC_IsPartyHero(GetEnteringUnit())\nendfunction'
+
 def scoped_calls(code,z):
     names={'TriggerRegisterTimerEventSingle':('UZ_TimerSingle',2),'TriggerRegisterTimerEventPeriodic':('UZ_TimerPeriodic',2),'TimerStart':('UZ_TimerStart',4),'StartTimerBJ':('UZ_StartTimerBJ',3),'CreateTimerBJ':('UZ_CreateTimerBJ',2)}
     # Parse spans against a masked source, preserving strings and nested calls.
@@ -79,8 +94,11 @@ def build_zones(maps,terrains,catalog,schema):
         name_lines=[f'    call SetPlayerName(Player({n}),'+json.dumps(factions.get(n,'Нейтральная фракция'),ensure_ascii=False)+')' for n in [*range(4,12),13,14]]
         late.append(f'function UZ_NamesZ{z:02} takes nothing returns nothing\n'+'\n'.join(name_lines)+'\nendfunction')
         source=part['functions'];triggers=re.findall(r'\btrigger\s+(Z\d+_gg_trg_\w+)\s*=',part['globals'])
-        guard_count=0
+        guard_count=0;party_filters=0
         for name,code in source.items():
+            filtered=party_interaction_filter(code)
+            party_filters+=filtered!=code
+            code=filtered
             code=scoped_calls(code,z)
             code=unified_world.instrument(code,name,z,m.get('worldLayout'))
             target=re.search(r'set '+prefix+r'udg_TransitionTarget\s*=\s*(\d+)',code)
@@ -148,7 +166,7 @@ def build_zones(maps,terrains,catalog,schema):
         late.append('\n'.join([f'function UZ_ExportZ{z:02} takes nothing returns nothing']+[f'    call {f}()' for f in exports]+['endfunction']))
         returning=[f'    call {f}()' for f in [import_fn,resume_fn] if f]
         late.append('\n'.join([f'function UZ_ReturnZ{z:02} takes nothing returns nothing']+returning+['endfunction']))
-        reports.append(dict(zone=t.name,index=z,sourceFunctions=len(source),triggers=len(triggers),staleSleepGuards=guard_count,returnImport=import_fn,returnResume=resume_fn))
+        reports.append(dict(zone=t.name,index=z,sourceFunctions=len(source),triggers=len(triggers),staleSleepGuards=guard_count,cooperativeHeroFilters=party_filters,returnImport=import_fn,returnResume=resume_fn))
     return zone_parts,'\n\n'.join(outputs),perzone_hooks,'\n\n'.join(late),reports
 
 def dispatch_hooks(zone_parts,perzone_hooks,catalog):

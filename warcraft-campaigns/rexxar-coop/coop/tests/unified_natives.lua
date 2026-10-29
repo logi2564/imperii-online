@@ -35,6 +35,7 @@ ALLIANCE_HELP_REQUEST='help';ALLIANCE_HELP_RESPONSE='helpresponse'
 PLAYER_NEUTRAL_AGGRESSIVE=12;PLAYER_NEUTRAL_PASSIVE=15
 UNIT_STATE_LIFE='hp'
 function GetStoredInteger(c,m,k) return c[m] and c[m][k] or 0 end
+GetStoredReal=GetStoredInteger
 function GetStoredBoolean(c,m,k) return c[m] and c[m][k] or false end
 function GetStoredString(c,m,k) return c[m] and c[m][k] or '' end
 function Condition(f) return f end
@@ -79,6 +80,7 @@ function QuestCreateItem(q)
 end
 function QuestItemSetDescription(item,s) item.description=s end
 function QuestItemSetCompleted(item,v) item.completed=v end
+function IsQuestItemCompleted(item) return item.completed==true end
 function CreateLeaderboard() return handle({items={}}) end
 function LeaderboardClear(b) b.items={} end
 function LeaderboardSetLabel(b,s) b.title=s end

@@ -52,6 +52,7 @@ jobs:
           dotnet coop/Tools/bin/Release/net10.0/Tools.dll transpile build-out/Rexxar-VII.j coop/tests/reference build-out/Rexxar-VII.lua
           python -u coop/tests/test_unified.py build-out/Rexxar-VII.lua | tee build-out/Behavior-check.txt
           python -u coop/tests/test_campaign_integration.py build-out/Rexxar-VII.lua | tee build-out/Campaign-integration-check.txt
+          python -u coop/tests/test_campaign_routes.py build-out/Rexxar-VII.lua | tee build-out/Campaign-routes-check.txt
           python -u coop/tests/test_story_restore.py build-out/Rexxar-VII.lua | tee build-out/Story-restore-check.txt
           python -u coop/tests/test_talent_book.py build-out/Rexxar-VII.lua | tee build-out/Talent-book-check.txt
           python -u coop/tests/test_skill_regressions.py build-out/Rexxar-VII.lua | tee build-out/Skill-regression-check.txt

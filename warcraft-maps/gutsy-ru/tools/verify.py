@@ -3,7 +3,7 @@ import csv,hashlib,json,re,sys
 from pathlib import Path
 from catalog import Reader,decode_jass,prose
 from storm import Storm
-from text_storage import read_objects,write_objects,parse_wts,CELL_LIMIT,LINE_LIMIT,TOOLTIP_FIELDS
+from inline_tooltips import CELL_LIMIT,LINE_LIMIT,TOOLTIP_FIELDS,tooltip_fingerprint
 
 ROOT=Path(__file__).resolve().parents[1]
 LEX=re.compile(r'//[^\r\n]*|"(?:[^"\\]|\\.)*"|\'(?:[^\'\\]|\\.)*\'|[A-Za-z_]\w*|\d+(?:\.\d*)?(?:[eE][+-]?\d+)?|[^\s]')
@@ -54,59 +54,73 @@ def check_txt_limits(st,archive,names):
     return max_cell,max_line
 
 def check_text_storage(st,original,actual,catalog,cache,records):
-    source=read_objects(st.read(original,'war3map.w3a'))
-    target=read_objects(st.read(actual,'war3map.w3a'))
-    strings=parse_wts(st.read(actual,'war3map.wts'))
-    by_id={};source_overrides={};target_overrides={}
-    for tables,values in [(source,source_overrides),(target,target_overrides)]:
-        for table in tables:
-            for obj in table:
-                raw=obj['new'] if obj['new']!=bytes(4) else obj['old']
-                if tables is target:by_id[raw]=obj
-                for mod in obj['mods']:
-                    if mod['kind']!=3:continue
-                    value=mod['value'][:-1].decode()
-                    if tables is target and value.startswith('TRIGSTR_'):
-                        assert re.fullmatch(r'TRIGSTR_\d+',value)
-                        value=strings[int(value[8:])]
-                    values[(raw,mod['field'],mod['level'])]=value
+    # Check actual inline strings, not an assumed TXT -> WTS resolution.
+    # This catches FIX1's added object/WTS layer even if a custom resolver
+    # would consider its descriptions complete.
+    assert st.read(original,'war3map.wts') is None
+    assert st.read(actual,'war3map.wts') is None,'Unexpected WTS dependency'
+    indexed={}
     for record in records:
-        raw=record['id'].encode();field=record['field'].encode();ref=record['reference']
-        assert field in TOOLTIP_FIELDS.values()
-        assert strings[int(ref[8:])]==record['text']
-        assert target_overrides[(raw,field,record['level'])]==record['text']
-        if record['origin']=='txt':
-            mods=by_id[raw]['mods']
-            matching=[m for m in mods if m['field']==field and m['level']==record['level'] and m['value']==ref.encode()+b'\0']
-            assert len(matching)==1 and matching[0]['kind']==3 and matching[0]['pointer']==0
-            assert (raw,field,record['level']) not in source_overrides
-            mods.remove(matching[0])
-    for index,table in enumerate(target):
-        original_ids={(o['old'],o['new']) for o in source[index]}
-        target[index]=[o for o in table if o['mods'] or (o['old'],o['new']) in original_ids]
-    # Verify the *effective* tooltip: base TXT -> original object override ->
-    # new object override -> WTS. Thus a short English base cannot hide a
-    # missing Russian override, and no description is silently truncated.
-    checked=0
-    for name,meta in catalog['files'].items():
+        key=(record['file'],record['context'],record.get('rank'))
+        assert key not in indexed,key
+        indexed[key]=record
+        assert record['storage'] in ('original-inline-txt','original-inline-object')
+        assert tooltip_fingerprint(record['fullText'])==tooltip_fingerprint(record['inlineText'])
+    seen=set();checked=0;nonempty=0;max_object=0
+    def expected_text(value):
+        text=cache[value] if prose(value) else value
+        if '\n' not in value and '\r' not in value:text=text.replace('\r\n','|n').replace('\n','|n').replace('\r','|n')
+        return text
+    def check(value,text,key):
+        nonlocal checked,nonempty
+        expected=expected_text(value)
+        record=indexed.get(key)
+        if record:
+            assert expected==record['fullText'],key
+            expected=record['inlineText'];seen.add(key)
+        assert text==expected,(key,'Inline Russian tooltip differs')
+        assert not value.strip() or text.strip(),(key,'Description disappeared')
+        assert not re.search(r'TRIGSTR_\d+',text),(key,'Unresolved WTS reference')
+        assert len(text.encode())<=CELL_LIMIT,(key,'Inline tooltip too long')
+        checked+=1
+        if value.strip():nonempty+=1
+    for name in catalog['files']:
         if not name.lower().endswith('abilitystrings.txt'):continue
-        lookup=dict(text_records(st.read(actual,name)))
-        for span in meta['spans']:
-            raw,key=span['context'].split(':',1)
-            if key.lower() not in TOOLTIP_FIELDS:continue
-            field=TOOLTIP_FIELDS[key.lower()]
-            old=next(csv.reader([span['text']]));new=next(csv.reader([lookup[span['context']]]))
-            for rank,value in enumerate(old,1):
-                level=rank if field in (b'aub1',b'atp1') else 0
-                identity=(raw.encode(),field,level)
-                original_value=source_overrides.get(identity,value)
-                expected=cache[original_value] if prose(original_value) else original_value
-                if '\n' not in original_value and '\r' not in original_value:expected=expected.replace('\r\n','|n').replace('\n','|n').replace('\r','|n')
-                result=target_overrides.get(identity,new[rank-1])
-                assert result==expected,(name,raw,key,level,'Russian effective text differs')
-                checked+=1
-    assert len(strings)==len(records)
-    return write_objects(target),checked
+        old_rows=text_records(st.read(original,name));new_rows=text_records(st.read(actual,name))
+        assert len(old_rows)==len(new_rows),name
+        for (context,before),(other,after) in zip(old_rows,new_rows):
+            assert context==other
+            if context.split(':',1)[1].lower() not in TOOLTIP_FIELDS:continue
+            source=next(csv.reader([before]));target=next(csv.reader([after]))
+            assert len(source)==len(target),(name,context)
+            for rank,(value,text) in enumerate(zip(source,target),1):check(value,text,(name,context,rank))
+    # Existing binary fields can take precedence over TXT. All original
+    # records and numeric data are compared separately by object_records.
+    source=st.read(original,'war3map.w3a');target=st.read(actual,'war3map.w3a')
+    def tooltip_mods(blob):
+        r=Reader(blob);assert r.i()==2;mods=[];shape=[]
+        for table in range(2):
+            count=r.i();shape.append(count)
+            for _ in range(count):
+                old,new=r.read(4),r.read(4);raw=old if table==0 else new
+                count=r.i();shape.append((old,new,count))
+                for _ in range(count):
+                    field,kind=r.read(4),r.i();level,pointer=r.i(),r.i()
+                    if kind==3:
+                        _,_,text=r.string()
+                        if field in TOOLTIP_FIELDS.values():mods.append((raw.decode()+':'+field.decode(),level,pointer,text))
+                    else:r.read(4)
+                    r.read(4)
+        assert r.p==len(blob)
+        return shape,mods
+    old_shape,old_mods=tooltip_mods(source);new_shape,new_mods=tooltip_mods(target)
+    assert old_shape==new_shape,'Ability objects/modifications were added or removed'
+    assert len(old_mods)==len(new_mods)
+    for (context,rank,pointer,value),(other,other_rank,other_pointer,text) in zip(old_mods,new_mods):
+        assert (context,rank,pointer)==(other,other_rank,other_pointer)
+        check(value,text,('war3map.w3a',context,None));max_object=max(max_object,len(text.encode()))
+    assert seen==set(indexed),('Unverified compact tooltips',set(indexed)-seen)
+    return checked,nonempty,max_object
 
 def object_records(blob,leveled,editable):
     r=Reader(blob);version=r.i();out=[version]
@@ -168,7 +182,7 @@ def verify(source_path,output_dir):
             kept+=1
         old=st.read(a,'war3map.j').decode();new=st.read(b,'war3map.j').decode()
         max_cell,max_line=check_txt_limits(st,b,catalog['files'])
-        pruned_abilities,effective_texts=check_text_storage(st,a,b,catalog,translated,storage)
+        effective_texts,nonempty_tooltips,max_object=check_text_storage(st,a,b,catalog,translated,storage)
         x,_=script_tokens(old,[s['start'] for s in catalog['files']['war3map.j']['spans']]);y,longest=script_tokens(new)
         assert len(x)==len(y),(len(x),len(y))
         mutable=0
@@ -189,7 +203,6 @@ def verify(source_path,output_dir):
                     else:assert len(next(csv.reader([value])))==len(next(csv.reader([new_value]))),(name,key)
             elif lower.endswith(('.w3u','.w3a','.w3t','.w3h','.w3q')):
                 leveled=lower.endswith(('.w3a','.w3q'))
-                if lower=='war3map.w3a':actual=pruned_abilities
                 assert object_records(original,leveled,editable)==object_records(actual,leveled,editable),name
             elif lower.endswith('.w3i'):
                 assert info_records(original,editable)==info_records(actual,editable),name
@@ -205,7 +218,7 @@ def verify(source_path,output_dir):
                     else:assert before==after,name
                     pos+=len(before)
     finally:st.close(a);st.close(b)
-    result=dict(retainedFiles=kept,unchangedAudioFiles=audio,playerTextEntries=len(catalog['phrases']),jassCodeTokens=len(x),translatedJassConstants=mutable,maxJassLiteralBytes=longest,gameplayConstantsAndIdentifiersUnchanged=True,commandsAndAssetPathsUnchanged=True,nativeWarcraftTested=False,maxTxtValueBytes=max_cell,maxTxtLineBytes=max_line,wtsTooltipOverrides=len(storage),effectiveTooltipsVerified=effective_texts)
+    result=dict(retainedFiles=kept,unchangedAudioFiles=audio,playerTextEntries=len(catalog['phrases']),jassCodeTokens=len(x),translatedJassConstants=mutable,maxJassLiteralBytes=longest,gameplayConstantsAndIdentifiersUnchanged=True,commandsAndAssetPathsUnchanged=True,nativeWarcraftTested=False,maxTxtValueBytes=max_cell,maxTxtLineBytes=max_line,addedWtsReferences=0,addedAbilityModifications=0,compactTooltips=len(storage),inlineTooltipsVerified=effective_texts,nonemptyTooltipsVerified=nonempty_tooltips,maxInlineObjectTooltipBytes=max_object)
     (out/'Verification-report.json').write_text(json.dumps(result,ensure_ascii=False,indent=2))
     print('PASS archive/assets/audio, JASS code and non-text literals, classic string limits, object statistics/IDs, TXT ranks/keys, SLK numeric cells and lobby settings.')
     print(json.dumps(result,ensure_ascii=False))

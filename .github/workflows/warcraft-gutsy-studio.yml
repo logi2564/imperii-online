@@ -1,0 +1,78 @@
+name: Build GGG selectable cards and isolated skill demonstrations
+on:
+  push:
+    branches: [warcraft-gutsy-studio]
+    paths:
+      - 'warcraft-maps/gutsy-ru/**'
+      - '.github/workflows/warcraft-gutsy-studio.yml'
+permissions:
+  contents: write
+concurrency:
+  group: gutsy-studio
+  cancel-in-progress: true
+jobs:
+  studio:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare exact source and classic validation tools
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y cmake g++ make fonts-dejavu-core
+          python -m pip install 'Pillow==12.3.0'
+          mkdir -p work
+          curl --fail --location --retry 2 'https://github.com/logi2564/imperii-online/releases/download/gutsy-source-6ac86d86/Gutsy-Geoid-EN-1.0.5.w3x' -o work/original.w3x
+          git clone https://github.com/ladislav-zezula/StormLib.git "$RUNNER_TEMP/StormLib"
+          git -C "$RUNNER_TEMP/StormLib" checkout 28c9b4be3f23c6b3a5ff55cacac7dbe5b9cdc4fc
+          cmake -S "$RUNNER_TEMP/StormLib" -B "$RUNNER_TEMP/storm-build" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DSTORM_SKIP_INSTALL=ON -DSTORM_USE_BUNDLED_LIBRARIES=ON
+          cmake --build "$RUNNER_TEMP/storm-build" --parallel 2
+          printf 'STORMLIB_PATH=%s\n' "$RUNNER_TEMP/storm-build/libstorm.so" >> "$GITHUB_ENV"
+          git clone https://github.com/lep/pjass.git "$RUNNER_TEMP/pjass"
+          git -C "$RUNNER_TEMP/pjass" checkout 654c3cf7731eb472518e6915e9d7672a72652165
+          make -C "$RUNNER_TEMP/pjass"
+      - name: Build and audit the Russian localization
+        run: |
+          set -euo pipefail
+          python warcraft-maps/gutsy-ru/tools/catalog.py work/original.w3x work/catalog.json
+          python warcraft-maps/gutsy-ru/tools/test_tokens.py work/catalog.json | tee work/Tokens-check.txt
+          python warcraft-maps/gutsy-ru/tools/build.py work/original.w3x warcraft-maps/gutsy-ru/source/Translations.json work
+          python warcraft-maps/gutsy-ru/tools/verify.py work/original.w3x work | tee work/Preservation-check.txt
+          python warcraft-maps/gutsy-ru/tools/check_jass.py work/original.w3x work "$RUNNER_TEMP/pjass/pjass" warcraft-maps/gutsy-ru/tests/reference | tee work/Compiler-check.txt
+      - name: Build cards, original skill sandbox and exact map
+        run: |
+          set -euo pipefail
+          python warcraft-maps/gutsy-ru/studio/build.py work/Gutsy-Geoid-Game-RU-v1.0.5.w3x work/studio "$RUNNER_TEMP/pjass/pjass" | tee work/Studio-build-check.txt
+      - name: Audit original battle backend and new scene boundary
+        run: |
+          set -euo pipefail
+          python warcraft-maps/gutsy-ru/gallery/audit.py work/Gutsy-Geoid-Game-RU-v1.0.5.w3x work/studio | tee work/Gallery-audit-check.txt
+          python warcraft-maps/gutsy-ru/gallery/test_runtime.py work/studio | tee work/Gallery-behavior-check.txt
+          python warcraft-maps/gutsy-ru/studio/audit.py work/Gutsy-Geoid-Game-RU-v1.0.5.w3x work/studio | tee work/Studio-audit-check.txt
+          python -W ignore::SyntaxWarning warcraft-maps/gutsy-ru/studio/test_runtime.py work/studio | tee work/Studio-behavior-check.txt
+          python warcraft-maps/gutsy-ru/studio/package.py work work/studio release
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gutsy-studio-audit
+          path: |
+            work/*-check.txt
+            work/*report.json
+            work/studio/Studio-*.json
+            work/studio/Studio-compiler.txt
+      - name: Publish tested map as a prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          tag="gutsy-studio-${GITHUB_SHA:0:8}"
+          gh release create "$tag" release/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'GGG RU STUDIO TEST — карточки, 3 режима и автодемонстрация' --notes-file warcraft-maps/gutsy-ru/studio/README-RU.txt
+          printf 'Игрок сообщил о неудобном интерфейсе и неработающих действиях. Новая тестовая сборка с крупными карточками: https://github.com/%s/releases/tag/%s\n' "$GITHUB_REPOSITORY" "$tag" > obsolete-gallery.txt
+          gh release edit gutsy-ru-758300bc --title 'GGG RU GALLERY FIX — старая версия меню' --notes-file obsolete-gallery.txt --prerelease --latest=false

@@ -24,26 +24,37 @@ old=importlib.util.module_from_spec(spec);spec.loader.exec_module(old)
 
 def translate(source):
     """Controlled plain-JASS subset, retaining original handler statements."""
-    rows=[];depth=0;local_names=set();global_assignments=[]
+    rows=[];depth=0;local_names=set();local_types={};global_assignments=[]
     for raw in source.splitlines():
         line=raw.strip()
+        protected=old.STR.sub(lambda m:' '*len(m[0]),line)
+        comment=protected.find('//')
+        if comment>=0:line=line[:comment].rstrip()
         if not line or line.startswith('//'):continue
         line=re.sub(r'^(if|elseif|exitwhen)\(',r'\1 (',line)
-        line=re.sub(r'\)then$',') then',line)
+        line=re.sub(r'(?<!\s)then$',' then',line)
         if line.startswith('function '):
             match=re.match(r'function (\w+) takes (.*?) returns (\w+)',line)
             name,args,return_type=match.groups()
             params=[] if args=='nothing' else [a.strip().split()[-1] for a in args.split(',')]
             rows.append(f'def {name}({",".join(params)}):');depth=1;local_names=set(params)
-            global_assignments=[];insert=len(rows);continue
+            local_types={};global_assignments=[];insert=len(rows);continue
         if line=='endfunction':
             if global_assignments:rows.insert(insert,'    global '+','.join(sorted(set(global_assignments))))
             depth=0;continue
-        local=re.match(r'local (\w+) (\w+)(?:=(.*))?$',line)
+        local_array=re.match(r'local (\w+)\s+array\s+(\w+)$',line)
+        if local_array:
+            kind,name=local_array.groups();local_names.add(name);local_types[name]=kind+'[]'
+            factory='int' if kind in ('integer','real') else 'bool' if kind=='boolean' else 'str' if kind=='string' else 'lambda:None'
+            line=name+'=defaultdict('+factory+')'
+        local=re.match(r'local (\w+)\s+(\w+)(?:\s*=\s*(.*))?$',line)
         if local:
-            kind,name,value=local.groups();local_names.add(name)
+            kind,name,value=local.groups();local_names.add(name);local_types[name]=kind
             if value is None:value='0' if kind in ('integer','real') else 'false' if kind=='boolean' else '""' if kind=='string' else 'null'
             line=name+'='+value
+        boolean_assignment=re.match(r'set (\w+)\s*=(.*)!=null$',line)
+        if boolean_assignment and local_types.get(boolean_assignment[1])=='boolean':
+            line='set '+boolean_assignment[1]+'=bool('+boolean_assignment[2]+')'
         assignment=re.match(r'set (\w+)\s*=',line)
         if assignment and assignment[1] not in local_names:global_assignments.append(assignment[1])
         if line in ('endif','endloop'):
@@ -74,6 +85,10 @@ class Handle(dict):
 
 class Engine:
     cache={}
+    SCRIPT_NAME='Gallery.j'
+    MAP_NAME='GGG-RU-GALLERY-FIX.w3x'
+    EXTRA_PREFIXES=()
+    EXTRA_ROOTS=()
     def __init__(self,out,players=(0,),local=0):
         self.out=Path(out);self.players=set(players);self.local=local
         self.e={};self.events={};self.units=[];self.timers=[];self.clock=0.;self.serial=0
@@ -82,11 +97,11 @@ class Engine:
         self.registration=[];self.boundaries=[];self.selected={};self.ui_textures=[];self.tech=defaultdict(lambda:-1)
         self.missing_sale=False;self.reject_orders=False;self.in_spell=False
         self.hashtable={};self.hashtable_serial=0
-        key=(str(self.out.resolve()),(self.out/'Gallery.j').stat().st_mtime_ns)
+        key=(str(self.out.resolve()),self.SCRIPT_NAME,(self.out/self.SCRIPT_NAME).stat().st_mtime_ns)
         if key not in self.cache:
             data=json.loads((self.out/'Gallery-data.json').read_text())
-            script=(self.out/'Gallery.j').read_text()
-            st=Storm();arc=st.open(self.out/'GGG-RU-GALLERY-FIX.w3x')
+            script=(self.out/self.SCRIPT_NAME).read_text()
+            st=Storm();arc=st.open(self.out/self.MAP_NAME)
             try:
                 files=set(st.read(arc,'(listfile)').decode().splitlines())
                 abilities={o['new'].decode():{m[0]:m for m in o['mods']} for o in read_objects(st.read(arc,'war3map.w3a'),True)[1]}
@@ -383,12 +398,12 @@ class Engine:
         cached=getattr(Engine,'compiled_cache',None)
         if cached is None or cached[0]!=self.script:
             f={m[1]:m[0] for m in re.finditer(r'^function (\w+) takes .*?^endfunction',self.script,re.M|re.S)}
-            selected=set(n for n in f if n.startswith(('GGV','GGMData','GV_Restart_1_','Trig_Hero_Select_')))
+            selected=set(n for n in f if n.startswith(('GGV','GGMData','GV_Restart_1_','Trig_Hero_Select_')+self.EXTRA_PREFIXES))
             roots=['InitGlobals','InitTrig_Hero_Select','InitTrig_Restart_Timer','InitTrig_Round_start_Epiccenter',
                    'Trig_Restart_Timer_Actions','Trig_Mode_Team_Actions','Trig_Mode_Epiccenter_Actions',
                    'Trig_kill_set_Team_Actions','Trig_kill_set_Epiccenter_Actions','Trig_kill_set_Team2_Actions',
                    'Trig_Start_Func158A','Trig_skin_master_key_Func002A','Trig_Special_Character_Select_Actions']
-            todo=roots[:]
+            todo=roots[:]+list(self.EXTRA_ROOTS)
             while todo:
                 name=todo.pop()
                 if name in selected or name not in f:continue

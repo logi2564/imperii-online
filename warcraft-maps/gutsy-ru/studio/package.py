@@ -10,7 +10,7 @@ from pathlib import Path
 def package(base,out,release):
     base,out,release=map(Path,(base,out,release))
     release.mkdir(parents=True,exist_ok=True)
-    source=out/'GGG-RU-STUDIO-TEST.w3x'
+    source=out/'GGG-126-FIX1.w3x'
     reports={name:json.loads((out/name).read_text()) for name in
              ('Studio-report.json','Studio-audit.json','Studio-tests.json')}
     digest=hashlib.sha256(source.read_bytes()).hexdigest()
@@ -28,9 +28,9 @@ def package(base,out,release):
     assert gallery['sha256']==gallery_digest and len(gallery['actualHeroInitializations'])==81
     shutil.copyfile(source,release/source.name)
     readme=Path(__file__).parent/'README-RU.txt'
-    names=list(reports)+['Studio-compiler.txt','Studio-cards.json','Studio-metadata.json',
+    names=list(reports)+['Studio-compiler.txt','Studio-cards.json','Studio-metadata.json','Studio-storage.json',
                          'Studio-ui-patches.json','Gallery-tests.json','Gallery-audit.json']
-    with zipfile.ZipFile(release/'GGG-RU-STUDIO-TEST.zip','w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
+    with zipfile.ZipFile(release/'GGG-126-FIX1.zip','w',zipfile.ZIP_DEFLATED,compresslevel=6) as z:
         z.write(source,source.name);z.write(readme,'НАЧНИ-ЗДЕСЬ.txt')
         for name in names:z.write(out/name,'Проверки/'+name)
         for name in ('Localization-report.json','Verification-report.json','Compiler-report.json','Text-storage.json'):

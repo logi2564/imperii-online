@@ -18,7 +18,7 @@ from classic_data import read_objects,write_objects
 from data import slk
 from catalog import encode_jass
 from objects import Codes
-from sandbox import compile_namespace,functions
+from sandbox import compile_namespace,functions,globals_
 from sandbox_natives import resource_globals,resource_code,RESOURCES
 from cards import build as build_cards
 from metadata import build as build_metadata
@@ -29,9 +29,9 @@ gallery=importlib.util.module_from_spec(spec);spec.loader.exec_module(gallery)
 
 def data_functions(statements,prefix):
     bodies=[];calls=[]
-    for first in range(0,len(statements),60):
-        name=prefix+str(first//60)
-        bodies.append('function '+name+' takes nothing returns nothing\n'+'\n'.join(statements[first:first+60])+'\nendfunction')
+    for first in range(0,len(statements),240):
+        name=prefix+str(first//240)
+        bodies.append('function '+name+' takes nothing returns nothing\n'+'\n'.join(statements[first:first+240])+'\nendfunction')
         calls.append('call ExecuteFunc("'+name+'")')
     return '\n'.join(bodies),'\n'.join(calls)
 
@@ -219,6 +219,8 @@ def build(base,out,pjass):
     ref=ROOT/'tests/reference'
     print("Studio: compiling isolated original spell logic",flush=True)
     sd_globals,sd_code,sd_report=compile_namespace(original,(ref/'Blizzard.j').read_text(),(ref/'common.j').read_text())
+    storage=sd_report.pop('privateStorage')
+    (out/'Studio-storage.json').write_text(json.dumps(storage,indent=2))
     early=resource_code()+'\n'+(HERE/'scene_base.j').read_text()
     manager=(HERE/'scene_manager.j').read_text();manager_globals,manager=manager.split('// @@SD_MANAGER_FUNCTIONS@@')
     manager_globals=manager_globals.replace('// @@SD_MANAGER_GLOBALS@@','')
@@ -255,13 +257,13 @@ def build(base,out,pjass):
     result=subprocess.run([str(pjass),'+shadow',str(ref/'common.j'),str(ref/'Blizzard.j'),str(out/'Studio.j')],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
     (out/'Studio-compiler.txt').write_text(result.stdout)
     assert result.returncode==0,result.stdout[-18000:]
-    target=out/'GGG-RU-STUDIO-TEST.w3x';shutil.copyfile(out/'GGG-RU-GALLERY-FIX.w3x',target)
+    target=out/'GGG-126-FIX1.w3x';shutil.copyfile(out/'GGG-RU-GALLERY-FIX.w3x',target)
     # The original archive has only 4096 hash slots; selectable cards exceed it.
     st.lib.SFileSetMaxFileCount.argtypes=[ctypes.c_void_p,ctypes.c_uint32]
     capacity=st.open(target,False)
     try:assert st.lib.SFileSetMaxFileCount(capacity,16384),'Cannot expand classic MPQ file table'
     finally:st.close(capacity)
-    title='GGG RU STUDIO TEST';end=info.index(0,12)
+    title='GGG RU 1.26 FIX1';end=info.index(0,12)
     edits={**meta_edits,'war3map.j':script.encode(),'war3map.w3i':info[:12]+title.encode()+info[end:],
            'war3map.w3u':write_objects([unit_objects[0],unit_objects[1]+ui_units]),
            'war3map.imp':struct.pack('<II',1,struct.unpack_from('<I',old_import,4)[0]+len(assets))+old_import[8:]+b''.join(b'\r'+n.encode()+b'\0' for n in assets)}
@@ -273,7 +275,9 @@ def build(base,out,pjass):
                 nativeWarcraftTested=False,strictJassCompilerClean=True,sandbox=sd_report,
                 nativeUiInput='synchronized unit selection',noFrameMemoryWrites=True,
                 automaticOriginalSpellDemonstrations=True,gameModes=['arena','epiccenter','ffa'],
-                cards=len(ui_units),newAssets=len(assets),aliases=len(metadata['aliases']))
+                cards=len(ui_units),newAssets=len(assets),aliases=len(metadata['aliases']),
+                scriptGlobals=len(globals_(script)),
+                scriptFunctions=len(functions(script)),blizzardFunctions=len(functions((ref/'Blizzard.j').read_text())))
     for name,value in [('Studio-report.json',report),('Studio-cards.json',cards),
                        ('Studio-metadata.json',metadata),('Studio-ui-patches.json',changes)]:
         (out/name).write_text(json.dumps(value,ensure_ascii=False,indent=2))

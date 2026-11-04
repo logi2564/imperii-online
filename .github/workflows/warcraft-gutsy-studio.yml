@@ -48,6 +48,7 @@ jobs:
       - name: Build cards, original skill sandbox and exact map
         run: |
           set -euo pipefail
+          python warcraft-maps/gutsy-ru/studio/test_optimizer.py | tee work/Optimizer-check.txt
           python warcraft-maps/gutsy-ru/studio/build.py work/Gutsy-Geoid-Game-RU-v1.0.5.w3x work/studio "$RUNNER_TEMP/pjass/pjass" | tee work/Studio-build-check.txt
       - name: Audit original battle backend and new scene boundary
         run: |
@@ -73,6 +74,8 @@ jobs:
         run: |
           set -euo pipefail
           tag="gutsy-studio-${GITHUB_SHA:0:8}"
-          gh release create "$tag" release/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'GGG RU STUDIO TEST — карточки, 3 режима и автодемонстрация' --notes-file warcraft-maps/gutsy-ru/studio/README-RU.txt
+          gh release create "$tag" release/* --target "$GITHUB_SHA" --prerelease --latest=false --title 'GGG RU 1.26 FIX1 — совместимость лобби и меню' --notes-file warcraft-maps/gutsy-ru/studio/README-RU.txt
+          printf 'Игрок подтвердил, что в Warcraft 1.26 не открывается даже локальное лобби. Кандидат с сокращённым скриптом: https://github.com/%s/releases/tag/%s\n' "$GITHUB_REPOSITORY" "$tag" > obsolete-studio.txt
+          gh release edit gutsy-studio-3e5db362 --title 'GGG RU STUDIO TEST — известен отказ создания лобби на 1.26' --notes-file obsolete-studio.txt --prerelease --latest=false
           printf 'Игрок сообщил о неудобном интерфейсе и неработающих действиях. Новая тестовая сборка с крупными карточками: https://github.com/%s/releases/tag/%s\n' "$GITHUB_REPOSITORY" "$tag" > obsolete-gallery.txt
           gh release edit gutsy-ru-758300bc --title 'GGG RU GALLERY FIX — старая версия меню' --notes-file obsolete-gallery.txt --prerelease --latest=false

@@ -65,6 +65,20 @@ def compile_namespace(source,blizzard,common):
             if 'InitTrig_'+target in original:todo.append('InitTrig_'+target)
         todo.extend(re.findall(r'ExecuteFunc\("(\w+)"\)',body))
     selected.discard('InitGlobals')
+    # Do not duplicate thousands of one-expression GUI condition helpers.
+    # Address-taken callbacks remain real functions. Inlining is applied after
+    # name binding, so a caller's locals cannot capture a helper's globals.
+    selected_text='\n'.join(all_functions[n] for n in selected)
+    addressed=set(re.findall(r'\bfunction (\w+)\s*[,)]',masked(selected_text)))
+    addressed.update(m[0][1:-1] for m in STRING.finditer(selected_text) if m[0][1:-1] in all_functions)
+    pure={n:m[1] for n in selected if n not in addressed
+          and (m:=re.fullmatch(r'function \w+ takes nothing returns boolean\nreturn([^\n]+)\nendfunction',all_functions[n]))}
+    # Initialization-only trigger builders can be folded into bounded chunks.
+    # A builder called by a source action is retained with its original API.
+    calls=set(re.findall(r'\b(\w+)\s*\(',masked(selected_text)))
+    folded={n for n in selected if n.startswith('InitTrig_') and n not in addressed and n not in calls
+            and not re.search(r'(?m)^local ',all_functions[n])}
+    selected_functions=selected-pure.keys()-folded
     code='\n'.join(all_functions[n] for n in selected)
     used=set(re.findall(r'\b[A-Za-z_]\w*\b',masked(code)))&all_globals.keys()
     writes=set(re.findall(r'\bset (\w+)(?:\[|\s*=)',masked(code)))
@@ -82,8 +96,21 @@ def compile_namespace(source,blizzard,common):
             for n in re.findall(r'\b[A-Za-z_]\w*\b',entry['initial'] or ''):
                 if n in all_globals and n not in private and not all_globals[n]['constant']:
                     private[n]=all_globals[n];changed=True
-    fn_names={n:'SDX_'+n for n in selected}
-    var_names={n:'SDV_'+n for n in private}
+    fn_names={n:'SDX_'+str(i) for i,n in enumerate(all_functions) if n in selected_functions}
+    for n in ('Trig_Hero_Select_Actions','SDSeedOriginalStartFields','KB'):
+        if n in fn_names:fn_names[n]='SDX_'+n
+    # Keep variable-event targets as named reals. Other private scalar state
+    # lives in typed arrays, avoiding thousands of added global symbols.
+    named={m[0][1:-1] for m in STRING.finditer(code)}&private.keys()
+    pools={};storage={};var_names={}
+    for n,v in private.items():
+        if v['array'] or n in named or v['type']=='code':
+            var_names[n]='SDV_'+n;storage[n]=dict(variable=var_names[n],index=None)
+        else:
+            kind=v['type'];index=pools.get(kind,0);pools[kind]=index+1
+            assert index<8192,(kind,index)
+            var_names[n]='SDP_'+kind+'['+str(index)+']'
+            storage[n]=dict(variable='SDP_'+kind,index=index)
     native_signatures={}
     for m in re.finditer(r'(?m)^(?:constant\s+)?native\s+(\w+)\s+takes (.*?)\s+returns (\w+)',common):
         native_signatures[m[1]]=(m[2],m[3])
@@ -100,10 +127,27 @@ def compile_namespace(source,blizzard,common):
         text=STRING.sub(hide,text)
         text=re.sub(r'\b[A-Za-z_]\w*\b',lambda m:rename.get(m[0],m[0]) if m[0] not in locals_ else m[0],text)
         return re.sub(r'@@(\d+)@@',lambda m:strings[int(m[1])],text)
+    expanded={};expanding=set()
+    def expand_helper(name):
+        if name in expanded:return expanded[name]
+        assert name not in expanding,('Recursive pure condition',name)
+        expanding.add(name)
+        value=replace(pure[name])
+        value=inline(value)
+        expanding.remove(name);expanded[name]='('+value+')'
+        return expanded[name]
+    def inline(text):
+        # Do not inspect quoted strings as code.
+        parts=STRING.split(text);strings=STRING.findall(text)
+        for i,part in enumerate(parts):
+            parts[i]=re.sub(r'\b(\w+)\(\s*\)',lambda m:expand_helper(m[1]) if m[1] in pure else m[0],part)
+        return ''.join(part+(strings[i] if i<len(strings) else '') for i,part in enumerate(parts))
     arrays={n:i for i,(n,v) in enumerate(private.items()) if v['array']}
     declarations=[]
+    declarations+= [kind+' array SDP_'+kind for kind in pools]
     for name,v in private.items():
-        declarations.append(v['type']+(' array ' if v['array'] else ' ')+var_names[name]+('='+default(v['type']) if not v['array'] else ''))
+        if storage[name]['index'] is None:
+            declarations.append(v['type']+(' array ' if v['array'] else ' ')+var_names[name]+('='+default(v['type']) if not v['array'] else ''))
     # Scalar declaration values are restored before every scene. Array entries
     # are cleared from a list of actually written indexes, never 8192*N sweeps.
     init=[]
@@ -111,16 +155,16 @@ def compile_namespace(source,blizzard,common):
         if not v['array']:
             init.append('set '+var_names[name]+'='+replace(v['initial'] or default(v['type'])))
     initializers=[]
-    for first in range(0,len(init),60):
-        name='SDDefaults'+str(first//60)
-        initializers.append(f'function {name} takes nothing returns nothing\n'+'\n'.join(init[first:first+60])+'\nendfunction')
+    for first in range(0,len(init),240):
+        name='SDDefaults'+str(first//240)
+        initializers.append(f'function {name} takes nothing returns nothing\n'+'\n'.join(init[first:first+240])+'\nendfunction')
     # Release scalar references too, especially hashtables which have no
     # DestroyHashtable native. Clearing must never replay allocating defaults.
     release=['set '+var_names[n]+'='+default(v['type']) for n,v in private.items() if not v['array']]
     release_functions=[]
-    for first in range(0,len(release),60):
-        release_functions.append('function SDRelease'+str(first//60)+' takes nothing returns nothing\n'+
-                                 '\n'.join(release[first:first+60])+'\nendfunction')
+    for first in range(0,len(release),240):
+        release_functions.append('function SDRelease'+str(first//240)+' takes nothing returns nothing\n'+
+                                 '\n'.join(release[first:first+240])+'\nendfunction')
     release_functions.append('function SDReleaseBank takes nothing returns nothing\n'+
         '\n'.join('call ExecuteFunc("SDRelease'+str(i)+'")' for i in range(len(release_functions)))+'\nendfunction')
     restore=[]
@@ -141,7 +185,7 @@ def compile_namespace(source,blizzard,common):
     compiled=[];recorded=0
     # Preserve the original definition order (including Blizzard helpers).
     for name,body in all_functions.items():
-        if name not in selected:continue
+        if name not in selected_functions:continue
         body='\n'.join(line.strip() for line in body.splitlines())
         if name=='PolledWait':body='function PolledWait takes real duration returns nothing\nreturn\nendfunction'
         match=FUNCTION.match(body);args,returns=match[2],match[3]
@@ -157,9 +201,9 @@ def compile_namespace(source,blizzard,common):
             if m and m[1] in arrays:
                 end=balanced(line,m.end()-1);index=line[m.end():end-1];rhs=line[end+1:]
                 if rhs.strip() not in ('0','0.','0.0','false','null','""'):
-                    rows+=['set sdIndex='+replace(index,locals_),
+                    rows+=['set sdIndex='+inline(replace(index,locals_)),
                            'call SDRecord('+str(arrays[m[1]])+',sdIndex)',
-                           'set '+var_names[m[1]]+'[sdIndex]='+replace(rhs,locals_)]
+                           'set '+var_names[m[1]]+'[sdIndex]='+inline(replace(rhs,locals_))]
                     recorded+=1;continue
             if line.startswith('return'):
                 # Returning source expressions can call nested helpers, which
@@ -167,10 +211,10 @@ def compile_namespace(source,blizzard,common):
                 expression=line[6:].strip()
                 if expression:
                     # A typed return helper is inserted via a function-local.
-                    rows.append('set sdReturn='+replace(expression,locals_))
+                    rows.append('set sdReturn='+inline(replace(expression,locals_)))
                 rows.append('set SDRunning=sdPrevious and SDActive')
                 rows.append('return'+(' sdReturn' if expression else ''))
-            else:rows.append(replace(line,locals_))
+            else:rows.append(inline(replace(line,locals_)))
         rows+=['set SDRunning=sdPrevious and SDActive','endfunction']
         if returns!='nothing':rows.insert(local_end,'local '+returns+' sdReturn='+default(returns))
         compiled.append('\n'.join(rows))
@@ -199,7 +243,19 @@ def compile_namespace(source,blizzard,common):
     init_calls+='\ncall ExecuteFunc("SDOriginalGlobals")\ncall ExecuteFunc("'+fn_names[struct]+'")'
     # All original initialization entries required by referenced trigger handles.
     trigger_inits=[n for n in selected if n.startswith('InitTrig_')]
-    trigger_calls='\n'.join('call ExecuteFunc("'+fn_names[n]+'")' for n in sorted(trigger_inits))
+    trigger_rows=[];trigger_chunks=[];trigger_batch=[]
+    for n in sorted(trigger_inits):
+        if n not in folded:
+            trigger_rows.append('call ExecuteFunc("'+fn_names[n]+'")');continue
+        body=inline(replace('\n'.join(all_functions[n].splitlines()[1:-1])))
+        trigger_batch.append(body)
+        if sum(b.count('\n')+1 for b in trigger_batch)>=240:
+            trigger_chunks.append('\n'.join(trigger_batch));trigger_batch=[]
+    if trigger_batch:trigger_chunks.append('\n'.join(trigger_batch))
+    for i,body in enumerate(trigger_chunks):
+        compiled.append('function SDTriggerBank'+str(i)+' takes nothing returns nothing\n'+body+'\nendfunction')
+        trigger_rows.append('call ExecuteFunc("SDTriggerBank'+str(i)+'")')
+    trigger_calls='\n'.join(trigger_rows)
     setup=['function SDInitializeBank takes nothing returns nothing',init_calls]
     for n,v in private.items():
         if n.startswith('gg_unit_') and n.split('_')[2][0].islower():
@@ -213,18 +269,21 @@ def compile_namespace(source,blizzard,common):
             if n!='udg_ForceA':setup+=['call ForceAddPlayer('+var_names[n]+',Player(14))']
     if 'bj_FORCE_PLAYER' in private:
         for i in range(16):setup+=['call SDRecord('+str(arrays['bj_FORCE_PLAYER'])+','+str(i)+')',
-                                   'set SDV_bj_FORCE_PLAYER['+str(i)+']=SDNewForce()',
-                                   'call ForceAddPlayer(SDV_bj_FORCE_PLAYER['+str(i)+'],SDPlayer('+str(i)+'))']
+                                   'set '+var_names['bj_FORCE_PLAYER']+'['+str(i)+']=SDNewForce()',
+                                   'call ForceAddPlayer('+var_names['bj_FORCE_PLAYER']+'['+str(i)+'],SDPlayer('+str(i)+'))']
     if 'udg_MarketLocation' in private:
         setup+=['call SDRecord('+str(arrays['udg_MarketLocation'])+',1)',
-                'set SDV_udg_MarketLocation[1]=SDNewLocation(0,14500)']
+                'set '+var_names['udg_MarketLocation']+'[1]=SDNewLocation(0,14500)']
     for n in ('udg_Hashtable','bj_lastCreatedHashtable'):
         if n in private:setup+=['set '+var_names[n]+'=SDNewHashtable()']
-    if 'udg_System_Gamemode' in private:setup+=['set SDV_udg_System_Gamemode=0']
-    setup+=[trigger_calls,'call SDX_SDSeedOriginalStartFields()','set SDV_udg_System_Gamemode=0','endfunction']
+    if 'udg_System_Gamemode' in private:setup+=['set '+var_names['udg_System_Gamemode']+'=0']
+    setup+=[trigger_calls,'call SDX_SDSeedOriginalStartFields()','set '+var_names['udg_System_Gamemode']+'=0','endfunction']
     scalar_groups='\n'.join(initializers)
-    report=dict(originalFunctions=len(original),clonedFunctions=len(selected),privateGlobals=len(private),
+    report=dict(originalFunctions=len(original),sourceClosureFunctions=len(selected),
+                clonedFunctions=len(selected_functions),privateGlobals=len(private),
                 privateArrays=len(arrays),instrumentedArrayWrites=recorded,
                 sourceNamespaceSha256=hashlib.sha256(source.encode()).hexdigest(),
-                nativeBoundary=native_report,initializationTriggers=len(trigger_inits))
+                nativeBoundary=native_report,initializationTriggers=len(trigger_inits),
+                inlinedConditions=len(pure),foldedTriggerInitializers=len(folded),
+                scalarPools=pools,privateStorage=storage)
     return '\n'.join(declarations),native_code+'\n'+'\n'.join(clear_funcs+release_functions)+'\n'+scalar_groups+'\n'+init_body+'\n'+'\n'.join(compiled)+'\n'+'\n'.join(setup),report

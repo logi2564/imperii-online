@@ -22,7 +22,7 @@ gallery=importlib.util.module_from_spec(spec);spec.loader.exec_module(gallery)
 
 class Studio(gallery.Engine):
     SCRIPT_NAME='Studio.j'
-    MAP_NAME='GGG-RU-STUDIO-TEST.w3x'
+    MAP_NAME='GGG-126-FIX1.w3x'
     EXTRA_PREFIXES=('ST','SD')
     EXTRA_ROOTS=('Trig_Mode_Surv_Actions','Trig_kill_set_Surv_Actions')
     meta_cache={}
@@ -36,7 +36,12 @@ class Studio(gallery.Engine):
             finally:st.close(a)
             self.meta_cache[key]=abilities
         self.base_abilities=self.meta_cache[key]
+        self.storage=json.loads((Path(out)/'Studio-storage.json').read_text())
         super().__init__(out,players,local)
+
+    def private(self,name):
+        entry=self.storage[name];value=self.e[entry['variable']]
+        return value if entry['index'] is None else value[entry['index']]
 
     def unit(self,p,raw,x=0,y=0,facing=0):
         result=super().unit(p,raw,x,y,facing)
@@ -336,7 +341,7 @@ def test(out):
     scene.e['GGVScreen'][0]=2;scene.e['GGVRole'][0]=1;scene.e['GGVPage'][0]=0;scene.e['GGVRender'](0)
     scene.click(0,17,15);scene.advance(.2)
     actor=scene.e['SDActor']
-    assert scene.e['SDActive'] and scene.e['SDV_udg_Saber_Caster'] is actor
+    assert scene.e['SDActive'] and scene.private('udg_Saber_Caster') is actor
     assert all(scene.e['udg_Player'][p+1] is None for p in range(10))
     assert scene.e['udg_Saber_Caster'] is None
     # An order accepted by a stub is never considered a demonstrated cast.
@@ -357,7 +362,7 @@ def test(out):
     for kind in ('Unit','Timer','Trigger','Effect','Group','Location','Expr'):
         assert scene.e['SD'+kind+'Count']==0,kind
     assert scene.e['SDDirtyCount']==0 and not scene.e['SDRunning'] and not scene.e['SDActive']
-    assert scene.e['SDV_udg_Saber_Caster'] is None
+    assert scene.private('udg_Saber_Caster') is None
     scene.choose(0,15);scene.choose(1,3);scene.click(0,12);scene.advance(8)
     assert scene.e['GGVPhase']==2 and len(scene.orders)==2 and not scene.e['SDActive']
     print('Real isolated source callbacks, cast confirmation, cleanup and subsequent battle: OK',flush=True)

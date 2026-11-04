@@ -18,8 +18,10 @@ from sandbox import globals_,functions,masked
 
 def audit(base,out):
     base,out=Path(base),Path(out);st=Storm()
-    target=out/'GGG-RU-STUDIO-TEST.w3x'
+    target=out/'GGG-126-FIX1.w3x'
     report=json.loads((out/'Studio-report.json').read_text())
+    assert report['scriptGlobals']<8192
+    assert report['scriptFunctions']+report['blizzardFunctions']<16384
     assert hashlib.sha256(target.read_bytes()).hexdigest()==report['sha256']
     boundary=report['sandbox']['nativeBoundary']
     assert {'PauseUnit','SetUnitAnimation','SetUnitState','IssuePointOrderLoc','IssueImmediateOrderById'}<=set(boundary['ownedHandleMutations'])
@@ -37,6 +39,18 @@ def audit(base,out):
             assert st.read(old,name)==st.read(new,name),name
             unchanged+=1
         script=st.read(new,'war3map.j').decode();assert script==(out/'Studio.j').read_text()
+        declarations=globals_(script)
+        assert len(declarations)==report['scriptGlobals']
+        assert len(functions(script))==report['scriptFunctions']
+        variable_events=re.findall(r'\bTriggerRegisterVariableEvent\([^,\n]+,\s*"([^"\\]*)"\s*,',script)
+        for name in variable_events:
+            assert name in declarations and declarations[name]['type']=='real',('Missing variable-event target',name)
+        assert not re.search(r'(?m)^(?:native\s+Blz|type\s+framehandle\b)',script)
+        for name in ('war3map.doo','war3mapUnits.doo'):
+            blob=st.read(new,name)
+            assert blob[:4]==b'W3do' and struct.unpack_from('<II',blob,4)==(8,11),name
+        terrain=st.read(new,'war3map.w3e')
+        assert terrain[:4]==b'W3E!' and struct.unpack_from('<I',terrain,4)[0]==11
         restored=script
         for kind in ('GLOBALS','EARLY_FUNCTIONS','FUNCTIONS','UI_HELPERS'):
             restored=re.sub(r'(?ms)^// STUDIO_'+kind+r'_BEGIN\n.*?^// STUDIO_'+kind+r'_END\n','',restored)
@@ -53,7 +67,7 @@ def audit(base,out):
         mutable={n for n,v in source_globals.items() if not v['constant'] and not n.startswith('gg_snd_')}
         copied=functions(script);leaks=[]
         for name,body in copied.items():
-            if not name.startswith('SDX_'):continue
+            if not name.startswith(('SDX_','SDTriggerBank','SDDefaults','SDOriginalGlobals')):continue
             header=body.splitlines()[0]
             locals_=set(re.findall(r'(?m)^local \w+\s+(\w+)',body))
             args=header.split(' takes ',1)[1].split(' returns ',1)[0]
@@ -123,6 +137,8 @@ def audit(base,out):
                 originalLobbyPreserved=True,unchangedArchiveEntries=unchanged,
                 selectableCardCollisionModels=len(raw_cards)-1,texturePowerOfTwoChecks=images,
                 builtInIconMaterialsChecked=len(cards['engineIcons']),
+                classicMapMetadataVerified=True,variableEventTargetsVerified=len(variable_events),
+                scriptGlobals=report['scriptGlobals'],scriptFunctions=report['scriptFunctions'],
                 noAddedMemoryFrameHooks=True)
     (out/'Studio-audit.json').write_text(json.dumps(result,indent=2))
     print(json.dumps(result))
